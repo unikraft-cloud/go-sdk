@@ -44,7 +44,7 @@ jobs:
         git config user.name "Unikraft Bot"
         git config user.email "monkey@unikraft.io"
 
-        BRANCH="sync/$(date +'%Y%m%d_%H-%M-%S')"
+        BRANCH="sync/$(date +'%Y%m%d%H%M%S')"
         git checkout -b "${BRANCH}"
 
         git add .
