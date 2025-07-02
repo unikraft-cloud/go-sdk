@@ -25,12 +25,6 @@ jobs:
       with:
         ref: ${{ inputs.channel }}
 
-    - name: Reset promotion branch
-      shell: bash
-      run: |
-        git fetch origin ${{ inputs.channel }}:${{ inputs.channel }}
-        git reset --hard ${{ inputs.channel }}
-
     - name: Generate
       shell: bash
       env:
