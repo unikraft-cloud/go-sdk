@@ -1,0 +1,30 @@
+# sets parser options.
+parser:
+  # enables type inference for schemas. Schema parser will try to detect schema
+  # type by its properties.
+  infer_types: true
+  # enables remote references resolving.
+  # See https://github.com/ogen-go/ogen/issues/385.
+  allow_remote: true
+  # is maximum depth of schema generation. Default is 1000.
+  depth_limit: 1000
+
+generator:
+  features:
+    enable:
+    - 'paths/client'
+    disable_all: true
+
+  # contains filters to skip operations.
+  filters:
+    path_regex: ".*"
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
+
+  # functions to ignore
+  ignore_not_implemented: ["all"]
+
+  # Use comments verbatim
+  comment_pretty_doc: false
+
+# is a path to expanded spec.
+expand: ""

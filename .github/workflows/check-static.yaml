@@ -1,0 +1,74 @@
+name: check/static
+
+on:
+  pull_request:
+    branches: [prod-staging]
+    paths:
+      - '**'
+      - '!.github/**'
+      - .github/workflows/check-static.yaml
+
+# Automatically cancel in-progress actions on the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request_target' && github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+env:
+  GOPRIVATE: github.com/unikraft-cloud/x
+
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Login is necessary in order to let individual sub-modules of this
+      # repository to be able to cross-reference each other.
+      - name: Login to GitHub
+        shell: bash
+        run: |
+          git config --global url."https://${{ secrets.GH_PAT }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.24.0
+          cache: true
+
+      - name: Set Go variables
+        id: goenv
+        run: |
+          {
+            echo "cache=$(go env GOCACHE)"
+            echo "modcache=$(go env GOMODCACHE)"
+            echo "mod=$(go env GOMOD)"
+          } >>"$GITHUB_OUTPUT"
+
+      - name: Go caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.goenv.outputs.cache }}
+            ${{ steps.goenv.outputs.modcache }}
+          key: ${{ github.job }}-${{ runner.os }}-go-${{ hashFiles(steps.goenv.outputs.mod) }}
+          restore-keys: |
+            ${{ github.job }}-${{ runner.os }}-go-
+
+      - name: Check that go.mod is tidy
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.sum go.mod
+
+      - name: gofumpt
+        if: success() || failure()  # run this step even if the previous one failed
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          args: --no-config --timeout=5m --disable-all --enable=gofumpt --out-format=colored-line-number -- $(go work edit -json | jq -c -r '[.Use[].DiskPath] | map_values(. + "/...")[]')
+          skip-cache: true
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          args: --out-format=colored-line-number -- $(go work edit -json | jq -c -r '[.Use[].DiskPath] | map_values(. + "/...")[]')
+          skip-cache: true
