@@ -11,6 +11,20 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
+func encodeCreateCertificateRequest(
+	req *CreateCertificateRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeCreateInstanceRequest(
 	req *CreateInstanceRequest,
 	r *http.Request,
@@ -25,8 +39,8 @@ func encodeCreateInstanceRequest(
 	return nil
 }
 
-func encodeGetInstanceLogsRequest(
-	req *GetInstanceLogsRequest,
+func encodeCreateServiceGroupRequest(
+	req *CreateServiceGroupRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -39,14 +53,90 @@ func encodeGetInstanceLogsRequest(
 	return nil
 }
 
-func encodeGetInstanceMetricsRequest(
-	req *GetInstanceMetricsRequest,
+func encodeDeleteCertificatesRequest(
+	req []DeleteCertificatesRequestID,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
 	e := new(jx.Encoder)
 	{
-		req.Encode(e)
+		e.ArrStart()
+		for _, elem := range req {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeDeleteServiceGroupsRequest(
+	req []DeleteServiceGroupsRequestID,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		e.ArrStart()
+		for _, elem := range req {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeGetCertificatesRequest(
+	req []GetCertificatesRequestID,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		e.ArrStart()
+		for _, elem := range req {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeGetInstancesRequest(
+	req []GetInstancesRequestID,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		e.ArrStart()
+		for _, elem := range req {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeGetServiceGroupsRequest(
+	req []GetServiceGroupsRequestID,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		e.ArrStart()
+		for _, elem := range req {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
 	}
 	encoded := e.Bytes()
 	ht.SetBody(r, bytes.NewReader(encoded), contentType)
@@ -72,13 +162,17 @@ func encodeStopInstancesRequest(
 }
 
 func encodeWaitInstancesRequest(
-	req *WaitInstancesRequest,
+	req []WaitInstancesRequestID,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
 	e := new(jx.Encoder)
 	{
-		req.Encode(e)
+		e.ArrStart()
+		for _, elem := range req {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
 	}
 	encoded := e.Bytes()
 	ht.SetBody(r, bytes.NewReader(encoded), contentType)

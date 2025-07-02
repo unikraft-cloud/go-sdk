@@ -22,12 +22,43 @@ func trimTrailingSlashes(u *url.URL) {
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
+	// CreateCertificate invokes CreateCertificate operation.
+	//
+	// Upload a new certificate with the given configuration.
+	//
+	// POST /v1/certificates
+	CreateCertificate(ctx context.Context, request *CreateCertificateRequest) (*CreateCertificateResponse, error)
 	// CreateInstance invokes CreateInstance operation.
 	//
 	// Creates one or more new instances.
 	//
 	// POST /v1/instances
 	CreateInstance(ctx context.Context, request *CreateInstanceRequest) (*CreateInstanceResponse, error)
+	// CreateServiceGroup invokes CreateServiceGroup operation.
+	//
+	// Create a new service with the given configuration.
+	//
+	//  Note that the service properties like published ports can only be defined
+	//  during creation.  They cannot be changed later.  Each port in a service can
+	//  specify a list of handlers that determine how traffic arriving at the port
+	//  is handled. See Connection Handlers for a complete overview.
+	//
+	// POST /v1/services
+	CreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (*CreateServiceGroupResponse, error)
+	// DeleteCertificateByUUID invokes DeleteCertificateByUUID operation.
+	//
+	// Delete the specified certificate(s).  After this call the name of the
+	//  certificate(s) are no longer valid.
+	//
+	// DELETE /v1/certificates/{uuid}
+	DeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (*DeleteCertificatesResponse, error)
+	// DeleteCertificates invokes DeleteCertificates operation.
+	//
+	// Delete a specified certificate by its UUID.  After this call the UUID of
+	//  the certificate are no longer valid.
+	//
+	// DELETE /v1/certificates
+	DeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (*DeleteCertificatesResponse, error)
 	// DeleteInstanceByUUID invokes DeleteInstanceByUUID operation.
 	//
 	// Delete a specified instance by its UUID.  After this call the UUID of the
@@ -36,6 +67,33 @@ type Invoker interface {
 	//
 	// DELETE /v1/instances/{uuid}
 	DeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (*DeleteInstancesResponse, error)
+	// DeleteServiceGroupByUUID invokes DeleteServiceGroupByUUID operation.
+	//
+	// Delete the specified service group(s).  After this call the name of the
+	//  service group(s) are no longer valid.
+	//
+	// DELETE /v1/services/{uuid}
+	DeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (*DeleteServiceGroupsResponse, error)
+	// DeleteServiceGroups invokes DeleteServiceGroups operation.
+	//
+	// Delete a specified service group by its UUID.  After this call the UUID of
+	//  the service group are no longer valid.
+	//
+	// DELETE /v1/services
+	DeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (*DeleteServiceGroupsResponse, error)
+	// GetCertificateByUUID invokes GetCertificateByUUID operation.
+	//
+	// Get a specified certificate by its UUID.
+	//
+	// GET /v1/certificates/{uuid}
+	GetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (*GetCertificatesResponse, error)
+	// GetCertificates invokes GetCertificates operation.
+	//
+	// Get one or many certificates with their current status and configuration.
+	//  It's possible to filter this list by name or UUID.
+	//
+	// GET /v1/certificates
+	GetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (*GetCertificatesResponse, error)
 	// GetImageByDigest invokes GetImageByDigest operation.
 	//
 	// GetImageByDigest retrieves an image by its digest.
@@ -59,7 +117,7 @@ type Invoker interface {
 	// Retrieve the logs of an instance by its UUID or name.
 	//
 	// PUT /v1/instances/logs
-	GetInstanceLogs(ctx context.Context, request *GetInstanceLogsRequest) (*GetInstanceLogsResponse, error)
+	GetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (*GetInstanceLogsResponse, error)
 	// GetInstanceLogsByUUID invokes GetInstanceLogsByUUID operation.
 	//
 	// Retrieve the logs of an instance by its UUID.
@@ -71,7 +129,7 @@ type Invoker interface {
 	// Get the metrics of an instance by its UUID or name.
 	//
 	// PUT /v1/instances/metrics
-	GetInstanceMetrics(ctx context.Context, request *GetInstanceMetricsRequest) (*GetInstanceMetricsResponse, error)
+	GetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (*GetInstanceMetricsResponse, error)
 	// GetInstanceMetricsByUUID invokes GetInstanceMetricsByUUID operation.
 	//
 	// Get the metrics of an instance by its UUID.
@@ -84,7 +142,20 @@ type Invoker interface {
 	//  It's possible to filter this list by name or UUID.
 	//
 	// GET /v1/instances
-	GetInstances(ctx context.Context, params GetInstancesParams) (*GetInstancesResponse, error)
+	GetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (*GetInstancesResponse, error)
+	// GetServiceGroupByUUID invokes GetServiceGroupByUUID operation.
+	//
+	// Get a specified service group by its UUID.
+	//
+	// GET /v1/services/{uuid}
+	GetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (*GetServiceGroupsResponse, error)
+	// GetServiceGroups invokes GetServiceGroups operation.
+	//
+	// Get one or many service groups with their current status and configuration.
+	//  It's possible to filter this list by name or UUID.
+	//
+	// GET /v1/services
+	GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (*GetServiceGroupsResponse, error)
 	// StartInstanceByUUID invokes StartInstanceByUUID operation.
 	//
 	// Starts previously stopped instance by its UUID or does nothing if the
@@ -131,7 +202,7 @@ type Invoker interface {
 	//  instance reaches the desired state.
 	//
 	// GET /v1/instances/wait
-	WaitInstances(ctx context.Context, request *WaitInstancesRequest) (*WaitInstanceResponse, error)
+	WaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (*WaitInstanceResponse, error)
 }
 
 // Client implements OAS client.
@@ -173,6 +244,78 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 		return c.serverURL
 	}
 	return u
+}
+
+// CreateCertificate invokes CreateCertificate operation.
+//
+// Upload a new certificate with the given configuration.
+//
+// POST /v1/certificates
+func (c *Client) CreateCertificate(ctx context.Context, request *CreateCertificateRequest) (*CreateCertificateResponse, error) {
+	res, err := c.sendCreateCertificate(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendCreateCertificate(ctx context.Context, request *CreateCertificateRequest) (res *CreateCertificateResponse, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/certificates"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateCertificateRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, CreateCertificateOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeCreateCertificateResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
 }
 
 // CreateInstance invokes CreateInstance operation.
@@ -240,6 +383,246 @@ func (c *Client) sendCreateInstance(ctx context.Context, request *CreateInstance
 	defer resp.Body.Close()
 
 	result, err := decodeCreateInstanceResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// CreateServiceGroup invokes CreateServiceGroup operation.
+//
+// Create a new service with the given configuration.
+//
+//	Note that the service properties like published ports can only be defined
+//	during creation.  They cannot be changed later.  Each port in a service can
+//	specify a list of handlers that determine how traffic arriving at the port
+//	is handled. See Connection Handlers for a complete overview.
+//
+// POST /v1/services
+func (c *Client) CreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (*CreateServiceGroupResponse, error) {
+	res, err := c.sendCreateServiceGroup(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendCreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (res *CreateServiceGroupResponse, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/services"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateServiceGroupRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, CreateServiceGroupOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeCreateServiceGroupResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteCertificateByUUID invokes DeleteCertificateByUUID operation.
+//
+// Delete the specified certificate(s).  After this call the name of the
+//
+//	certificate(s) are no longer valid.
+//
+// DELETE /v1/certificates/{uuid}
+func (c *Client) DeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (*DeleteCertificatesResponse, error) {
+	res, err := c.sendDeleteCertificateByUUID(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (res *DeleteCertificatesResponse, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/certificates/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DeleteCertificateByUUIDOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteCertificateByUUIDResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteCertificates invokes DeleteCertificates operation.
+//
+// Delete a specified certificate by its UUID.  After this call the UUID of
+//
+//	the certificate are no longer valid.
+//
+// DELETE /v1/certificates
+func (c *Client) DeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (*DeleteCertificatesResponse, error) {
+	res, err := c.sendDeleteCertificates(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendDeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (res *DeleteCertificatesResponse, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/certificates"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeDeleteCertificatesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DeleteCertificatesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteCertificatesResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -330,6 +713,350 @@ func (c *Client) sendDeleteInstanceByUUID(ctx context.Context, params DeleteInst
 	defer resp.Body.Close()
 
 	result, err := decodeDeleteInstanceByUUIDResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteServiceGroupByUUID invokes DeleteServiceGroupByUUID operation.
+//
+// Delete the specified service group(s).  After this call the name of the
+//
+//	service group(s) are no longer valid.
+//
+// DELETE /v1/services/{uuid}
+func (c *Client) DeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (*DeleteServiceGroupsResponse, error) {
+	res, err := c.sendDeleteServiceGroupByUUID(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (res *DeleteServiceGroupsResponse, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/services/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DeleteServiceGroupByUUIDOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteServiceGroupByUUIDResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteServiceGroups invokes DeleteServiceGroups operation.
+//
+// Delete a specified service group by its UUID.  After this call the UUID of
+//
+//	the service group are no longer valid.
+//
+// DELETE /v1/services
+func (c *Client) DeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (*DeleteServiceGroupsResponse, error) {
+	res, err := c.sendDeleteServiceGroups(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendDeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (res *DeleteServiceGroupsResponse, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/services"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeDeleteServiceGroupsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DeleteServiceGroupsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteServiceGroupsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetCertificateByUUID invokes GetCertificateByUUID operation.
+//
+// Get a specified certificate by its UUID.
+//
+// GET /v1/certificates/{uuid}
+func (c *Client) GetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (*GetCertificatesResponse, error) {
+	res, err := c.sendGetCertificateByUUID(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (res *GetCertificatesResponse, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/certificates/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, GetCertificateByUUIDOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetCertificateByUUIDResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetCertificates invokes GetCertificates operation.
+//
+// Get one or many certificates with their current status and configuration.
+//
+//	It's possible to filter this list by name or UUID.
+//
+// GET /v1/certificates
+func (c *Client) GetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (*GetCertificatesResponse, error) {
+	res, err := c.sendGetCertificates(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendGetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (res *GetCertificatesResponse, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/certificates"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "details" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "details",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Details.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeGetCertificatesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, GetCertificatesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetCertificatesResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -603,24 +1330,92 @@ func (c *Client) sendGetInstanceByUUID(ctx context.Context, params GetInstanceBy
 // Retrieve the logs of an instance by its UUID or name.
 //
 // PUT /v1/instances/logs
-func (c *Client) GetInstanceLogs(ctx context.Context, request *GetInstanceLogsRequest) (*GetInstanceLogsResponse, error) {
-	res, err := c.sendGetInstanceLogs(ctx, request)
+func (c *Client) GetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (*GetInstanceLogsResponse, error) {
+	res, err := c.sendGetInstanceLogs(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstanceLogs(ctx context.Context, request *GetInstanceLogsRequest) (res *GetInstanceLogsResponse, err error) {
+func (c *Client) sendGetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (res *GetInstanceLogsResponse, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
 	pathParts[0] = "/v1/instances/logs"
 	uri.AddPathParts(u, pathParts[:]...)
 
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "uuid" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "uuid",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.UUID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "name" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "name",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Name.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "offset" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "offset",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Offset.Get(); ok {
+				return e.EncodeValue(conv.Uint64ToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "limit" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Limit.Get(); ok {
+				return e.EncodeValue(conv.Int64ToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
 	r, err := ht.NewRequest(ctx, "PUT", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeGetInstanceLogsRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
 	}
 
 	{
@@ -800,24 +1595,58 @@ func (c *Client) sendGetInstanceLogsByUUID(ctx context.Context, params GetInstan
 // Get the metrics of an instance by its UUID or name.
 //
 // PUT /v1/instances/metrics
-func (c *Client) GetInstanceMetrics(ctx context.Context, request *GetInstanceMetricsRequest) (*GetInstanceMetricsResponse, error) {
-	res, err := c.sendGetInstanceMetrics(ctx, request)
+func (c *Client) GetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (*GetInstanceMetricsResponse, error) {
+	res, err := c.sendGetInstanceMetrics(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstanceMetrics(ctx context.Context, request *GetInstanceMetricsRequest) (res *GetInstanceMetricsResponse, err error) {
+func (c *Client) sendGetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (res *GetInstanceMetricsResponse, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
 	pathParts[0] = "/v1/instances/metrics"
 	uri.AddPathParts(u, pathParts[:]...)
 
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "uuid" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "uuid",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.UUID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "name" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "name",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Name.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
 	r, err := ht.NewRequest(ctx, "PUT", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeGetInstanceMetricsRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
 	}
 
 	{
@@ -962,12 +1791,12 @@ func (c *Client) sendGetInstanceMetricsByUUID(ctx context.Context, params GetIns
 //	It's possible to filter this list by name or UUID.
 //
 // GET /v1/instances
-func (c *Client) GetInstances(ctx context.Context, params GetInstancesParams) (*GetInstancesResponse, error) {
-	res, err := c.sendGetInstances(ctx, params)
+func (c *Client) GetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (*GetInstancesResponse, error) {
+	res, err := c.sendGetInstances(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstances(ctx context.Context, params GetInstancesParams) (res *GetInstancesResponse, err error) {
+func (c *Client) sendGetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (res *GetInstancesResponse, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -975,40 +1804,6 @@ func (c *Client) sendGetInstances(ctx context.Context, params GetInstancesParams
 	uri.AddPathParts(u, pathParts[:]...)
 
 	q := uri.NewQueryEncoder()
-	{
-		// Encode "uuid" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "uuid",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.UUID.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "name" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "name",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.Name.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
 	{
 		// Encode "details" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
@@ -1048,6 +1843,9 @@ func (c *Client) sendGetInstances(ctx context.Context, params GetInstancesParams
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeGetInstancesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
 	}
 
 	{
@@ -1090,6 +1888,187 @@ func (c *Client) sendGetInstances(ctx context.Context, params GetInstancesParams
 	defer resp.Body.Close()
 
 	result, err := decodeGetInstancesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetServiceGroupByUUID invokes GetServiceGroupByUUID operation.
+//
+// Get a specified service group by its UUID.
+//
+// GET /v1/services/{uuid}
+func (c *Client) GetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (*GetServiceGroupsResponse, error) {
+	res, err := c.sendGetServiceGroupByUUID(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (res *GetServiceGroupsResponse, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/services/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, GetServiceGroupByUUIDOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetServiceGroupByUUIDResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetServiceGroups invokes GetServiceGroups operation.
+//
+// Get one or many service groups with their current status and configuration.
+//
+//	It's possible to filter this list by name or UUID.
+//
+// GET /v1/services
+func (c *Client) GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (*GetServiceGroupsResponse, error) {
+	res, err := c.sendGetServiceGroups(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendGetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (res *GetServiceGroupsResponse, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/services"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "details" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "details",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Details.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeGetServiceGroupsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, GetServiceGroupsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetServiceGroupsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -1569,17 +2548,54 @@ func (c *Client) sendWaitInstanceByUUID(ctx context.Context, params WaitInstance
 //	instance reaches the desired state.
 //
 // GET /v1/instances/wait
-func (c *Client) WaitInstances(ctx context.Context, request *WaitInstancesRequest) (*WaitInstanceResponse, error) {
-	res, err := c.sendWaitInstances(ctx, request)
+func (c *Client) WaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (*WaitInstanceResponse, error) {
+	res, err := c.sendWaitInstances(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendWaitInstances(ctx context.Context, request *WaitInstancesRequest) (res *WaitInstanceResponse, err error) {
+func (c *Client) sendWaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (res *WaitInstanceResponse, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
 	pathParts[0] = "/v1/instances/wait"
 	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "state" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "state",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.State.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "timeout_ms" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "timeout_ms",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.TimeoutMs.Get(); ok {
+				return e.EncodeValue(conv.Int64ToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
 
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {

@@ -39,6 +39,300 @@ func (s *BearerToken) SetRoles(val []string) {
 	s.Roles = val
 }
 
+// Ref: #/components/schemas/Certificate
+type Certificate struct {
+	// The UUID of the certificate.
+	//
+	//  This is a unique identifier for the certificate that is generated when the
+	//  certificate is created.  The UUID is used to reference the certificate in
+	//  API calls and can be used to identify the certificate in all API calls that
+	//  require an identifier.
+	UUID OptString `json:"uuid"`
+	// The name of the certificate.
+	//
+	//  This is a human-readable name that can be used to identify the certificate.
+	//  The name must be unique within the context of your account.  The name can
+	//  also be used to identify the certificate in API calls.
+	Name OptString `json:"name"`
+	// The time the certificate was created.
+	CreatedAt OptDateTime `json:"created_at"`
+	//
+	CommonName OptString `json:"common_name"`
+	//
+	State OptCertificateState `json:"state"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *Certificate) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *Certificate) GetName() OptString {
+	return s.Name
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Certificate) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetCommonName returns the value of CommonName.
+func (s *Certificate) GetCommonName() OptString {
+	return s.CommonName
+}
+
+// GetState returns the value of State.
+func (s *Certificate) GetState() OptCertificateState {
+	return s.State
+}
+
+// SetUUID sets the value of UUID.
+func (s *Certificate) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *Certificate) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Certificate) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetCommonName sets the value of CommonName.
+func (s *Certificate) SetCommonName(val OptString) {
+	s.CommonName = val
+}
+
+// SetState sets the value of State.
+func (s *Certificate) SetState(val OptCertificateState) {
+	s.State = val
+}
+
+type CertificateState string
+
+const (
+	CertificateStatePending CertificateState = "pending"
+	CertificateStateValid   CertificateState = "valid"
+	CertificateStateError   CertificateState = "error"
+)
+
+// AllValues returns all CertificateState values.
+func (CertificateState) AllValues() []CertificateState {
+	return []CertificateState{
+		CertificateStatePending,
+		CertificateStateValid,
+		CertificateStateError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CertificateState) MarshalText() ([]byte, error) {
+	switch s {
+	case CertificateStatePending:
+		return []byte(s), nil
+	case CertificateStateValid:
+		return []byte(s), nil
+	case CertificateStateError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CertificateState) UnmarshalText(data []byte) error {
+	switch CertificateState(data) {
+	case CertificateStatePending:
+		*s = CertificateStatePending
+		return nil
+	case CertificateStateValid:
+		*s = CertificateStateValid
+		return nil
+	case CertificateStateError:
+		*s = CertificateStateError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// The request message for creating/uploading a new certificate.
+// Ref: #/components/schemas/CreateCertificateRequest
+type CreateCertificateRequest struct {
+	// The name of the certificate.
+	//
+	//  This is a human-readable name that can be used to identify the certificate.
+	//  The name must be unique within the context of your account.  If no name is
+	//  specified, a random name is generated for you.  The name can also be used
+	//  to identify the certificate in API calls.
+	Name OptString `json:"name"`
+	// The common name (CN) of the certificate.
+	Cn OptString `json:"cn"`
+	// The chain of the certificate.
+	Chain OptString `json:"chain"`
+	// The private key of the certificate.
+	Key OptString `json:"key"`
+}
+
+// GetName returns the value of Name.
+func (s *CreateCertificateRequest) GetName() OptString {
+	return s.Name
+}
+
+// GetCn returns the value of Cn.
+func (s *CreateCertificateRequest) GetCn() OptString {
+	return s.Cn
+}
+
+// GetChain returns the value of Chain.
+func (s *CreateCertificateRequest) GetChain() OptString {
+	return s.Chain
+}
+
+// GetKey returns the value of Key.
+func (s *CreateCertificateRequest) GetKey() OptString {
+	return s.Key
+}
+
+// SetName sets the value of Name.
+func (s *CreateCertificateRequest) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetCn sets the value of Cn.
+func (s *CreateCertificateRequest) SetCn(val OptString) {
+	s.Cn = val
+}
+
+// SetChain sets the value of Chain.
+func (s *CreateCertificateRequest) SetChain(val OptString) {
+	s.Chain = val
+}
+
+// SetKey sets the value of Key.
+func (s *CreateCertificateRequest) SetKey(val OptString) {
+	s.Key = val
+}
+
+// The response message for creating of a certificate.
+// Ref: #/components/schemas/CreateCertificateResponse
+type CreateCertificateResponse struct {
+	// The status of the response.
+	Status OptCreateCertificateResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptCreateCertificateResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *CreateCertificateResponse) GetStatus() OptCreateCertificateResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *CreateCertificateResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *CreateCertificateResponse) GetData() OptCreateCertificateResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *CreateCertificateResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *CreateCertificateResponse) SetStatus(val OptCreateCertificateResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *CreateCertificateResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *CreateCertificateResponse) SetData(val OptCreateCertificateResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *CreateCertificateResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/CreateCertificateResponseData
+type CreateCertificateResponseData struct {
+	// The certificate which was created by this request.
+	//
+	//  Note: only one certificate can be specified in the request, so this
+	//  will always contain a single entry.
+	Certificates []Certificate `json:"certificates"`
+}
+
+// GetCertificates returns the value of Certificates.
+func (s *CreateCertificateResponseData) GetCertificates() []Certificate {
+	return s.Certificates
+}
+
+// SetCertificates sets the value of Certificates.
+func (s *CreateCertificateResponseData) SetCertificates(val []Certificate) {
+	s.Certificates = val
+}
+
+// The status of the response.
+type CreateCertificateResponseStatus string
+
+const (
+	CreateCertificateResponseStatusSuccess CreateCertificateResponseStatus = "success"
+	CreateCertificateResponseStatusError   CreateCertificateResponseStatus = "error"
+)
+
+// AllValues returns all CreateCertificateResponseStatus values.
+func (CreateCertificateResponseStatus) AllValues() []CreateCertificateResponseStatus {
+	return []CreateCertificateResponseStatus{
+		CreateCertificateResponseStatusSuccess,
+		CreateCertificateResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CreateCertificateResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case CreateCertificateResponseStatusSuccess:
+		return []byte(s), nil
+	case CreateCertificateResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CreateCertificateResponseStatus) UnmarshalText(data []byte) error {
+	switch CreateCertificateResponseStatus(data) {
+	case CreateCertificateResponseStatusSuccess:
+		*s = CreateCertificateResponseStatusSuccess
+		return nil
+	case CreateCertificateResponseStatusError:
+		*s = CreateCertificateResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // The request message for creating a new instance.
 // Ref: #/components/schemas/CreateInstanceRequest
 type CreateInstanceRequest struct {
@@ -63,8 +357,8 @@ type CreateInstanceRequest struct {
 	ServiceGroup OptCreateInstanceRequestServiceGroup `json:"service_group"`
 	// Volumes to attach to the instance.
 	//
-	//  his list can contain both existing and new volumes to create as part of the
-	//  instance creation.  Existing volumes can be referenced by their name or
+	//  This list can contain both existing and new volumes to create as part of
+	//  the instance creation.  Existing volumes can be referenced by their name or
 	//  UUID.  New volumes can be created by specifying a name, size in MiB, and
 	//  mount point in the instance.  The mount point is the directory in the
 	//  instance where the volume will be mounted.
@@ -654,6 +948,434 @@ func (s *CreateInstanceResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/CreateServiceGroupRequest
+type CreateServiceGroupRequest struct {
+	// Name of the service group.  This is a human-readable name that can be used
+	//  to identify the service group.  The name must be unique within the context
+	//  of your account.  If no name is specified, a random name is generated for
+	//  you.  The name can also be used to identify the service group in API calls.
+	Name OptString `json:"name"`
+	// Description of exposed services.
+	Services []Service `json:"services"`
+	// Description of domains associated with the service group.
+	Domains []Domain `json:"domains"`
+	// The soft limit is used by the Unikraft Cloud load balancer to decide when
+	//  to wake up another standby instance.
+	//
+	//  For example, if the soft limit is set to 5 and the service consists of 2
+	//  standby instances, one of the instances receives up to 5 concurrent
+	//  requests.  The 6th parallel requests wakes up the second instance.  If
+	//  there are no more standby instances to wake up, the number of requests
+	//  assigned to each instance will exceed the soft limit.  The load balancer
+	//  makes sure that when the number of in-flight requests goes down again,
+	//  instances are put into standby as fast as possible.
+	SoftLimit OptUint64 `json:"soft_limit"`
+	// The hard limit defines the maximum number of concurrent requests that an
+	//  instance assigned to the this service can handle.
+	//
+	//  The load balancer will never assign more requests to a single instance.  In
+	//  case there are no other instances available, excess requests fail (i.e.,
+	//  they are blocked and not queued).
+	HardLimit OptUint64 `json:"hard_limit"`
+}
+
+// GetName returns the value of Name.
+func (s *CreateServiceGroupRequest) GetName() OptString {
+	return s.Name
+}
+
+// GetServices returns the value of Services.
+func (s *CreateServiceGroupRequest) GetServices() []Service {
+	return s.Services
+}
+
+// GetDomains returns the value of Domains.
+func (s *CreateServiceGroupRequest) GetDomains() []Domain {
+	return s.Domains
+}
+
+// GetSoftLimit returns the value of SoftLimit.
+func (s *CreateServiceGroupRequest) GetSoftLimit() OptUint64 {
+	return s.SoftLimit
+}
+
+// GetHardLimit returns the value of HardLimit.
+func (s *CreateServiceGroupRequest) GetHardLimit() OptUint64 {
+	return s.HardLimit
+}
+
+// SetName sets the value of Name.
+func (s *CreateServiceGroupRequest) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetServices sets the value of Services.
+func (s *CreateServiceGroupRequest) SetServices(val []Service) {
+	s.Services = val
+}
+
+// SetDomains sets the value of Domains.
+func (s *CreateServiceGroupRequest) SetDomains(val []Domain) {
+	s.Domains = val
+}
+
+// SetSoftLimit sets the value of SoftLimit.
+func (s *CreateServiceGroupRequest) SetSoftLimit(val OptUint64) {
+	s.SoftLimit = val
+}
+
+// SetHardLimit sets the value of HardLimit.
+func (s *CreateServiceGroupRequest) SetHardLimit(val OptUint64) {
+	s.HardLimit = val
+}
+
+// The response message for creating of a service group.
+// Ref: #/components/schemas/CreateServiceGroupResponse
+type CreateServiceGroupResponse struct {
+	// The status of the response.
+	Status OptCreateServiceGroupResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptCreateServiceGroupResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *CreateServiceGroupResponse) GetStatus() OptCreateServiceGroupResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *CreateServiceGroupResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *CreateServiceGroupResponse) GetData() OptCreateServiceGroupResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *CreateServiceGroupResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *CreateServiceGroupResponse) SetStatus(val OptCreateServiceGroupResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *CreateServiceGroupResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *CreateServiceGroupResponse) SetData(val OptCreateServiceGroupResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *CreateServiceGroupResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/CreateServiceGroupResponseData
+type CreateServiceGroupResponseData struct {
+	// The service group which was created by this request.
+	//
+	//  Note: only one service group can be specified in the request, so this
+	//  will always contain a single entry.
+	ServiceGroups []ServiceGroup `json:"service_groups"`
+}
+
+// GetServiceGroups returns the value of ServiceGroups.
+func (s *CreateServiceGroupResponseData) GetServiceGroups() []ServiceGroup {
+	return s.ServiceGroups
+}
+
+// SetServiceGroups sets the value of ServiceGroups.
+func (s *CreateServiceGroupResponseData) SetServiceGroups(val []ServiceGroup) {
+	s.ServiceGroups = val
+}
+
+// The status of the response.
+type CreateServiceGroupResponseStatus string
+
+const (
+	CreateServiceGroupResponseStatusSuccess CreateServiceGroupResponseStatus = "success"
+	CreateServiceGroupResponseStatusError   CreateServiceGroupResponseStatus = "error"
+)
+
+// AllValues returns all CreateServiceGroupResponseStatus values.
+func (CreateServiceGroupResponseStatus) AllValues() []CreateServiceGroupResponseStatus {
+	return []CreateServiceGroupResponseStatus{
+		CreateServiceGroupResponseStatusSuccess,
+		CreateServiceGroupResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CreateServiceGroupResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case CreateServiceGroupResponseStatusSuccess:
+		return []byte(s), nil
+	case CreateServiceGroupResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CreateServiceGroupResponseStatus) UnmarshalText(data []byte) error {
+	switch CreateServiceGroupResponseStatus(data) {
+	case CreateServiceGroupResponseStatusSuccess:
+		*s = CreateServiceGroupResponseStatusSuccess
+		return nil
+	case CreateServiceGroupResponseStatusError:
+		*s = CreateServiceGroupResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// An identifier for the certificate(s) to delete.
+// Ref: #/components/schemas/DeleteCertificatesRequestID
+type DeleteCertificatesRequestID struct {
+	// The UUID of the certificate to retrieve.
+	//  Mutually exclusive with name.
+	UUID OptString `json:"uuid"`
+	// The name of the certificate to retrieve.
+	//  Mutually exclusive with UUID.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *DeleteCertificatesRequestID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *DeleteCertificatesRequestID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *DeleteCertificatesRequestID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *DeleteCertificatesRequestID) SetName(val OptString) {
+	s.Name = val
+}
+
+// The response message for deleting of one or more certificate(s) given their
+//
+//	UUID(s) or name(s).
+//
+// Ref: #/components/schemas/DeleteCertificatesResponse
+type DeleteCertificatesResponse struct {
+	// The status of the response.
+	Status OptDeleteCertificatesResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptDeleteCertificatesResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DeleteCertificatesResponse) GetStatus() OptDeleteCertificatesResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *DeleteCertificatesResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *DeleteCertificatesResponse) GetData() OptDeleteCertificatesResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *DeleteCertificatesResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *DeleteCertificatesResponse) SetStatus(val OptDeleteCertificatesResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *DeleteCertificatesResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *DeleteCertificatesResponse) SetData(val OptDeleteCertificatesResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *DeleteCertificatesResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/DeleteCertificatesResponseData
+type DeleteCertificatesResponseData struct {
+	// The certificate(s) which were deleted by the request.
+	Certificates []DeleteCertificatesResponseDeletedCertificate `json:"certificates"`
+}
+
+// GetCertificates returns the value of Certificates.
+func (s *DeleteCertificatesResponseData) GetCertificates() []DeleteCertificatesResponseDeletedCertificate {
+	return s.Certificates
+}
+
+// SetCertificates sets the value of Certificates.
+func (s *DeleteCertificatesResponseData) SetCertificates(val []DeleteCertificatesResponseDeletedCertificate) {
+	s.Certificates = val
+}
+
+// Details of the certificate which was deleted by this request.
+// Ref: #/components/schemas/DeleteCertificatesResponseDeletedCertificate
+type DeleteCertificatesResponseDeletedCertificate struct {
+	// Indicates whether the delete operation was successful or not for this
+	//  certificate.
+	Status OptDeleteCertificatesResponseDeletedCertificateStatus `json:"status"`
+	// The UUID of the certificate which was deleted.
+	UUID OptString `json:"uuid"`
+	// The name of the certificate which was deleted.
+	Name OptString `json:"name"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DeleteCertificatesResponseDeletedCertificate) GetStatus() OptDeleteCertificatesResponseDeletedCertificateStatus {
+	return s.Status
+}
+
+// GetUUID returns the value of UUID.
+func (s *DeleteCertificatesResponseDeletedCertificate) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *DeleteCertificatesResponseDeletedCertificate) GetName() OptString {
+	return s.Name
+}
+
+// SetStatus sets the value of Status.
+func (s *DeleteCertificatesResponseDeletedCertificate) SetStatus(val OptDeleteCertificatesResponseDeletedCertificateStatus) {
+	s.Status = val
+}
+
+// SetUUID sets the value of UUID.
+func (s *DeleteCertificatesResponseDeletedCertificate) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *DeleteCertificatesResponseDeletedCertificate) SetName(val OptString) {
+	s.Name = val
+}
+
+// Indicates whether the delete operation was successful or not for this
+//
+//	certificate.
+type DeleteCertificatesResponseDeletedCertificateStatus string
+
+const (
+	DeleteCertificatesResponseDeletedCertificateStatusSuccess DeleteCertificatesResponseDeletedCertificateStatus = "success"
+	DeleteCertificatesResponseDeletedCertificateStatusError   DeleteCertificatesResponseDeletedCertificateStatus = "error"
+)
+
+// AllValues returns all DeleteCertificatesResponseDeletedCertificateStatus values.
+func (DeleteCertificatesResponseDeletedCertificateStatus) AllValues() []DeleteCertificatesResponseDeletedCertificateStatus {
+	return []DeleteCertificatesResponseDeletedCertificateStatus{
+		DeleteCertificatesResponseDeletedCertificateStatusSuccess,
+		DeleteCertificatesResponseDeletedCertificateStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DeleteCertificatesResponseDeletedCertificateStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DeleteCertificatesResponseDeletedCertificateStatusSuccess:
+		return []byte(s), nil
+	case DeleteCertificatesResponseDeletedCertificateStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DeleteCertificatesResponseDeletedCertificateStatus) UnmarshalText(data []byte) error {
+	switch DeleteCertificatesResponseDeletedCertificateStatus(data) {
+	case DeleteCertificatesResponseDeletedCertificateStatusSuccess:
+		*s = DeleteCertificatesResponseDeletedCertificateStatusSuccess
+		return nil
+	case DeleteCertificatesResponseDeletedCertificateStatusError:
+		*s = DeleteCertificatesResponseDeletedCertificateStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// The status of the response.
+type DeleteCertificatesResponseStatus string
+
+const (
+	DeleteCertificatesResponseStatusSuccess DeleteCertificatesResponseStatus = "success"
+	DeleteCertificatesResponseStatusError   DeleteCertificatesResponseStatus = "error"
+)
+
+// AllValues returns all DeleteCertificatesResponseStatus values.
+func (DeleteCertificatesResponseStatus) AllValues() []DeleteCertificatesResponseStatus {
+	return []DeleteCertificatesResponseStatus{
+		DeleteCertificatesResponseStatusSuccess,
+		DeleteCertificatesResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DeleteCertificatesResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DeleteCertificatesResponseStatusSuccess:
+		return []byte(s), nil
+	case DeleteCertificatesResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DeleteCertificatesResponseStatus) UnmarshalText(data []byte) error {
+	switch DeleteCertificatesResponseStatus(data) {
+	case DeleteCertificatesResponseStatusSuccess:
+		*s = DeleteCertificatesResponseStatusSuccess
+		return nil
+	case DeleteCertificatesResponseStatusError:
+		*s = DeleteCertificatesResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // The response message for deleting one or more instance(s) given their UUID(s)
 //
 //	or name(s).
@@ -867,6 +1589,422 @@ func (s *DeleteInstancesResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// An identifier for the service group(s) to delete.
+// Ref: #/components/schemas/DeleteServiceGroupsRequestID
+type DeleteServiceGroupsRequestID struct {
+	// The UUID of the service group to retrieve.
+	//  Mutually exclusive with name.
+	UUID OptString `json:"uuid"`
+	// The name of the service group to retrieve.
+	//  Mutually exclusive with UUID.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *DeleteServiceGroupsRequestID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *DeleteServiceGroupsRequestID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *DeleteServiceGroupsRequestID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *DeleteServiceGroupsRequestID) SetName(val OptString) {
+	s.Name = val
+}
+
+// The response message for deleting of one or more service group(s) given their
+//
+//	UUID(s) or name(s).
+//
+// Ref: #/components/schemas/DeleteServiceGroupsResponse
+type DeleteServiceGroupsResponse struct {
+	// The status of the response.
+	Status OptDeleteServiceGroupsResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptDeleteServiceGroupsResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DeleteServiceGroupsResponse) GetStatus() OptDeleteServiceGroupsResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *DeleteServiceGroupsResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *DeleteServiceGroupsResponse) GetData() OptDeleteServiceGroupsResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *DeleteServiceGroupsResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *DeleteServiceGroupsResponse) SetStatus(val OptDeleteServiceGroupsResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *DeleteServiceGroupsResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *DeleteServiceGroupsResponse) SetData(val OptDeleteServiceGroupsResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *DeleteServiceGroupsResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/DeleteServiceGroupsResponseData
+type DeleteServiceGroupsResponseData struct {
+	// The service group(s) which were deleted by the request.
+	ServiceGroups []DeleteServiceGroupsResponseDeletedServiceGroup `json:"service_groups"`
+}
+
+// GetServiceGroups returns the value of ServiceGroups.
+func (s *DeleteServiceGroupsResponseData) GetServiceGroups() []DeleteServiceGroupsResponseDeletedServiceGroup {
+	return s.ServiceGroups
+}
+
+// SetServiceGroups sets the value of ServiceGroups.
+func (s *DeleteServiceGroupsResponseData) SetServiceGroups(val []DeleteServiceGroupsResponseDeletedServiceGroup) {
+	s.ServiceGroups = val
+}
+
+// Details of the service group which was deleted by this request.
+// Ref: #/components/schemas/DeleteServiceGroupsResponseDeletedServiceGroup
+type DeleteServiceGroupsResponseDeletedServiceGroup struct {
+	// Indicates whether the delete operation was successful or not for this
+	//  service group.
+	Status OptDeleteServiceGroupsResponseDeletedServiceGroupStatus `json:"status"`
+	// The UUID of the service group which was deleted.
+	UUID OptString `json:"uuid"`
+	// The name of the service group which was deleted.
+	Name OptString `json:"name"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DeleteServiceGroupsResponseDeletedServiceGroup) GetStatus() OptDeleteServiceGroupsResponseDeletedServiceGroupStatus {
+	return s.Status
+}
+
+// GetUUID returns the value of UUID.
+func (s *DeleteServiceGroupsResponseDeletedServiceGroup) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *DeleteServiceGroupsResponseDeletedServiceGroup) GetName() OptString {
+	return s.Name
+}
+
+// SetStatus sets the value of Status.
+func (s *DeleteServiceGroupsResponseDeletedServiceGroup) SetStatus(val OptDeleteServiceGroupsResponseDeletedServiceGroupStatus) {
+	s.Status = val
+}
+
+// SetUUID sets the value of UUID.
+func (s *DeleteServiceGroupsResponseDeletedServiceGroup) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *DeleteServiceGroupsResponseDeletedServiceGroup) SetName(val OptString) {
+	s.Name = val
+}
+
+// Indicates whether the delete operation was successful or not for this
+//
+//	service group.
+type DeleteServiceGroupsResponseDeletedServiceGroupStatus string
+
+const (
+	DeleteServiceGroupsResponseDeletedServiceGroupStatusSuccess DeleteServiceGroupsResponseDeletedServiceGroupStatus = "success"
+	DeleteServiceGroupsResponseDeletedServiceGroupStatusError   DeleteServiceGroupsResponseDeletedServiceGroupStatus = "error"
+)
+
+// AllValues returns all DeleteServiceGroupsResponseDeletedServiceGroupStatus values.
+func (DeleteServiceGroupsResponseDeletedServiceGroupStatus) AllValues() []DeleteServiceGroupsResponseDeletedServiceGroupStatus {
+	return []DeleteServiceGroupsResponseDeletedServiceGroupStatus{
+		DeleteServiceGroupsResponseDeletedServiceGroupStatusSuccess,
+		DeleteServiceGroupsResponseDeletedServiceGroupStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DeleteServiceGroupsResponseDeletedServiceGroupStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DeleteServiceGroupsResponseDeletedServiceGroupStatusSuccess:
+		return []byte(s), nil
+	case DeleteServiceGroupsResponseDeletedServiceGroupStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DeleteServiceGroupsResponseDeletedServiceGroupStatus) UnmarshalText(data []byte) error {
+	switch DeleteServiceGroupsResponseDeletedServiceGroupStatus(data) {
+	case DeleteServiceGroupsResponseDeletedServiceGroupStatusSuccess:
+		*s = DeleteServiceGroupsResponseDeletedServiceGroupStatusSuccess
+		return nil
+	case DeleteServiceGroupsResponseDeletedServiceGroupStatusError:
+		*s = DeleteServiceGroupsResponseDeletedServiceGroupStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// The status of the response.
+type DeleteServiceGroupsResponseStatus string
+
+const (
+	DeleteServiceGroupsResponseStatusSuccess DeleteServiceGroupsResponseStatus = "success"
+	DeleteServiceGroupsResponseStatusError   DeleteServiceGroupsResponseStatus = "error"
+)
+
+// AllValues returns all DeleteServiceGroupsResponseStatus values.
+func (DeleteServiceGroupsResponseStatus) AllValues() []DeleteServiceGroupsResponseStatus {
+	return []DeleteServiceGroupsResponseStatus{
+		DeleteServiceGroupsResponseStatusSuccess,
+		DeleteServiceGroupsResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DeleteServiceGroupsResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DeleteServiceGroupsResponseStatusSuccess:
+		return []byte(s), nil
+	case DeleteServiceGroupsResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DeleteServiceGroupsResponseStatus) UnmarshalText(data []byte) error {
+	switch DeleteServiceGroupsResponseStatus(data) {
+	case DeleteServiceGroupsResponseStatusSuccess:
+		*s = DeleteServiceGroupsResponseStatusSuccess
+		return nil
+	case DeleteServiceGroupsResponseStatusError:
+		*s = DeleteServiceGroupsResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// A domain name.
+//
+//	Domain names are completely specified with all labels in the hierarchy of the
+//	DNS, having no parts omitted.  The domain can be associated with an existing
+//	certificate by specifying the certificate's name or UUID.  If no certificate
+//	is specified and a FQDN is provided, Unikraft Cloud will automatically
+//	generate a new certificate for the domain based on Let's Encrypt and seek to
+//	accomplish a DNS-01 challenge.
+//
+// Ref: #/components/schemas/Domain
+type Domain struct {
+	// Publicly accessible domain name.  If this name ends in a period `.` it must
+	//  be a valid Full Qualified Domain Name (FQDN), otherwise it will become a
+	//  subdomain of the target metro.
+	Fqdn OptString `json:"fqdn"`
+	// Use an existing certificate for the domain.  If this field is
+	//  specified, the domain must be associated with a valid certificate.
+	Certificate OptCertificate `json:"certificate"`
+}
+
+// GetFqdn returns the value of Fqdn.
+func (s *Domain) GetFqdn() OptString {
+	return s.Fqdn
+}
+
+// GetCertificate returns the value of Certificate.
+func (s *Domain) GetCertificate() OptCertificate {
+	return s.Certificate
+}
+
+// SetFqdn sets the value of Fqdn.
+func (s *Domain) SetFqdn(val OptString) {
+	s.Fqdn = val
+}
+
+// SetCertificate sets the value of Certificate.
+func (s *Domain) SetCertificate(val OptCertificate) {
+	s.Certificate = val
+}
+
+// An identifier for the certificate(s) to get.
+// Ref: #/components/schemas/GetCertificatesRequestID
+type GetCertificatesRequestID struct {
+	// The UUID of the certificate to get.  Mutually exclusive with name.
+	UUID OptString `json:"uuid"`
+	// The name of the certificate to get.  Mutually exclusive with UUID.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *GetCertificatesRequestID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *GetCertificatesRequestID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *GetCertificatesRequestID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *GetCertificatesRequestID) SetName(val OptString) {
+	s.Name = val
+}
+
+// The response message for getting one or more certificate(s) given their
+//
+//	UUID(s) or name(s).
+//
+// Ref: #/components/schemas/GetCertificatesResponse
+type GetCertificatesResponse struct {
+	// The status of the response.
+	Status OptGetCertificatesResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptGetCertificatesResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *GetCertificatesResponse) GetStatus() OptGetCertificatesResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *GetCertificatesResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *GetCertificatesResponse) GetData() OptGetCertificatesResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *GetCertificatesResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *GetCertificatesResponse) SetStatus(val OptGetCertificatesResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *GetCertificatesResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *GetCertificatesResponse) SetData(val OptGetCertificatesResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *GetCertificatesResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/GetCertificatesResponseData
+type GetCertificatesResponseData struct {
+	// The certificate(s) which were retrieved by the request.
+	Certificates []Certificate `json:"certificates"`
+}
+
+// GetCertificates returns the value of Certificates.
+func (s *GetCertificatesResponseData) GetCertificates() []Certificate {
+	return s.Certificates
+}
+
+// SetCertificates sets the value of Certificates.
+func (s *GetCertificatesResponseData) SetCertificates(val []Certificate) {
+	s.Certificates = val
+}
+
+// The status of the response.
+type GetCertificatesResponseStatus string
+
+const (
+	GetCertificatesResponseStatusSuccess GetCertificatesResponseStatus = "success"
+	GetCertificatesResponseStatusError   GetCertificatesResponseStatus = "error"
+)
+
+// AllValues returns all GetCertificatesResponseStatus values.
+func (GetCertificatesResponseStatus) AllValues() []GetCertificatesResponseStatus {
+	return []GetCertificatesResponseStatus{
+		GetCertificatesResponseStatusSuccess,
+		GetCertificatesResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s GetCertificatesResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case GetCertificatesResponseStatusSuccess:
+		return []byte(s), nil
+	case GetCertificatesResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *GetCertificatesResponseStatus) UnmarshalText(data []byte) error {
+	switch GetCertificatesResponseStatus(data) {
+	case GetCertificatesResponseStatusSuccess:
+		*s = GetCertificatesResponseStatusSuccess
+		return nil
+	case GetCertificatesResponseStatusError:
+		*s = GetCertificatesResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/GetImageResponse
 type GetImageResponse struct {
 	//
@@ -933,65 +2071,6 @@ func (s *GetImageResponseData) GetImage() OptImage {
 // SetImage sets the value of Image.
 func (s *GetImageResponseData) SetImage(val OptImage) {
 	s.Image = val
-}
-
-// The request message for getting the logs of an instance by their UUID or
-//
-//	name.
-//
-// Ref: #/components/schemas/GetInstanceLogsRequest
-type GetInstanceLogsRequest struct {
-	// The UUID of the instance to retrieve logs for.  Mutually exclusive with
-	//  name.
-	UUID OptString `json:"uuid"`
-	// The name of the instance to retrieve logs for.  Mutually exclusive with
-	//  UUID.
-	Name OptString `json:"name"`
-	// The byte offset of the log output to receive.  A negative sign makes the
-	//  offset relative to the end of the log.
-	Offset OptUint64 `json:"offset"`
-	// The amount of bytes to return at most.
-	Limit OptInt64 `json:"limit"`
-}
-
-// GetUUID returns the value of UUID.
-func (s *GetInstanceLogsRequest) GetUUID() OptString {
-	return s.UUID
-}
-
-// GetName returns the value of Name.
-func (s *GetInstanceLogsRequest) GetName() OptString {
-	return s.Name
-}
-
-// GetOffset returns the value of Offset.
-func (s *GetInstanceLogsRequest) GetOffset() OptUint64 {
-	return s.Offset
-}
-
-// GetLimit returns the value of Limit.
-func (s *GetInstanceLogsRequest) GetLimit() OptInt64 {
-	return s.Limit
-}
-
-// SetUUID sets the value of UUID.
-func (s *GetInstanceLogsRequest) SetUUID(val OptString) {
-	s.UUID = val
-}
-
-// SetName sets the value of Name.
-func (s *GetInstanceLogsRequest) SetName(val OptString) {
-	s.Name = val
-}
-
-// SetOffset sets the value of Offset.
-func (s *GetInstanceLogsRequest) SetOffset(val OptUint64) {
-	s.Offset = val
-}
-
-// SetLimit sets the value of Limit.
-func (s *GetInstanceLogsRequest) SetLimit(val OptInt64) {
-	s.Limit = val
 }
 
 // The response message for getting the logs of an instance given its UUID(s) or
@@ -1081,9 +2160,10 @@ func (s *GetInstanceLogsResponseAvailable) SetEnd(val OptUint64) {
 
 // Ref: #/components/schemas/GetInstanceLogsResponseData
 type GetInstanceLogsResponseData struct {
-	// The instance which this requested waited on.  Note: only one instance
-	//  can be specified in the request, so this will always contain a single
-	//  entry.
+	// The instance which this requested waited on.
+	//
+	//  Note: only one instance can be specified in the request, so this will
+	//  always contain a single entry.
 	Instances []GetInstanceLogsResponseLoggedInstance `json:"instances"`
 }
 
@@ -1230,40 +2310,6 @@ func (s *GetInstanceLogsResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
-}
-
-// The request message for getting the metrics of one or more instance(s) by
-//
-//	their UUID(s) or name(s).
-//
-// Ref: #/components/schemas/GetInstanceMetricsRequest
-type GetInstanceMetricsRequest struct {
-	// The UUID of the instance to retrieve metrics for.  Mutually exclusive
-	//  with name.
-	UUID OptString `json:"uuid"`
-	// The name of the instance to retrieve metrics for.  Mutually exclusive
-	//  with UUID.
-	Name OptString `json:"name"`
-}
-
-// GetUUID returns the value of UUID.
-func (s *GetInstanceMetricsRequest) GetUUID() OptString {
-	return s.UUID
-}
-
-// GetName returns the value of Name.
-func (s *GetInstanceMetricsRequest) GetName() OptString {
-	return s.Name
-}
-
-// SetUUID sets the value of UUID.
-func (s *GetInstanceMetricsRequest) SetUUID(val OptString) {
-	s.UUID = val
-}
-
-// SetName sets the value of Name.
-func (s *GetInstanceMetricsRequest) SetName(val OptString) {
-	s.Name = val
 }
 
 // The response message for getting the metrics of one or more instance(s)
@@ -1517,6 +2563,35 @@ func (s *GetInstanceMetricsResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// An identifier for the instance(s) to get.
+// Ref: #/components/schemas/GetInstancesRequestID
+type GetInstancesRequestID struct {
+	// The UUID of the instance to get.  Mutually exclusive with name.
+	UUID OptString `json:"uuid"`
+	// The name of the instance to get.  Mutually exclusive with UUID.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *GetInstancesRequestID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *GetInstancesRequestID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *GetInstancesRequestID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *GetInstancesRequestID) SetName(val OptString) {
+	s.Name = val
+}
+
 // The response after retrieving an instance by its name or UUID.
 // Ref: #/components/schemas/GetInstancesResponse
 type GetInstancesResponse struct {
@@ -1623,6 +2698,150 @@ func (s *GetInstancesResponseStatus) UnmarshalText(data []byte) error {
 		return nil
 	case GetInstancesResponseStatusError:
 		*s = GetInstancesResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// An identifier for the service group(s) to get.
+// Ref: #/components/schemas/GetServiceGroupsRequestID
+type GetServiceGroupsRequestID struct {
+	// The UUID of the service group to get.  Mutually exclusive with name.
+	UUID OptString `json:"uuid"`
+	// The name of the service group to get.  Mutually exclusive with UUID.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *GetServiceGroupsRequestID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *GetServiceGroupsRequestID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *GetServiceGroupsRequestID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *GetServiceGroupsRequestID) SetName(val OptString) {
+	s.Name = val
+}
+
+// The response message for getting one or more service group(s) given their
+//
+//	UUID(s) or name(s).
+//
+// Ref: #/components/schemas/GetServiceGroupsResponse
+type GetServiceGroupsResponse struct {
+	// The status of the response.
+	Status OptGetServiceGroupsResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptGetServiceGroupsResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *GetServiceGroupsResponse) GetStatus() OptGetServiceGroupsResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *GetServiceGroupsResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *GetServiceGroupsResponse) GetData() OptGetServiceGroupsResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *GetServiceGroupsResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *GetServiceGroupsResponse) SetStatus(val OptGetServiceGroupsResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *GetServiceGroupsResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *GetServiceGroupsResponse) SetData(val OptGetServiceGroupsResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *GetServiceGroupsResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/GetServiceGroupsResponseData
+type GetServiceGroupsResponseData struct {
+	// The service group(s) which were retrieved by the request.
+	ServiceGroups []ServiceGroup `json:"service_groups"`
+}
+
+// GetServiceGroups returns the value of ServiceGroups.
+func (s *GetServiceGroupsResponseData) GetServiceGroups() []ServiceGroup {
+	return s.ServiceGroups
+}
+
+// SetServiceGroups sets the value of ServiceGroups.
+func (s *GetServiceGroupsResponseData) SetServiceGroups(val []ServiceGroup) {
+	s.ServiceGroups = val
+}
+
+// The status of the response.
+type GetServiceGroupsResponseStatus string
+
+const (
+	GetServiceGroupsResponseStatusSuccess GetServiceGroupsResponseStatus = "success"
+	GetServiceGroupsResponseStatusError   GetServiceGroupsResponseStatus = "error"
+)
+
+// AllValues returns all GetServiceGroupsResponseStatus values.
+func (GetServiceGroupsResponseStatus) AllValues() []GetServiceGroupsResponseStatus {
+	return []GetServiceGroupsResponseStatus{
+		GetServiceGroupsResponseStatusSuccess,
+		GetServiceGroupsResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s GetServiceGroupsResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case GetServiceGroupsResponseStatusSuccess:
+		return []byte(s), nil
+	case GetServiceGroupsResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *GetServiceGroupsResponseStatus) UnmarshalText(data []byte) error {
+	switch GetServiceGroupsResponseStatus(data) {
+	case GetServiceGroupsResponseStatusSuccess:
+		*s = GetServiceGroupsResponseStatusSuccess
+		return nil
+	case GetServiceGroupsResponseStatusError:
+		*s = GetServiceGroupsResponseStatusError
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
@@ -2973,6 +4192,190 @@ func (o OptBool) Or(d bool) bool {
 	return d
 }
 
+// NewOptCertificate returns new OptCertificate with value set to v.
+func NewOptCertificate(v Certificate) OptCertificate {
+	return OptCertificate{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCertificate is optional Certificate.
+type OptCertificate struct {
+	Value Certificate
+	Set   bool
+}
+
+// IsSet returns true if OptCertificate was set.
+func (o OptCertificate) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCertificate) Reset() {
+	var v Certificate
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCertificate) SetTo(v Certificate) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCertificate) Get() (v Certificate, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCertificate) Or(d Certificate) Certificate {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCertificateState returns new OptCertificateState with value set to v.
+func NewOptCertificateState(v CertificateState) OptCertificateState {
+	return OptCertificateState{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCertificateState is optional CertificateState.
+type OptCertificateState struct {
+	Value CertificateState
+	Set   bool
+}
+
+// IsSet returns true if OptCertificateState was set.
+func (o OptCertificateState) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCertificateState) Reset() {
+	var v CertificateState
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCertificateState) SetTo(v CertificateState) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCertificateState) Get() (v CertificateState, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCertificateState) Or(d CertificateState) CertificateState {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateCertificateResponseData returns new OptCreateCertificateResponseData with value set to v.
+func NewOptCreateCertificateResponseData(v CreateCertificateResponseData) OptCreateCertificateResponseData {
+	return OptCreateCertificateResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateCertificateResponseData is optional CreateCertificateResponseData.
+type OptCreateCertificateResponseData struct {
+	Value CreateCertificateResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptCreateCertificateResponseData was set.
+func (o OptCreateCertificateResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateCertificateResponseData) Reset() {
+	var v CreateCertificateResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateCertificateResponseData) SetTo(v CreateCertificateResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateCertificateResponseData) Get() (v CreateCertificateResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateCertificateResponseData) Or(d CreateCertificateResponseData) CreateCertificateResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateCertificateResponseStatus returns new OptCreateCertificateResponseStatus with value set to v.
+func NewOptCreateCertificateResponseStatus(v CreateCertificateResponseStatus) OptCreateCertificateResponseStatus {
+	return OptCreateCertificateResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateCertificateResponseStatus is optional CreateCertificateResponseStatus.
+type OptCreateCertificateResponseStatus struct {
+	Value CreateCertificateResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptCreateCertificateResponseStatus was set.
+func (o OptCreateCertificateResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateCertificateResponseStatus) Reset() {
+	var v CreateCertificateResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateCertificateResponseStatus) SetTo(v CreateCertificateResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateCertificateResponseStatus) Get() (v CreateCertificateResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateCertificateResponseStatus) Or(d CreateCertificateResponseStatus) CreateCertificateResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptCreateInstanceRequestCertificate returns new OptCreateInstanceRequestCertificate with value set to v.
 func NewOptCreateInstanceRequestCertificate(v CreateInstanceRequestCertificate) OptCreateInstanceRequestCertificate {
 	return OptCreateInstanceRequestCertificate{
@@ -3249,6 +4652,98 @@ func (o OptCreateInstanceResponseStatus) Or(d CreateInstanceResponseStatus) Crea
 	return d
 }
 
+// NewOptCreateServiceGroupResponseData returns new OptCreateServiceGroupResponseData with value set to v.
+func NewOptCreateServiceGroupResponseData(v CreateServiceGroupResponseData) OptCreateServiceGroupResponseData {
+	return OptCreateServiceGroupResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateServiceGroupResponseData is optional CreateServiceGroupResponseData.
+type OptCreateServiceGroupResponseData struct {
+	Value CreateServiceGroupResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptCreateServiceGroupResponseData was set.
+func (o OptCreateServiceGroupResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateServiceGroupResponseData) Reset() {
+	var v CreateServiceGroupResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateServiceGroupResponseData) SetTo(v CreateServiceGroupResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateServiceGroupResponseData) Get() (v CreateServiceGroupResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateServiceGroupResponseData) Or(d CreateServiceGroupResponseData) CreateServiceGroupResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateServiceGroupResponseStatus returns new OptCreateServiceGroupResponseStatus with value set to v.
+func NewOptCreateServiceGroupResponseStatus(v CreateServiceGroupResponseStatus) OptCreateServiceGroupResponseStatus {
+	return OptCreateServiceGroupResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateServiceGroupResponseStatus is optional CreateServiceGroupResponseStatus.
+type OptCreateServiceGroupResponseStatus struct {
+	Value CreateServiceGroupResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptCreateServiceGroupResponseStatus was set.
+func (o OptCreateServiceGroupResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateServiceGroupResponseStatus) Reset() {
+	var v CreateServiceGroupResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateServiceGroupResponseStatus) SetTo(v CreateServiceGroupResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateServiceGroupResponseStatus) Get() (v CreateServiceGroupResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateServiceGroupResponseStatus) Or(d CreateServiceGroupResponseStatus) CreateServiceGroupResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptDateTime returns new OptDateTime with value set to v.
 func NewOptDateTime(v time.Time) OptDateTime {
 	return OptDateTime{
@@ -3289,6 +4784,144 @@ func (o OptDateTime) Get() (v time.Time, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteCertificatesResponseData returns new OptDeleteCertificatesResponseData with value set to v.
+func NewOptDeleteCertificatesResponseData(v DeleteCertificatesResponseData) OptDeleteCertificatesResponseData {
+	return OptDeleteCertificatesResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteCertificatesResponseData is optional DeleteCertificatesResponseData.
+type OptDeleteCertificatesResponseData struct {
+	Value DeleteCertificatesResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteCertificatesResponseData was set.
+func (o OptDeleteCertificatesResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteCertificatesResponseData) Reset() {
+	var v DeleteCertificatesResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteCertificatesResponseData) SetTo(v DeleteCertificatesResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteCertificatesResponseData) Get() (v DeleteCertificatesResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteCertificatesResponseData) Or(d DeleteCertificatesResponseData) DeleteCertificatesResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteCertificatesResponseDeletedCertificateStatus returns new OptDeleteCertificatesResponseDeletedCertificateStatus with value set to v.
+func NewOptDeleteCertificatesResponseDeletedCertificateStatus(v DeleteCertificatesResponseDeletedCertificateStatus) OptDeleteCertificatesResponseDeletedCertificateStatus {
+	return OptDeleteCertificatesResponseDeletedCertificateStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteCertificatesResponseDeletedCertificateStatus is optional DeleteCertificatesResponseDeletedCertificateStatus.
+type OptDeleteCertificatesResponseDeletedCertificateStatus struct {
+	Value DeleteCertificatesResponseDeletedCertificateStatus
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteCertificatesResponseDeletedCertificateStatus was set.
+func (o OptDeleteCertificatesResponseDeletedCertificateStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteCertificatesResponseDeletedCertificateStatus) Reset() {
+	var v DeleteCertificatesResponseDeletedCertificateStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteCertificatesResponseDeletedCertificateStatus) SetTo(v DeleteCertificatesResponseDeletedCertificateStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteCertificatesResponseDeletedCertificateStatus) Get() (v DeleteCertificatesResponseDeletedCertificateStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteCertificatesResponseDeletedCertificateStatus) Or(d DeleteCertificatesResponseDeletedCertificateStatus) DeleteCertificatesResponseDeletedCertificateStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteCertificatesResponseStatus returns new OptDeleteCertificatesResponseStatus with value set to v.
+func NewOptDeleteCertificatesResponseStatus(v DeleteCertificatesResponseStatus) OptDeleteCertificatesResponseStatus {
+	return OptDeleteCertificatesResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteCertificatesResponseStatus is optional DeleteCertificatesResponseStatus.
+type OptDeleteCertificatesResponseStatus struct {
+	Value DeleteCertificatesResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteCertificatesResponseStatus was set.
+func (o OptDeleteCertificatesResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteCertificatesResponseStatus) Reset() {
+	var v DeleteCertificatesResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteCertificatesResponseStatus) SetTo(v DeleteCertificatesResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteCertificatesResponseStatus) Get() (v DeleteCertificatesResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteCertificatesResponseStatus) Or(d DeleteCertificatesResponseStatus) DeleteCertificatesResponseStatus {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -3427,6 +5060,236 @@ func (o OptDeleteInstancesResponseStatus) Get() (v DeleteInstancesResponseStatus
 
 // Or returns value if set, or given parameter if does not.
 func (o OptDeleteInstancesResponseStatus) Or(d DeleteInstancesResponseStatus) DeleteInstancesResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteServiceGroupsResponseData returns new OptDeleteServiceGroupsResponseData with value set to v.
+func NewOptDeleteServiceGroupsResponseData(v DeleteServiceGroupsResponseData) OptDeleteServiceGroupsResponseData {
+	return OptDeleteServiceGroupsResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteServiceGroupsResponseData is optional DeleteServiceGroupsResponseData.
+type OptDeleteServiceGroupsResponseData struct {
+	Value DeleteServiceGroupsResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteServiceGroupsResponseData was set.
+func (o OptDeleteServiceGroupsResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteServiceGroupsResponseData) Reset() {
+	var v DeleteServiceGroupsResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteServiceGroupsResponseData) SetTo(v DeleteServiceGroupsResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteServiceGroupsResponseData) Get() (v DeleteServiceGroupsResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteServiceGroupsResponseData) Or(d DeleteServiceGroupsResponseData) DeleteServiceGroupsResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteServiceGroupsResponseDeletedServiceGroupStatus returns new OptDeleteServiceGroupsResponseDeletedServiceGroupStatus with value set to v.
+func NewOptDeleteServiceGroupsResponseDeletedServiceGroupStatus(v DeleteServiceGroupsResponseDeletedServiceGroupStatus) OptDeleteServiceGroupsResponseDeletedServiceGroupStatus {
+	return OptDeleteServiceGroupsResponseDeletedServiceGroupStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteServiceGroupsResponseDeletedServiceGroupStatus is optional DeleteServiceGroupsResponseDeletedServiceGroupStatus.
+type OptDeleteServiceGroupsResponseDeletedServiceGroupStatus struct {
+	Value DeleteServiceGroupsResponseDeletedServiceGroupStatus
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteServiceGroupsResponseDeletedServiceGroupStatus was set.
+func (o OptDeleteServiceGroupsResponseDeletedServiceGroupStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteServiceGroupsResponseDeletedServiceGroupStatus) Reset() {
+	var v DeleteServiceGroupsResponseDeletedServiceGroupStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteServiceGroupsResponseDeletedServiceGroupStatus) SetTo(v DeleteServiceGroupsResponseDeletedServiceGroupStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteServiceGroupsResponseDeletedServiceGroupStatus) Get() (v DeleteServiceGroupsResponseDeletedServiceGroupStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteServiceGroupsResponseDeletedServiceGroupStatus) Or(d DeleteServiceGroupsResponseDeletedServiceGroupStatus) DeleteServiceGroupsResponseDeletedServiceGroupStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteServiceGroupsResponseStatus returns new OptDeleteServiceGroupsResponseStatus with value set to v.
+func NewOptDeleteServiceGroupsResponseStatus(v DeleteServiceGroupsResponseStatus) OptDeleteServiceGroupsResponseStatus {
+	return OptDeleteServiceGroupsResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteServiceGroupsResponseStatus is optional DeleteServiceGroupsResponseStatus.
+type OptDeleteServiceGroupsResponseStatus struct {
+	Value DeleteServiceGroupsResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteServiceGroupsResponseStatus was set.
+func (o OptDeleteServiceGroupsResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteServiceGroupsResponseStatus) Reset() {
+	var v DeleteServiceGroupsResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteServiceGroupsResponseStatus) SetTo(v DeleteServiceGroupsResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteServiceGroupsResponseStatus) Get() (v DeleteServiceGroupsResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteServiceGroupsResponseStatus) Or(d DeleteServiceGroupsResponseStatus) DeleteServiceGroupsResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetCertificatesResponseData returns new OptGetCertificatesResponseData with value set to v.
+func NewOptGetCertificatesResponseData(v GetCertificatesResponseData) OptGetCertificatesResponseData {
+	return OptGetCertificatesResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetCertificatesResponseData is optional GetCertificatesResponseData.
+type OptGetCertificatesResponseData struct {
+	Value GetCertificatesResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptGetCertificatesResponseData was set.
+func (o OptGetCertificatesResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetCertificatesResponseData) Reset() {
+	var v GetCertificatesResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetCertificatesResponseData) SetTo(v GetCertificatesResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetCertificatesResponseData) Get() (v GetCertificatesResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetCertificatesResponseData) Or(d GetCertificatesResponseData) GetCertificatesResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetCertificatesResponseStatus returns new OptGetCertificatesResponseStatus with value set to v.
+func NewOptGetCertificatesResponseStatus(v GetCertificatesResponseStatus) OptGetCertificatesResponseStatus {
+	return OptGetCertificatesResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetCertificatesResponseStatus is optional GetCertificatesResponseStatus.
+type OptGetCertificatesResponseStatus struct {
+	Value GetCertificatesResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptGetCertificatesResponseStatus was set.
+func (o OptGetCertificatesResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetCertificatesResponseStatus) Reset() {
+	var v GetCertificatesResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetCertificatesResponseStatus) SetTo(v GetCertificatesResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetCertificatesResponseStatus) Get() (v GetCertificatesResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetCertificatesResponseStatus) Or(d GetCertificatesResponseStatus) GetCertificatesResponseStatus {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -3841,6 +5704,98 @@ func (o OptGetInstancesResponseStatus) Get() (v GetInstancesResponseStatus, ok b
 
 // Or returns value if set, or given parameter if does not.
 func (o OptGetInstancesResponseStatus) Or(d GetInstancesResponseStatus) GetInstancesResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetServiceGroupsResponseData returns new OptGetServiceGroupsResponseData with value set to v.
+func NewOptGetServiceGroupsResponseData(v GetServiceGroupsResponseData) OptGetServiceGroupsResponseData {
+	return OptGetServiceGroupsResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetServiceGroupsResponseData is optional GetServiceGroupsResponseData.
+type OptGetServiceGroupsResponseData struct {
+	Value GetServiceGroupsResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptGetServiceGroupsResponseData was set.
+func (o OptGetServiceGroupsResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetServiceGroupsResponseData) Reset() {
+	var v GetServiceGroupsResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetServiceGroupsResponseData) SetTo(v GetServiceGroupsResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetServiceGroupsResponseData) Get() (v GetServiceGroupsResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetServiceGroupsResponseData) Or(d GetServiceGroupsResponseData) GetServiceGroupsResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetServiceGroupsResponseStatus returns new OptGetServiceGroupsResponseStatus with value set to v.
+func NewOptGetServiceGroupsResponseStatus(v GetServiceGroupsResponseStatus) OptGetServiceGroupsResponseStatus {
+	return OptGetServiceGroupsResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetServiceGroupsResponseStatus is optional GetServiceGroupsResponseStatus.
+type OptGetServiceGroupsResponseStatus struct {
+	Value GetServiceGroupsResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptGetServiceGroupsResponseStatus was set.
+func (o OptGetServiceGroupsResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetServiceGroupsResponseStatus) Reset() {
+	var v GetServiceGroupsResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetServiceGroupsResponseStatus) SetTo(v GetServiceGroupsResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetServiceGroupsResponseStatus) Get() (v GetServiceGroupsResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetServiceGroupsResponseStatus) Or(d GetServiceGroupsResponseStatus) GetServiceGroupsResponseStatus {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -4997,38 +6952,38 @@ func (o OptWaitInstanceResponseWaitedInstanceState) Or(d WaitInstanceResponseWai
 	return d
 }
 
-// NewOptWaitInstancesRequestState returns new OptWaitInstancesRequestState with value set to v.
-func NewOptWaitInstancesRequestState(v WaitInstancesRequestState) OptWaitInstancesRequestState {
-	return OptWaitInstancesRequestState{
+// NewOptWaitInstancesState returns new OptWaitInstancesState with value set to v.
+func NewOptWaitInstancesState(v WaitInstancesState) OptWaitInstancesState {
+	return OptWaitInstancesState{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptWaitInstancesRequestState is optional WaitInstancesRequestState.
-type OptWaitInstancesRequestState struct {
-	Value WaitInstancesRequestState
+// OptWaitInstancesState is optional WaitInstancesState.
+type OptWaitInstancesState struct {
+	Value WaitInstancesState
 	Set   bool
 }
 
-// IsSet returns true if OptWaitInstancesRequestState was set.
-func (o OptWaitInstancesRequestState) IsSet() bool { return o.Set }
+// IsSet returns true if OptWaitInstancesState was set.
+func (o OptWaitInstancesState) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptWaitInstancesRequestState) Reset() {
-	var v WaitInstancesRequestState
+func (o *OptWaitInstancesState) Reset() {
+	var v WaitInstancesState
 	o.Value = v
 	o.Set = false
 }
 
 // SetTo sets value to v.
-func (o *OptWaitInstancesRequestState) SetTo(v WaitInstancesRequestState) {
+func (o *OptWaitInstancesState) SetTo(v WaitInstancesState) {
 	o.Set = true
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptWaitInstancesRequestState) Get() (v WaitInstancesRequestState, ok bool) {
+func (o OptWaitInstancesState) Get() (v WaitInstancesState, ok bool) {
 	if !o.Set {
 		return v, false
 	}
@@ -5036,11 +6991,326 @@ func (o OptWaitInstancesRequestState) Get() (v WaitInstancesRequestState, ok boo
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptWaitInstancesRequestState) Or(d WaitInstancesRequestState) WaitInstancesRequestState {
+func (o OptWaitInstancesState) Or(d WaitInstancesState) WaitInstancesState {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
+}
+
+// A service connects a public-facing port to an internal destination port on
+//
+//	which an application instance listens on.  Additional handlers can be defined
+//	for each published port in order to define how the service will handle
+//	incoming connections and forward traffic from the Internet to your
+//	application.  For example, a service can be configured to terminate TLS
+//	connections, redirect HTTP traffic, or enable HTTP mode for load balancing.
+//
+// Ref: #/components/schemas/Service
+type Service struct {
+	// This is the public-facing port that the service will be accessible from
+	//  on the Internet.
+	Port OptUint32 `json:"port"`
+	// The port number that the instance is listening on.  This is the internal
+	//  port which Unikraft Cloud will forward traffic to.
+	DestinationPort OptString `json:"destination_port"`
+	// Connection handlers to use for the service.  Handlers define how the
+	//  service will handle incoming connections and forward traffic from the
+	//  Internet to your application.  For example, a service can be configured
+	//  to terminate TLS connections, redirect HTTP traffic, or enable HTTP mode
+	//  for load balancing.  You configure the handlers for every published
+	//  service port individually.
+	Handlers []ServiceHandlersItem `json:"handlers"`
+}
+
+// GetPort returns the value of Port.
+func (s *Service) GetPort() OptUint32 {
+	return s.Port
+}
+
+// GetDestinationPort returns the value of DestinationPort.
+func (s *Service) GetDestinationPort() OptString {
+	return s.DestinationPort
+}
+
+// GetHandlers returns the value of Handlers.
+func (s *Service) GetHandlers() []ServiceHandlersItem {
+	return s.Handlers
+}
+
+// SetPort sets the value of Port.
+func (s *Service) SetPort(val OptUint32) {
+	s.Port = val
+}
+
+// SetDestinationPort sets the value of DestinationPort.
+func (s *Service) SetDestinationPort(val OptString) {
+	s.DestinationPort = val
+}
+
+// SetHandlers sets the value of Handlers.
+func (s *Service) SetHandlers(val []ServiceHandlersItem) {
+	s.Handlers = val
+}
+
+// A service group on Unikraft Cloud is used to describe how your application
+//
+//	exposes its functionality to the outside world.  Once defined, assigning an
+//	instance to the service will make it accessible from the Internet.
+//
+//	An application, running as an instance, may expose one or more ports, e.g. it
+//	listens on port 80 because your application exposes a HTTP web service. This,
+//	along with a set of additional metadata defines how the "service" is
+//	configured and accessed.  For example, a service may be configured to use
+//	TLS, or be bound to a specific domain name.
+//
+//	When an instance is assigned to a service group, it immediately becomes
+//	accessible over the Internet on the exposed public port, using the set DNS
+//	name, and is routed to the set destination port.
+//
+//	Note: If you do not specify a DNS name when you create a service and you
+//	indicate that the application exposes some ports, Unikraft Cloud will
+//	generates a random DNS name for you.  Unikraft Cloud also supports custom
+//	domains like www.example.com and wildcard domains like *.example.com.
+//
+// Ref: #/components/schemas/ServiceGroup
+type ServiceGroup struct {
+	// The UUID of the service group.
+	//
+	//  This is a unique identifier for the service group that is generated when
+	//  the service group is created.  The UUID is used to reference the service in
+	//  API calls and can be used to identify the service group in all API calls
+	//  that require an identifier.
+	UUID OptString `json:"uuid"`
+	// The name of the service group.
+	//
+	//  This is a human-readable name that can be used to identify the service
+	//  group. The name must be unique within the context of your account.  The
+	//  name can also be used to identify the service in API calls.
+	Name OptString `json:"name"`
+	// The time the service was created.
+	CreatedAt OptDateTime `json:"created_at"`
+	// Indicates if the service will stay remain even after the last instance
+	//  detached.  If this is set to false, the service will be deleted when the
+	//  last instance detached from it.  If this is set to true, the service will
+	//  remain and can be reused by other instances.  This is useful if you want to
+	//  keep the service configuration, e.g., the published ports, handlers, and
+	//  domains, even if there are no instances assigned to it.
+	Persistent OptBool `json:"persistent"`
+	// Indicates if the service has autoscale enabled.  See the associated
+	//  autoscale documentation for more information about how to set this up.
+	//  Autoscale policies can be set up after the service has been created.
+	Autoscale OptBool `json:"autoscale"`
+	// The soft limit is used by the Unikraft Cloud load balancer to decide when
+	//  to wake up another standby instance.  For example, if the soft limit is set
+	//  to 5 and the service consists of 2 standby instances, one of the instances
+	//  receives up to 5 concurrent requests.  The 6th parallel requests wakes up
+	//  the second instance.  If there are no more standby instances to wake up,
+	//  the number of requests assigned to each instance will exceed the soft
+	//  limit.  The load balancer makes sure that when the number of in-flight
+	//  requests goes down again, instances are put into standby as fast as
+	//  possible.
+	SoftLimit OptUint64 `json:"soft_limit"`
+	// The hard limit defines the maximum number of concurrent requests that an
+	//  instance assigned to the this service can handle.  The load balancer will
+	//  never assign more requests to a single instance.  In case there are no
+	//  other instances available, excess requests fail (i.e., they are blocked and
+	//  not queued).
+	HardLimit OptUint64 `json:"hard_limit"`
+	// List of published network ports for this service and the destination port
+	//  to which Unikraft Cloud will forward traffic to.  Additional handlers can
+	//  be defined for each published port in order to define how the service will
+	//  handle incoming connections and forward traffic from the Internet to your
+	//  application.  For example, a service can be configured to terminate TLS
+	//  connections, redirect HTTP traffic, or enable HTTP mode for load balancing.
+	Services []Service `json:"services"`
+	// List of domains associated with the service.  Domains are used to access
+	//  the service over the Internet.
+	Domains []Domain `json:"domains"`
+	// List of instances assigned to the service.
+	Instances []ServiceGroupInstance `json:"instances"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *ServiceGroup) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *ServiceGroup) GetName() OptString {
+	return s.Name
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *ServiceGroup) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetPersistent returns the value of Persistent.
+func (s *ServiceGroup) GetPersistent() OptBool {
+	return s.Persistent
+}
+
+// GetAutoscale returns the value of Autoscale.
+func (s *ServiceGroup) GetAutoscale() OptBool {
+	return s.Autoscale
+}
+
+// GetSoftLimit returns the value of SoftLimit.
+func (s *ServiceGroup) GetSoftLimit() OptUint64 {
+	return s.SoftLimit
+}
+
+// GetHardLimit returns the value of HardLimit.
+func (s *ServiceGroup) GetHardLimit() OptUint64 {
+	return s.HardLimit
+}
+
+// GetServices returns the value of Services.
+func (s *ServiceGroup) GetServices() []Service {
+	return s.Services
+}
+
+// GetDomains returns the value of Domains.
+func (s *ServiceGroup) GetDomains() []Domain {
+	return s.Domains
+}
+
+// GetInstances returns the value of Instances.
+func (s *ServiceGroup) GetInstances() []ServiceGroupInstance {
+	return s.Instances
+}
+
+// SetUUID sets the value of UUID.
+func (s *ServiceGroup) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *ServiceGroup) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *ServiceGroup) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetPersistent sets the value of Persistent.
+func (s *ServiceGroup) SetPersistent(val OptBool) {
+	s.Persistent = val
+}
+
+// SetAutoscale sets the value of Autoscale.
+func (s *ServiceGroup) SetAutoscale(val OptBool) {
+	s.Autoscale = val
+}
+
+// SetSoftLimit sets the value of SoftLimit.
+func (s *ServiceGroup) SetSoftLimit(val OptUint64) {
+	s.SoftLimit = val
+}
+
+// SetHardLimit sets the value of HardLimit.
+func (s *ServiceGroup) SetHardLimit(val OptUint64) {
+	s.HardLimit = val
+}
+
+// SetServices sets the value of Services.
+func (s *ServiceGroup) SetServices(val []Service) {
+	s.Services = val
+}
+
+// SetDomains sets the value of Domains.
+func (s *ServiceGroup) SetDomains(val []Domain) {
+	s.Domains = val
+}
+
+// SetInstances sets the value of Instances.
+func (s *ServiceGroup) SetInstances(val []ServiceGroupInstance) {
+	s.Instances = val
+}
+
+// Ref: #/components/schemas/ServiceGroupInstance
+type ServiceGroupInstance struct {
+	// The UUID of the instance.  This is a unique identifier for the instance
+	//  that is generated when the instance is created.  The UUID is used to
+	//  reference the instance in API calls and can be used to identify the
+	//  instance in all API calls that require an instance identifier.
+	UUID OptString `json:"uuid"`
+	// The name of the instance.  This is a human-readable name that can be used
+	//  to identify the instance.  The name must be unique within the context of
+	//  your account.  If no name is specified, a random name is generated for
+	//  you.  The name can also be used to identify the instance in API calls.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *ServiceGroupInstance) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *ServiceGroupInstance) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *ServiceGroupInstance) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *ServiceGroupInstance) SetName(val OptString) {
+	s.Name = val
+}
+
+type ServiceHandlersItem string
+
+const (
+	ServiceHandlersItemTLS      ServiceHandlersItem = "tls"
+	ServiceHandlersItemHTTP     ServiceHandlersItem = "http"
+	ServiceHandlersItemRedirect ServiceHandlersItem = "redirect"
+)
+
+// AllValues returns all ServiceHandlersItem values.
+func (ServiceHandlersItem) AllValues() []ServiceHandlersItem {
+	return []ServiceHandlersItem{
+		ServiceHandlersItemTLS,
+		ServiceHandlersItemHTTP,
+		ServiceHandlersItemRedirect,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ServiceHandlersItem) MarshalText() ([]byte, error) {
+	switch s {
+	case ServiceHandlersItemTLS:
+		return []byte(s), nil
+	case ServiceHandlersItemHTTP:
+		return []byte(s), nil
+	case ServiceHandlersItemRedirect:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ServiceHandlersItem) UnmarshalText(data []byte) error {
+	switch ServiceHandlersItem(data) {
+	case ServiceHandlersItemTLS:
+		*s = ServiceHandlersItemTLS
+		return nil
+	case ServiceHandlersItemHTTP:
+		*s = ServiceHandlersItemHTTP
+		return nil
+	case ServiceHandlersItemRedirect:
+		*s = ServiceHandlersItemRedirect
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // The response message for starting one or more instance(s) given their UUID(s)
@@ -5964,59 +8234,12 @@ func (s *WaitInstanceResponseWaitedInstanceState) UnmarshalText(data []byte) err
 	}
 }
 
-// The request message for waiting for one or more instance(s) to reach a
-//
-//	certain state by their UUID(s) or name(s).
-//
-// Ref: #/components/schemas/WaitInstancesRequest
-type WaitInstancesRequest struct {
-	// The list of IDs of the instance to stop.
-	Ids []WaitInstancesRequestID `json:"ids"`
-	// The desired state to wait for.  Default is `running`.
-	State OptWaitInstancesRequestState `json:"state"`
-	// Timeout in milliseconds to wait for the instance to reach the desired
-	//  state.  If the timeout is reached, the request will fail with an error.
-	//  A value of -1 means to wait indefinitely until the instance reaches the
-	//  desired state.
-	TimeoutMs OptInt64 `json:"timeout_ms"`
-}
-
-// GetIds returns the value of Ids.
-func (s *WaitInstancesRequest) GetIds() []WaitInstancesRequestID {
-	return s.Ids
-}
-
-// GetState returns the value of State.
-func (s *WaitInstancesRequest) GetState() OptWaitInstancesRequestState {
-	return s.State
-}
-
-// GetTimeoutMs returns the value of TimeoutMs.
-func (s *WaitInstancesRequest) GetTimeoutMs() OptInt64 {
-	return s.TimeoutMs
-}
-
-// SetIds sets the value of Ids.
-func (s *WaitInstancesRequest) SetIds(val []WaitInstancesRequestID) {
-	s.Ids = val
-}
-
-// SetState sets the value of State.
-func (s *WaitInstancesRequest) SetState(val OptWaitInstancesRequestState) {
-	s.State = val
-}
-
-// SetTimeoutMs sets the value of TimeoutMs.
-func (s *WaitInstancesRequest) SetTimeoutMs(val OptInt64) {
-	s.TimeoutMs = val
-}
-
-// An identifier for the instance(s) to start.
+// An identifier for the instance(s) to wait for.
 // Ref: #/components/schemas/WaitInstancesRequestID
 type WaitInstancesRequestID struct {
-	// The UUID of the instance to stop.  Mutually exclusive with name.
+	// The UUID of the instance to wait for.  Mutually exclusive with name.
 	UUID OptString `json:"uuid"`
-	// The name of the instance to stop.  Mutually exclusive with UUID.
+	// The name of the instance to wait for.  Mutually exclusive with UUID.
 	Name OptString `json:"name"`
 }
 
@@ -6040,44 +8263,43 @@ func (s *WaitInstancesRequestID) SetName(val OptString) {
 	s.Name = val
 }
 
-// The desired state to wait for.  Default is `running`.
-type WaitInstancesRequestState string
+type WaitInstancesState string
 
 const (
-	WaitInstancesRequestStateStopped  WaitInstancesRequestState = "stopped"
-	WaitInstancesRequestStateStarting WaitInstancesRequestState = "starting"
-	WaitInstancesRequestStateRunning  WaitInstancesRequestState = "running"
-	WaitInstancesRequestStateDraining WaitInstancesRequestState = "draining"
-	WaitInstancesRequestStateStopping WaitInstancesRequestState = "stopping"
-	WaitInstancesRequestStateStandby  WaitInstancesRequestState = "standby"
+	WaitInstancesStateStopped  WaitInstancesState = "stopped"
+	WaitInstancesStateStarting WaitInstancesState = "starting"
+	WaitInstancesStateRunning  WaitInstancesState = "running"
+	WaitInstancesStateDraining WaitInstancesState = "draining"
+	WaitInstancesStateStopping WaitInstancesState = "stopping"
+	WaitInstancesStateStandby  WaitInstancesState = "standby"
 )
 
-// AllValues returns all WaitInstancesRequestState values.
-func (WaitInstancesRequestState) AllValues() []WaitInstancesRequestState {
-	return []WaitInstancesRequestState{
-		WaitInstancesRequestStateStopped,
-		WaitInstancesRequestStateStarting,
-		WaitInstancesRequestStateRunning,
-		WaitInstancesRequestStateDraining,
-		WaitInstancesRequestStateStopping,
-		WaitInstancesRequestStateStandby,
+// AllValues returns all WaitInstancesState values.
+func (WaitInstancesState) AllValues() []WaitInstancesState {
+	return []WaitInstancesState{
+		WaitInstancesStateStopped,
+		WaitInstancesStateStarting,
+		WaitInstancesStateRunning,
+		WaitInstancesStateDraining,
+		WaitInstancesStateStopping,
+		WaitInstancesStateStandby,
 	}
 }
 
 // MarshalText implements encoding.TextMarshaler.
-func (s WaitInstancesRequestState) MarshalText() ([]byte, error) {
+func (s WaitInstancesState) MarshalText() ([]byte, error) {
 	switch s {
-	case WaitInstancesRequestStateStopped:
+	case WaitInstancesStateStopped:
 		return []byte(s), nil
-	case WaitInstancesRequestStateStarting:
+	case WaitInstancesStateStarting:
 		return []byte(s), nil
-	case WaitInstancesRequestStateRunning:
+	case WaitInstancesStateRunning:
 		return []byte(s), nil
-	case WaitInstancesRequestStateDraining:
+	case WaitInstancesStateDraining:
 		return []byte(s), nil
-	case WaitInstancesRequestStateStopping:
+	case WaitInstancesStateStopping:
 		return []byte(s), nil
-	case WaitInstancesRequestStateStandby:
+	case WaitInstancesStateStandby:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -6085,25 +8307,25 @@ func (s WaitInstancesRequestState) MarshalText() ([]byte, error) {
 }
 
 // UnmarshalText implements encoding.TextUnmarshaler.
-func (s *WaitInstancesRequestState) UnmarshalText(data []byte) error {
-	switch WaitInstancesRequestState(data) {
-	case WaitInstancesRequestStateStopped:
-		*s = WaitInstancesRequestStateStopped
+func (s *WaitInstancesState) UnmarshalText(data []byte) error {
+	switch WaitInstancesState(data) {
+	case WaitInstancesStateStopped:
+		*s = WaitInstancesStateStopped
 		return nil
-	case WaitInstancesRequestStateStarting:
-		*s = WaitInstancesRequestStateStarting
+	case WaitInstancesStateStarting:
+		*s = WaitInstancesStateStarting
 		return nil
-	case WaitInstancesRequestStateRunning:
-		*s = WaitInstancesRequestStateRunning
+	case WaitInstancesStateRunning:
+		*s = WaitInstancesStateRunning
 		return nil
-	case WaitInstancesRequestStateDraining:
-		*s = WaitInstancesRequestStateDraining
+	case WaitInstancesStateDraining:
+		*s = WaitInstancesStateDraining
 		return nil
-	case WaitInstancesRequestStateStopping:
-		*s = WaitInstancesRequestStateStopping
+	case WaitInstancesStateStopping:
+		*s = WaitInstancesStateStopping
 		return nil
-	case WaitInstancesRequestStateStandby:
-		*s = WaitInstancesRequestStateStandby
+	case WaitInstancesStateStandby:
+		*s = WaitInstancesStateStandby
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)

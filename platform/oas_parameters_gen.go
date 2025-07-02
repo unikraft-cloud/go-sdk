@@ -2,10 +2,38 @@
 
 package platform
 
+// DeleteCertificateByUUIDParams is parameters of DeleteCertificateByUUID operation.
+type DeleteCertificateByUUIDParams struct {
+	//
+	UUID string
+}
+
 // DeleteInstanceByUUIDParams is parameters of DeleteInstanceByUUID operation.
 type DeleteInstanceByUUIDParams struct {
 	//
 	UUID string
+}
+
+// DeleteServiceGroupByUUIDParams is parameters of DeleteServiceGroupByUUID operation.
+type DeleteServiceGroupByUUIDParams struct {
+	//
+	UUID string
+}
+
+// GetCertificateByUUIDParams is parameters of GetCertificateByUUID operation.
+type GetCertificateByUUIDParams struct {
+	//
+	UUID string
+}
+
+// GetCertificatesParams is parameters of GetCertificates operation.
+type GetCertificatesParams struct {
+	// Whether to include details about the certificate in the response.  By
+	//  default this is set to true, meaning that all information about the
+	//  certificate will be included in the response.  If set to false, only the
+	//  basic information about the certificate will be included, such as its name
+	//  and UUID.
+	Details OptBool
 }
 
 // GetImageByDigestParams is parameters of GetImageByDigest operation.
@@ -26,6 +54,21 @@ type GetInstanceByUUIDParams struct {
 	UUID string
 }
 
+// GetInstanceLogsParams is parameters of GetInstanceLogs operation.
+type GetInstanceLogsParams struct {
+	// The UUID of the instance to retrieve logs for.  Mutually exclusive with
+	//  name.
+	UUID OptString
+	// The name of the instance to retrieve logs for.  Mutually exclusive with
+	//  UUID.
+	Name OptString
+	// The byte offset of the log output to receive.  A negative sign makes the
+	//  offset relative to the end of the log.
+	Offset OptUint64
+	// The amount of bytes to return at most.
+	Limit OptInt64
+}
+
 // GetInstanceLogsByUUIDParams is parameters of GetInstanceLogsByUUID operation.
 type GetInstanceLogsByUUIDParams struct {
 	//
@@ -37,6 +80,16 @@ type GetInstanceLogsByUUIDParams struct {
 	Limit OptInt64
 }
 
+// GetInstanceMetricsParams is parameters of GetInstanceMetrics operation.
+type GetInstanceMetricsParams struct {
+	// The UUID of the instance to retrieve metrics for.  Mutually exclusive
+	//  with name.
+	UUID OptString
+	// The name of the instance to retrieve metrics for.  Mutually exclusive
+	//  with UUID.
+	Name OptString
+}
+
 // GetInstanceMetricsByUUIDParams is parameters of GetInstanceMetricsByUUID operation.
 type GetInstanceMetricsByUUIDParams struct {
 	//
@@ -45,10 +98,6 @@ type GetInstanceMetricsByUUIDParams struct {
 
 // GetInstancesParams is parameters of GetInstances operation.
 type GetInstancesParams struct {
-	// The UUID of the instance to retrieve.  Mutually exclusive with name.
-	UUID OptString
-	// The name of the instance to retrieve.  Mutually exclusive with UUID.
-	Name OptString
 	// Whether to include details about the instance in the response.  By default
 	//  this is set to true, meaning that all information about the instance will
 	//  be included in the response.  If set to false, only the basic information
@@ -58,6 +107,22 @@ type GetInstancesParams struct {
 	//  this is set to false, meaning that no metrics will be included in the
 	//  response.
 	Metrics OptBool
+}
+
+// GetServiceGroupByUUIDParams is parameters of GetServiceGroupByUUID operation.
+type GetServiceGroupByUUIDParams struct {
+	//
+	UUID string
+}
+
+// GetServiceGroupsParams is parameters of GetServiceGroups operation.
+type GetServiceGroupsParams struct {
+	// Whether to include details about the service group in the response.  By
+	//  default this is set to true, meaning that all information about the service
+	//  group will be included in the response.  If set to false, only the basic
+	//  information about the service group will be included, such as its name and
+	//  UUID.
+	Details OptBool
 }
 
 // StartInstanceByUUIDParams is parameters of StartInstanceByUUID operation.
@@ -102,6 +167,17 @@ type WaitInstanceByUUIDParams struct {
 	UUID string
 	// The desired state to wait for.  Default is `running`.
 	State OptWaitInstanceByUUIDState
+	// Timeout in milliseconds to wait for the instance to reach the desired
+	//  state.  If the timeout is reached, the request will fail with an error.
+	//  A value of -1 means to wait indefinitely until the instance reaches the
+	//  desired state.
+	TimeoutMs OptInt64
+}
+
+// WaitInstancesParams is parameters of WaitInstances operation.
+type WaitInstancesParams struct {
+	// The desired state to wait for.  Default is `running`.
+	State OptWaitInstancesState
 	// Timeout in milliseconds to wait for the instance to reach the desired
 	//  state.  If the timeout is reached, the request will fail with an error.
 	//  A value of -1 means to wait indefinitely until the instance reaches the

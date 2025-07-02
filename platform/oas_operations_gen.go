@@ -6,8 +6,16 @@ package platform
 type OperationName = string
 
 const (
+	CreateCertificateOperation        OperationName = "CreateCertificate"
 	CreateInstanceOperation           OperationName = "CreateInstance"
+	CreateServiceGroupOperation       OperationName = "CreateServiceGroup"
+	DeleteCertificateByUUIDOperation  OperationName = "DeleteCertificateByUUID"
+	DeleteCertificatesOperation       OperationName = "DeleteCertificates"
 	DeleteInstanceByUUIDOperation     OperationName = "DeleteInstanceByUUID"
+	DeleteServiceGroupByUUIDOperation OperationName = "DeleteServiceGroupByUUID"
+	DeleteServiceGroupsOperation      OperationName = "DeleteServiceGroups"
+	GetCertificateByUUIDOperation     OperationName = "GetCertificateByUUID"
+	GetCertificatesOperation          OperationName = "GetCertificates"
 	GetImageByDigestOperation         OperationName = "GetImageByDigest"
 	GetImageByTagOperation            OperationName = "GetImageByTag"
 	GetInstanceByUUIDOperation        OperationName = "GetInstanceByUUID"
@@ -16,6 +24,8 @@ const (
 	GetInstanceMetricsOperation       OperationName = "GetInstanceMetrics"
 	GetInstanceMetricsByUUIDOperation OperationName = "GetInstanceMetricsByUUID"
 	GetInstancesOperation             OperationName = "GetInstances"
+	GetServiceGroupByUUIDOperation    OperationName = "GetServiceGroupByUUID"
+	GetServiceGroupsOperation         OperationName = "GetServiceGroups"
 	StartInstanceByUUIDOperation      OperationName = "StartInstanceByUUID"
 	StopInstanceByUUIDOperation       OperationName = "StopInstanceByUUID"
 	StopInstancesOperation            OperationName = "StopInstances"
