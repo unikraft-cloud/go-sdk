@@ -90,15 +90,15 @@ func (c *Client) sendSignin(ctx context.Context, params SigninParams) (res *Sign
 
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "cli_version" parameter.
+		// Encode "hostname" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "cli_version",
+			Name:    "hostname",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.CliVersion.Get(); ok {
+			if val, ok := params.Hostname.Get(); ok {
 				return e.EncodeValue(conv.StringToString(val))
 			}
 			return nil
@@ -124,15 +124,151 @@ func (c *Client) sendSignin(ctx context.Context, params SigninParams) (res *Sign
 		}
 	}
 	{
-		// Encode "hostname" parameter.
+		// Encode "os_version" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "hostname",
+			Name:    "os_version",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.Hostname.Get(); ok {
+			if val, ok := params.OsVersion.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "container" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "container",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Container.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "distro" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "distro",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Distro.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "distro_version" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "distro_version",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.DistroVersion.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "distro_codename" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "distro_codename",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.DistroCodename.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "cli_version" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "cli_version",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.CliVersion.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "goarch" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "goarch",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Goarch.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "goos" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "goos",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Goos.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "go_version" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "go_version",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.GoVersion.Get(); ok {
 				return e.EncodeValue(conv.StringToString(val))
 			}
 			return nil

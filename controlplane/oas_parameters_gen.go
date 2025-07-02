@@ -4,11 +4,34 @@ package controlplane
 
 // SigninParams is parameters of Signin operation.
 type SigninParams struct {
+	// The hostname is the name of the machine making the request.  This is
+	//  mandatory as it consitutes a unique identifier for the machine.
+	Hostname OptString
+	// The operating system of the machine making the request.
+	Os OptString
+	// The version of the operating system of the machine making the request, if
+	//  available.
+	//
+	//  For Android, it's like "10", "11", "12", etc.  For iOS and macOS it's like
+	//  "15.6.1" or "12.4.0".  For Windows it's like "10.0.19044.1889". For FreeBSD
+	//  it's like "12.3-STABLE".  For Linux, this is simply the kernel version on
+	//  Linux, like "5.10.0-17-amd64".
+	OsVersion OptString
+	// A best-effort whether the client is running in a container.
+	Container OptBool
+	// The OS distribution, if known.  E.g. "debian", "ubuntu", "nixos", ...
+	Distro OptString
+	// The OS distribution version if known.  E.g. "20.04", ...
+	DistroVersion OptString
+	// THe OS distribution codename if known.  E.g. "jammy", "bullseye", ...
+	DistroCodename OptString
 	// The CLI version is the version of the Unikraft CLI that is making the
 	//  request.
 	CliVersion OptString
-	// The operating system of the machine making the request.
-	Os OptString
-	// The hostname is the name of the machine making the request.
-	Hostname OptString
+	// If available, the GOARCH value (of the built binary).
+	Goarch OptString
+	// If available, the GOOS value (of the built binary)
+	Goos OptString
+	// if available, the Go version binary was built with.
+	GoVersion OptString
 }

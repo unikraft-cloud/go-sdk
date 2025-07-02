@@ -5,6 +5,7 @@ package controlplane
 import (
 	"fmt"
 
+	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
 )
 
@@ -51,6 +52,52 @@ func (s *GoogleProtobufAnyAdditional) init() GoogleProtobufAnyAdditional {
 	return m
 }
 
+// NewOptBool returns new OptBool with value set to v.
+func NewOptBool(v bool) OptBool {
+	return OptBool{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptBool is optional bool.
+type OptBool struct {
+	Value bool
+	Set   bool
+}
+
+// IsSet returns true if OptBool was set.
+func (o OptBool) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptBool) Reset() {
+	var v bool
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptBool) SetTo(v bool) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptBool) Get() (v bool, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptBool) Or(d bool) bool {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptInt32 returns new OptInt32 with value set to v.
 func NewOptInt32(v int32) OptInt32 {
 	return OptInt32{
@@ -91,52 +138,6 @@ func (o OptInt32) Get() (v int32, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptInt32) Or(d int32) int32 {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptInt64 returns new OptInt64 with value set to v.
-func NewOptInt64(v int64) OptInt64 {
-	return OptInt64{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptInt64 is optional int64.
-type OptInt64 struct {
-	Value int64
-	Set   bool
-}
-
-// IsSet returns true if OptInt64 was set.
-func (o OptInt64) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptInt64) Reset() {
-	var v int64
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptInt64) SetTo(v int64) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptInt64) Get() (v int64, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptInt64) Or(d int64) int64 {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -189,6 +190,52 @@ func (o OptSigninResponseData) Or(d SigninResponseData) SigninResponseData {
 	return d
 }
 
+// NewOptSigninResponseStatus returns new OptSigninResponseStatus with value set to v.
+func NewOptSigninResponseStatus(v SigninResponseStatus) OptSigninResponseStatus {
+	return OptSigninResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSigninResponseStatus is optional SigninResponseStatus.
+type OptSigninResponseStatus struct {
+	Value SigninResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptSigninResponseStatus was set.
+func (o OptSigninResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSigninResponseStatus) Reset() {
+	var v SigninResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSigninResponseStatus) SetTo(v SigninResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSigninResponseStatus) Get() (v SigninResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSigninResponseStatus) Or(d SigninResponseStatus) SigninResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{
@@ -235,20 +282,68 @@ func (o OptString) Or(d string) string {
 	return d
 }
 
+// NewOptUint64 returns new OptUint64 with value set to v.
+func NewOptUint64(v uint64) OptUint64 {
+	return OptUint64{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUint64 is optional uint64.
+type OptUint64 struct {
+	Value uint64
+	Set   bool
+}
+
+// IsSet returns true if OptUint64 was set.
+func (o OptUint64) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUint64) Reset() {
+	var v uint64
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUint64) SetTo(v uint64) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUint64) Get() (v uint64, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUint64) Or(d uint64) uint64 {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// The response message for a sign-in request.
 // Ref: #/components/schemas/SigninResponse
 type SigninResponse struct {
-	//
-	Status OptString `json:"status"`
-	//
+	// The status of the response.
+	Status OptSigninResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
 	Message OptString `json:"message"`
-	//
+	// The response data for this request.
 	Data OptSigninResponseData `json:"data"`
-	//
-	OpTimeUs OptInt64 `json:"op_time_us"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
 }
 
 // GetStatus returns the value of Status.
-func (s *SigninResponse) GetStatus() OptString {
+func (s *SigninResponse) GetStatus() OptSigninResponseStatus {
 	return s.Status
 }
 
@@ -263,12 +358,12 @@ func (s *SigninResponse) GetData() OptSigninResponseData {
 }
 
 // GetOpTimeUs returns the value of OpTimeUs.
-func (s *SigninResponse) GetOpTimeUs() OptInt64 {
+func (s *SigninResponse) GetOpTimeUs() OptUint64 {
 	return s.OpTimeUs
 }
 
 // SetStatus sets the value of Status.
-func (s *SigninResponse) SetStatus(val OptString) {
+func (s *SigninResponse) SetStatus(val OptSigninResponseStatus) {
 	s.Status = val
 }
 
@@ -283,7 +378,7 @@ func (s *SigninResponse) SetData(val OptSigninResponseData) {
 }
 
 // SetOpTimeUs sets the value of OpTimeUs.
-func (s *SigninResponse) SetOpTimeUs(val OptInt64) {
+func (s *SigninResponse) SetOpTimeUs(val OptUint64) {
 	s.OpTimeUs = val
 }
 
@@ -301,6 +396,48 @@ func (s *SigninResponseData) GetAuthorizationURL() OptString {
 // SetAuthorizationURL sets the value of AuthorizationURL.
 func (s *SigninResponseData) SetAuthorizationURL(val OptString) {
 	s.AuthorizationURL = val
+}
+
+// The status of the response.
+type SigninResponseStatus string
+
+const (
+	SigninResponseStatusSuccess SigninResponseStatus = "success"
+	SigninResponseStatusError   SigninResponseStatus = "error"
+)
+
+// AllValues returns all SigninResponseStatus values.
+func (SigninResponseStatus) AllValues() []SigninResponseStatus {
+	return []SigninResponseStatus{
+		SigninResponseStatusSuccess,
+		SigninResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SigninResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case SigninResponseStatusSuccess:
+		return []byte(s), nil
+	case SigninResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SigninResponseStatus) UnmarshalText(data []byte) error {
+	switch SigninResponseStatus(data) {
+	case SigninResponseStatusSuccess:
+		*s = SigninResponseStatusSuccess
+		return nil
+	case SigninResponseStatusError:
+		*s = SigninResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).
