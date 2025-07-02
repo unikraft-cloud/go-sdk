@@ -38,6 +38,11 @@ jobs:
       run: |
         make generate
 
+    - name: Show diff
+      shell: bash
+      run: |
+        git diff
+
     - name: Commit and push
       id: commit
       run: |
