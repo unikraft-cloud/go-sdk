@@ -56,6 +56,6 @@ jobs:
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GH_PAT }}
-        base: ${{ steps.commit.outputs.branch }}
+        base: ${{ inputs.channel }}
         title: "sync: Update Go SDK from OpenAPI spec"
-        branch: ${{ inputs.channel }}
+        branch: ${{ steps.commit.outputs.branch }}
