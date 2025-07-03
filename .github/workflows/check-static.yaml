@@ -63,12 +63,12 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           version: latest
-          args: --no-config --timeout=5m --disable-all --enable=gofumpt --out-format=colored-line-number -- $(go work edit -json | jq -c -r '[.Use[].DiskPath] | map_values(. + "/...")[]')
+          args: --no-config --timeout=5m --disable-all --enable=gofumpt --out-format=colored-line-number
           skip-cache: true
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
           version: latest
-          args: --out-format=colored-line-number -- $(go work edit -json | jq -c -r '[.Use[].DiskPath] | map_values(. + "/...")[]')
+          args: --out-format=colored-line-number
           skip-cache: true
