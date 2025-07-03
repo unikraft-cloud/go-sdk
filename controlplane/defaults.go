@@ -5,7 +5,5 @@
 
 package controlplane
 
-const (
-	// The default control plane API endpoint.
-	DefaultControlPlane = "https://controlplane.unikraft.cloud"
-)
+// The default control plane API endpoint.
+var DefaultControlPlane = "https://controlplane.unikraft.cloud"
