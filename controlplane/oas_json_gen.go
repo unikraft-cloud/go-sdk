@@ -147,6 +147,41 @@ func (s *GoogleProtobufAnyAdditional) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes bool as json.
+func (o OptBool) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Bool(bool(o.Value))
+}
+
+// Decode decodes bool from json.
+func (o *OptBool) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptBool to nil")
+	}
+	o.Set = true
+	v, err := d.Bool()
+	if err != nil {
+		return err
+	}
+	o.Value = bool(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptBool) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptBool) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes int32 as json.
 func (o OptInt32) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -314,6 +349,239 @@ func (s OptUint64) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptUint64) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SigninRequest) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SigninRequest) encodeFields(e *jx.Encoder) {
+	{
+		if s.Hostname.Set {
+			e.FieldStart("hostname")
+			s.Hostname.Encode(e)
+		}
+	}
+	{
+		if s.Os.Set {
+			e.FieldStart("os")
+			s.Os.Encode(e)
+		}
+	}
+	{
+		if s.OsVersion.Set {
+			e.FieldStart("os_version")
+			s.OsVersion.Encode(e)
+		}
+	}
+	{
+		if s.Container.Set {
+			e.FieldStart("container")
+			s.Container.Encode(e)
+		}
+	}
+	{
+		if s.Distro.Set {
+			e.FieldStart("distro")
+			s.Distro.Encode(e)
+		}
+	}
+	{
+		if s.DistroVersion.Set {
+			e.FieldStart("distro_version")
+			s.DistroVersion.Encode(e)
+		}
+	}
+	{
+		if s.DistroCodename.Set {
+			e.FieldStart("distro_codename")
+			s.DistroCodename.Encode(e)
+		}
+	}
+	{
+		if s.CliVersion.Set {
+			e.FieldStart("cli_version")
+			s.CliVersion.Encode(e)
+		}
+	}
+	{
+		if s.Goarch.Set {
+			e.FieldStart("goarch")
+			s.Goarch.Encode(e)
+		}
+	}
+	{
+		if s.Goos.Set {
+			e.FieldStart("goos")
+			s.Goos.Encode(e)
+		}
+	}
+	{
+		if s.GoVersion.Set {
+			e.FieldStart("go_version")
+			s.GoVersion.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSigninRequest = [11]string{
+	0:  "hostname",
+	1:  "os",
+	2:  "os_version",
+	3:  "container",
+	4:  "distro",
+	5:  "distro_version",
+	6:  "distro_codename",
+	7:  "cli_version",
+	8:  "goarch",
+	9:  "goos",
+	10: "go_version",
+}
+
+// Decode decodes SigninRequest from json.
+func (s *SigninRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SigninRequest to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "hostname":
+			if err := func() error {
+				s.Hostname.Reset()
+				if err := s.Hostname.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"hostname\"")
+			}
+		case "os":
+			if err := func() error {
+				s.Os.Reset()
+				if err := s.Os.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"os\"")
+			}
+		case "os_version":
+			if err := func() error {
+				s.OsVersion.Reset()
+				if err := s.OsVersion.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"os_version\"")
+			}
+		case "container":
+			if err := func() error {
+				s.Container.Reset()
+				if err := s.Container.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"container\"")
+			}
+		case "distro":
+			if err := func() error {
+				s.Distro.Reset()
+				if err := s.Distro.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"distro\"")
+			}
+		case "distro_version":
+			if err := func() error {
+				s.DistroVersion.Reset()
+				if err := s.DistroVersion.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"distro_version\"")
+			}
+		case "distro_codename":
+			if err := func() error {
+				s.DistroCodename.Reset()
+				if err := s.DistroCodename.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"distro_codename\"")
+			}
+		case "cli_version":
+			if err := func() error {
+				s.CliVersion.Reset()
+				if err := s.CliVersion.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"cli_version\"")
+			}
+		case "goarch":
+			if err := func() error {
+				s.Goarch.Reset()
+				if err := s.Goarch.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"goarch\"")
+			}
+		case "goos":
+			if err := func() error {
+				s.Goos.Reset()
+				if err := s.Goos.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"goos\"")
+			}
+		case "go_version":
+			if err := func() error {
+				s.GoVersion.Reset()
+				if err := s.GoVersion.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"go_version\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SigninRequest")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SigninRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SigninRequest) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

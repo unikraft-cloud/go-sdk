@@ -9,7 +9,6 @@ import (
 
 	"github.com/go-faster/errors"
 
-	"github.com/ogen-go/ogen/conv"
 	ht "github.com/ogen-go/ogen/http"
 	"github.com/ogen-go/ogen/uri"
 )
@@ -27,7 +26,7 @@ type Invoker interface {
 	//  The user should be redirected to this URL to complete the sign-in.
 	//
 	// POST /v1/auth/signin
-	Signin(ctx context.Context, params SigninParams) (*SigninResponse, error)
+	Signin(ctx context.Context, request *SigninRequest) (*SigninResponse, error)
 }
 
 // Client implements OAS client.
@@ -76,211 +75,24 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 //	The user should be redirected to this URL to complete the sign-in.
 //
 // POST /v1/auth/signin
-func (c *Client) Signin(ctx context.Context, params SigninParams) (*SigninResponse, error) {
-	res, err := c.sendSignin(ctx, params)
+func (c *Client) Signin(ctx context.Context, request *SigninRequest) (*SigninResponse, error) {
+	res, err := c.sendSignin(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendSignin(ctx context.Context, params SigninParams) (res *SigninResponse, err error) {
+func (c *Client) sendSignin(ctx context.Context, request *SigninRequest) (res *SigninResponse, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
 	pathParts[0] = "/v1/auth/signin"
 	uri.AddPathParts(u, pathParts[:]...)
 
-	q := uri.NewQueryEncoder()
-	{
-		// Encode "hostname" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "hostname",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.Hostname.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "os" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "os",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.Os.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "os_version" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "os_version",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.OsVersion.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "container" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "container",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.Container.Get(); ok {
-				return e.EncodeValue(conv.BoolToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "distro" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "distro",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.Distro.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "distro_version" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "distro_version",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.DistroVersion.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "distro_codename" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "distro_codename",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.DistroCodename.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "cli_version" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "cli_version",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.CliVersion.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "goarch" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "goarch",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.Goarch.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "goos" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "goos",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.Goos.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "go_version" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "go_version",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.GoVersion.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	u.RawQuery = q.Values().Encode()
-
 	r, err := ht.NewRequest(ctx, "POST", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeSigninRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
 	}
 
 	resp, err := c.cfg.Client.Do(r)

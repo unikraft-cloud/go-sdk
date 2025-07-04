@@ -328,6 +328,151 @@ func (o OptUint64) Or(d uint64) uint64 {
 	return d
 }
 
+// The request message for a sign-in request.
+// Ref: #/components/schemas/SigninRequest
+type SigninRequest struct {
+	// The hostname is the name of the machine making the request.  This is
+	//  mandatory as it consitutes a unique identifier for the machine.
+	Hostname OptString `json:"hostname"`
+	// The operating system of the machine making the request.
+	Os OptString `json:"os"`
+	// The version of the operating system of the machine making the request, if
+	//  available.
+	//
+	//  For Android, it's like "10", "11", "12", etc.  For iOS and macOS it's like
+	//  "15.6.1" or "12.4.0".  For Windows it's like "10.0.19044.1889". For FreeBSD
+	//  it's like "12.3-STABLE".  For Linux, this is simply the kernel version on
+	//  Linux, like "5.10.0-17-amd64".
+	OsVersion OptString `json:"os_version"`
+	// A best-effort whether the client is running in a container.
+	Container OptBool `json:"container"`
+	// The OS distribution, if known.  E.g. "debian", "ubuntu", "nixos", ...
+	Distro OptString `json:"distro"`
+	// The OS distribution version if known.  E.g. "20.04", ...
+	DistroVersion OptString `json:"distro_version"`
+	// THe OS distribution codename if known.  E.g. "jammy", "bullseye", ...
+	DistroCodename OptString `json:"distro_codename"`
+	// The CLI version is the version of the Unikraft CLI that is making the
+	//  request.
+	CliVersion OptString `json:"cli_version"`
+	// If available, the GOARCH value (of the built binary).
+	Goarch OptString `json:"goarch"`
+	// If available, the GOOS value (of the built binary)
+	Goos OptString `json:"goos"`
+	// if available, the Go version binary was built with.
+	GoVersion OptString `json:"go_version"`
+}
+
+// GetHostname returns the value of Hostname.
+func (s *SigninRequest) GetHostname() OptString {
+	return s.Hostname
+}
+
+// GetOs returns the value of Os.
+func (s *SigninRequest) GetOs() OptString {
+	return s.Os
+}
+
+// GetOsVersion returns the value of OsVersion.
+func (s *SigninRequest) GetOsVersion() OptString {
+	return s.OsVersion
+}
+
+// GetContainer returns the value of Container.
+func (s *SigninRequest) GetContainer() OptBool {
+	return s.Container
+}
+
+// GetDistro returns the value of Distro.
+func (s *SigninRequest) GetDistro() OptString {
+	return s.Distro
+}
+
+// GetDistroVersion returns the value of DistroVersion.
+func (s *SigninRequest) GetDistroVersion() OptString {
+	return s.DistroVersion
+}
+
+// GetDistroCodename returns the value of DistroCodename.
+func (s *SigninRequest) GetDistroCodename() OptString {
+	return s.DistroCodename
+}
+
+// GetCliVersion returns the value of CliVersion.
+func (s *SigninRequest) GetCliVersion() OptString {
+	return s.CliVersion
+}
+
+// GetGoarch returns the value of Goarch.
+func (s *SigninRequest) GetGoarch() OptString {
+	return s.Goarch
+}
+
+// GetGoos returns the value of Goos.
+func (s *SigninRequest) GetGoos() OptString {
+	return s.Goos
+}
+
+// GetGoVersion returns the value of GoVersion.
+func (s *SigninRequest) GetGoVersion() OptString {
+	return s.GoVersion
+}
+
+// SetHostname sets the value of Hostname.
+func (s *SigninRequest) SetHostname(val OptString) {
+	s.Hostname = val
+}
+
+// SetOs sets the value of Os.
+func (s *SigninRequest) SetOs(val OptString) {
+	s.Os = val
+}
+
+// SetOsVersion sets the value of OsVersion.
+func (s *SigninRequest) SetOsVersion(val OptString) {
+	s.OsVersion = val
+}
+
+// SetContainer sets the value of Container.
+func (s *SigninRequest) SetContainer(val OptBool) {
+	s.Container = val
+}
+
+// SetDistro sets the value of Distro.
+func (s *SigninRequest) SetDistro(val OptString) {
+	s.Distro = val
+}
+
+// SetDistroVersion sets the value of DistroVersion.
+func (s *SigninRequest) SetDistroVersion(val OptString) {
+	s.DistroVersion = val
+}
+
+// SetDistroCodename sets the value of DistroCodename.
+func (s *SigninRequest) SetDistroCodename(val OptString) {
+	s.DistroCodename = val
+}
+
+// SetCliVersion sets the value of CliVersion.
+func (s *SigninRequest) SetCliVersion(val OptString) {
+	s.CliVersion = val
+}
+
+// SetGoarch sets the value of Goarch.
+func (s *SigninRequest) SetGoarch(val OptString) {
+	s.Goarch = val
+}
+
+// SetGoos sets the value of Goos.
+func (s *SigninRequest) SetGoos(val OptString) {
+	s.Goos = val
+}
+
+// SetGoVersion sets the value of GoVersion.
+func (s *SigninRequest) SetGoVersion(val OptString) {
+	s.GoVersion = val
+}
+
 // The response message for a sign-in request.
 // Ref: #/components/schemas/SigninResponse
 type SigninResponse struct {
