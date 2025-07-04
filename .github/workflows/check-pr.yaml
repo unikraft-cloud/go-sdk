@@ -16,7 +16,7 @@ jobs:
         if: always()
         uses: taskmedia/action-conventional-commits@v1.1.20
         with:
-          types: "build|ci|docs|feat|fix|perf|refactor|style|test|revert|gomod|chore"
+          types: "build|ci|docs|feat|fix|perf|refactor|style|test|revert|gomod|chore|sync"
           token: ${{ secrets.GH_PAT }}
 
       - name: length
@@ -49,7 +49,7 @@ jobs:
         if: always()
         uses: gsactions/commit-message-checker@v2
         with:
-          pattern: '^(build|ci|docs|feat|fix|perf|refactor|style|test|revert|gomod|chore)(\([\w\-\_\d]+\))?!?: '
+          pattern: '^(build|ci|docs|feat|fix|perf|refactor|style|test|revert|gomod|chore|sync)(\([\w\-\_\d]+\))?!?: '
           error: 'The PR title must follow the conventional commits format.'
           excludeDescription: 'true'
           excludeTitle: 'false'
