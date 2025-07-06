@@ -13,6 +13,136 @@ func (s *StatusStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
 
+// The request message for checking authorization given a request ID.
+// Ref: #/components/schemas/CheckAuthorizationRequest
+type CheckAuthorizationRequest struct {
+	// The request ID is a unique identifier for the request.  This is used to
+	//  track the request in the system and should be provided by the client.
+	RequestID OptString `json:"request_id"`
+}
+
+// GetRequestID returns the value of RequestID.
+func (s *CheckAuthorizationRequest) GetRequestID() OptString {
+	return s.RequestID
+}
+
+// SetRequestID sets the value of RequestID.
+func (s *CheckAuthorizationRequest) SetRequestID(val OptString) {
+	s.RequestID = val
+}
+
+// The response message for checking authorization.
+// Ref: #/components/schemas/CheckAuthorizationResponse
+type CheckAuthorizationResponse struct {
+	// The status of the response.
+	Status OptCheckAuthorizationResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptCheckAuthorizationResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *CheckAuthorizationResponse) GetStatus() OptCheckAuthorizationResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *CheckAuthorizationResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *CheckAuthorizationResponse) GetData() OptCheckAuthorizationResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *CheckAuthorizationResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *CheckAuthorizationResponse) SetStatus(val OptCheckAuthorizationResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *CheckAuthorizationResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *CheckAuthorizationResponse) SetData(val OptCheckAuthorizationResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *CheckAuthorizationResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/CheckAuthorizationResponseData
+type CheckAuthorizationResponseData struct {
+	// The authorization token which can be used to authenticate requests.
+	Token OptString `json:"token"`
+}
+
+// GetToken returns the value of Token.
+func (s *CheckAuthorizationResponseData) GetToken() OptString {
+	return s.Token
+}
+
+// SetToken sets the value of Token.
+func (s *CheckAuthorizationResponseData) SetToken(val OptString) {
+	s.Token = val
+}
+
+// The status of the response.
+type CheckAuthorizationResponseStatus string
+
+const (
+	CheckAuthorizationResponseStatusSuccess CheckAuthorizationResponseStatus = "success"
+	CheckAuthorizationResponseStatusError   CheckAuthorizationResponseStatus = "error"
+)
+
+// AllValues returns all CheckAuthorizationResponseStatus values.
+func (CheckAuthorizationResponseStatus) AllValues() []CheckAuthorizationResponseStatus {
+	return []CheckAuthorizationResponseStatus{
+		CheckAuthorizationResponseStatusSuccess,
+		CheckAuthorizationResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CheckAuthorizationResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case CheckAuthorizationResponseStatusSuccess:
+		return []byte(s), nil
+	case CheckAuthorizationResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CheckAuthorizationResponseStatus) UnmarshalText(data []byte) error {
+	switch CheckAuthorizationResponseStatus(data) {
+	case CheckAuthorizationResponseStatusSuccess:
+		*s = CheckAuthorizationResponseStatusSuccess
+		return nil
+	case CheckAuthorizationResponseStatusError:
+		*s = CheckAuthorizationResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
 // Ref: #/components/schemas/GoogleProtobufAny
 type GoogleProtobufAny struct {
@@ -98,6 +228,98 @@ func (o OptBool) Or(d bool) bool {
 	return d
 }
 
+// NewOptCheckAuthorizationResponseData returns new OptCheckAuthorizationResponseData with value set to v.
+func NewOptCheckAuthorizationResponseData(v CheckAuthorizationResponseData) OptCheckAuthorizationResponseData {
+	return OptCheckAuthorizationResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCheckAuthorizationResponseData is optional CheckAuthorizationResponseData.
+type OptCheckAuthorizationResponseData struct {
+	Value CheckAuthorizationResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptCheckAuthorizationResponseData was set.
+func (o OptCheckAuthorizationResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCheckAuthorizationResponseData) Reset() {
+	var v CheckAuthorizationResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCheckAuthorizationResponseData) SetTo(v CheckAuthorizationResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCheckAuthorizationResponseData) Get() (v CheckAuthorizationResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCheckAuthorizationResponseData) Or(d CheckAuthorizationResponseData) CheckAuthorizationResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCheckAuthorizationResponseStatus returns new OptCheckAuthorizationResponseStatus with value set to v.
+func NewOptCheckAuthorizationResponseStatus(v CheckAuthorizationResponseStatus) OptCheckAuthorizationResponseStatus {
+	return OptCheckAuthorizationResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCheckAuthorizationResponseStatus is optional CheckAuthorizationResponseStatus.
+type OptCheckAuthorizationResponseStatus struct {
+	Value CheckAuthorizationResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptCheckAuthorizationResponseStatus was set.
+func (o OptCheckAuthorizationResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCheckAuthorizationResponseStatus) Reset() {
+	var v CheckAuthorizationResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCheckAuthorizationResponseStatus) SetTo(v CheckAuthorizationResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCheckAuthorizationResponseStatus) Get() (v CheckAuthorizationResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCheckAuthorizationResponseStatus) Or(d CheckAuthorizationResponseStatus) CheckAuthorizationResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptInt32 returns new OptInt32 with value set to v.
 func NewOptInt32(v int32) OptInt32 {
 	return OptInt32{
@@ -144,38 +366,38 @@ func (o OptInt32) Or(d int32) int32 {
 	return d
 }
 
-// NewOptSigninResponseData returns new OptSigninResponseData with value set to v.
-func NewOptSigninResponseData(v SigninResponseData) OptSigninResponseData {
-	return OptSigninResponseData{
+// NewOptRequestSigninResponseData returns new OptRequestSigninResponseData with value set to v.
+func NewOptRequestSigninResponseData(v RequestSigninResponseData) OptRequestSigninResponseData {
+	return OptRequestSigninResponseData{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptSigninResponseData is optional SigninResponseData.
-type OptSigninResponseData struct {
-	Value SigninResponseData
+// OptRequestSigninResponseData is optional RequestSigninResponseData.
+type OptRequestSigninResponseData struct {
+	Value RequestSigninResponseData
 	Set   bool
 }
 
-// IsSet returns true if OptSigninResponseData was set.
-func (o OptSigninResponseData) IsSet() bool { return o.Set }
+// IsSet returns true if OptRequestSigninResponseData was set.
+func (o OptRequestSigninResponseData) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptSigninResponseData) Reset() {
-	var v SigninResponseData
+func (o *OptRequestSigninResponseData) Reset() {
+	var v RequestSigninResponseData
 	o.Value = v
 	o.Set = false
 }
 
 // SetTo sets value to v.
-func (o *OptSigninResponseData) SetTo(v SigninResponseData) {
+func (o *OptRequestSigninResponseData) SetTo(v RequestSigninResponseData) {
 	o.Set = true
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptSigninResponseData) Get() (v SigninResponseData, ok bool) {
+func (o OptRequestSigninResponseData) Get() (v RequestSigninResponseData, ok bool) {
 	if !o.Set {
 		return v, false
 	}
@@ -183,45 +405,45 @@ func (o OptSigninResponseData) Get() (v SigninResponseData, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptSigninResponseData) Or(d SigninResponseData) SigninResponseData {
+func (o OptRequestSigninResponseData) Or(d RequestSigninResponseData) RequestSigninResponseData {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptSigninResponseStatus returns new OptSigninResponseStatus with value set to v.
-func NewOptSigninResponseStatus(v SigninResponseStatus) OptSigninResponseStatus {
-	return OptSigninResponseStatus{
+// NewOptRequestSigninResponseStatus returns new OptRequestSigninResponseStatus with value set to v.
+func NewOptRequestSigninResponseStatus(v RequestSigninResponseStatus) OptRequestSigninResponseStatus {
+	return OptRequestSigninResponseStatus{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptSigninResponseStatus is optional SigninResponseStatus.
-type OptSigninResponseStatus struct {
-	Value SigninResponseStatus
+// OptRequestSigninResponseStatus is optional RequestSigninResponseStatus.
+type OptRequestSigninResponseStatus struct {
+	Value RequestSigninResponseStatus
 	Set   bool
 }
 
-// IsSet returns true if OptSigninResponseStatus was set.
-func (o OptSigninResponseStatus) IsSet() bool { return o.Set }
+// IsSet returns true if OptRequestSigninResponseStatus was set.
+func (o OptRequestSigninResponseStatus) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptSigninResponseStatus) Reset() {
-	var v SigninResponseStatus
+func (o *OptRequestSigninResponseStatus) Reset() {
+	var v RequestSigninResponseStatus
 	o.Value = v
 	o.Set = false
 }
 
 // SetTo sets value to v.
-func (o *OptSigninResponseStatus) SetTo(v SigninResponseStatus) {
+func (o *OptRequestSigninResponseStatus) SetTo(v RequestSigninResponseStatus) {
 	o.Set = true
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptSigninResponseStatus) Get() (v SigninResponseStatus, ok bool) {
+func (o OptRequestSigninResponseStatus) Get() (v RequestSigninResponseStatus, ok bool) {
 	if !o.Set {
 		return v, false
 	}
@@ -229,7 +451,7 @@ func (o OptSigninResponseStatus) Get() (v SigninResponseStatus, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptSigninResponseStatus) Or(d SigninResponseStatus) SigninResponseStatus {
+func (o OptRequestSigninResponseStatus) Or(d RequestSigninResponseStatus) RequestSigninResponseStatus {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -329,8 +551,8 @@ func (o OptUint64) Or(d uint64) uint64 {
 }
 
 // The request message for a sign-in request.
-// Ref: #/components/schemas/SigninRequest
-type SigninRequest struct {
+// Ref: #/components/schemas/RequestSigninRequest
+type RequestSigninRequest struct {
 	// The hostname is the name of the machine making the request.  This is
 	//  mandatory as it consitutes a unique identifier for the machine.
 	Hostname OptString `json:"hostname"`
@@ -364,207 +586,220 @@ type SigninRequest struct {
 }
 
 // GetHostname returns the value of Hostname.
-func (s *SigninRequest) GetHostname() OptString {
+func (s *RequestSigninRequest) GetHostname() OptString {
 	return s.Hostname
 }
 
 // GetOs returns the value of Os.
-func (s *SigninRequest) GetOs() OptString {
+func (s *RequestSigninRequest) GetOs() OptString {
 	return s.Os
 }
 
 // GetOsVersion returns the value of OsVersion.
-func (s *SigninRequest) GetOsVersion() OptString {
+func (s *RequestSigninRequest) GetOsVersion() OptString {
 	return s.OsVersion
 }
 
 // GetContainer returns the value of Container.
-func (s *SigninRequest) GetContainer() OptBool {
+func (s *RequestSigninRequest) GetContainer() OptBool {
 	return s.Container
 }
 
 // GetDistro returns the value of Distro.
-func (s *SigninRequest) GetDistro() OptString {
+func (s *RequestSigninRequest) GetDistro() OptString {
 	return s.Distro
 }
 
 // GetDistroVersion returns the value of DistroVersion.
-func (s *SigninRequest) GetDistroVersion() OptString {
+func (s *RequestSigninRequest) GetDistroVersion() OptString {
 	return s.DistroVersion
 }
 
 // GetDistroCodename returns the value of DistroCodename.
-func (s *SigninRequest) GetDistroCodename() OptString {
+func (s *RequestSigninRequest) GetDistroCodename() OptString {
 	return s.DistroCodename
 }
 
 // GetCliVersion returns the value of CliVersion.
-func (s *SigninRequest) GetCliVersion() OptString {
+func (s *RequestSigninRequest) GetCliVersion() OptString {
 	return s.CliVersion
 }
 
 // GetGoarch returns the value of Goarch.
-func (s *SigninRequest) GetGoarch() OptString {
+func (s *RequestSigninRequest) GetGoarch() OptString {
 	return s.Goarch
 }
 
 // GetGoos returns the value of Goos.
-func (s *SigninRequest) GetGoos() OptString {
+func (s *RequestSigninRequest) GetGoos() OptString {
 	return s.Goos
 }
 
 // GetGoVersion returns the value of GoVersion.
-func (s *SigninRequest) GetGoVersion() OptString {
+func (s *RequestSigninRequest) GetGoVersion() OptString {
 	return s.GoVersion
 }
 
 // SetHostname sets the value of Hostname.
-func (s *SigninRequest) SetHostname(val OptString) {
+func (s *RequestSigninRequest) SetHostname(val OptString) {
 	s.Hostname = val
 }
 
 // SetOs sets the value of Os.
-func (s *SigninRequest) SetOs(val OptString) {
+func (s *RequestSigninRequest) SetOs(val OptString) {
 	s.Os = val
 }
 
 // SetOsVersion sets the value of OsVersion.
-func (s *SigninRequest) SetOsVersion(val OptString) {
+func (s *RequestSigninRequest) SetOsVersion(val OptString) {
 	s.OsVersion = val
 }
 
 // SetContainer sets the value of Container.
-func (s *SigninRequest) SetContainer(val OptBool) {
+func (s *RequestSigninRequest) SetContainer(val OptBool) {
 	s.Container = val
 }
 
 // SetDistro sets the value of Distro.
-func (s *SigninRequest) SetDistro(val OptString) {
+func (s *RequestSigninRequest) SetDistro(val OptString) {
 	s.Distro = val
 }
 
 // SetDistroVersion sets the value of DistroVersion.
-func (s *SigninRequest) SetDistroVersion(val OptString) {
+func (s *RequestSigninRequest) SetDistroVersion(val OptString) {
 	s.DistroVersion = val
 }
 
 // SetDistroCodename sets the value of DistroCodename.
-func (s *SigninRequest) SetDistroCodename(val OptString) {
+func (s *RequestSigninRequest) SetDistroCodename(val OptString) {
 	s.DistroCodename = val
 }
 
 // SetCliVersion sets the value of CliVersion.
-func (s *SigninRequest) SetCliVersion(val OptString) {
+func (s *RequestSigninRequest) SetCliVersion(val OptString) {
 	s.CliVersion = val
 }
 
 // SetGoarch sets the value of Goarch.
-func (s *SigninRequest) SetGoarch(val OptString) {
+func (s *RequestSigninRequest) SetGoarch(val OptString) {
 	s.Goarch = val
 }
 
 // SetGoos sets the value of Goos.
-func (s *SigninRequest) SetGoos(val OptString) {
+func (s *RequestSigninRequest) SetGoos(val OptString) {
 	s.Goos = val
 }
 
 // SetGoVersion sets the value of GoVersion.
-func (s *SigninRequest) SetGoVersion(val OptString) {
+func (s *RequestSigninRequest) SetGoVersion(val OptString) {
 	s.GoVersion = val
 }
 
 // The response message for a sign-in request.
-// Ref: #/components/schemas/SigninResponse
-type SigninResponse struct {
+// Ref: #/components/schemas/RequestSigninResponse
+type RequestSigninResponse struct {
 	// The status of the response.
-	Status OptSigninResponseStatus `json:"status"`
+	Status OptRequestSigninResponseStatus `json:"status"`
 	// An optional message providing additional information about the response.
 	Message OptString `json:"message"`
 	// The response data for this request.
-	Data OptSigninResponseData `json:"data"`
+	Data OptRequestSigninResponseData `json:"data"`
 	// The operation time in microseconds.  This is the time it took to process
 	//  the request and generate the response.
 	OpTimeUs OptUint64 `json:"op_time_us"`
 }
 
 // GetStatus returns the value of Status.
-func (s *SigninResponse) GetStatus() OptSigninResponseStatus {
+func (s *RequestSigninResponse) GetStatus() OptRequestSigninResponseStatus {
 	return s.Status
 }
 
 // GetMessage returns the value of Message.
-func (s *SigninResponse) GetMessage() OptString {
+func (s *RequestSigninResponse) GetMessage() OptString {
 	return s.Message
 }
 
 // GetData returns the value of Data.
-func (s *SigninResponse) GetData() OptSigninResponseData {
+func (s *RequestSigninResponse) GetData() OptRequestSigninResponseData {
 	return s.Data
 }
 
 // GetOpTimeUs returns the value of OpTimeUs.
-func (s *SigninResponse) GetOpTimeUs() OptUint64 {
+func (s *RequestSigninResponse) GetOpTimeUs() OptUint64 {
 	return s.OpTimeUs
 }
 
 // SetStatus sets the value of Status.
-func (s *SigninResponse) SetStatus(val OptSigninResponseStatus) {
+func (s *RequestSigninResponse) SetStatus(val OptRequestSigninResponseStatus) {
 	s.Status = val
 }
 
 // SetMessage sets the value of Message.
-func (s *SigninResponse) SetMessage(val OptString) {
+func (s *RequestSigninResponse) SetMessage(val OptString) {
 	s.Message = val
 }
 
 // SetData sets the value of Data.
-func (s *SigninResponse) SetData(val OptSigninResponseData) {
+func (s *RequestSigninResponse) SetData(val OptRequestSigninResponseData) {
 	s.Data = val
 }
 
 // SetOpTimeUs sets the value of OpTimeUs.
-func (s *SigninResponse) SetOpTimeUs(val OptUint64) {
+func (s *RequestSigninResponse) SetOpTimeUs(val OptUint64) {
 	s.OpTimeUs = val
 }
 
-// Ref: #/components/schemas/SigninResponseData
-type SigninResponseData struct {
-	//
+// Ref: #/components/schemas/RequestSigninResponseData
+type RequestSigninResponseData struct {
+	// The full URL which can be used to remotely confirm the signin.
 	AuthorizationURL OptString `json:"authorization_url"`
+	// A unique identifier for the request.  This can be used to track the
+	//  request in the system.
+	RequestID OptString `json:"request_id"`
 }
 
 // GetAuthorizationURL returns the value of AuthorizationURL.
-func (s *SigninResponseData) GetAuthorizationURL() OptString {
+func (s *RequestSigninResponseData) GetAuthorizationURL() OptString {
 	return s.AuthorizationURL
 }
 
+// GetRequestID returns the value of RequestID.
+func (s *RequestSigninResponseData) GetRequestID() OptString {
+	return s.RequestID
+}
+
 // SetAuthorizationURL sets the value of AuthorizationURL.
-func (s *SigninResponseData) SetAuthorizationURL(val OptString) {
+func (s *RequestSigninResponseData) SetAuthorizationURL(val OptString) {
 	s.AuthorizationURL = val
 }
 
+// SetRequestID sets the value of RequestID.
+func (s *RequestSigninResponseData) SetRequestID(val OptString) {
+	s.RequestID = val
+}
+
 // The status of the response.
-type SigninResponseStatus string
+type RequestSigninResponseStatus string
 
 const (
-	SigninResponseStatusSuccess SigninResponseStatus = "success"
-	SigninResponseStatusError   SigninResponseStatus = "error"
+	RequestSigninResponseStatusSuccess RequestSigninResponseStatus = "success"
+	RequestSigninResponseStatusError   RequestSigninResponseStatus = "error"
 )
 
-// AllValues returns all SigninResponseStatus values.
-func (SigninResponseStatus) AllValues() []SigninResponseStatus {
-	return []SigninResponseStatus{
-		SigninResponseStatusSuccess,
-		SigninResponseStatusError,
+// AllValues returns all RequestSigninResponseStatus values.
+func (RequestSigninResponseStatus) AllValues() []RequestSigninResponseStatus {
+	return []RequestSigninResponseStatus{
+		RequestSigninResponseStatusSuccess,
+		RequestSigninResponseStatusError,
 	}
 }
 
 // MarshalText implements encoding.TextMarshaler.
-func (s SigninResponseStatus) MarshalText() ([]byte, error) {
+func (s RequestSigninResponseStatus) MarshalText() ([]byte, error) {
 	switch s {
-	case SigninResponseStatusSuccess:
+	case RequestSigninResponseStatusSuccess:
 		return []byte(s), nil
-	case SigninResponseStatusError:
+	case RequestSigninResponseStatusError:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -572,13 +807,13 @@ func (s SigninResponseStatus) MarshalText() ([]byte, error) {
 }
 
 // UnmarshalText implements encoding.TextUnmarshaler.
-func (s *SigninResponseStatus) UnmarshalText(data []byte) error {
-	switch SigninResponseStatus(data) {
-	case SigninResponseStatusSuccess:
-		*s = SigninResponseStatusSuccess
+func (s *RequestSigninResponseStatus) UnmarshalText(data []byte) error {
+	switch RequestSigninResponseStatus(data) {
+	case RequestSigninResponseStatusSuccess:
+		*s = RequestSigninResponseStatusSuccess
 		return nil
-	case SigninResponseStatusError:
-		*s = SigninResponseStatusError
+	case RequestSigninResponseStatusError:
+		*s = RequestSigninResponseStatusError
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)

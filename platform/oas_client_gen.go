@@ -308,6 +308,7 @@ func (c *Client) sendCreateCertificate(ctx context.Context, request *CreateCerti
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeCreateCertificateResponse(resp)
@@ -380,6 +381,7 @@ func (c *Client) sendCreateInstance(ctx context.Context, request *CreateInstance
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeCreateInstanceResponse(resp)
@@ -457,6 +459,7 @@ func (c *Client) sendCreateServiceGroup(ctx context.Context, request *CreateServ
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeCreateServiceGroupResponse(resp)
@@ -546,6 +549,7 @@ func (c *Client) sendDeleteCertificateByUUID(ctx context.Context, params DeleteC
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeDeleteCertificateByUUIDResponse(resp)
@@ -620,6 +624,7 @@ func (c *Client) sendDeleteCertificates(ctx context.Context, request []DeleteCer
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeDeleteCertificatesResponse(resp)
@@ -710,6 +715,7 @@ func (c *Client) sendDeleteInstanceByUUID(ctx context.Context, params DeleteInst
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeDeleteInstanceByUUIDResponse(resp)
@@ -799,6 +805,7 @@ func (c *Client) sendDeleteServiceGroupByUUID(ctx context.Context, params Delete
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeDeleteServiceGroupByUUIDResponse(resp)
@@ -873,6 +880,7 @@ func (c *Client) sendDeleteServiceGroups(ctx context.Context, request []DeleteSe
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeDeleteServiceGroupsResponse(resp)
@@ -960,6 +968,7 @@ func (c *Client) sendGetCertificateByUUID(ctx context.Context, params GetCertifi
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeGetCertificateByUUIDResponse(resp)
@@ -1054,6 +1063,7 @@ func (c *Client) sendGetCertificates(ctx context.Context, request []GetCertifica
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeGetCertificatesResponse(resp)
@@ -1141,6 +1151,7 @@ func (c *Client) sendGetImageByDigest(ctx context.Context, params GetImageByDige
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeGetImageByDigestResponse(resp)
@@ -1228,6 +1239,7 @@ func (c *Client) sendGetImageByTag(ctx context.Context, params GetImageByTagPara
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeGetImageByTagResponse(resp)
@@ -1315,6 +1327,7 @@ func (c *Client) sendGetInstanceByUUID(ctx context.Context, params GetInstanceBy
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeGetInstanceByUUIDResponse(resp)
@@ -1455,6 +1468,7 @@ func (c *Client) sendGetInstanceLogs(ctx context.Context, params GetInstanceLogs
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeGetInstanceLogsResponse(resp)
@@ -1580,6 +1594,7 @@ func (c *Client) sendGetInstanceLogsByUUID(ctx context.Context, params GetInstan
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeGetInstanceLogsByUUIDResponse(resp)
@@ -1686,6 +1701,7 @@ func (c *Client) sendGetInstanceMetrics(ctx context.Context, params GetInstanceM
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeGetInstanceMetricsResponse(resp)
@@ -1774,6 +1790,7 @@ func (c *Client) sendGetInstanceMetricsByUUID(ctx context.Context, params GetIns
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeGetInstanceMetricsByUUIDResponse(resp)
@@ -1885,6 +1902,7 @@ func (c *Client) sendGetInstances(ctx context.Context, request []GetInstancesReq
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeGetInstancesResponse(resp)
@@ -1972,6 +1990,7 @@ func (c *Client) sendGetServiceGroupByUUID(ctx context.Context, params GetServic
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeGetServiceGroupByUUIDResponse(resp)
@@ -2066,6 +2085,7 @@ func (c *Client) sendGetServiceGroups(ctx context.Context, request []GetServiceG
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeGetServiceGroupsResponse(resp)
@@ -2156,6 +2176,7 @@ func (c *Client) sendStartInstanceByUUID(ctx context.Context, params StartInstan
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeStartInstanceByUUIDResponse(resp)
@@ -2283,6 +2304,7 @@ func (c *Client) sendStopInstanceByUUID(ctx context.Context, params StopInstance
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeStopInstanceByUUIDResponse(resp)
@@ -2394,6 +2416,7 @@ func (c *Client) sendStopInstances(ctx context.Context, request []StopInstancesR
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeStopInstancesResponse(resp)
@@ -2526,6 +2549,7 @@ func (c *Client) sendWaitInstanceByUUID(ctx context.Context, params WaitInstance
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeWaitInstanceByUUIDResponse(resp)
@@ -2642,6 +2666,7 @@ func (c *Client) sendWaitInstances(ctx context.Context, request []WaitInstancesR
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
 	result, err := decodeWaitInstancesResponse(resp)

@@ -6,5 +6,6 @@ package controlplane
 type OperationName = string
 
 const (
-	SigninOperation OperationName = "Signin"
+	CheckAuthorizationOperation OperationName = "CheckAuthorization"
+	RequestSigninOperation      OperationName = "RequestSignin"
 )

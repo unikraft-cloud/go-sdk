@@ -3,6 +3,7 @@
 package controlplane
 
 import (
+	"bytes"
 	"io"
 	"mime"
 	"net/http"
@@ -11,10 +12,14 @@ import (
 	"github.com/go-faster/jx"
 
 	"github.com/ogen-go/ogen/ogenerrors"
+	"github.com/ogen-go/ogen/sse"
 	"github.com/ogen-go/ogen/validate"
 )
 
-func decodeSigninResponse(resp *http.Response) (res *SigninResponse, _ error) {
+// Prevent "sse" import error.
+var _ *sse.Event = nil
+
+func decodeCheckAuthorizationResponse(resp *http.Response) (res <-chan *CheckAuthorizationResponse, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -23,40 +28,62 @@ func decodeSigninResponse(resp *http.Response) (res *SigninResponse, _ error) {
 			return res, errors.Wrap(err, "parse media type")
 		}
 		switch {
-		case ct == "application/json":
-			buf, err := io.ReadAll(resp.Body)
-			if err != nil {
-				return res, err
-			}
-			d := jx.DecodeBytes(buf)
+		case ct == "text/event-stream":
+			// Event stream implementation - return a channel
+			eventCh := make(chan *CheckAuthorizationResponse)
 
-			var response SigninResponse
-			if err := func() error {
-				if err := response.Decode(d); err != nil {
-					return err
+			// Start a goroutine to process the event stream
+			go func() {
+				defer close(eventCh)
+
+				// Create an SSE reader
+				r := sse.NewReader(resp.Body)
+
+				// Process events until context is done or connection is closed
+				for {
+					select {
+					case <-resp.Request.Context().Done():
+						return
+					default:
+						event, err := r.ReadEvent()
+						if err != nil {
+							if !errors.Is(err, io.EOF) {
+								// Log or handle error if needed
+							}
+							return
+						}
+
+						// Skip if event data is empty or it's a keep-alive
+						if len(event.Data) == 0 || bytes.Equal(event.Data, []byte(":keep-alive")) {
+							continue
+						}
+
+						// Decode the event data
+						d := jx.DecodeBytes(event.Data)
+						var item CheckAuthorizationResponse
+						if err := func() error {
+							if err := item.Decode(d); err != nil {
+								return err
+							}
+							return nil
+						}(); err != nil {
+							// Log or handle error if needed
+							continue
+						}
+
+						// Send the decoded item to the channel
+						select {
+						case eventCh <- &item:
+						case <-resp.Request.Context().Done():
+							return
+						}
+					}
 				}
-				if err := d.Skip(); err != io.EOF {
-					return errors.New("unexpected trailing data")
-				}
-				return nil
-			}(); err != nil {
-				err = &ogenerrors.DecodeBodyError{
-					ContentType: ct,
-					Body:        buf,
-					Err:         err,
-				}
-				return res, err
-			}
-			// Validate response.
-			if err := func() error {
-				if err := response.Validate(); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return res, errors.Wrap(err, "validate")
-			}
-			return &response, nil
+			}()
+
+			// Return the channel directly
+			return eventCh, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -92,10 +119,108 @@ func decodeSigninResponse(resp *http.Response) (res *SigninResponse, _ error) {
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	}()
+	if err != nil {
+		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
+	}
+	return res, errors.Wrap(defRes, "error")
+}
+
+func decodeRequestSigninResponse(resp *http.Response) (res *RequestSigninResponse, _ error) {
+	switch resp.StatusCode {
+	case 200:
+		// Code 200.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response RequestSigninResponse
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
+			return &response, nil
+
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	}
+	// Convenient error response.
+	defRes, err := func() (res *StatusStatusCode, err error) {
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response Status
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+
+			return &StatusStatusCode{
+				StatusCode: resp.StatusCode,
+				Response:   response,
+			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
