@@ -11,8 +11,12 @@ import (
 	"github.com/go-faster/jx"
 
 	"github.com/ogen-go/ogen/ogenerrors"
+	"github.com/ogen-go/ogen/sse"
 	"github.com/ogen-go/ogen/validate"
 )
+
+// Prevent "sse" import error.
+var _ *sse.Event = nil
 
 func decodeCreateCertificateResponse(resp *http.Response) (res *CreateCertificateResponse, _ error) {
 	switch resp.StatusCode {
@@ -47,6 +51,7 @@ func decodeCreateCertificateResponse(resp *http.Response) (res *CreateCertificat
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -57,6 +62,7 @@ func decodeCreateCertificateResponse(resp *http.Response) (res *CreateCertificat
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -92,10 +98,12 @@ func decodeCreateCertificateResponse(resp *http.Response) (res *CreateCertificat
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -139,6 +147,7 @@ func decodeCreateInstanceResponse(resp *http.Response) (res *CreateInstanceRespo
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -149,6 +158,7 @@ func decodeCreateInstanceResponse(resp *http.Response) (res *CreateInstanceRespo
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -184,10 +194,12 @@ func decodeCreateInstanceResponse(resp *http.Response) (res *CreateInstanceRespo
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -231,6 +243,7 @@ func decodeCreateServiceGroupResponse(resp *http.Response) (res *CreateServiceGr
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -241,6 +254,7 @@ func decodeCreateServiceGroupResponse(resp *http.Response) (res *CreateServiceGr
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -276,10 +290,12 @@ func decodeCreateServiceGroupResponse(resp *http.Response) (res *CreateServiceGr
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -323,6 +339,7 @@ func decodeDeleteCertificateByUUIDResponse(resp *http.Response) (res *DeleteCert
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -333,6 +350,7 @@ func decodeDeleteCertificateByUUIDResponse(resp *http.Response) (res *DeleteCert
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -368,10 +386,12 @@ func decodeDeleteCertificateByUUIDResponse(resp *http.Response) (res *DeleteCert
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -415,6 +435,7 @@ func decodeDeleteCertificatesResponse(resp *http.Response) (res *DeleteCertifica
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -425,6 +446,7 @@ func decodeDeleteCertificatesResponse(resp *http.Response) (res *DeleteCertifica
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -460,10 +482,12 @@ func decodeDeleteCertificatesResponse(resp *http.Response) (res *DeleteCertifica
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -507,6 +531,7 @@ func decodeDeleteInstanceByUUIDResponse(resp *http.Response) (res *DeleteInstanc
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -517,6 +542,7 @@ func decodeDeleteInstanceByUUIDResponse(resp *http.Response) (res *DeleteInstanc
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -552,10 +578,12 @@ func decodeDeleteInstanceByUUIDResponse(resp *http.Response) (res *DeleteInstanc
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -599,6 +627,7 @@ func decodeDeleteServiceGroupByUUIDResponse(resp *http.Response) (res *DeleteSer
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -609,6 +638,7 @@ func decodeDeleteServiceGroupByUUIDResponse(resp *http.Response) (res *DeleteSer
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -644,10 +674,12 @@ func decodeDeleteServiceGroupByUUIDResponse(resp *http.Response) (res *DeleteSer
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -691,6 +723,7 @@ func decodeDeleteServiceGroupsResponse(resp *http.Response) (res *DeleteServiceG
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -701,6 +734,7 @@ func decodeDeleteServiceGroupsResponse(resp *http.Response) (res *DeleteServiceG
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -736,10 +770,12 @@ func decodeDeleteServiceGroupsResponse(resp *http.Response) (res *DeleteServiceG
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -783,6 +819,7 @@ func decodeGetCertificateByUUIDResponse(resp *http.Response) (res *GetCertificat
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -793,6 +830,7 @@ func decodeGetCertificateByUUIDResponse(resp *http.Response) (res *GetCertificat
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -828,10 +866,12 @@ func decodeGetCertificateByUUIDResponse(resp *http.Response) (res *GetCertificat
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -875,6 +915,7 @@ func decodeGetCertificatesResponse(resp *http.Response) (res *GetCertificatesRes
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -885,6 +926,7 @@ func decodeGetCertificatesResponse(resp *http.Response) (res *GetCertificatesRes
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -920,10 +962,12 @@ func decodeGetCertificatesResponse(resp *http.Response) (res *GetCertificatesRes
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -967,7 +1011,9 @@ func decodeGetImageByDigestResponse(resp *http.Response) (res *GetImageResponse,
 				}
 				return res, err
 			}
+
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1003,10 +1049,12 @@ func decodeGetImageByDigestResponse(resp *http.Response) (res *GetImageResponse,
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1050,7 +1098,9 @@ func decodeGetImageByTagResponse(resp *http.Response) (res *GetImageResponse, _ 
 				}
 				return res, err
 			}
+
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1086,10 +1136,12 @@ func decodeGetImageByTagResponse(resp *http.Response) (res *GetImageResponse, _ 
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1133,6 +1185,7 @@ func decodeGetInstanceByUUIDResponse(resp *http.Response) (res *GetInstancesResp
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -1143,6 +1196,7 @@ func decodeGetInstanceByUUIDResponse(resp *http.Response) (res *GetInstancesResp
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1178,10 +1232,12 @@ func decodeGetInstanceByUUIDResponse(resp *http.Response) (res *GetInstancesResp
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1225,6 +1281,7 @@ func decodeGetInstanceLogsResponse(resp *http.Response) (res *GetInstanceLogsRes
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -1235,6 +1292,7 @@ func decodeGetInstanceLogsResponse(resp *http.Response) (res *GetInstanceLogsRes
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1270,10 +1328,12 @@ func decodeGetInstanceLogsResponse(resp *http.Response) (res *GetInstanceLogsRes
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1317,6 +1377,7 @@ func decodeGetInstanceLogsByUUIDResponse(resp *http.Response) (res *GetInstanceL
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -1327,6 +1388,7 @@ func decodeGetInstanceLogsByUUIDResponse(resp *http.Response) (res *GetInstanceL
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1362,10 +1424,12 @@ func decodeGetInstanceLogsByUUIDResponse(resp *http.Response) (res *GetInstanceL
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1409,6 +1473,7 @@ func decodeGetInstanceMetricsResponse(resp *http.Response) (res *GetInstanceMetr
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -1419,6 +1484,7 @@ func decodeGetInstanceMetricsResponse(resp *http.Response) (res *GetInstanceMetr
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1454,10 +1520,12 @@ func decodeGetInstanceMetricsResponse(resp *http.Response) (res *GetInstanceMetr
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1501,6 +1569,7 @@ func decodeGetInstanceMetricsByUUIDResponse(resp *http.Response) (res *GetInstan
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -1511,6 +1580,7 @@ func decodeGetInstanceMetricsByUUIDResponse(resp *http.Response) (res *GetInstan
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1546,10 +1616,12 @@ func decodeGetInstanceMetricsByUUIDResponse(resp *http.Response) (res *GetInstan
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1593,6 +1665,7 @@ func decodeGetInstancesResponse(resp *http.Response) (res *GetInstancesResponse,
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -1603,6 +1676,7 @@ func decodeGetInstancesResponse(resp *http.Response) (res *GetInstancesResponse,
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1638,10 +1712,12 @@ func decodeGetInstancesResponse(resp *http.Response) (res *GetInstancesResponse,
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1685,6 +1761,7 @@ func decodeGetServiceGroupByUUIDResponse(resp *http.Response) (res *GetServiceGr
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -1695,6 +1772,7 @@ func decodeGetServiceGroupByUUIDResponse(resp *http.Response) (res *GetServiceGr
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1730,10 +1808,12 @@ func decodeGetServiceGroupByUUIDResponse(resp *http.Response) (res *GetServiceGr
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1777,6 +1857,7 @@ func decodeGetServiceGroupsResponse(resp *http.Response) (res *GetServiceGroupsR
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -1787,6 +1868,7 @@ func decodeGetServiceGroupsResponse(resp *http.Response) (res *GetServiceGroupsR
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1822,10 +1904,12 @@ func decodeGetServiceGroupsResponse(resp *http.Response) (res *GetServiceGroupsR
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1869,6 +1953,7 @@ func decodeStartInstanceByUUIDResponse(resp *http.Response) (res *StartInstanceR
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -1879,6 +1964,7 @@ func decodeStartInstanceByUUIDResponse(resp *http.Response) (res *StartInstanceR
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1914,10 +2000,12 @@ func decodeStartInstanceByUUIDResponse(resp *http.Response) (res *StartInstanceR
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -1961,6 +2049,7 @@ func decodeStopInstanceByUUIDResponse(resp *http.Response) (res *StopInstanceRes
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -1971,6 +2060,7 @@ func decodeStopInstanceByUUIDResponse(resp *http.Response) (res *StopInstanceRes
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -2006,10 +2096,12 @@ func decodeStopInstanceByUUIDResponse(resp *http.Response) (res *StopInstanceRes
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -2053,6 +2145,7 @@ func decodeStopInstancesResponse(resp *http.Response) (res *StopInstanceResponse
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -2063,6 +2156,7 @@ func decodeStopInstancesResponse(resp *http.Response) (res *StopInstanceResponse
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -2098,10 +2192,12 @@ func decodeStopInstancesResponse(resp *http.Response) (res *StopInstanceResponse
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -2145,6 +2241,7 @@ func decodeWaitInstanceByUUIDResponse(resp *http.Response) (res *WaitInstanceRes
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -2155,6 +2252,7 @@ func decodeWaitInstanceByUUIDResponse(resp *http.Response) (res *WaitInstanceRes
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -2190,10 +2288,12 @@ func decodeWaitInstanceByUUIDResponse(resp *http.Response) (res *WaitInstanceRes
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -2237,6 +2337,7 @@ func decodeWaitInstancesResponse(resp *http.Response) (res *WaitInstanceResponse
 				}
 				return res, err
 			}
+
 			// Validate response.
 			if err := func() error {
 				if err := response.Validate(); err != nil {
@@ -2247,6 +2348,7 @@ func decodeWaitInstancesResponse(resp *http.Response) (res *WaitInstanceResponse
 				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -2282,10 +2384,12 @@ func decodeWaitInstancesResponse(resp *http.Response) (res *WaitInstanceResponse
 				}
 				return res, err
 			}
+
 			return &StatusStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
 			}, nil
+
 		default:
 			return res, validate.InvalidContentType(ct)
 		}

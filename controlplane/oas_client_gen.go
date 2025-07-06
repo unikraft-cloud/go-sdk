@@ -20,13 +20,21 @@ func trimTrailingSlashes(u *url.URL) {
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
-	// Signin invokes Signin operation.
+	// CheckAuthorization invokes CheckAuthorization operation.
 	//
-	// Signin initiates the sign-in process and returns an authorization URL.
-	//  The user should be redirected to this URL to complete the sign-in.
+	// CheckAuthorization is used to check the authorization status of a request.
+	//  It streams responses back to the client, indicating whether the signin
+	//  request is authorized or not.
+	//
+	// POST /v1/auth/check
+	CheckAuthorization(ctx context.Context, request *CheckAuthorizationRequest) (<-chan *CheckAuthorizationResponse, error)
+	// RequestSignin invokes RequestSignin operation.
+	//
+	// RequestSignin initiates the sign-in process and returns an authorization
+	//  URL.  The user should be redirected to this URL to complete the sign-in.
 	//
 	// POST /v1/auth/signin
-	Signin(ctx context.Context, request *SigninRequest) (*SigninResponse, error)
+	RequestSignin(ctx context.Context, request *RequestSigninRequest) (*RequestSigninResponse, error)
 }
 
 // Client implements OAS client.
@@ -68,19 +76,60 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 	return u
 }
 
-// Signin invokes Signin operation.
+// CheckAuthorization invokes CheckAuthorization operation.
 //
-// Signin initiates the sign-in process and returns an authorization URL.
+// CheckAuthorization is used to check the authorization status of a request.
 //
-//	The user should be redirected to this URL to complete the sign-in.
+//	It streams responses back to the client, indicating whether the signin
+//	request is authorized or not.
 //
-// POST /v1/auth/signin
-func (c *Client) Signin(ctx context.Context, request *SigninRequest) (*SigninResponse, error) {
-	res, err := c.sendSignin(ctx, request)
+// POST /v1/auth/check
+func (c *Client) CheckAuthorization(ctx context.Context, request *CheckAuthorizationRequest) (<-chan *CheckAuthorizationResponse, error) {
+	res, err := c.sendCheckAuthorization(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendSignin(ctx context.Context, request *SigninRequest) (res *SigninResponse, err error) {
+func (c *Client) sendCheckAuthorization(ctx context.Context, request *CheckAuthorizationRequest) (res <-chan *CheckAuthorizationResponse, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/auth/check"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCheckAuthorizationRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	result, err := decodeCheckAuthorizationResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RequestSignin invokes RequestSignin operation.
+//
+// RequestSignin initiates the sign-in process and returns an authorization
+//
+//	URL.  The user should be redirected to this URL to complete the sign-in.
+//
+// POST /v1/auth/signin
+func (c *Client) RequestSignin(ctx context.Context, request *RequestSigninRequest) (*RequestSigninResponse, error) {
+	res, err := c.sendRequestSignin(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendRequestSignin(ctx context.Context, request *RequestSigninRequest) (res *RequestSigninResponse, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -91,7 +140,7 @@ func (c *Client) sendSignin(ctx context.Context, request *SigninRequest) (res *S
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeSigninRequest(request, r); err != nil {
+	if err := encodeRequestSigninRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -99,9 +148,10 @@ func (c *Client) sendSignin(ctx context.Context, request *SigninRequest) (res *S
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
+
 	defer resp.Body.Close()
 
-	result, err := decodeSigninResponse(resp)
+	result, err := decodeRequestSigninResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
