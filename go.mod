@@ -8,10 +8,11 @@ require (
 	github.com/ogen-go/ogen v1.14.0
 )
 
-// Replace until [0] and [1] is merged.
+// Replace until [0], [1] and [2] is merged.
 // [0]: https://github.com/ogen-go/ogen/pull/1481
 // [1]: https://github.com/ogen-go/ogen/pull/1485
-replace github.com/ogen-go/ogen => github.com/nderjung/ogen v0.0.0-20250628213315-1ee929fb4643
+// [2]: https://github.com/ogen-go/ogen/commit/3e7a7e921081428b7c4fcc2f27eabe14fa8a98ad
+replace github.com/ogen-go/ogen => github.com/nderjung/ogen v0.0.0-20250706211843-3e7a7e921081
 
 require (
 	github.com/dlclark/regexp2 v1.11.5 // indirect

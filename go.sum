@@ -23,8 +23,8 @@ github.com/mattn/go-colorable v0.1.13/go.mod h1:7S9/ev0klgBDR4GtXTXX8a3vIGJpMovk
 github.com/mattn/go-isatty v0.0.16/go.mod h1:kYGgaQfpe5nmfYZH+SKPsOc2e4SrIfOl2e/yFXSvRLM=
 github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWEY=
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
-github.com/nderjung/ogen v0.0.0-20250628213315-1ee929fb4643 h1:f8B39EqnCIKmHNMil7VovGUDQwzrMbAAgq4njCcwrJw=
-github.com/nderjung/ogen v0.0.0-20250628213315-1ee929fb4643/go.mod h1:bNa9s9wVIkZHPFpA0+gMKhk15oO3fc1rRQcQZ4I0n8k=
+github.com/nderjung/ogen v0.0.0-20250706211843-3e7a7e921081 h1:DKU7rr271B3BBJMUCBjsyUhrcYGakSHzZTPvdouzgdQ=
+github.com/nderjung/ogen v0.0.0-20250706211843-3e7a7e921081/go.mod h1:bNa9s9wVIkZHPFpA0+gMKhk15oO3fc1rRQcQZ4I0n8k=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/segmentio/asm v1.2.0 h1:9BQrFxC+YOHJlTlHGkTrFWf59nbL3XnCoFLTwDCI7ys=
