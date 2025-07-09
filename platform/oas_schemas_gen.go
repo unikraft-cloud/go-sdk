@@ -2005,20 +2005,22 @@ func (s *GetCertificatesResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// The response message for retrieving a single image.
 // Ref: #/components/schemas/GetImageResponse
 type GetImageResponse struct {
-	//
-	Status OptString `json:"status"`
-	//
+	// The status of the response.
+	Status OptGetImageResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
 	Message OptString `json:"message"`
-	//
+	// The response data for this request.
 	Data OptGetImageResponseData `json:"data"`
-	//
-	OpTimeUs OptInt64 `json:"op_time_us"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
 }
 
 // GetStatus returns the value of Status.
-func (s *GetImageResponse) GetStatus() OptString {
+func (s *GetImageResponse) GetStatus() OptGetImageResponseStatus {
 	return s.Status
 }
 
@@ -2033,12 +2035,12 @@ func (s *GetImageResponse) GetData() OptGetImageResponseData {
 }
 
 // GetOpTimeUs returns the value of OpTimeUs.
-func (s *GetImageResponse) GetOpTimeUs() OptInt64 {
+func (s *GetImageResponse) GetOpTimeUs() OptUint64 {
 	return s.OpTimeUs
 }
 
 // SetStatus sets the value of Status.
-func (s *GetImageResponse) SetStatus(val OptString) {
+func (s *GetImageResponse) SetStatus(val OptGetImageResponseStatus) {
 	s.Status = val
 }
 
@@ -2053,13 +2055,13 @@ func (s *GetImageResponse) SetData(val OptGetImageResponseData) {
 }
 
 // SetOpTimeUs sets the value of OpTimeUs.
-func (s *GetImageResponse) SetOpTimeUs(val OptInt64) {
+func (s *GetImageResponse) SetOpTimeUs(val OptUint64) {
 	s.OpTimeUs = val
 }
 
 // Ref: #/components/schemas/GetImageResponseData
 type GetImageResponseData struct {
-	//
+	// The instance that was created in this request.
 	Image OptImage `json:"image"`
 }
 
@@ -2071,6 +2073,48 @@ func (s *GetImageResponseData) GetImage() OptImage {
 // SetImage sets the value of Image.
 func (s *GetImageResponseData) SetImage(val OptImage) {
 	s.Image = val
+}
+
+// The status of the response.
+type GetImageResponseStatus string
+
+const (
+	GetImageResponseStatusSuccess GetImageResponseStatus = "success"
+	GetImageResponseStatusError   GetImageResponseStatus = "error"
+)
+
+// AllValues returns all GetImageResponseStatus values.
+func (GetImageResponseStatus) AllValues() []GetImageResponseStatus {
+	return []GetImageResponseStatus{
+		GetImageResponseStatusSuccess,
+		GetImageResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s GetImageResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case GetImageResponseStatusSuccess:
+		return []byte(s), nil
+	case GetImageResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *GetImageResponseStatus) UnmarshalText(data []byte) error {
+	switch GetImageResponseStatus(data) {
+	case GetImageResponseStatusSuccess:
+		*s = GetImageResponseStatusSuccess
+		return nil
+	case GetImageResponseStatusError:
+		*s = GetImageResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // The response message for getting the logs of an instance given its UUID(s) or
@@ -5336,6 +5380,52 @@ func (o OptGetImageResponseData) Get() (v GetImageResponseData, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptGetImageResponseData) Or(d GetImageResponseData) GetImageResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetImageResponseStatus returns new OptGetImageResponseStatus with value set to v.
+func NewOptGetImageResponseStatus(v GetImageResponseStatus) OptGetImageResponseStatus {
+	return OptGetImageResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetImageResponseStatus is optional GetImageResponseStatus.
+type OptGetImageResponseStatus struct {
+	Value GetImageResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptGetImageResponseStatus was set.
+func (o OptGetImageResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetImageResponseStatus) Reset() {
+	var v GetImageResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetImageResponseStatus) SetTo(v GetImageResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetImageResponseStatus) Get() (v GetImageResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetImageResponseStatus) Or(d GetImageResponseStatus) GetImageResponseStatus {
 	if v, ok := o.Get(); ok {
 		return v
 	}
