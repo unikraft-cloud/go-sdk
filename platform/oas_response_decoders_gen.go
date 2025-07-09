@@ -1012,6 +1012,15 @@ func decodeGetImageByDigestResponse(resp *http.Response) (res *GetImageResponse,
 				return res, err
 			}
 
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &response, nil
 
 		default:
@@ -1099,6 +1108,15 @@ func decodeGetImageByTagResponse(resp *http.Response) (res *GetImageResponse, _ 
 				return res, err
 			}
 
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &response, nil
 
 		default:
