@@ -341,7 +341,7 @@ type CreateInstanceRequest struct {
 	//  If not provided, a random name will be generated. The name must be unique.
 	Name OptString `json:"name"`
 	// The image to use for the instance.
-	Image OptString `json:"image"`
+	Image string `json:"image"`
 	// (Optional).  The arguments to pass to the instance when it starts.
 	Args []string `json:"args"`
 	// (Optional).  Environment variables to set for the instance.
@@ -390,7 +390,7 @@ func (s *CreateInstanceRequest) GetName() OptString {
 }
 
 // GetImage returns the value of Image.
-func (s *CreateInstanceRequest) GetImage() OptString {
+func (s *CreateInstanceRequest) GetImage() string {
 	return s.Image
 }
 
@@ -460,7 +460,7 @@ func (s *CreateInstanceRequest) SetName(val OptString) {
 }
 
 // SetImage sets the value of Image.
-func (s *CreateInstanceRequest) SetImage(val OptString) {
+func (s *CreateInstanceRequest) SetImage(val string) {
 	s.Image = val
 }
 
@@ -579,14 +579,14 @@ type CreateInstanceRequestDomain struct {
 	//  Domain Name (FQDN), e.g. `example.com.`; otherwise it will become a
 	//  subdomain of the target metro, e.g. `example` becomes
 	//  `example.fra0.unikraft.app`.
-	Name OptString `json:"name"`
+	Name string `json:"name"`
 	// Use an existing certificate for the domain.  If this field is specified,
 	//  the domain must be associated with a valid certificate.
 	Certificate OptCreateInstanceRequestCertificate `json:"certificate"`
 }
 
 // GetName returns the value of Name.
-func (s *CreateInstanceRequestDomain) GetName() OptString {
+func (s *CreateInstanceRequestDomain) GetName() string {
 	return s.Name
 }
 
@@ -596,7 +596,7 @@ func (s *CreateInstanceRequestDomain) GetCertificate() OptCreateInstanceRequestC
 }
 
 // SetName sets the value of Name.
-func (s *CreateInstanceRequestDomain) SetName(val OptString) {
+func (s *CreateInstanceRequestDomain) SetName(val string) {
 	s.Name = val
 }
 
@@ -777,7 +777,7 @@ type CreateInstanceRequestVolume struct {
 	//  specify the size of the volume in MiB.
 	SizeMB OptInt64 `json:"size_mb"`
 	// The mount point for the volume in the instance.
-	At OptString `json:"at"`
+	At string `json:"at"`
 	// Whether the volume is read-only.
 	//
 	//  If this field is set to true, the volume will be mounted as read-only in
@@ -802,7 +802,7 @@ func (s *CreateInstanceRequestVolume) GetSizeMB() OptInt64 {
 }
 
 // GetAt returns the value of At.
-func (s *CreateInstanceRequestVolume) GetAt() OptString {
+func (s *CreateInstanceRequestVolume) GetAt() string {
 	return s.At
 }
 
@@ -827,7 +827,7 @@ func (s *CreateInstanceRequestVolume) SetSizeMB(val OptInt64) {
 }
 
 // SetAt sets the value of At.
-func (s *CreateInstanceRequestVolume) SetAt(val OptString) {
+func (s *CreateInstanceRequestVolume) SetAt(val string) {
 	s.At = val
 }
 

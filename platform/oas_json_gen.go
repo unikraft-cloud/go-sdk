@@ -3,12 +3,15 @@
 package platform
 
 import (
+	"math/bits"
+	"strconv"
 	"time"
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
 
 	"github.com/ogen-go/ogen/json"
+	"github.com/ogen-go/ogen/validate"
 )
 
 // Encode implements json.Marshaler.
@@ -542,10 +545,8 @@ func (s *CreateInstanceRequest) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
-		if s.Image.Set {
-			e.FieldStart("image")
-			s.Image.Encode(e)
-		}
+		e.FieldStart("image")
+		e.Str(s.Image)
 	}
 	{
 		if s.Args != nil {
@@ -655,6 +656,7 @@ func (s *CreateInstanceRequest) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode CreateInstanceRequest to nil")
 	}
+	var requiredBitSet [2]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
@@ -669,9 +671,11 @@ func (s *CreateInstanceRequest) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
 		case "image":
+			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				s.Image.Reset()
-				if err := s.Image.Decode(d); err != nil {
+				v, err := d.Str()
+				s.Image = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -828,6 +832,39 @@ func (s *CreateInstanceRequest) Decode(d *jx.Decoder) error {
 	}); err != nil {
 		return errors.Wrap(err, "decode CreateInstanceRequest")
 	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b00000010,
+		0b00000000,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfCreateInstanceRequest) {
+					name = jsonFieldsNameOfCreateInstanceRequest[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
 
 	return nil
 }
@@ -935,10 +972,8 @@ func (s *CreateInstanceRequestDomain) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *CreateInstanceRequestDomain) encodeFields(e *jx.Encoder) {
 	{
-		if s.Name.Set {
-			e.FieldStart("name")
-			s.Name.Encode(e)
-		}
+		e.FieldStart("name")
+		e.Str(s.Name)
 	}
 	{
 		if s.Certificate.Set {
@@ -958,13 +993,16 @@ func (s *CreateInstanceRequestDomain) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode CreateInstanceRequestDomain to nil")
 	}
+	var requiredBitSet [1]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
 		case "name":
+			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				s.Name.Reset()
-				if err := s.Name.Decode(d); err != nil {
+				v, err := d.Str()
+				s.Name = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -987,6 +1025,38 @@ func (s *CreateInstanceRequestDomain) Decode(d *jx.Decoder) error {
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "decode CreateInstanceRequestDomain")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfCreateInstanceRequestDomain) {
+					name = jsonFieldsNameOfCreateInstanceRequestDomain[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
 	}
 
 	return nil
@@ -1277,10 +1347,8 @@ func (s *CreateInstanceRequestVolume) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
-		if s.At.Set {
-			e.FieldStart("at")
-			s.At.Encode(e)
-		}
+		e.FieldStart("at")
+		e.Str(s.At)
 	}
 	{
 		if s.ReadOnly.Set {
@@ -1303,6 +1371,7 @@ func (s *CreateInstanceRequestVolume) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode CreateInstanceRequestVolume to nil")
 	}
+	var requiredBitSet [1]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
@@ -1337,9 +1406,11 @@ func (s *CreateInstanceRequestVolume) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"size_mb\"")
 			}
 		case "at":
+			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
-				s.At.Reset()
-				if err := s.At.Decode(d); err != nil {
+				v, err := d.Str()
+				s.At = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -1362,6 +1433,38 @@ func (s *CreateInstanceRequestVolume) Decode(d *jx.Decoder) error {
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "decode CreateInstanceRequestVolume")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00001000,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfCreateInstanceRequestVolume) {
+					name = jsonFieldsNameOfCreateInstanceRequestVolume[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
 	}
 
 	return nil
