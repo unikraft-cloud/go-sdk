@@ -27,13 +27,13 @@ type Invoker interface {
 	// Upload a new certificate with the given configuration.
 	//
 	// POST /v1/certificates
-	CreateCertificate(ctx context.Context, request *CreateCertificateRequest) (*CreateCertificateResponse, error)
+	CreateCertificate(ctx context.Context, request *CreateCertificateRequest) (*CreateCertificateResponseStatusCode, error)
 	// CreateInstance invokes CreateInstance operation.
 	//
 	// Creates one or more new instances.
 	//
 	// POST /v1/instances
-	CreateInstance(ctx context.Context, request *CreateInstanceRequest) (*CreateInstanceResponse, error)
+	CreateInstance(ctx context.Context, request *CreateInstanceRequest) (*CreateInstanceResponseStatusCode, error)
 	// CreateServiceGroup invokes CreateServiceGroup operation.
 	//
 	// Create a new service with the given configuration.
@@ -44,21 +44,21 @@ type Invoker interface {
 	//  is handled. See Connection Handlers for a complete overview.
 	//
 	// POST /v1/services
-	CreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (*CreateServiceGroupResponse, error)
+	CreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (*CreateServiceGroupResponseStatusCode, error)
 	// DeleteCertificateByUUID invokes DeleteCertificateByUUID operation.
 	//
 	// Delete the specified certificate(s).  After this call the name of the
 	//  certificate(s) are no longer valid.
 	//
 	// DELETE /v1/certificates/{uuid}
-	DeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (*DeleteCertificatesResponse, error)
+	DeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (*DeleteCertificatesResponseStatusCode, error)
 	// DeleteCertificates invokes DeleteCertificates operation.
 	//
 	// Delete a specified certificate by its UUID.  After this call the UUID of
 	//  the certificate are no longer valid.
 	//
 	// DELETE /v1/certificates
-	DeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (*DeleteCertificatesResponse, error)
+	DeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (*DeleteCertificatesResponseStatusCode, error)
 	// DeleteInstanceByUUID invokes DeleteInstanceByUUID operation.
 	//
 	// Delete a specified instance by its UUID.  After this call the UUID of the
@@ -66,117 +66,117 @@ type Invoker interface {
 	//  they are force stopped.
 	//
 	// DELETE /v1/instances/{uuid}
-	DeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (*DeleteInstancesResponse, error)
+	DeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (*DeleteInstancesResponseStatusCode, error)
 	// DeleteServiceGroupByUUID invokes DeleteServiceGroupByUUID operation.
 	//
 	// Delete the specified service group(s).  After this call the name of the
 	//  service group(s) are no longer valid.
 	//
 	// DELETE /v1/services/{uuid}
-	DeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (*DeleteServiceGroupsResponse, error)
+	DeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (*DeleteServiceGroupsResponseStatusCode, error)
 	// DeleteServiceGroups invokes DeleteServiceGroups operation.
 	//
 	// Delete a specified service group by its UUID.  After this call the UUID of
 	//  the service group are no longer valid.
 	//
 	// DELETE /v1/services
-	DeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (*DeleteServiceGroupsResponse, error)
+	DeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (*DeleteServiceGroupsResponseStatusCode, error)
 	// GetCertificateByUUID invokes GetCertificateByUUID operation.
 	//
 	// Get a specified certificate by its UUID.
 	//
 	// GET /v1/certificates/{uuid}
-	GetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (*GetCertificatesResponse, error)
+	GetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (*GetCertificatesResponseStatusCode, error)
 	// GetCertificates invokes GetCertificates operation.
 	//
 	// Get one or many certificates with their current status and configuration.
 	//  It's possible to filter this list by name or UUID.
 	//
 	// GET /v1/certificates
-	GetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (*GetCertificatesResponse, error)
+	GetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (*GetCertificatesResponseStatusCode, error)
 	// GetImageByDigest invokes GetImageByDigest operation.
 	//
 	// GetImageByDigest retrieves an image by its digest.
 	//
 	// GET /v1/images/digest/{digest}
-	GetImageByDigest(ctx context.Context, params GetImageByDigestParams) (*GetImageResponse, error)
+	GetImageByDigest(ctx context.Context, params GetImageByDigestParams) (*GetImageResponseStatusCode, error)
 	// GetImageByTag invokes GetImageByTag operation.
 	//
 	// GetImageByTag retrieves an image by its tag.
 	//
 	// GET /v1/images/tag/{tag}
-	GetImageByTag(ctx context.Context, params GetImageByTagParams) (*GetImageResponse, error)
+	GetImageByTag(ctx context.Context, params GetImageByTagParams) (*GetImageResponseStatusCode, error)
 	// GetInstanceByUUID invokes GetInstanceByUUID operation.
 	//
 	// Get a single instance by its ID which can either be its name or UUID.
 	//
 	// GET /v1/instances/{uuid}
-	GetInstanceByUUID(ctx context.Context, params GetInstanceByUUIDParams) (*GetInstancesResponse, error)
+	GetInstanceByUUID(ctx context.Context, params GetInstanceByUUIDParams) (*GetInstancesResponseStatusCode, error)
 	// GetInstanceLogs invokes GetInstanceLogs operation.
 	//
 	// Retrieve the logs of an instance by its UUID or name.
 	//
 	// PUT /v1/instances/logs
-	GetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (*GetInstanceLogsResponse, error)
+	GetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (*GetInstanceLogsResponseStatusCode, error)
 	// GetInstanceLogsByUUID invokes GetInstanceLogsByUUID operation.
 	//
 	// Retrieve the logs of an instance by its UUID.
 	//
 	// PUT /v1/instances/{uuid}/logs
-	GetInstanceLogsByUUID(ctx context.Context, params GetInstanceLogsByUUIDParams) (*GetInstanceLogsResponse, error)
+	GetInstanceLogsByUUID(ctx context.Context, params GetInstanceLogsByUUIDParams) (*GetInstanceLogsResponseStatusCode, error)
 	// GetInstanceMetrics invokes GetInstanceMetrics operation.
 	//
 	// Get the metrics of an instance by its UUID or name.
 	//
 	// PUT /v1/instances/metrics
-	GetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (*GetInstanceMetricsResponse, error)
+	GetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (*GetInstanceMetricsResponseStatusCode, error)
 	// GetInstanceMetricsByUUID invokes GetInstanceMetricsByUUID operation.
 	//
 	// Get the metrics of an instance by its UUID.
 	//
 	// PUT /v1/instances/{uuid}/metrics
-	GetInstanceMetricsByUUID(ctx context.Context, params GetInstanceMetricsByUUIDParams) (*GetInstanceMetricsResponse, error)
+	GetInstanceMetricsByUUID(ctx context.Context, params GetInstanceMetricsByUUIDParams) (*GetInstanceMetricsResponseStatusCode, error)
 	// GetInstances invokes GetInstances operation.
 	//
 	// Get one or many instances with their current status and configuration.
 	//  It's possible to filter this list by name or UUID.
 	//
 	// GET /v1/instances
-	GetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (*GetInstancesResponse, error)
+	GetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (*GetInstancesResponseStatusCode, error)
 	// GetServiceGroupByUUID invokes GetServiceGroupByUUID operation.
 	//
 	// Get a specified service group by its UUID.
 	//
 	// GET /v1/services/{uuid}
-	GetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (*GetServiceGroupsResponse, error)
+	GetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (*GetServiceGroupsResponseStatusCode, error)
 	// GetServiceGroups invokes GetServiceGroups operation.
 	//
 	// Get one or many service groups with their current status and configuration.
 	//  It's possible to filter this list by name or UUID.
 	//
 	// GET /v1/services
-	GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (*GetServiceGroupsResponse, error)
+	GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (*GetServiceGroupsResponseStatusCode, error)
 	// StartInstanceByUUID invokes StartInstanceByUUID operation.
 	//
 	// Starts previously stopped instance by its UUID or does nothing if the
 	//  instance is already running.
 	//
 	// PUT /v1/instances/{uuid}/start
-	StartInstanceByUUID(ctx context.Context, params StartInstanceByUUIDParams) (*StartInstanceResponse, error)
+	StartInstanceByUUID(ctx context.Context, params StartInstanceByUUIDParams) (*StartInstanceResponseStatusCode, error)
 	// StopInstanceByUUID invokes StopInstanceByUUID operation.
 	//
 	// Stops a running instance by its UUID or does nothing if the instance is
 	//  already stopped.
 	//
 	// PUT /v1/instances/{uuid}/stop
-	StopInstanceByUUID(ctx context.Context, params StopInstanceByUUIDParams) (*StopInstanceResponse, error)
+	StopInstanceByUUID(ctx context.Context, params StopInstanceByUUIDParams) (*StopInstanceResponseStatusCode, error)
 	// StopInstances invokes StopInstances operation.
 	//
 	// Stops one or more running instance by their UUID(s) or name(s) or does
 	//  nothing if the instance is already stopped.
 	//
 	// PUT /v1/instances/stop
-	StopInstances(ctx context.Context, request []StopInstancesRequestID, params StopInstancesParams) (*StopInstanceResponse, error)
+	StopInstances(ctx context.Context, request []StopInstancesRequestID, params StopInstancesParams) (*StopInstanceResponseStatusCode, error)
 	// WaitInstanceByUUID invokes WaitInstanceByUUID operation.
 	//
 	// Waits for an instance to reach a certain state by its UUID.
@@ -189,7 +189,7 @@ type Invoker interface {
 	//  instance reaches the desired state.
 	//
 	// GET /v1/instances/{uuid}/wait
-	WaitInstanceByUUID(ctx context.Context, params WaitInstanceByUUIDParams) (*WaitInstanceResponse, error)
+	WaitInstanceByUUID(ctx context.Context, params WaitInstanceByUUIDParams) (*WaitInstanceResponseStatusCode, error)
 	// WaitInstances invokes WaitInstances operation.
 	//
 	// Waits for an instance to reach a certain state by its UUID or name.
@@ -202,7 +202,7 @@ type Invoker interface {
 	//  instance reaches the desired state.
 	//
 	// GET /v1/instances/wait
-	WaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (*WaitInstanceResponse, error)
+	WaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (*WaitInstanceResponseStatusCode, error)
 }
 
 // Client implements OAS client.
@@ -251,12 +251,12 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 // Upload a new certificate with the given configuration.
 //
 // POST /v1/certificates
-func (c *Client) CreateCertificate(ctx context.Context, request *CreateCertificateRequest) (*CreateCertificateResponse, error) {
+func (c *Client) CreateCertificate(ctx context.Context, request *CreateCertificateRequest) (*CreateCertificateResponseStatusCode, error) {
 	res, err := c.sendCreateCertificate(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendCreateCertificate(ctx context.Context, request *CreateCertificateRequest) (res *CreateCertificateResponse, err error) {
+func (c *Client) sendCreateCertificate(ctx context.Context, request *CreateCertificateRequest) (res *CreateCertificateResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -324,12 +324,12 @@ func (c *Client) sendCreateCertificate(ctx context.Context, request *CreateCerti
 // Creates one or more new instances.
 //
 // POST /v1/instances
-func (c *Client) CreateInstance(ctx context.Context, request *CreateInstanceRequest) (*CreateInstanceResponse, error) {
+func (c *Client) CreateInstance(ctx context.Context, request *CreateInstanceRequest) (*CreateInstanceResponseStatusCode, error) {
 	res, err := c.sendCreateInstance(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendCreateInstance(ctx context.Context, request *CreateInstanceRequest) (res *CreateInstanceResponse, err error) {
+func (c *Client) sendCreateInstance(ctx context.Context, request *CreateInstanceRequest) (res *CreateInstanceResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -402,12 +402,12 @@ func (c *Client) sendCreateInstance(ctx context.Context, request *CreateInstance
 //	is handled. See Connection Handlers for a complete overview.
 //
 // POST /v1/services
-func (c *Client) CreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (*CreateServiceGroupResponse, error) {
+func (c *Client) CreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (*CreateServiceGroupResponseStatusCode, error) {
 	res, err := c.sendCreateServiceGroup(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendCreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (res *CreateServiceGroupResponse, err error) {
+func (c *Client) sendCreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (res *CreateServiceGroupResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -477,12 +477,12 @@ func (c *Client) sendCreateServiceGroup(ctx context.Context, request *CreateServ
 //	certificate(s) are no longer valid.
 //
 // DELETE /v1/certificates/{uuid}
-func (c *Client) DeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (*DeleteCertificatesResponse, error) {
+func (c *Client) DeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (*DeleteCertificatesResponseStatusCode, error) {
 	res, err := c.sendDeleteCertificateByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendDeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (res *DeleteCertificatesResponse, err error) {
+func (c *Client) sendDeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (res *DeleteCertificatesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -567,12 +567,12 @@ func (c *Client) sendDeleteCertificateByUUID(ctx context.Context, params DeleteC
 //	the certificate are no longer valid.
 //
 // DELETE /v1/certificates
-func (c *Client) DeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (*DeleteCertificatesResponse, error) {
+func (c *Client) DeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (*DeleteCertificatesResponseStatusCode, error) {
 	res, err := c.sendDeleteCertificates(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendDeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (res *DeleteCertificatesResponse, err error) {
+func (c *Client) sendDeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (res *DeleteCertificatesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -643,12 +643,12 @@ func (c *Client) sendDeleteCertificates(ctx context.Context, request []DeleteCer
 //	they are force stopped.
 //
 // DELETE /v1/instances/{uuid}
-func (c *Client) DeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (*DeleteInstancesResponse, error) {
+func (c *Client) DeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (*DeleteInstancesResponseStatusCode, error) {
 	res, err := c.sendDeleteInstanceByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendDeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (res *DeleteInstancesResponse, err error) {
+func (c *Client) sendDeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (res *DeleteInstancesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -733,12 +733,12 @@ func (c *Client) sendDeleteInstanceByUUID(ctx context.Context, params DeleteInst
 //	service group(s) are no longer valid.
 //
 // DELETE /v1/services/{uuid}
-func (c *Client) DeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (*DeleteServiceGroupsResponse, error) {
+func (c *Client) DeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (*DeleteServiceGroupsResponseStatusCode, error) {
 	res, err := c.sendDeleteServiceGroupByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendDeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (res *DeleteServiceGroupsResponse, err error) {
+func (c *Client) sendDeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (res *DeleteServiceGroupsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -823,12 +823,12 @@ func (c *Client) sendDeleteServiceGroupByUUID(ctx context.Context, params Delete
 //	the service group are no longer valid.
 //
 // DELETE /v1/services
-func (c *Client) DeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (*DeleteServiceGroupsResponse, error) {
+func (c *Client) DeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (*DeleteServiceGroupsResponseStatusCode, error) {
 	res, err := c.sendDeleteServiceGroups(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendDeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (res *DeleteServiceGroupsResponse, err error) {
+func (c *Client) sendDeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (res *DeleteServiceGroupsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -896,12 +896,12 @@ func (c *Client) sendDeleteServiceGroups(ctx context.Context, request []DeleteSe
 // Get a specified certificate by its UUID.
 //
 // GET /v1/certificates/{uuid}
-func (c *Client) GetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (*GetCertificatesResponse, error) {
+func (c *Client) GetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (*GetCertificatesResponseStatusCode, error) {
 	res, err := c.sendGetCertificateByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (res *GetCertificatesResponse, err error) {
+func (c *Client) sendGetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (res *GetCertificatesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -986,12 +986,12 @@ func (c *Client) sendGetCertificateByUUID(ctx context.Context, params GetCertifi
 //	It's possible to filter this list by name or UUID.
 //
 // GET /v1/certificates
-func (c *Client) GetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (*GetCertificatesResponse, error) {
+func (c *Client) GetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (*GetCertificatesResponseStatusCode, error) {
 	res, err := c.sendGetCertificates(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendGetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (res *GetCertificatesResponse, err error) {
+func (c *Client) sendGetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (res *GetCertificatesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -1079,12 +1079,12 @@ func (c *Client) sendGetCertificates(ctx context.Context, request []GetCertifica
 // GetImageByDigest retrieves an image by its digest.
 //
 // GET /v1/images/digest/{digest}
-func (c *Client) GetImageByDigest(ctx context.Context, params GetImageByDigestParams) (*GetImageResponse, error) {
+func (c *Client) GetImageByDigest(ctx context.Context, params GetImageByDigestParams) (*GetImageResponseStatusCode, error) {
 	res, err := c.sendGetImageByDigest(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetImageByDigest(ctx context.Context, params GetImageByDigestParams) (res *GetImageResponse, err error) {
+func (c *Client) sendGetImageByDigest(ctx context.Context, params GetImageByDigestParams) (res *GetImageResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -1167,12 +1167,12 @@ func (c *Client) sendGetImageByDigest(ctx context.Context, params GetImageByDige
 // GetImageByTag retrieves an image by its tag.
 //
 // GET /v1/images/tag/{tag}
-func (c *Client) GetImageByTag(ctx context.Context, params GetImageByTagParams) (*GetImageResponse, error) {
+func (c *Client) GetImageByTag(ctx context.Context, params GetImageByTagParams) (*GetImageResponseStatusCode, error) {
 	res, err := c.sendGetImageByTag(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetImageByTag(ctx context.Context, params GetImageByTagParams) (res *GetImageResponse, err error) {
+func (c *Client) sendGetImageByTag(ctx context.Context, params GetImageByTagParams) (res *GetImageResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -1255,12 +1255,12 @@ func (c *Client) sendGetImageByTag(ctx context.Context, params GetImageByTagPara
 // Get a single instance by its ID which can either be its name or UUID.
 //
 // GET /v1/instances/{uuid}
-func (c *Client) GetInstanceByUUID(ctx context.Context, params GetInstanceByUUIDParams) (*GetInstancesResponse, error) {
+func (c *Client) GetInstanceByUUID(ctx context.Context, params GetInstanceByUUIDParams) (*GetInstancesResponseStatusCode, error) {
 	res, err := c.sendGetInstanceByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstanceByUUID(ctx context.Context, params GetInstanceByUUIDParams) (res *GetInstancesResponse, err error) {
+func (c *Client) sendGetInstanceByUUID(ctx context.Context, params GetInstanceByUUIDParams) (res *GetInstancesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -1343,12 +1343,12 @@ func (c *Client) sendGetInstanceByUUID(ctx context.Context, params GetInstanceBy
 // Retrieve the logs of an instance by its UUID or name.
 //
 // PUT /v1/instances/logs
-func (c *Client) GetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (*GetInstanceLogsResponse, error) {
+func (c *Client) GetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (*GetInstanceLogsResponseStatusCode, error) {
 	res, err := c.sendGetInstanceLogs(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (res *GetInstanceLogsResponse, err error) {
+func (c *Client) sendGetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (res *GetInstanceLogsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -1484,12 +1484,12 @@ func (c *Client) sendGetInstanceLogs(ctx context.Context, params GetInstanceLogs
 // Retrieve the logs of an instance by its UUID.
 //
 // PUT /v1/instances/{uuid}/logs
-func (c *Client) GetInstanceLogsByUUID(ctx context.Context, params GetInstanceLogsByUUIDParams) (*GetInstanceLogsResponse, error) {
+func (c *Client) GetInstanceLogsByUUID(ctx context.Context, params GetInstanceLogsByUUIDParams) (*GetInstanceLogsResponseStatusCode, error) {
 	res, err := c.sendGetInstanceLogsByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstanceLogsByUUID(ctx context.Context, params GetInstanceLogsByUUIDParams) (res *GetInstanceLogsResponse, err error) {
+func (c *Client) sendGetInstanceLogsByUUID(ctx context.Context, params GetInstanceLogsByUUIDParams) (res *GetInstanceLogsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
@@ -1610,12 +1610,12 @@ func (c *Client) sendGetInstanceLogsByUUID(ctx context.Context, params GetInstan
 // Get the metrics of an instance by its UUID or name.
 //
 // PUT /v1/instances/metrics
-func (c *Client) GetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (*GetInstanceMetricsResponse, error) {
+func (c *Client) GetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (*GetInstanceMetricsResponseStatusCode, error) {
 	res, err := c.sendGetInstanceMetrics(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (res *GetInstanceMetricsResponse, err error) {
+func (c *Client) sendGetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (res *GetInstanceMetricsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -1717,12 +1717,12 @@ func (c *Client) sendGetInstanceMetrics(ctx context.Context, params GetInstanceM
 // Get the metrics of an instance by its UUID.
 //
 // PUT /v1/instances/{uuid}/metrics
-func (c *Client) GetInstanceMetricsByUUID(ctx context.Context, params GetInstanceMetricsByUUIDParams) (*GetInstanceMetricsResponse, error) {
+func (c *Client) GetInstanceMetricsByUUID(ctx context.Context, params GetInstanceMetricsByUUIDParams) (*GetInstanceMetricsResponseStatusCode, error) {
 	res, err := c.sendGetInstanceMetricsByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstanceMetricsByUUID(ctx context.Context, params GetInstanceMetricsByUUIDParams) (res *GetInstanceMetricsResponse, err error) {
+func (c *Client) sendGetInstanceMetricsByUUID(ctx context.Context, params GetInstanceMetricsByUUIDParams) (res *GetInstanceMetricsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
@@ -1808,12 +1808,12 @@ func (c *Client) sendGetInstanceMetricsByUUID(ctx context.Context, params GetIns
 //	It's possible to filter this list by name or UUID.
 //
 // GET /v1/instances
-func (c *Client) GetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (*GetInstancesResponse, error) {
+func (c *Client) GetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (*GetInstancesResponseStatusCode, error) {
 	res, err := c.sendGetInstances(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (res *GetInstancesResponse, err error) {
+func (c *Client) sendGetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (res *GetInstancesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -1918,12 +1918,12 @@ func (c *Client) sendGetInstances(ctx context.Context, request []GetInstancesReq
 // Get a specified service group by its UUID.
 //
 // GET /v1/services/{uuid}
-func (c *Client) GetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (*GetServiceGroupsResponse, error) {
+func (c *Client) GetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (*GetServiceGroupsResponseStatusCode, error) {
 	res, err := c.sendGetServiceGroupByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (res *GetServiceGroupsResponse, err error) {
+func (c *Client) sendGetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (res *GetServiceGroupsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -2008,12 +2008,12 @@ func (c *Client) sendGetServiceGroupByUUID(ctx context.Context, params GetServic
 //	It's possible to filter this list by name or UUID.
 //
 // GET /v1/services
-func (c *Client) GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (*GetServiceGroupsResponse, error) {
+func (c *Client) GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (*GetServiceGroupsResponseStatusCode, error) {
 	res, err := c.sendGetServiceGroups(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendGetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (res *GetServiceGroupsResponse, err error) {
+func (c *Client) sendGetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (res *GetServiceGroupsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -2103,12 +2103,12 @@ func (c *Client) sendGetServiceGroups(ctx context.Context, request []GetServiceG
 //	instance is already running.
 //
 // PUT /v1/instances/{uuid}/start
-func (c *Client) StartInstanceByUUID(ctx context.Context, params StartInstanceByUUIDParams) (*StartInstanceResponse, error) {
+func (c *Client) StartInstanceByUUID(ctx context.Context, params StartInstanceByUUIDParams) (*StartInstanceResponseStatusCode, error) {
 	res, err := c.sendStartInstanceByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendStartInstanceByUUID(ctx context.Context, params StartInstanceByUUIDParams) (res *StartInstanceResponse, err error) {
+func (c *Client) sendStartInstanceByUUID(ctx context.Context, params StartInstanceByUUIDParams) (res *StartInstanceResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
@@ -2194,12 +2194,12 @@ func (c *Client) sendStartInstanceByUUID(ctx context.Context, params StartInstan
 //	already stopped.
 //
 // PUT /v1/instances/{uuid}/stop
-func (c *Client) StopInstanceByUUID(ctx context.Context, params StopInstanceByUUIDParams) (*StopInstanceResponse, error) {
+func (c *Client) StopInstanceByUUID(ctx context.Context, params StopInstanceByUUIDParams) (*StopInstanceResponseStatusCode, error) {
 	res, err := c.sendStopInstanceByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendStopInstanceByUUID(ctx context.Context, params StopInstanceByUUIDParams) (res *StopInstanceResponse, err error) {
+func (c *Client) sendStopInstanceByUUID(ctx context.Context, params StopInstanceByUUIDParams) (res *StopInstanceResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
@@ -2322,12 +2322,12 @@ func (c *Client) sendStopInstanceByUUID(ctx context.Context, params StopInstance
 //	nothing if the instance is already stopped.
 //
 // PUT /v1/instances/stop
-func (c *Client) StopInstances(ctx context.Context, request []StopInstancesRequestID, params StopInstancesParams) (*StopInstanceResponse, error) {
+func (c *Client) StopInstances(ctx context.Context, request []StopInstancesRequestID, params StopInstancesParams) (*StopInstanceResponseStatusCode, error) {
 	res, err := c.sendStopInstances(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendStopInstances(ctx context.Context, request []StopInstancesRequestID, params StopInstancesParams) (res *StopInstanceResponse, err error) {
+func (c *Client) sendStopInstances(ctx context.Context, request []StopInstancesRequestID, params StopInstancesParams) (res *StopInstanceResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -2439,12 +2439,12 @@ func (c *Client) sendStopInstances(ctx context.Context, request []StopInstancesR
 //	instance reaches the desired state.
 //
 // GET /v1/instances/{uuid}/wait
-func (c *Client) WaitInstanceByUUID(ctx context.Context, params WaitInstanceByUUIDParams) (*WaitInstanceResponse, error) {
+func (c *Client) WaitInstanceByUUID(ctx context.Context, params WaitInstanceByUUIDParams) (*WaitInstanceResponseStatusCode, error) {
 	res, err := c.sendWaitInstanceByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendWaitInstanceByUUID(ctx context.Context, params WaitInstanceByUUIDParams) (res *WaitInstanceResponse, err error) {
+func (c *Client) sendWaitInstanceByUUID(ctx context.Context, params WaitInstanceByUUIDParams) (res *WaitInstanceResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
@@ -2572,12 +2572,12 @@ func (c *Client) sendWaitInstanceByUUID(ctx context.Context, params WaitInstance
 //	instance reaches the desired state.
 //
 // GET /v1/instances/wait
-func (c *Client) WaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (*WaitInstanceResponse, error) {
+func (c *Client) WaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (*WaitInstanceResponseStatusCode, error) {
 	res, err := c.sendWaitInstances(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendWaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (res *WaitInstanceResponse, err error) {
+func (c *Client) sendWaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (res *WaitInstanceResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string

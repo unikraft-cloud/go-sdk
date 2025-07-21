@@ -3,12 +3,15 @@
 package platform
 
 import (
+	"math/bits"
+	"strconv"
 	"time"
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
 
 	"github.com/ogen-go/ogen/json"
+	"github.com/ogen-go/ogen/validate"
 )
 
 // Encode implements json.Marshaler.
@@ -542,10 +545,8 @@ func (s *CreateInstanceRequest) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
-		if s.Image.Set {
-			e.FieldStart("image")
-			s.Image.Encode(e)
-		}
+		e.FieldStart("image")
+		e.Str(s.Image)
 	}
 	{
 		if s.Args != nil {
@@ -655,6 +656,7 @@ func (s *CreateInstanceRequest) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode CreateInstanceRequest to nil")
 	}
+	var requiredBitSet [2]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
@@ -669,9 +671,11 @@ func (s *CreateInstanceRequest) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
 		case "image":
+			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				s.Image.Reset()
-				if err := s.Image.Decode(d); err != nil {
+				v, err := d.Str()
+				s.Image = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -828,6 +832,39 @@ func (s *CreateInstanceRequest) Decode(d *jx.Decoder) error {
 	}); err != nil {
 		return errors.Wrap(err, "decode CreateInstanceRequest")
 	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b00000010,
+		0b00000000,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfCreateInstanceRequest) {
+					name = jsonFieldsNameOfCreateInstanceRequest[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
 
 	return nil
 }
@@ -935,10 +972,8 @@ func (s *CreateInstanceRequestDomain) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *CreateInstanceRequestDomain) encodeFields(e *jx.Encoder) {
 	{
-		if s.Name.Set {
-			e.FieldStart("name")
-			s.Name.Encode(e)
-		}
+		e.FieldStart("name")
+		e.Str(s.Name)
 	}
 	{
 		if s.Certificate.Set {
@@ -958,13 +993,16 @@ func (s *CreateInstanceRequestDomain) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode CreateInstanceRequestDomain to nil")
 	}
+	var requiredBitSet [1]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
 		case "name":
+			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				s.Name.Reset()
-				if err := s.Name.Decode(d); err != nil {
+				v, err := d.Str()
+				s.Name = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -987,6 +1025,38 @@ func (s *CreateInstanceRequestDomain) Decode(d *jx.Decoder) error {
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "decode CreateInstanceRequestDomain")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfCreateInstanceRequestDomain) {
+					name = jsonFieldsNameOfCreateInstanceRequestDomain[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
 	}
 
 	return nil
@@ -1277,10 +1347,8 @@ func (s *CreateInstanceRequestVolume) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
-		if s.At.Set {
-			e.FieldStart("at")
-			s.At.Encode(e)
-		}
+		e.FieldStart("at")
+		e.Str(s.At)
 	}
 	{
 		if s.ReadOnly.Set {
@@ -1303,6 +1371,7 @@ func (s *CreateInstanceRequestVolume) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode CreateInstanceRequestVolume to nil")
 	}
+	var requiredBitSet [1]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
@@ -1337,9 +1406,11 @@ func (s *CreateInstanceRequestVolume) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"size_mb\"")
 			}
 		case "at":
+			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
-				s.At.Reset()
-				if err := s.At.Decode(d); err != nil {
+				v, err := d.Str()
+				s.At = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -1362,6 +1433,38 @@ func (s *CreateInstanceRequestVolume) Decode(d *jx.Decoder) error {
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "decode CreateInstanceRequestVolume")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00001000,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfCreateInstanceRequestVolume) {
+					name = jsonFieldsNameOfCreateInstanceRequestVolume[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
 	}
 
 	return nil
@@ -5441,146 +5544,6 @@ func (s GetServiceGroupsResponseStatus) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *GetServiceGroupsResponseStatus) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
-func (s *GoogleProtobufAny) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *GoogleProtobufAny) encodeFields(e *jx.Encoder) {
-	{
-		if s.Type.Set {
-			e.FieldStart("@type")
-			s.Type.Encode(e)
-		}
-	}
-	for k, elem := range s.AdditionalProps {
-		e.FieldStart(k)
-
-		if len(elem) != 0 {
-			e.Raw(elem)
-		}
-	}
-}
-
-var jsonFieldsNameOfGoogleProtobufAny = [1]string{
-	0: "@type",
-}
-
-// Decode decodes GoogleProtobufAny from json.
-func (s *GoogleProtobufAny) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode GoogleProtobufAny to nil")
-	}
-	s.AdditionalProps = map[string]jx.Raw{}
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "@type":
-			if err := func() error {
-				s.Type.Reset()
-				if err := s.Type.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"@type\"")
-			}
-		default:
-			var elem jx.Raw
-			if err := func() error {
-				v, err := d.RawAppend(nil)
-				elem = jx.Raw(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrapf(err, "decode field %q", k)
-			}
-			s.AdditionalProps[string(k)] = elem
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode GoogleProtobufAny")
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *GoogleProtobufAny) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *GoogleProtobufAny) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
-func (s GoogleProtobufAnyAdditional) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields implements json.Marshaler.
-func (s GoogleProtobufAnyAdditional) encodeFields(e *jx.Encoder) {
-	for k, elem := range s {
-		e.FieldStart(k)
-
-		if len(elem) != 0 {
-			e.Raw(elem)
-		}
-	}
-}
-
-// Decode decodes GoogleProtobufAnyAdditional from json.
-func (s *GoogleProtobufAnyAdditional) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode GoogleProtobufAnyAdditional to nil")
-	}
-	m := s.init()
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		var elem jx.Raw
-		if err := func() error {
-			v, err := d.RawAppend(nil)
-			elem = jx.Raw(v)
-			if err != nil {
-				return err
-			}
-			return nil
-		}(); err != nil {
-			return errors.Wrapf(err, "decode field %q", k)
-		}
-		m[string(k)] = elem
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode GoogleProtobufAnyAdditional")
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s GoogleProtobufAnyAdditional) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *GoogleProtobufAnyAdditional) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -10317,114 +10280,6 @@ func (s StartInstanceResponseStatus) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *StartInstanceResponseStatus) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
-func (s *Status) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *Status) encodeFields(e *jx.Encoder) {
-	{
-		if s.Code.Set {
-			e.FieldStart("code")
-			s.Code.Encode(e)
-		}
-	}
-	{
-		if s.Message.Set {
-			e.FieldStart("message")
-			s.Message.Encode(e)
-		}
-	}
-	{
-		if s.Details != nil {
-			e.FieldStart("details")
-			e.ArrStart()
-			for _, elem := range s.Details {
-				elem.Encode(e)
-			}
-			e.ArrEnd()
-		}
-	}
-}
-
-var jsonFieldsNameOfStatus = [3]string{
-	0: "code",
-	1: "message",
-	2: "details",
-}
-
-// Decode decodes Status from json.
-func (s *Status) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode Status to nil")
-	}
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "code":
-			if err := func() error {
-				s.Code.Reset()
-				if err := s.Code.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"code\"")
-			}
-		case "message":
-			if err := func() error {
-				s.Message.Reset()
-				if err := s.Message.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"message\"")
-			}
-		case "details":
-			if err := func() error {
-				s.Details = make([]GoogleProtobufAny, 0)
-				if err := d.Arr(func(d *jx.Decoder) error {
-					var elem GoogleProtobufAny
-					if err := elem.Decode(d); err != nil {
-						return err
-					}
-					s.Details = append(s.Details, elem)
-					return nil
-				}); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"details\"")
-			}
-		default:
-			return d.Skip()
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode Status")
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *Status) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *Status) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
