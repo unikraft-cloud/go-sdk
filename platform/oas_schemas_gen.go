@@ -3,16 +3,10 @@
 package platform
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/go-faster/errors"
-	"github.com/go-faster/jx"
 )
-
-func (s *StatusStatusCode) Error() string {
-	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
-}
 
 type BearerToken struct {
 	Token string
@@ -331,6 +325,32 @@ func (s *CreateCertificateResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// CreateCertificateResponseStatusCode wraps CreateCertificateResponse with StatusCode.
+type CreateCertificateResponseStatusCode struct {
+	StatusCode int
+	Response   CreateCertificateResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *CreateCertificateResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *CreateCertificateResponseStatusCode) GetResponse() CreateCertificateResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *CreateCertificateResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *CreateCertificateResponseStatusCode) SetResponse(val CreateCertificateResponse) {
+	s.Response = val
 }
 
 // The request message for creating a new instance.
@@ -948,6 +968,32 @@ func (s *CreateInstanceResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// CreateInstanceResponseStatusCode wraps CreateInstanceResponse with StatusCode.
+type CreateInstanceResponseStatusCode struct {
+	StatusCode int
+	Response   CreateInstanceResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *CreateInstanceResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *CreateInstanceResponseStatusCode) GetResponse() CreateInstanceResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *CreateInstanceResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *CreateInstanceResponseStatusCode) SetResponse(val CreateInstanceResponse) {
+	s.Response = val
+}
+
 // Ref: #/components/schemas/CreateServiceGroupRequest
 type CreateServiceGroupRequest struct {
 	// Name of the service group.  This is a human-readable name that can be used
@@ -1142,6 +1188,32 @@ func (s *CreateServiceGroupResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// CreateServiceGroupResponseStatusCode wraps CreateServiceGroupResponse with StatusCode.
+type CreateServiceGroupResponseStatusCode struct {
+	StatusCode int
+	Response   CreateServiceGroupResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *CreateServiceGroupResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *CreateServiceGroupResponseStatusCode) GetResponse() CreateServiceGroupResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *CreateServiceGroupResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *CreateServiceGroupResponseStatusCode) SetResponse(val CreateServiceGroupResponse) {
+	s.Response = val
 }
 
 // An identifier for the certificate(s) to delete.
@@ -1376,6 +1448,32 @@ func (s *DeleteCertificatesResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// DeleteCertificatesResponseStatusCode wraps DeleteCertificatesResponse with StatusCode.
+type DeleteCertificatesResponseStatusCode struct {
+	StatusCode int
+	Response   DeleteCertificatesResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *DeleteCertificatesResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *DeleteCertificatesResponseStatusCode) GetResponse() DeleteCertificatesResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *DeleteCertificatesResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DeleteCertificatesResponseStatusCode) SetResponse(val DeleteCertificatesResponse) {
+	s.Response = val
+}
+
 // The response message for deleting one or more instance(s) given their UUID(s)
 //
 //	or name(s).
@@ -1587,6 +1685,32 @@ func (s *DeleteInstancesResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// DeleteInstancesResponseStatusCode wraps DeleteInstancesResponse with StatusCode.
+type DeleteInstancesResponseStatusCode struct {
+	StatusCode int
+	Response   DeleteInstancesResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *DeleteInstancesResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *DeleteInstancesResponseStatusCode) GetResponse() DeleteInstancesResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *DeleteInstancesResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DeleteInstancesResponseStatusCode) SetResponse(val DeleteInstancesResponse) {
+	s.Response = val
 }
 
 // An identifier for the service group(s) to delete.
@@ -1821,6 +1945,32 @@ func (s *DeleteServiceGroupsResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// DeleteServiceGroupsResponseStatusCode wraps DeleteServiceGroupsResponse with StatusCode.
+type DeleteServiceGroupsResponseStatusCode struct {
+	StatusCode int
+	Response   DeleteServiceGroupsResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *DeleteServiceGroupsResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *DeleteServiceGroupsResponseStatusCode) GetResponse() DeleteServiceGroupsResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *DeleteServiceGroupsResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DeleteServiceGroupsResponseStatusCode) SetResponse(val DeleteServiceGroupsResponse) {
+	s.Response = val
+}
+
 // A domain name.
 //
 //	Domain names are completely specified with all labels in the hierarchy of the
@@ -2005,6 +2155,32 @@ func (s *GetCertificatesResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// GetCertificatesResponseStatusCode wraps GetCertificatesResponse with StatusCode.
+type GetCertificatesResponseStatusCode struct {
+	StatusCode int
+	Response   GetCertificatesResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetCertificatesResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetCertificatesResponseStatusCode) GetResponse() GetCertificatesResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetCertificatesResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetCertificatesResponseStatusCode) SetResponse(val GetCertificatesResponse) {
+	s.Response = val
+}
+
 // The response message for retrieving a single image.
 // Ref: #/components/schemas/GetImageResponse
 type GetImageResponse struct {
@@ -2115,6 +2291,32 @@ func (s *GetImageResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// GetImageResponseStatusCode wraps GetImageResponse with StatusCode.
+type GetImageResponseStatusCode struct {
+	StatusCode int
+	Response   GetImageResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetImageResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetImageResponseStatusCode) GetResponse() GetImageResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetImageResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetImageResponseStatusCode) SetResponse(val GetImageResponse) {
+	s.Response = val
 }
 
 // The response message for getting the logs of an instance given its UUID(s) or
@@ -2354,6 +2556,32 @@ func (s *GetInstanceLogsResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// GetInstanceLogsResponseStatusCode wraps GetInstanceLogsResponse with StatusCode.
+type GetInstanceLogsResponseStatusCode struct {
+	StatusCode int
+	Response   GetInstanceLogsResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetInstanceLogsResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetInstanceLogsResponseStatusCode) GetResponse() GetInstanceLogsResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetInstanceLogsResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetInstanceLogsResponseStatusCode) SetResponse(val GetInstanceLogsResponse) {
+	s.Response = val
 }
 
 // The response message for getting the metrics of one or more instance(s)
@@ -2607,6 +2835,32 @@ func (s *GetInstanceMetricsResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// GetInstanceMetricsResponseStatusCode wraps GetInstanceMetricsResponse with StatusCode.
+type GetInstanceMetricsResponseStatusCode struct {
+	StatusCode int
+	Response   GetInstanceMetricsResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetInstanceMetricsResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetInstanceMetricsResponseStatusCode) GetResponse() GetInstanceMetricsResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetInstanceMetricsResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetInstanceMetricsResponseStatusCode) SetResponse(val GetInstanceMetricsResponse) {
+	s.Response = val
+}
+
 // An identifier for the instance(s) to get.
 // Ref: #/components/schemas/GetInstancesRequestID
 type GetInstancesRequestID struct {
@@ -2746,6 +3000,32 @@ func (s *GetInstancesResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// GetInstancesResponseStatusCode wraps GetInstancesResponse with StatusCode.
+type GetInstancesResponseStatusCode struct {
+	StatusCode int
+	Response   GetInstancesResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetInstancesResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetInstancesResponseStatusCode) GetResponse() GetInstancesResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetInstancesResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetInstancesResponseStatusCode) SetResponse(val GetInstancesResponse) {
+	s.Response = val
 }
 
 // An identifier for the service group(s) to get.
@@ -2892,43 +3172,30 @@ func (s *GetServiceGroupsResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
-// Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-// Ref: #/components/schemas/GoogleProtobufAny
-type GoogleProtobufAny struct {
-	// The type of the serialized message.
-	Type            OptString `json:"@type"`
-	AdditionalProps GoogleProtobufAnyAdditional
+// GetServiceGroupsResponseStatusCode wraps GetServiceGroupsResponse with StatusCode.
+type GetServiceGroupsResponseStatusCode struct {
+	StatusCode int
+	Response   GetServiceGroupsResponse
 }
 
-// GetType returns the value of Type.
-func (s *GoogleProtobufAny) GetType() OptString {
-	return s.Type
+// GetStatusCode returns the value of StatusCode.
+func (s *GetServiceGroupsResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
 }
 
-// GetAdditionalProps returns the value of AdditionalProps.
-func (s *GoogleProtobufAny) GetAdditionalProps() GoogleProtobufAnyAdditional {
-	return s.AdditionalProps
+// GetResponse returns the value of Response.
+func (s *GetServiceGroupsResponseStatusCode) GetResponse() GetServiceGroupsResponse {
+	return s.Response
 }
 
-// SetType sets the value of Type.
-func (s *GoogleProtobufAny) SetType(val OptString) {
-	s.Type = val
+// SetStatusCode sets the value of StatusCode.
+func (s *GetServiceGroupsResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
 }
 
-// SetAdditionalProps sets the value of AdditionalProps.
-func (s *GoogleProtobufAny) SetAdditionalProps(val GoogleProtobufAnyAdditional) {
-	s.AdditionalProps = val
-}
-
-type GoogleProtobufAnyAdditional map[string]jx.Raw
-
-func (s *GoogleProtobufAnyAdditional) init() GoogleProtobufAnyAdditional {
-	m := *s
-	if m == nil {
-		m = map[string]jx.Raw{}
-		*s = m
-	}
-	return m
+// SetResponse sets the value of Response.
+func (s *GetServiceGroupsResponseStatusCode) SetResponse(val GetServiceGroupsResponse) {
+	s.Response = val
 }
 
 // Ref: #/components/schemas/Image
@@ -7627,70 +7894,29 @@ func (s *StartInstanceResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
-// The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).
-// Ref: #/components/schemas/Status
-type Status struct {
-	// The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
-	Code OptInt32 `json:"code"`
-	// A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
-	Message OptString `json:"message"`
-	// A list of messages that carry the error details.  There is a common set of message types for APIs to use.
-	Details []GoogleProtobufAny `json:"details"`
-}
-
-// GetCode returns the value of Code.
-func (s *Status) GetCode() OptInt32 {
-	return s.Code
-}
-
-// GetMessage returns the value of Message.
-func (s *Status) GetMessage() OptString {
-	return s.Message
-}
-
-// GetDetails returns the value of Details.
-func (s *Status) GetDetails() []GoogleProtobufAny {
-	return s.Details
-}
-
-// SetCode sets the value of Code.
-func (s *Status) SetCode(val OptInt32) {
-	s.Code = val
-}
-
-// SetMessage sets the value of Message.
-func (s *Status) SetMessage(val OptString) {
-	s.Message = val
-}
-
-// SetDetails sets the value of Details.
-func (s *Status) SetDetails(val []GoogleProtobufAny) {
-	s.Details = val
-}
-
-// StatusStatusCode wraps Status with StatusCode.
-type StatusStatusCode struct {
+// StartInstanceResponseStatusCode wraps StartInstanceResponse with StatusCode.
+type StartInstanceResponseStatusCode struct {
 	StatusCode int
-	Response   Status
+	Response   StartInstanceResponse
 }
 
 // GetStatusCode returns the value of StatusCode.
-func (s *StatusStatusCode) GetStatusCode() int {
+func (s *StartInstanceResponseStatusCode) GetStatusCode() int {
 	return s.StatusCode
 }
 
 // GetResponse returns the value of Response.
-func (s *StatusStatusCode) GetResponse() Status {
+func (s *StartInstanceResponseStatusCode) GetResponse() StartInstanceResponse {
 	return s.Response
 }
 
 // SetStatusCode sets the value of StatusCode.
-func (s *StatusStatusCode) SetStatusCode(val int) {
+func (s *StartInstanceResponseStatusCode) SetStatusCode(val int) {
 	s.StatusCode = val
 }
 
 // SetResponse sets the value of Response.
-func (s *StatusStatusCode) SetResponse(val Status) {
+func (s *StartInstanceResponseStatusCode) SetResponse(val StartInstanceResponse) {
 	s.Response = val
 }
 
@@ -7807,6 +8033,32 @@ func (s *StopInstanceResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// StopInstanceResponseStatusCode wraps StopInstanceResponse with StatusCode.
+type StopInstanceResponseStatusCode struct {
+	StatusCode int
+	Response   StopInstanceResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *StopInstanceResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *StopInstanceResponseStatusCode) GetResponse() StopInstanceResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *StopInstanceResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *StopInstanceResponseStatusCode) SetResponse(val StopInstanceResponse) {
+	s.Response = val
 }
 
 // Ref: #/components/schemas/StopInstanceResponseStoppedInstance
@@ -8212,6 +8464,32 @@ func (s *WaitInstanceResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// WaitInstanceResponseStatusCode wraps WaitInstanceResponse with StatusCode.
+type WaitInstanceResponseStatusCode struct {
+	StatusCode int
+	Response   WaitInstanceResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *WaitInstanceResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *WaitInstanceResponseStatusCode) GetResponse() WaitInstanceResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *WaitInstanceResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *WaitInstanceResponseStatusCode) SetResponse(val WaitInstanceResponse) {
+	s.Response = val
 }
 
 // Ref: #/components/schemas/WaitInstanceResponseWaitedInstance
