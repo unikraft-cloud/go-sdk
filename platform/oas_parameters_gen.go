@@ -2,6 +2,40 @@
 
 package platform
 
+// AttachVolumeByUUIDParams is parameters of AttachVolumeByUUID operation.
+type AttachVolumeByUUIDParams struct {
+	//
+	UUID string
+}
+
+// AttachVolumesParams is parameters of AttachVolumes operation.
+type AttachVolumesParams struct {
+	// The UUID of the instance that the volume is attached to.
+	AttachToUUID OptString
+	// The name of the instance that the volume is attached to.
+	AttachToName OptString
+	// Path of the mountpoint.
+	//
+	//  The path must be absolute, not contain `.` and `..` components, and not
+	//  contain colons (`:`). The path must point to an empty directory. If the
+	//  directory does not exist, it is created.
+	At OptString
+	// Whether the volume should be mounted read-only.
+	ReadOnly OptBool
+}
+
+// CreateAutoscaleConfigurationPolicyParams is parameters of CreateAutoscaleConfigurationPolicy operation.
+type CreateAutoscaleConfigurationPolicyParams struct {
+	//
+	UUID string
+}
+
+// DeleteAutoscaleConfigurationPoliciesParams is parameters of DeleteAutoscaleConfigurationPolicies operation.
+type DeleteAutoscaleConfigurationPoliciesParams struct {
+	//
+	UUID string
+}
+
 // DeleteCertificateByUUIDParams is parameters of DeleteCertificateByUUID operation.
 type DeleteCertificateByUUIDParams struct {
 	//
@@ -18,6 +52,40 @@ type DeleteInstanceByUUIDParams struct {
 type DeleteServiceGroupByUUIDParams struct {
 	//
 	UUID string
+}
+
+// DeleteVolumeByUUIDParams is parameters of DeleteVolumeByUUID operation.
+type DeleteVolumeByUUIDParams struct {
+	//
+	UUID string
+}
+
+// DetachVolumeByUUIDParams is parameters of DetachVolumeByUUID operation.
+type DetachVolumeByUUIDParams struct {
+	//
+	UUID string
+}
+
+// DetachVolumesParams is parameters of DetachVolumes operation.
+type DetachVolumesParams struct {
+	// The UUID of the instance that the volume is detached from.
+	FromUUID OptString
+	// The name of the instance that the volume is detached from.
+	FromName OptString
+}
+
+// GetAutoscaleConfigurationPoliciesParams is parameters of GetAutoscaleConfigurationPolicies operation.
+type GetAutoscaleConfigurationPoliciesParams struct {
+	//
+	UUID string
+}
+
+// GetAutoscaleConfigurationPolicyByNameParams is parameters of GetAutoscaleConfigurationPolicyByName operation.
+type GetAutoscaleConfigurationPolicyByNameParams struct {
+	//
+	UUID string
+	//
+	Name string
 }
 
 // GetCertificateByUUIDParams is parameters of GetCertificateByUUID operation.
@@ -122,6 +190,22 @@ type GetServiceGroupsParams struct {
 	//  group will be included in the response.  If set to false, only the basic
 	//  information about the service group will be included, such as its name and
 	//  UUID.
+	Details OptBool
+}
+
+// GetUserByUUIDParams is parameters of GetUserByUUID operation.
+type GetUserByUUIDParams struct {
+	//
+	UUID string
+}
+
+// GetVolumesParams is parameters of GetVolumes operation.
+type GetVolumesParams struct {
+	// Whether to include details about the volume in the response.  By
+	//  default this is set to true, meaning that all information about the
+	//  volume will be included in the response.  If set to false, only the
+	//  basic information about the volume will be included, such as its name
+	//  and UUID.
 	Details OptBool
 }
 

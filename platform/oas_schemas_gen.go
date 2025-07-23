@@ -3,15 +3,456 @@
 package platform
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/go-faster/errors"
-	"github.com/go-faster/jx"
 )
 
-func (s *StatusStatusCode) Error() string {
-	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
+// An identifier for the volume(s) to attach.
+// Ref: #/components/schemas/AttachVolumesRequestID
+type AttachVolumesRequestID struct {
+	// The UUID of the volume to attach.  Mutually exclusive with name.
+	UUID OptString `json:"uuid"`
+	// The name of the volume to attach.  Mutually exclusive with UUID.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *AttachVolumesRequestID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *AttachVolumesRequestID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *AttachVolumesRequestID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *AttachVolumesRequestID) SetName(val OptString) {
+	s.Name = val
+}
+
+// The response message for attaching one or more volume(s) given their
+//
+//	UUID(s) or name(s).
+//
+// Ref: #/components/schemas/AttachVolumesResponse
+type AttachVolumesResponse struct {
+	// The status of the response.
+	Status OptAttachVolumesResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptAttachVolumesResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *AttachVolumesResponse) GetStatus() OptAttachVolumesResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *AttachVolumesResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *AttachVolumesResponse) GetData() OptAttachVolumesResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *AttachVolumesResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *AttachVolumesResponse) SetStatus(val OptAttachVolumesResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *AttachVolumesResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *AttachVolumesResponse) SetData(val OptAttachVolumesResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *AttachVolumesResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/AttachVolumesResponseAttachedVolume
+type AttachVolumesResponseAttachedVolume struct {
+	// The status of the response.
+	Status OptAttachVolumesResponseAttachedVolumeStatus `json:"status"`
+	// The UUID of the volume that was attached.
+	UUID OptString `json:"uuid"`
+	// The name of the volume that was attached.
+	Name OptString `json:"name"`
+}
+
+// GetStatus returns the value of Status.
+func (s *AttachVolumesResponseAttachedVolume) GetStatus() OptAttachVolumesResponseAttachedVolumeStatus {
+	return s.Status
+}
+
+// GetUUID returns the value of UUID.
+func (s *AttachVolumesResponseAttachedVolume) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *AttachVolumesResponseAttachedVolume) GetName() OptString {
+	return s.Name
+}
+
+// SetStatus sets the value of Status.
+func (s *AttachVolumesResponseAttachedVolume) SetStatus(val OptAttachVolumesResponseAttachedVolumeStatus) {
+	s.Status = val
+}
+
+// SetUUID sets the value of UUID.
+func (s *AttachVolumesResponseAttachedVolume) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *AttachVolumesResponseAttachedVolume) SetName(val OptString) {
+	s.Name = val
+}
+
+// The status of the response.
+type AttachVolumesResponseAttachedVolumeStatus string
+
+const (
+	AttachVolumesResponseAttachedVolumeStatusSuccess AttachVolumesResponseAttachedVolumeStatus = "success"
+	AttachVolumesResponseAttachedVolumeStatusError   AttachVolumesResponseAttachedVolumeStatus = "error"
+)
+
+// AllValues returns all AttachVolumesResponseAttachedVolumeStatus values.
+func (AttachVolumesResponseAttachedVolumeStatus) AllValues() []AttachVolumesResponseAttachedVolumeStatus {
+	return []AttachVolumesResponseAttachedVolumeStatus{
+		AttachVolumesResponseAttachedVolumeStatusSuccess,
+		AttachVolumesResponseAttachedVolumeStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AttachVolumesResponseAttachedVolumeStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case AttachVolumesResponseAttachedVolumeStatusSuccess:
+		return []byte(s), nil
+	case AttachVolumesResponseAttachedVolumeStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AttachVolumesResponseAttachedVolumeStatus) UnmarshalText(data []byte) error {
+	switch AttachVolumesResponseAttachedVolumeStatus(data) {
+	case AttachVolumesResponseAttachedVolumeStatusSuccess:
+		*s = AttachVolumesResponseAttachedVolumeStatusSuccess
+		return nil
+	case AttachVolumesResponseAttachedVolumeStatusError:
+		*s = AttachVolumesResponseAttachedVolumeStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/AttachVolumesResponseData
+type AttachVolumesResponseData struct {
+	// The volume(s) which were attached by the request.
+	Volumes []AttachVolumesResponseAttachedVolume `json:"volumes"`
+}
+
+// GetVolumes returns the value of Volumes.
+func (s *AttachVolumesResponseData) GetVolumes() []AttachVolumesResponseAttachedVolume {
+	return s.Volumes
+}
+
+// SetVolumes sets the value of Volumes.
+func (s *AttachVolumesResponseData) SetVolumes(val []AttachVolumesResponseAttachedVolume) {
+	s.Volumes = val
+}
+
+// The status of the response.
+type AttachVolumesResponseStatus string
+
+const (
+	AttachVolumesResponseStatusSuccess AttachVolumesResponseStatus = "success"
+	AttachVolumesResponseStatusError   AttachVolumesResponseStatus = "error"
+)
+
+// AllValues returns all AttachVolumesResponseStatus values.
+func (AttachVolumesResponseStatus) AllValues() []AttachVolumesResponseStatus {
+	return []AttachVolumesResponseStatus{
+		AttachVolumesResponseStatusSuccess,
+		AttachVolumesResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AttachVolumesResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case AttachVolumesResponseStatusSuccess:
+		return []byte(s), nil
+	case AttachVolumesResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AttachVolumesResponseStatus) UnmarshalText(data []byte) error {
+	switch AttachVolumesResponseStatus(data) {
+	case AttachVolumesResponseStatusSuccess:
+		*s = AttachVolumesResponseStatusSuccess
+		return nil
+	case AttachVolumesResponseStatusError:
+		*s = AttachVolumesResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// AttachVolumesResponseStatusCode wraps AttachVolumesResponse with StatusCode.
+type AttachVolumesResponseStatusCode struct {
+	StatusCode int
+	Response   AttachVolumesResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *AttachVolumesResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *AttachVolumesResponseStatusCode) GetResponse() AttachVolumesResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *AttachVolumesResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *AttachVolumesResponseStatusCode) SetResponse(val AttachVolumesResponse) {
+	s.Response = val
+}
+
+// AutoscalePolicy defines the autoscale policy for a service.
+//
+//	Right now it contains fields from both the `ondemand` and `step` policies.
+//	They are marked both as optional, so only one of them should be set at a
+//	time. This is a current limitation of the API design.
+//
+// Ref: #/components/schemas/AutoscalePolicy
+type AutoscalePolicy struct {
+	// The name of the policy.
+	Name OptString `json:"name"`
+	// If the policy is enabled.
+	Enabled OptBool `json:"enabled"`
+	// Metric to use for the step policy.
+	Metric OptAutoscalePolicyMetric `json:"metric"`
+	// The type of adjustment to be made in the step policy.
+	AdjustmentType OptAutoscalePolicyAdjustmentType `json:"adjustment_type"`
+	// The steps for the step policy.
+	//  Each step defines an adjustment value and optional bounds.
+	Steps []AutoscalePolicyStep `json:"steps"`
+}
+
+// GetName returns the value of Name.
+func (s *AutoscalePolicy) GetName() OptString {
+	return s.Name
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *AutoscalePolicy) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetMetric returns the value of Metric.
+func (s *AutoscalePolicy) GetMetric() OptAutoscalePolicyMetric {
+	return s.Metric
+}
+
+// GetAdjustmentType returns the value of AdjustmentType.
+func (s *AutoscalePolicy) GetAdjustmentType() OptAutoscalePolicyAdjustmentType {
+	return s.AdjustmentType
+}
+
+// GetSteps returns the value of Steps.
+func (s *AutoscalePolicy) GetSteps() []AutoscalePolicyStep {
+	return s.Steps
+}
+
+// SetName sets the value of Name.
+func (s *AutoscalePolicy) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *AutoscalePolicy) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetMetric sets the value of Metric.
+func (s *AutoscalePolicy) SetMetric(val OptAutoscalePolicyMetric) {
+	s.Metric = val
+}
+
+// SetAdjustmentType sets the value of AdjustmentType.
+func (s *AutoscalePolicy) SetAdjustmentType(val OptAutoscalePolicyAdjustmentType) {
+	s.AdjustmentType = val
+}
+
+// SetSteps sets the value of Steps.
+func (s *AutoscalePolicy) SetSteps(val []AutoscalePolicyStep) {
+	s.Steps = val
+}
+
+// The type of adjustment to be made in the step policy.
+type AutoscalePolicyAdjustmentType string
+
+const (
+	AutoscalePolicyAdjustmentTypeChange     AutoscalePolicyAdjustmentType = "change"
+	AutoscalePolicyAdjustmentTypeExact      AutoscalePolicyAdjustmentType = "exact"
+	AutoscalePolicyAdjustmentTypePercentage AutoscalePolicyAdjustmentType = "percentage"
+)
+
+// AllValues returns all AutoscalePolicyAdjustmentType values.
+func (AutoscalePolicyAdjustmentType) AllValues() []AutoscalePolicyAdjustmentType {
+	return []AutoscalePolicyAdjustmentType{
+		AutoscalePolicyAdjustmentTypeChange,
+		AutoscalePolicyAdjustmentTypeExact,
+		AutoscalePolicyAdjustmentTypePercentage,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AutoscalePolicyAdjustmentType) MarshalText() ([]byte, error) {
+	switch s {
+	case AutoscalePolicyAdjustmentTypeChange:
+		return []byte(s), nil
+	case AutoscalePolicyAdjustmentTypeExact:
+		return []byte(s), nil
+	case AutoscalePolicyAdjustmentTypePercentage:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AutoscalePolicyAdjustmentType) UnmarshalText(data []byte) error {
+	switch AutoscalePolicyAdjustmentType(data) {
+	case AutoscalePolicyAdjustmentTypeChange:
+		*s = AutoscalePolicyAdjustmentTypeChange
+		return nil
+	case AutoscalePolicyAdjustmentTypeExact:
+		*s = AutoscalePolicyAdjustmentTypeExact
+		return nil
+	case AutoscalePolicyAdjustmentTypePercentage:
+		*s = AutoscalePolicyAdjustmentTypePercentage
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Metric to use for the step policy.
+type AutoscalePolicyMetric string
+
+const (
+	AutoscalePolicyMetricCPU AutoscalePolicyMetric = "cpu"
+)
+
+// AllValues returns all AutoscalePolicyMetric values.
+func (AutoscalePolicyMetric) AllValues() []AutoscalePolicyMetric {
+	return []AutoscalePolicyMetric{
+		AutoscalePolicyMetricCPU,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AutoscalePolicyMetric) MarshalText() ([]byte, error) {
+	switch s {
+	case AutoscalePolicyMetricCPU:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AutoscalePolicyMetric) UnmarshalText(data []byte) error {
+	switch AutoscalePolicyMetric(data) {
+	case AutoscalePolicyMetricCPU:
+		*s = AutoscalePolicyMetricCPU
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/AutoscalePolicyStep
+type AutoscalePolicyStep struct {
+	// The adjustment value for the step.
+	Adjustment OptInt64 `json:"adjustment"`
+	// Lower bound for the step.
+	LowerBound OptInt64 `json:"lower_bound"`
+	// Upper bound for the step.
+	UpperBound OptInt64 `json:"upper_bound"`
+}
+
+// GetAdjustment returns the value of Adjustment.
+func (s *AutoscalePolicyStep) GetAdjustment() OptInt64 {
+	return s.Adjustment
+}
+
+// GetLowerBound returns the value of LowerBound.
+func (s *AutoscalePolicyStep) GetLowerBound() OptInt64 {
+	return s.LowerBound
+}
+
+// GetUpperBound returns the value of UpperBound.
+func (s *AutoscalePolicyStep) GetUpperBound() OptInt64 {
+	return s.UpperBound
+}
+
+// SetAdjustment sets the value of Adjustment.
+func (s *AutoscalePolicyStep) SetAdjustment(val OptInt64) {
+	s.Adjustment = val
+}
+
+// SetLowerBound sets the value of LowerBound.
+func (s *AutoscalePolicyStep) SetLowerBound(val OptInt64) {
+	s.LowerBound = val
+}
+
+// SetUpperBound sets the value of UpperBound.
+func (s *AutoscalePolicyStep) SetUpperBound(val OptInt64) {
+	s.UpperBound = val
 }
 
 type BearerToken struct {
@@ -158,6 +599,604 @@ func (s *CertificateState) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// Ref: #/components/schemas/CreateAutoscaleConfigurationPolicyRequest
+type CreateAutoscaleConfigurationPolicyRequest struct {
+	// The Name of the service to add a policy to.
+	Name string `json:"name"`
+	// The policy type to add to the autoscale configuration.
+	Type AutoscalePolicy `json:"type"`
+}
+
+// GetName returns the value of Name.
+func (s *CreateAutoscaleConfigurationPolicyRequest) GetName() string {
+	return s.Name
+}
+
+// GetType returns the value of Type.
+func (s *CreateAutoscaleConfigurationPolicyRequest) GetType() AutoscalePolicy {
+	return s.Type
+}
+
+// SetName sets the value of Name.
+func (s *CreateAutoscaleConfigurationPolicyRequest) SetName(val string) {
+	s.Name = val
+}
+
+// SetType sets the value of Type.
+func (s *CreateAutoscaleConfigurationPolicyRequest) SetType(val AutoscalePolicy) {
+	s.Type = val
+}
+
+// Ref: #/components/schemas/CreateAutoscaleConfigurationPolicyResponse
+type CreateAutoscaleConfigurationPolicyResponse struct {
+	// The status of the response.
+	Status OptCreateAutoscaleConfigurationPolicyResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptCreateAutoscaleConfigurationPolicyResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *CreateAutoscaleConfigurationPolicyResponse) GetStatus() OptCreateAutoscaleConfigurationPolicyResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *CreateAutoscaleConfigurationPolicyResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *CreateAutoscaleConfigurationPolicyResponse) GetData() OptCreateAutoscaleConfigurationPolicyResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *CreateAutoscaleConfigurationPolicyResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *CreateAutoscaleConfigurationPolicyResponse) SetStatus(val OptCreateAutoscaleConfigurationPolicyResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *CreateAutoscaleConfigurationPolicyResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *CreateAutoscaleConfigurationPolicyResponse) SetData(val OptCreateAutoscaleConfigurationPolicyResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *CreateAutoscaleConfigurationPolicyResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/CreateAutoscaleConfigurationPolicyResponseData
+type CreateAutoscaleConfigurationPolicyResponseData struct {
+	// The policies which were added by the request.
+	Policies []CreateAutoscaleConfigurationPolicyResponsePolicy `json:"policies"`
+}
+
+// GetPolicies returns the value of Policies.
+func (s *CreateAutoscaleConfigurationPolicyResponseData) GetPolicies() []CreateAutoscaleConfigurationPolicyResponsePolicy {
+	return s.Policies
+}
+
+// SetPolicies sets the value of Policies.
+func (s *CreateAutoscaleConfigurationPolicyResponseData) SetPolicies(val []CreateAutoscaleConfigurationPolicyResponsePolicy) {
+	s.Policies = val
+}
+
+// Ref: #/components/schemas/CreateAutoscaleConfigurationPolicyResponsePolicy
+type CreateAutoscaleConfigurationPolicyResponsePolicy struct {
+	// The status of the response.
+	Status OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus `json:"status"`
+	// The UUID of the service of the added policy.
+	UUID OptString `json:"uuid"`
+	// The name of the service of the added policy.
+	Name OptString `json:"name"`
+}
+
+// GetStatus returns the value of Status.
+func (s *CreateAutoscaleConfigurationPolicyResponsePolicy) GetStatus() OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus {
+	return s.Status
+}
+
+// GetUUID returns the value of UUID.
+func (s *CreateAutoscaleConfigurationPolicyResponsePolicy) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *CreateAutoscaleConfigurationPolicyResponsePolicy) GetName() OptString {
+	return s.Name
+}
+
+// SetStatus sets the value of Status.
+func (s *CreateAutoscaleConfigurationPolicyResponsePolicy) SetStatus(val OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus) {
+	s.Status = val
+}
+
+// SetUUID sets the value of UUID.
+func (s *CreateAutoscaleConfigurationPolicyResponsePolicy) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *CreateAutoscaleConfigurationPolicyResponsePolicy) SetName(val OptString) {
+	s.Name = val
+}
+
+// The status of the response.
+type CreateAutoscaleConfigurationPolicyResponsePolicyStatus string
+
+const (
+	CreateAutoscaleConfigurationPolicyResponsePolicyStatusSuccess CreateAutoscaleConfigurationPolicyResponsePolicyStatus = "success"
+	CreateAutoscaleConfigurationPolicyResponsePolicyStatusError   CreateAutoscaleConfigurationPolicyResponsePolicyStatus = "error"
+)
+
+// AllValues returns all CreateAutoscaleConfigurationPolicyResponsePolicyStatus values.
+func (CreateAutoscaleConfigurationPolicyResponsePolicyStatus) AllValues() []CreateAutoscaleConfigurationPolicyResponsePolicyStatus {
+	return []CreateAutoscaleConfigurationPolicyResponsePolicyStatus{
+		CreateAutoscaleConfigurationPolicyResponsePolicyStatusSuccess,
+		CreateAutoscaleConfigurationPolicyResponsePolicyStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CreateAutoscaleConfigurationPolicyResponsePolicyStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case CreateAutoscaleConfigurationPolicyResponsePolicyStatusSuccess:
+		return []byte(s), nil
+	case CreateAutoscaleConfigurationPolicyResponsePolicyStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CreateAutoscaleConfigurationPolicyResponsePolicyStatus) UnmarshalText(data []byte) error {
+	switch CreateAutoscaleConfigurationPolicyResponsePolicyStatus(data) {
+	case CreateAutoscaleConfigurationPolicyResponsePolicyStatusSuccess:
+		*s = CreateAutoscaleConfigurationPolicyResponsePolicyStatusSuccess
+		return nil
+	case CreateAutoscaleConfigurationPolicyResponsePolicyStatusError:
+		*s = CreateAutoscaleConfigurationPolicyResponsePolicyStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// The status of the response.
+type CreateAutoscaleConfigurationPolicyResponseStatus string
+
+const (
+	CreateAutoscaleConfigurationPolicyResponseStatusSuccess CreateAutoscaleConfigurationPolicyResponseStatus = "success"
+	CreateAutoscaleConfigurationPolicyResponseStatusError   CreateAutoscaleConfigurationPolicyResponseStatus = "error"
+)
+
+// AllValues returns all CreateAutoscaleConfigurationPolicyResponseStatus values.
+func (CreateAutoscaleConfigurationPolicyResponseStatus) AllValues() []CreateAutoscaleConfigurationPolicyResponseStatus {
+	return []CreateAutoscaleConfigurationPolicyResponseStatus{
+		CreateAutoscaleConfigurationPolicyResponseStatusSuccess,
+		CreateAutoscaleConfigurationPolicyResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CreateAutoscaleConfigurationPolicyResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case CreateAutoscaleConfigurationPolicyResponseStatusSuccess:
+		return []byte(s), nil
+	case CreateAutoscaleConfigurationPolicyResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CreateAutoscaleConfigurationPolicyResponseStatus) UnmarshalText(data []byte) error {
+	switch CreateAutoscaleConfigurationPolicyResponseStatus(data) {
+	case CreateAutoscaleConfigurationPolicyResponseStatusSuccess:
+		*s = CreateAutoscaleConfigurationPolicyResponseStatusSuccess
+		return nil
+	case CreateAutoscaleConfigurationPolicyResponseStatusError:
+		*s = CreateAutoscaleConfigurationPolicyResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// CreateAutoscaleConfigurationPolicyResponseStatusCode wraps CreateAutoscaleConfigurationPolicyResponse with StatusCode.
+type CreateAutoscaleConfigurationPolicyResponseStatusCode struct {
+	StatusCode int
+	Response   CreateAutoscaleConfigurationPolicyResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *CreateAutoscaleConfigurationPolicyResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *CreateAutoscaleConfigurationPolicyResponseStatusCode) GetResponse() CreateAutoscaleConfigurationPolicyResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *CreateAutoscaleConfigurationPolicyResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *CreateAutoscaleConfigurationPolicyResponseStatusCode) SetResponse(val CreateAutoscaleConfigurationPolicyResponse) {
+	s.Response = val
+}
+
+// The request to create an autoscale configuration for a service.
+// Ref: #/components/schemas/CreateAutoscaleConfigurationRequest
+type CreateAutoscaleConfigurationRequest struct {
+	// The UUID of the service to create a configuration for.
+	//  Mutually exclusive with name.
+	UUID OptString `json:"uuid"`
+	// The name of the service to create a configuration for.
+	//  Mutually exclusive with UUID.
+	Name OptString `json:"name"`
+	// The minimum number of instances to keep running.
+	MinSize OptInt64 `json:"min_size"`
+	// The maximum number of instances to keep running.
+	MaxSize OptInt64 `json:"max_size"`
+	// The warmup time in milliseconds for new instances.
+	WarmupTimeMs OptInt64 `json:"warmup_time_ms"`
+	// The cooldown time in milliseconds for the autoscale configuration.
+	CooldownTimeMs OptInt64 `json:"cooldown_time_ms"`
+	// The arguments to use when creating the autoscale configuration.
+	CreateArgs OptCreateAutoscaleConfigurationRequestInstanceCreateArgs `json:"create_args"`
+	// The policies to apply to the autoscale configuration.
+	Policies []AutoscalePolicy `json:"policies"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *CreateAutoscaleConfigurationRequest) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *CreateAutoscaleConfigurationRequest) GetName() OptString {
+	return s.Name
+}
+
+// GetMinSize returns the value of MinSize.
+func (s *CreateAutoscaleConfigurationRequest) GetMinSize() OptInt64 {
+	return s.MinSize
+}
+
+// GetMaxSize returns the value of MaxSize.
+func (s *CreateAutoscaleConfigurationRequest) GetMaxSize() OptInt64 {
+	return s.MaxSize
+}
+
+// GetWarmupTimeMs returns the value of WarmupTimeMs.
+func (s *CreateAutoscaleConfigurationRequest) GetWarmupTimeMs() OptInt64 {
+	return s.WarmupTimeMs
+}
+
+// GetCooldownTimeMs returns the value of CooldownTimeMs.
+func (s *CreateAutoscaleConfigurationRequest) GetCooldownTimeMs() OptInt64 {
+	return s.CooldownTimeMs
+}
+
+// GetCreateArgs returns the value of CreateArgs.
+func (s *CreateAutoscaleConfigurationRequest) GetCreateArgs() OptCreateAutoscaleConfigurationRequestInstanceCreateArgs {
+	return s.CreateArgs
+}
+
+// GetPolicies returns the value of Policies.
+func (s *CreateAutoscaleConfigurationRequest) GetPolicies() []AutoscalePolicy {
+	return s.Policies
+}
+
+// SetUUID sets the value of UUID.
+func (s *CreateAutoscaleConfigurationRequest) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *CreateAutoscaleConfigurationRequest) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetMinSize sets the value of MinSize.
+func (s *CreateAutoscaleConfigurationRequest) SetMinSize(val OptInt64) {
+	s.MinSize = val
+}
+
+// SetMaxSize sets the value of MaxSize.
+func (s *CreateAutoscaleConfigurationRequest) SetMaxSize(val OptInt64) {
+	s.MaxSize = val
+}
+
+// SetWarmupTimeMs sets the value of WarmupTimeMs.
+func (s *CreateAutoscaleConfigurationRequest) SetWarmupTimeMs(val OptInt64) {
+	s.WarmupTimeMs = val
+}
+
+// SetCooldownTimeMs sets the value of CooldownTimeMs.
+func (s *CreateAutoscaleConfigurationRequest) SetCooldownTimeMs(val OptInt64) {
+	s.CooldownTimeMs = val
+}
+
+// SetCreateArgs sets the value of CreateArgs.
+func (s *CreateAutoscaleConfigurationRequest) SetCreateArgs(val OptCreateAutoscaleConfigurationRequestInstanceCreateArgs) {
+	s.CreateArgs = val
+}
+
+// SetPolicies sets the value of Policies.
+func (s *CreateAutoscaleConfigurationRequest) SetPolicies(val []AutoscalePolicy) {
+	s.Policies = val
+}
+
+// Ref: #/components/schemas/CreateAutoscaleConfigurationRequestInstanceCreateArgs
+type CreateAutoscaleConfigurationRequestInstanceCreateArgs struct {
+	// The ROM to use for the autoscale configuration.
+	Roms OptInstanceCreateArgsInstanceCreateRequestRoms `json:"roms"`
+	// The template to use for the autoscale configuration.
+	Template OptInstanceCreateArgsInstanceTemplateCreateRequest `json:"template"`
+}
+
+// GetRoms returns the value of Roms.
+func (s *CreateAutoscaleConfigurationRequestInstanceCreateArgs) GetRoms() OptInstanceCreateArgsInstanceCreateRequestRoms {
+	return s.Roms
+}
+
+// GetTemplate returns the value of Template.
+func (s *CreateAutoscaleConfigurationRequestInstanceCreateArgs) GetTemplate() OptInstanceCreateArgsInstanceTemplateCreateRequest {
+	return s.Template
+}
+
+// SetRoms sets the value of Roms.
+func (s *CreateAutoscaleConfigurationRequestInstanceCreateArgs) SetRoms(val OptInstanceCreateArgsInstanceCreateRequestRoms) {
+	s.Roms = val
+}
+
+// SetTemplate sets the value of Template.
+func (s *CreateAutoscaleConfigurationRequestInstanceCreateArgs) SetTemplate(val OptInstanceCreateArgsInstanceTemplateCreateRequest) {
+	s.Template = val
+}
+
+// The response to a CreateAutoscaleConfigurationRequest.
+// Ref: #/components/schemas/CreateAutoscaleConfigurationResponse
+type CreateAutoscaleConfigurationResponse struct {
+	// The status of the response.
+	Status OptCreateAutoscaleConfigurationResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptCreateAutoscaleConfigurationResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *CreateAutoscaleConfigurationResponse) GetStatus() OptCreateAutoscaleConfigurationResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *CreateAutoscaleConfigurationResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *CreateAutoscaleConfigurationResponse) GetData() OptCreateAutoscaleConfigurationResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *CreateAutoscaleConfigurationResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *CreateAutoscaleConfigurationResponse) SetStatus(val OptCreateAutoscaleConfigurationResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *CreateAutoscaleConfigurationResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *CreateAutoscaleConfigurationResponse) SetData(val OptCreateAutoscaleConfigurationResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *CreateAutoscaleConfigurationResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/CreateAutoscaleConfigurationResponseConfigurationsResponse
+type CreateAutoscaleConfigurationResponseConfigurationsResponse struct {
+	// The status of the response.
+	Status OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus `json:"status"`
+	// The UUID of the service where the configuration was created.
+	UUID OptString `json:"uuid"`
+	// The name of the service where the configuration was created.
+	Name OptString `json:"name"`
+}
+
+// GetStatus returns the value of Status.
+func (s *CreateAutoscaleConfigurationResponseConfigurationsResponse) GetStatus() OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus {
+	return s.Status
+}
+
+// GetUUID returns the value of UUID.
+func (s *CreateAutoscaleConfigurationResponseConfigurationsResponse) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *CreateAutoscaleConfigurationResponseConfigurationsResponse) GetName() OptString {
+	return s.Name
+}
+
+// SetStatus sets the value of Status.
+func (s *CreateAutoscaleConfigurationResponseConfigurationsResponse) SetStatus(val OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus) {
+	s.Status = val
+}
+
+// SetUUID sets the value of UUID.
+func (s *CreateAutoscaleConfigurationResponseConfigurationsResponse) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *CreateAutoscaleConfigurationResponseConfigurationsResponse) SetName(val OptString) {
+	s.Name = val
+}
+
+// The status of the response.
+type CreateAutoscaleConfigurationResponseConfigurationsResponseStatus string
+
+const (
+	CreateAutoscaleConfigurationResponseConfigurationsResponseStatusSuccess CreateAutoscaleConfigurationResponseConfigurationsResponseStatus = "success"
+	CreateAutoscaleConfigurationResponseConfigurationsResponseStatusError   CreateAutoscaleConfigurationResponseConfigurationsResponseStatus = "error"
+)
+
+// AllValues returns all CreateAutoscaleConfigurationResponseConfigurationsResponseStatus values.
+func (CreateAutoscaleConfigurationResponseConfigurationsResponseStatus) AllValues() []CreateAutoscaleConfigurationResponseConfigurationsResponseStatus {
+	return []CreateAutoscaleConfigurationResponseConfigurationsResponseStatus{
+		CreateAutoscaleConfigurationResponseConfigurationsResponseStatusSuccess,
+		CreateAutoscaleConfigurationResponseConfigurationsResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CreateAutoscaleConfigurationResponseConfigurationsResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case CreateAutoscaleConfigurationResponseConfigurationsResponseStatusSuccess:
+		return []byte(s), nil
+	case CreateAutoscaleConfigurationResponseConfigurationsResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CreateAutoscaleConfigurationResponseConfigurationsResponseStatus) UnmarshalText(data []byte) error {
+	switch CreateAutoscaleConfigurationResponseConfigurationsResponseStatus(data) {
+	case CreateAutoscaleConfigurationResponseConfigurationsResponseStatusSuccess:
+		*s = CreateAutoscaleConfigurationResponseConfigurationsResponseStatusSuccess
+		return nil
+	case CreateAutoscaleConfigurationResponseConfigurationsResponseStatusError:
+		*s = CreateAutoscaleConfigurationResponseConfigurationsResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/CreateAutoscaleConfigurationResponseData
+type CreateAutoscaleConfigurationResponseData struct {
+	// The configuration(s) which were created by the request.
+	ServiceGroups []CreateAutoscaleConfigurationResponseConfigurationsResponse `json:"service_groups"`
+}
+
+// GetServiceGroups returns the value of ServiceGroups.
+func (s *CreateAutoscaleConfigurationResponseData) GetServiceGroups() []CreateAutoscaleConfigurationResponseConfigurationsResponse {
+	return s.ServiceGroups
+}
+
+// SetServiceGroups sets the value of ServiceGroups.
+func (s *CreateAutoscaleConfigurationResponseData) SetServiceGroups(val []CreateAutoscaleConfigurationResponseConfigurationsResponse) {
+	s.ServiceGroups = val
+}
+
+// The status of the response.
+type CreateAutoscaleConfigurationResponseStatus string
+
+const (
+	CreateAutoscaleConfigurationResponseStatusSuccess CreateAutoscaleConfigurationResponseStatus = "success"
+	CreateAutoscaleConfigurationResponseStatusError   CreateAutoscaleConfigurationResponseStatus = "error"
+)
+
+// AllValues returns all CreateAutoscaleConfigurationResponseStatus values.
+func (CreateAutoscaleConfigurationResponseStatus) AllValues() []CreateAutoscaleConfigurationResponseStatus {
+	return []CreateAutoscaleConfigurationResponseStatus{
+		CreateAutoscaleConfigurationResponseStatusSuccess,
+		CreateAutoscaleConfigurationResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CreateAutoscaleConfigurationResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case CreateAutoscaleConfigurationResponseStatusSuccess:
+		return []byte(s), nil
+	case CreateAutoscaleConfigurationResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CreateAutoscaleConfigurationResponseStatus) UnmarshalText(data []byte) error {
+	switch CreateAutoscaleConfigurationResponseStatus(data) {
+	case CreateAutoscaleConfigurationResponseStatusSuccess:
+		*s = CreateAutoscaleConfigurationResponseStatusSuccess
+		return nil
+	case CreateAutoscaleConfigurationResponseStatusError:
+		*s = CreateAutoscaleConfigurationResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// CreateAutoscaleConfigurationResponseStatusCode wraps CreateAutoscaleConfigurationResponse with StatusCode.
+type CreateAutoscaleConfigurationResponseStatusCode struct {
+	StatusCode int
+	Response   CreateAutoscaleConfigurationResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *CreateAutoscaleConfigurationResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *CreateAutoscaleConfigurationResponseStatusCode) GetResponse() CreateAutoscaleConfigurationResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *CreateAutoscaleConfigurationResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *CreateAutoscaleConfigurationResponseStatusCode) SetResponse(val CreateAutoscaleConfigurationResponse) {
+	s.Response = val
 }
 
 // The request message for creating/uploading a new certificate.
@@ -331,6 +1370,32 @@ func (s *CreateCertificateResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// CreateCertificateResponseStatusCode wraps CreateCertificateResponse with StatusCode.
+type CreateCertificateResponseStatusCode struct {
+	StatusCode int
+	Response   CreateCertificateResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *CreateCertificateResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *CreateCertificateResponseStatusCode) GetResponse() CreateCertificateResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *CreateCertificateResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *CreateCertificateResponseStatusCode) SetResponse(val CreateCertificateResponse) {
+	s.Response = val
 }
 
 // The request message for creating a new instance.
@@ -948,6 +2013,32 @@ func (s *CreateInstanceResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// CreateInstanceResponseStatusCode wraps CreateInstanceResponse with StatusCode.
+type CreateInstanceResponseStatusCode struct {
+	StatusCode int
+	Response   CreateInstanceResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *CreateInstanceResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *CreateInstanceResponseStatusCode) GetResponse() CreateInstanceResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *CreateInstanceResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *CreateInstanceResponseStatusCode) SetResponse(val CreateInstanceResponse) {
+	s.Response = val
+}
+
 // Ref: #/components/schemas/CreateServiceGroupRequest
 type CreateServiceGroupRequest struct {
 	// Name of the service group.  This is a human-readable name that can be used
@@ -1142,6 +2233,749 @@ func (s *CreateServiceGroupResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// CreateServiceGroupResponseStatusCode wraps CreateServiceGroupResponse with StatusCode.
+type CreateServiceGroupResponseStatusCode struct {
+	StatusCode int
+	Response   CreateServiceGroupResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *CreateServiceGroupResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *CreateServiceGroupResponseStatusCode) GetResponse() CreateServiceGroupResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *CreateServiceGroupResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *CreateServiceGroupResponseStatusCode) SetResponse(val CreateServiceGroupResponse) {
+	s.Response = val
+}
+
+// Creates one or more volumes with the given configuration. The volumes are
+//
+//	automatically initialized with an empty file system. After initialization
+//	the volumes are in the available state and can be attached to an instance
+//	with the `PUT /v1/volumes/attach` endpoint. Note that, the size of a volume
+//	cannot be changed after creation.
+//
+// Ref: #/components/schemas/CreateVolumeRequest
+type CreateVolumeRequest struct {
+	// The name of the volume.
+	//
+	//  This is a human-readable name that can be used to identify the volume.
+	//  The name must be unique within the context of your account.  If no name is
+	//  specified, a random name of the form `vol-X` is generated for you, where
+	//  `X` is a 5 character long random alphanumeric suffix..  The name can also
+	//  be used to identify the volume in API calls.
+	Name OptString `json:"name"`
+	// The size of the volume in megabytes.
+	SizeMB uint64 `json:"size_mb"`
+}
+
+// GetName returns the value of Name.
+func (s *CreateVolumeRequest) GetName() OptString {
+	return s.Name
+}
+
+// GetSizeMB returns the value of SizeMB.
+func (s *CreateVolumeRequest) GetSizeMB() uint64 {
+	return s.SizeMB
+}
+
+// SetName sets the value of Name.
+func (s *CreateVolumeRequest) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetSizeMB sets the value of SizeMB.
+func (s *CreateVolumeRequest) SetSizeMB(val uint64) {
+	s.SizeMB = val
+}
+
+// The response message for creating of a volume.
+// Ref: #/components/schemas/CreateVolumeResponse
+type CreateVolumeResponse struct {
+	// The status of the response.
+	Status OptCreateVolumeResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	//
+	Data OptCreateVolumeResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *CreateVolumeResponse) GetStatus() OptCreateVolumeResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *CreateVolumeResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *CreateVolumeResponse) GetData() OptCreateVolumeResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *CreateVolumeResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *CreateVolumeResponse) SetStatus(val OptCreateVolumeResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *CreateVolumeResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *CreateVolumeResponse) SetData(val OptCreateVolumeResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *CreateVolumeResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/CreateVolumeResponseData
+type CreateVolumeResponseData struct {
+	// The volume(s) which were created by the request.
+	Volumes []CreateVolumeResponseVolume `json:"volumes"`
+}
+
+// GetVolumes returns the value of Volumes.
+func (s *CreateVolumeResponseData) GetVolumes() []CreateVolumeResponseVolume {
+	return s.Volumes
+}
+
+// SetVolumes sets the value of Volumes.
+func (s *CreateVolumeResponseData) SetVolumes(val []CreateVolumeResponseVolume) {
+	s.Volumes = val
+}
+
+// The status of the response.
+type CreateVolumeResponseStatus string
+
+const (
+	CreateVolumeResponseStatusSuccess CreateVolumeResponseStatus = "success"
+	CreateVolumeResponseStatusError   CreateVolumeResponseStatus = "error"
+)
+
+// AllValues returns all CreateVolumeResponseStatus values.
+func (CreateVolumeResponseStatus) AllValues() []CreateVolumeResponseStatus {
+	return []CreateVolumeResponseStatus{
+		CreateVolumeResponseStatusSuccess,
+		CreateVolumeResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CreateVolumeResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case CreateVolumeResponseStatusSuccess:
+		return []byte(s), nil
+	case CreateVolumeResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CreateVolumeResponseStatus) UnmarshalText(data []byte) error {
+	switch CreateVolumeResponseStatus(data) {
+	case CreateVolumeResponseStatusSuccess:
+		*s = CreateVolumeResponseStatusSuccess
+		return nil
+	case CreateVolumeResponseStatusError:
+		*s = CreateVolumeResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// CreateVolumeResponseStatusCode wraps CreateVolumeResponse with StatusCode.
+type CreateVolumeResponseStatusCode struct {
+	StatusCode int
+	Response   CreateVolumeResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *CreateVolumeResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *CreateVolumeResponseStatusCode) GetResponse() CreateVolumeResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *CreateVolumeResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *CreateVolumeResponseStatusCode) SetResponse(val CreateVolumeResponse) {
+	s.Response = val
+}
+
+// Ref: #/components/schemas/CreateVolumeResponseVolume
+type CreateVolumeResponseVolume struct {
+	// The status of the response.
+	Status OptCreateVolumeResponseVolumeStatus `json:"status"`
+	// UUID of the newly created volume.
+	UUID OptString `json:"uuid"`
+	// The name of the newly created volume.
+	Name OptString `json:"name"`
+}
+
+// GetStatus returns the value of Status.
+func (s *CreateVolumeResponseVolume) GetStatus() OptCreateVolumeResponseVolumeStatus {
+	return s.Status
+}
+
+// GetUUID returns the value of UUID.
+func (s *CreateVolumeResponseVolume) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *CreateVolumeResponseVolume) GetName() OptString {
+	return s.Name
+}
+
+// SetStatus sets the value of Status.
+func (s *CreateVolumeResponseVolume) SetStatus(val OptCreateVolumeResponseVolumeStatus) {
+	s.Status = val
+}
+
+// SetUUID sets the value of UUID.
+func (s *CreateVolumeResponseVolume) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *CreateVolumeResponseVolume) SetName(val OptString) {
+	s.Name = val
+}
+
+// The status of the response.
+type CreateVolumeResponseVolumeStatus string
+
+const (
+	CreateVolumeResponseVolumeStatusSuccess CreateVolumeResponseVolumeStatus = "success"
+	CreateVolumeResponseVolumeStatusError   CreateVolumeResponseVolumeStatus = "error"
+)
+
+// AllValues returns all CreateVolumeResponseVolumeStatus values.
+func (CreateVolumeResponseVolumeStatus) AllValues() []CreateVolumeResponseVolumeStatus {
+	return []CreateVolumeResponseVolumeStatus{
+		CreateVolumeResponseVolumeStatusSuccess,
+		CreateVolumeResponseVolumeStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CreateVolumeResponseVolumeStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case CreateVolumeResponseVolumeStatusSuccess:
+		return []byte(s), nil
+	case CreateVolumeResponseVolumeStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CreateVolumeResponseVolumeStatus) UnmarshalText(data []byte) error {
+	switch CreateVolumeResponseVolumeStatus(data) {
+	case CreateVolumeResponseVolumeStatusSuccess:
+		*s = CreateVolumeResponseVolumeStatusSuccess
+		return nil
+	case CreateVolumeResponseVolumeStatusError:
+		*s = CreateVolumeResponseVolumeStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/DeleteAutoscaleConfigurationPolicyResponse
+type DeleteAutoscaleConfigurationPolicyResponse struct {
+	// The status of the response.
+	Status OptDeleteAutoscaleConfigurationPolicyResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptDeleteAutoscaleConfigurationPolicyResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DeleteAutoscaleConfigurationPolicyResponse) GetStatus() OptDeleteAutoscaleConfigurationPolicyResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *DeleteAutoscaleConfigurationPolicyResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *DeleteAutoscaleConfigurationPolicyResponse) GetData() OptDeleteAutoscaleConfigurationPolicyResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *DeleteAutoscaleConfigurationPolicyResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *DeleteAutoscaleConfigurationPolicyResponse) SetStatus(val OptDeleteAutoscaleConfigurationPolicyResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *DeleteAutoscaleConfigurationPolicyResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *DeleteAutoscaleConfigurationPolicyResponse) SetData(val OptDeleteAutoscaleConfigurationPolicyResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *DeleteAutoscaleConfigurationPolicyResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/DeleteAutoscaleConfigurationPolicyResponseData
+type DeleteAutoscaleConfigurationPolicyResponseData struct {
+	// The policies which were deleted by the request.
+	Policies []DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse `json:"policies"`
+}
+
+// GetPolicies returns the value of Policies.
+func (s *DeleteAutoscaleConfigurationPolicyResponseData) GetPolicies() []DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse {
+	return s.Policies
+}
+
+// SetPolicies sets the value of Policies.
+func (s *DeleteAutoscaleConfigurationPolicyResponseData) SetPolicies(val []DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse) {
+	s.Policies = val
+}
+
+// Ref: #/components/schemas/DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse
+type DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse struct {
+	// The status of the response.
+	Status OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus `json:"status"`
+	// The name of the service of the deleted policy.
+	Name OptString `json:"name"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse) GetStatus() OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus {
+	return s.Status
+}
+
+// GetName returns the value of Name.
+func (s *DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse) GetName() OptString {
+	return s.Name
+}
+
+// SetStatus sets the value of Status.
+func (s *DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse) SetStatus(val OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus) {
+	s.Status = val
+}
+
+// SetName sets the value of Name.
+func (s *DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse) SetName(val OptString) {
+	s.Name = val
+}
+
+// The status of the response.
+type DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus string
+
+const (
+	DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatusSuccess DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus = "success"
+	DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatusError   DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus = "error"
+)
+
+// AllValues returns all DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus values.
+func (DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus) AllValues() []DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus {
+	return []DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus{
+		DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatusSuccess,
+		DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatusSuccess:
+		return []byte(s), nil
+	case DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus) UnmarshalText(data []byte) error {
+	switch DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus(data) {
+	case DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatusSuccess:
+		*s = DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatusSuccess
+		return nil
+	case DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatusError:
+		*s = DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// The status of the response.
+type DeleteAutoscaleConfigurationPolicyResponseStatus string
+
+const (
+	DeleteAutoscaleConfigurationPolicyResponseStatusSuccess DeleteAutoscaleConfigurationPolicyResponseStatus = "success"
+	DeleteAutoscaleConfigurationPolicyResponseStatusError   DeleteAutoscaleConfigurationPolicyResponseStatus = "error"
+)
+
+// AllValues returns all DeleteAutoscaleConfigurationPolicyResponseStatus values.
+func (DeleteAutoscaleConfigurationPolicyResponseStatus) AllValues() []DeleteAutoscaleConfigurationPolicyResponseStatus {
+	return []DeleteAutoscaleConfigurationPolicyResponseStatus{
+		DeleteAutoscaleConfigurationPolicyResponseStatusSuccess,
+		DeleteAutoscaleConfigurationPolicyResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DeleteAutoscaleConfigurationPolicyResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DeleteAutoscaleConfigurationPolicyResponseStatusSuccess:
+		return []byte(s), nil
+	case DeleteAutoscaleConfigurationPolicyResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DeleteAutoscaleConfigurationPolicyResponseStatus) UnmarshalText(data []byte) error {
+	switch DeleteAutoscaleConfigurationPolicyResponseStatus(data) {
+	case DeleteAutoscaleConfigurationPolicyResponseStatusSuccess:
+		*s = DeleteAutoscaleConfigurationPolicyResponseStatusSuccess
+		return nil
+	case DeleteAutoscaleConfigurationPolicyResponseStatusError:
+		*s = DeleteAutoscaleConfigurationPolicyResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// DeleteAutoscaleConfigurationPolicyResponseStatusCode wraps DeleteAutoscaleConfigurationPolicyResponse with StatusCode.
+type DeleteAutoscaleConfigurationPolicyResponseStatusCode struct {
+	StatusCode int
+	Response   DeleteAutoscaleConfigurationPolicyResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *DeleteAutoscaleConfigurationPolicyResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *DeleteAutoscaleConfigurationPolicyResponseStatusCode) GetResponse() DeleteAutoscaleConfigurationPolicyResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *DeleteAutoscaleConfigurationPolicyResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DeleteAutoscaleConfigurationPolicyResponseStatusCode) SetResponse(val DeleteAutoscaleConfigurationPolicyResponse) {
+	s.Response = val
+}
+
+// Ref: #/components/schemas/DeleteAutoscaleConfigurationsRequestID
+type DeleteAutoscaleConfigurationsRequestID struct {
+	// The UUID of the service to delete a configuration for.
+	//  Mutually exclusive with name.
+	UUID OptString `json:"uuid"`
+	// The name of the service to delete a configuration for.
+	//  Mutually exclusive with UUID.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *DeleteAutoscaleConfigurationsRequestID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *DeleteAutoscaleConfigurationsRequestID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *DeleteAutoscaleConfigurationsRequestID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *DeleteAutoscaleConfigurationsRequestID) SetName(val OptString) {
+	s.Name = val
+}
+
+// Ref: #/components/schemas/DeleteAutoscaleConfigurationsResponse
+type DeleteAutoscaleConfigurationsResponse struct {
+	// The status of the response.
+	Status OptDeleteAutoscaleConfigurationsResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptDeleteAutoscaleConfigurationsResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DeleteAutoscaleConfigurationsResponse) GetStatus() OptDeleteAutoscaleConfigurationsResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *DeleteAutoscaleConfigurationsResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *DeleteAutoscaleConfigurationsResponse) GetData() OptDeleteAutoscaleConfigurationsResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *DeleteAutoscaleConfigurationsResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *DeleteAutoscaleConfigurationsResponse) SetStatus(val OptDeleteAutoscaleConfigurationsResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *DeleteAutoscaleConfigurationsResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *DeleteAutoscaleConfigurationsResponse) SetData(val OptDeleteAutoscaleConfigurationsResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *DeleteAutoscaleConfigurationsResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/DeleteAutoscaleConfigurationsResponseData
+type DeleteAutoscaleConfigurationsResponseData struct {
+	// The configuration(s) which were deleted by the request.
+	ServiceGroups []DeleteAutoscaleConfigurationsResponseServiceGroup `json:"service_groups"`
+}
+
+// GetServiceGroups returns the value of ServiceGroups.
+func (s *DeleteAutoscaleConfigurationsResponseData) GetServiceGroups() []DeleteAutoscaleConfigurationsResponseServiceGroup {
+	return s.ServiceGroups
+}
+
+// SetServiceGroups sets the value of ServiceGroups.
+func (s *DeleteAutoscaleConfigurationsResponseData) SetServiceGroups(val []DeleteAutoscaleConfigurationsResponseServiceGroup) {
+	s.ServiceGroups = val
+}
+
+// Ref: #/components/schemas/DeleteAutoscaleConfigurationsResponseServiceGroup
+type DeleteAutoscaleConfigurationsResponseServiceGroup struct {
+	// The status of the response.
+	Status OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus `json:"status"`
+	// The UUID of the service where the configuration was deleted.
+	UUID OptString `json:"uuid"`
+	// The name of the service where the configuration was deleted.
+	Name OptString `json:"name"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DeleteAutoscaleConfigurationsResponseServiceGroup) GetStatus() OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus {
+	return s.Status
+}
+
+// GetUUID returns the value of UUID.
+func (s *DeleteAutoscaleConfigurationsResponseServiceGroup) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *DeleteAutoscaleConfigurationsResponseServiceGroup) GetName() OptString {
+	return s.Name
+}
+
+// SetStatus sets the value of Status.
+func (s *DeleteAutoscaleConfigurationsResponseServiceGroup) SetStatus(val OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus) {
+	s.Status = val
+}
+
+// SetUUID sets the value of UUID.
+func (s *DeleteAutoscaleConfigurationsResponseServiceGroup) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *DeleteAutoscaleConfigurationsResponseServiceGroup) SetName(val OptString) {
+	s.Name = val
+}
+
+// The status of the response.
+type DeleteAutoscaleConfigurationsResponseServiceGroupStatus string
+
+const (
+	DeleteAutoscaleConfigurationsResponseServiceGroupStatusSuccess DeleteAutoscaleConfigurationsResponseServiceGroupStatus = "success"
+	DeleteAutoscaleConfigurationsResponseServiceGroupStatusError   DeleteAutoscaleConfigurationsResponseServiceGroupStatus = "error"
+)
+
+// AllValues returns all DeleteAutoscaleConfigurationsResponseServiceGroupStatus values.
+func (DeleteAutoscaleConfigurationsResponseServiceGroupStatus) AllValues() []DeleteAutoscaleConfigurationsResponseServiceGroupStatus {
+	return []DeleteAutoscaleConfigurationsResponseServiceGroupStatus{
+		DeleteAutoscaleConfigurationsResponseServiceGroupStatusSuccess,
+		DeleteAutoscaleConfigurationsResponseServiceGroupStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DeleteAutoscaleConfigurationsResponseServiceGroupStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DeleteAutoscaleConfigurationsResponseServiceGroupStatusSuccess:
+		return []byte(s), nil
+	case DeleteAutoscaleConfigurationsResponseServiceGroupStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DeleteAutoscaleConfigurationsResponseServiceGroupStatus) UnmarshalText(data []byte) error {
+	switch DeleteAutoscaleConfigurationsResponseServiceGroupStatus(data) {
+	case DeleteAutoscaleConfigurationsResponseServiceGroupStatusSuccess:
+		*s = DeleteAutoscaleConfigurationsResponseServiceGroupStatusSuccess
+		return nil
+	case DeleteAutoscaleConfigurationsResponseServiceGroupStatusError:
+		*s = DeleteAutoscaleConfigurationsResponseServiceGroupStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// The status of the response.
+type DeleteAutoscaleConfigurationsResponseStatus string
+
+const (
+	DeleteAutoscaleConfigurationsResponseStatusSuccess DeleteAutoscaleConfigurationsResponseStatus = "success"
+	DeleteAutoscaleConfigurationsResponseStatusError   DeleteAutoscaleConfigurationsResponseStatus = "error"
+)
+
+// AllValues returns all DeleteAutoscaleConfigurationsResponseStatus values.
+func (DeleteAutoscaleConfigurationsResponseStatus) AllValues() []DeleteAutoscaleConfigurationsResponseStatus {
+	return []DeleteAutoscaleConfigurationsResponseStatus{
+		DeleteAutoscaleConfigurationsResponseStatusSuccess,
+		DeleteAutoscaleConfigurationsResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DeleteAutoscaleConfigurationsResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DeleteAutoscaleConfigurationsResponseStatusSuccess:
+		return []byte(s), nil
+	case DeleteAutoscaleConfigurationsResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DeleteAutoscaleConfigurationsResponseStatus) UnmarshalText(data []byte) error {
+	switch DeleteAutoscaleConfigurationsResponseStatus(data) {
+	case DeleteAutoscaleConfigurationsResponseStatusSuccess:
+		*s = DeleteAutoscaleConfigurationsResponseStatusSuccess
+		return nil
+	case DeleteAutoscaleConfigurationsResponseStatusError:
+		*s = DeleteAutoscaleConfigurationsResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// DeleteAutoscaleConfigurationsResponseStatusCode wraps DeleteAutoscaleConfigurationsResponse with StatusCode.
+type DeleteAutoscaleConfigurationsResponseStatusCode struct {
+	StatusCode int
+	Response   DeleteAutoscaleConfigurationsResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *DeleteAutoscaleConfigurationsResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *DeleteAutoscaleConfigurationsResponseStatusCode) GetResponse() DeleteAutoscaleConfigurationsResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *DeleteAutoscaleConfigurationsResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DeleteAutoscaleConfigurationsResponseStatusCode) SetResponse(val DeleteAutoscaleConfigurationsResponse) {
+	s.Response = val
 }
 
 // An identifier for the certificate(s) to delete.
@@ -1376,6 +3210,32 @@ func (s *DeleteCertificatesResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// DeleteCertificatesResponseStatusCode wraps DeleteCertificatesResponse with StatusCode.
+type DeleteCertificatesResponseStatusCode struct {
+	StatusCode int
+	Response   DeleteCertificatesResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *DeleteCertificatesResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *DeleteCertificatesResponseStatusCode) GetResponse() DeleteCertificatesResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *DeleteCertificatesResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DeleteCertificatesResponseStatusCode) SetResponse(val DeleteCertificatesResponse) {
+	s.Response = val
+}
+
 // The response message for deleting one or more instance(s) given their UUID(s)
 //
 //	or name(s).
@@ -1587,6 +3447,48 @@ func (s *DeleteInstancesResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// DeleteInstancesResponseStatusCode wraps DeleteInstancesResponse with StatusCode.
+type DeleteInstancesResponseStatusCode struct {
+	StatusCode int
+	Response   DeleteInstancesResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *DeleteInstancesResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *DeleteInstancesResponseStatusCode) GetResponse() DeleteInstancesResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *DeleteInstancesResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DeleteInstancesResponseStatusCode) SetResponse(val DeleteInstancesResponse) {
+	s.Response = val
+}
+
+// Ref: #/components/schemas/DeletePolicyRequest
+type DeletePolicyRequest struct {
+	// The Name of the policy to delete.
+	Name string `json:"name"`
+}
+
+// GetName returns the value of Name.
+func (s *DeletePolicyRequest) GetName() string {
+	return s.Name
+}
+
+// SetName sets the value of Name.
+func (s *DeletePolicyRequest) SetName(val string) {
+	s.Name = val
 }
 
 // An identifier for the service group(s) to delete.
@@ -1821,6 +3723,475 @@ func (s *DeleteServiceGroupsResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// DeleteServiceGroupsResponseStatusCode wraps DeleteServiceGroupsResponse with StatusCode.
+type DeleteServiceGroupsResponseStatusCode struct {
+	StatusCode int
+	Response   DeleteServiceGroupsResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *DeleteServiceGroupsResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *DeleteServiceGroupsResponseStatusCode) GetResponse() DeleteServiceGroupsResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *DeleteServiceGroupsResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DeleteServiceGroupsResponseStatusCode) SetResponse(val DeleteServiceGroupsResponse) {
+	s.Response = val
+}
+
+// An identifier for the volume(s) to delete.
+// Ref: #/components/schemas/DeleteVolumesRequestID
+type DeleteVolumesRequestID struct {
+	// The UUID of the volume to delete.  Mutually exclusive with name.
+	UUID OptString `json:"uuid"`
+	// The name of the volume to delete.  Mutually exclusive with UUID.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *DeleteVolumesRequestID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *DeleteVolumesRequestID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *DeleteVolumesRequestID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *DeleteVolumesRequestID) SetName(val OptString) {
+	s.Name = val
+}
+
+// Ref: #/components/schemas/DeleteVolumesResponse
+type DeleteVolumesResponse struct {
+	// The status of the response.
+	Status OptDeleteVolumesResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptDeleteVolumesResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DeleteVolumesResponse) GetStatus() OptDeleteVolumesResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *DeleteVolumesResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *DeleteVolumesResponse) GetData() OptDeleteVolumesResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *DeleteVolumesResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *DeleteVolumesResponse) SetStatus(val OptDeleteVolumesResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *DeleteVolumesResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *DeleteVolumesResponse) SetData(val OptDeleteVolumesResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *DeleteVolumesResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/DeleteVolumesResponseData
+type DeleteVolumesResponseData struct {
+	// The volume(s) which were deleted by the request.
+	Volumes []DeleteVolumesResponseDeletedVolume `json:"volumes"`
+}
+
+// GetVolumes returns the value of Volumes.
+func (s *DeleteVolumesResponseData) GetVolumes() []DeleteVolumesResponseDeletedVolume {
+	return s.Volumes
+}
+
+// SetVolumes sets the value of Volumes.
+func (s *DeleteVolumesResponseData) SetVolumes(val []DeleteVolumesResponseDeletedVolume) {
+	s.Volumes = val
+}
+
+// Ref: #/components/schemas/DeleteVolumesResponseDeletedVolume
+type DeleteVolumesResponseDeletedVolume struct {
+	// The status of the response.
+	Status OptDeleteVolumesResponseDeletedVolumeStatus `json:"status"`
+	// The UUID of the volume that was deleted.
+	UUID OptString `json:"uuid"`
+	// The name of the volume that was deleted.
+	Name OptString `json:"name"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DeleteVolumesResponseDeletedVolume) GetStatus() OptDeleteVolumesResponseDeletedVolumeStatus {
+	return s.Status
+}
+
+// GetUUID returns the value of UUID.
+func (s *DeleteVolumesResponseDeletedVolume) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *DeleteVolumesResponseDeletedVolume) GetName() OptString {
+	return s.Name
+}
+
+// SetStatus sets the value of Status.
+func (s *DeleteVolumesResponseDeletedVolume) SetStatus(val OptDeleteVolumesResponseDeletedVolumeStatus) {
+	s.Status = val
+}
+
+// SetUUID sets the value of UUID.
+func (s *DeleteVolumesResponseDeletedVolume) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *DeleteVolumesResponseDeletedVolume) SetName(val OptString) {
+	s.Name = val
+}
+
+// The status of the response.
+type DeleteVolumesResponseDeletedVolumeStatus string
+
+const (
+	DeleteVolumesResponseDeletedVolumeStatusSuccess DeleteVolumesResponseDeletedVolumeStatus = "success"
+	DeleteVolumesResponseDeletedVolumeStatusError   DeleteVolumesResponseDeletedVolumeStatus = "error"
+)
+
+// AllValues returns all DeleteVolumesResponseDeletedVolumeStatus values.
+func (DeleteVolumesResponseDeletedVolumeStatus) AllValues() []DeleteVolumesResponseDeletedVolumeStatus {
+	return []DeleteVolumesResponseDeletedVolumeStatus{
+		DeleteVolumesResponseDeletedVolumeStatusSuccess,
+		DeleteVolumesResponseDeletedVolumeStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DeleteVolumesResponseDeletedVolumeStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DeleteVolumesResponseDeletedVolumeStatusSuccess:
+		return []byte(s), nil
+	case DeleteVolumesResponseDeletedVolumeStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DeleteVolumesResponseDeletedVolumeStatus) UnmarshalText(data []byte) error {
+	switch DeleteVolumesResponseDeletedVolumeStatus(data) {
+	case DeleteVolumesResponseDeletedVolumeStatusSuccess:
+		*s = DeleteVolumesResponseDeletedVolumeStatusSuccess
+		return nil
+	case DeleteVolumesResponseDeletedVolumeStatusError:
+		*s = DeleteVolumesResponseDeletedVolumeStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// The status of the response.
+type DeleteVolumesResponseStatus string
+
+const (
+	DeleteVolumesResponseStatusSuccess DeleteVolumesResponseStatus = "success"
+	DeleteVolumesResponseStatusError   DeleteVolumesResponseStatus = "error"
+)
+
+// AllValues returns all DeleteVolumesResponseStatus values.
+func (DeleteVolumesResponseStatus) AllValues() []DeleteVolumesResponseStatus {
+	return []DeleteVolumesResponseStatus{
+		DeleteVolumesResponseStatusSuccess,
+		DeleteVolumesResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DeleteVolumesResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DeleteVolumesResponseStatusSuccess:
+		return []byte(s), nil
+	case DeleteVolumesResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DeleteVolumesResponseStatus) UnmarshalText(data []byte) error {
+	switch DeleteVolumesResponseStatus(data) {
+	case DeleteVolumesResponseStatusSuccess:
+		*s = DeleteVolumesResponseStatusSuccess
+		return nil
+	case DeleteVolumesResponseStatusError:
+		*s = DeleteVolumesResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// DeleteVolumesResponseStatusCode wraps DeleteVolumesResponse with StatusCode.
+type DeleteVolumesResponseStatusCode struct {
+	StatusCode int
+	Response   DeleteVolumesResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *DeleteVolumesResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *DeleteVolumesResponseStatusCode) GetResponse() DeleteVolumesResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *DeleteVolumesResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DeleteVolumesResponseStatusCode) SetResponse(val DeleteVolumesResponse) {
+	s.Response = val
+}
+
+// An identifier for the volume(s) to detach.
+// Ref: #/components/schemas/DetachVolumesRequestID
+type DetachVolumesRequestID struct {
+	// The UUID of the volume to detach.  Mutually exclusive with name.
+	UUID OptString `json:"uuid"`
+	// The name of the volume to detach.  Mutually exclusive with UUID.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *DetachVolumesRequestID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *DetachVolumesRequestID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *DetachVolumesRequestID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *DetachVolumesRequestID) SetName(val OptString) {
+	s.Name = val
+}
+
+// Ref: #/components/schemas/DetachVolumesResponse
+type DetachVolumesResponse struct {
+	// The status of the response.
+	Status OptDetachVolumesResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptDetachVolumesResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DetachVolumesResponse) GetStatus() OptDetachVolumesResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *DetachVolumesResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *DetachVolumesResponse) GetData() OptDetachVolumesResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *DetachVolumesResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *DetachVolumesResponse) SetStatus(val OptDetachVolumesResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *DetachVolumesResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *DetachVolumesResponse) SetData(val OptDetachVolumesResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *DetachVolumesResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/DetachVolumesResponseData
+type DetachVolumesResponseData struct {
+	// The volume(s) which were detached by the request.
+	Volumes []DetachVolumesResponseInstanceID `json:"volumes"`
+}
+
+// GetVolumes returns the value of Volumes.
+func (s *DetachVolumesResponseData) GetVolumes() []DetachVolumesResponseInstanceID {
+	return s.Volumes
+}
+
+// SetVolumes sets the value of Volumes.
+func (s *DetachVolumesResponseData) SetVolumes(val []DetachVolumesResponseInstanceID) {
+	s.Volumes = val
+}
+
+// Reference to the instance to detach the volume from.
+// Ref: #/components/schemas/DetachVolumesResponseInstanceID
+type DetachVolumesResponseInstanceID struct {
+	// The UUID of the instance that the volume is detached from.
+	UUID OptString `json:"uuid"`
+	// The name of the instance that the volume is detached from.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *DetachVolumesResponseInstanceID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *DetachVolumesResponseInstanceID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *DetachVolumesResponseInstanceID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *DetachVolumesResponseInstanceID) SetName(val OptString) {
+	s.Name = val
+}
+
+// The status of the response.
+type DetachVolumesResponseStatus string
+
+const (
+	DetachVolumesResponseStatusSuccess DetachVolumesResponseStatus = "success"
+	DetachVolumesResponseStatusError   DetachVolumesResponseStatus = "error"
+)
+
+// AllValues returns all DetachVolumesResponseStatus values.
+func (DetachVolumesResponseStatus) AllValues() []DetachVolumesResponseStatus {
+	return []DetachVolumesResponseStatus{
+		DetachVolumesResponseStatusSuccess,
+		DetachVolumesResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DetachVolumesResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DetachVolumesResponseStatusSuccess:
+		return []byte(s), nil
+	case DetachVolumesResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DetachVolumesResponseStatus) UnmarshalText(data []byte) error {
+	switch DetachVolumesResponseStatus(data) {
+	case DetachVolumesResponseStatusSuccess:
+		*s = DetachVolumesResponseStatusSuccess
+		return nil
+	case DetachVolumesResponseStatusError:
+		*s = DetachVolumesResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// DetachVolumesResponseStatusCode wraps DetachVolumesResponse with StatusCode.
+type DetachVolumesResponseStatusCode struct {
+	StatusCode int
+	Response   DetachVolumesResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *DetachVolumesResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *DetachVolumesResponseStatusCode) GetResponse() DetachVolumesResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *DetachVolumesResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DetachVolumesResponseStatusCode) SetResponse(val DetachVolumesResponse) {
+	s.Response = val
+}
+
 // A domain name.
 //
 //	Domain names are completely specified with all labels in the hierarchy of the
@@ -1859,6 +4230,568 @@ func (s *Domain) SetFqdn(val OptString) {
 // SetCertificate sets the value of Certificate.
 func (s *Domain) SetCertificate(val OptCertificate) {
 	s.Certificate = val
+}
+
+// Ref: #/components/schemas/GetAutoscaleConfigurationPolicyRequest
+type GetAutoscaleConfigurationPolicyRequest struct {
+	// The Name  of the policy to get.
+	Name string `json:"name"`
+}
+
+// GetName returns the value of Name.
+func (s *GetAutoscaleConfigurationPolicyRequest) GetName() string {
+	return s.Name
+}
+
+// SetName sets the value of Name.
+func (s *GetAutoscaleConfigurationPolicyRequest) SetName(val string) {
+	s.Name = val
+}
+
+// Ref: #/components/schemas/GetAutoscaleConfigurationPolicyResponse
+type GetAutoscaleConfigurationPolicyResponse struct {
+	// The status of the response.
+	Status OptGetAutoscaleConfigurationPolicyResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptGetAutoscaleConfigurationPolicyResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *GetAutoscaleConfigurationPolicyResponse) GetStatus() OptGetAutoscaleConfigurationPolicyResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *GetAutoscaleConfigurationPolicyResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *GetAutoscaleConfigurationPolicyResponse) GetData() OptGetAutoscaleConfigurationPolicyResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *GetAutoscaleConfigurationPolicyResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *GetAutoscaleConfigurationPolicyResponse) SetStatus(val OptGetAutoscaleConfigurationPolicyResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *GetAutoscaleConfigurationPolicyResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *GetAutoscaleConfigurationPolicyResponse) SetData(val OptGetAutoscaleConfigurationPolicyResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *GetAutoscaleConfigurationPolicyResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/GetAutoscaleConfigurationPolicyResponseData
+type GetAutoscaleConfigurationPolicyResponseData struct {
+	// The policy which was retrieved by the request.
+	Policies []GetAutoscaleConfigurationPolicyResponsePolicyResponse `json:"policies"`
+}
+
+// GetPolicies returns the value of Policies.
+func (s *GetAutoscaleConfigurationPolicyResponseData) GetPolicies() []GetAutoscaleConfigurationPolicyResponsePolicyResponse {
+	return s.Policies
+}
+
+// SetPolicies sets the value of Policies.
+func (s *GetAutoscaleConfigurationPolicyResponseData) SetPolicies(val []GetAutoscaleConfigurationPolicyResponsePolicyResponse) {
+	s.Policies = val
+}
+
+// Ref: #/components/schemas/GetAutoscaleConfigurationPolicyResponsePolicyResponse
+type GetAutoscaleConfigurationPolicyResponsePolicyResponse struct {
+	// The status of the response.
+	Status OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus `json:"status"`
+	// The policy which was retrieved by the request.
+	Policy OptAutoscalePolicy `json:"policy"`
+}
+
+// GetStatus returns the value of Status.
+func (s *GetAutoscaleConfigurationPolicyResponsePolicyResponse) GetStatus() OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus {
+	return s.Status
+}
+
+// GetPolicy returns the value of Policy.
+func (s *GetAutoscaleConfigurationPolicyResponsePolicyResponse) GetPolicy() OptAutoscalePolicy {
+	return s.Policy
+}
+
+// SetStatus sets the value of Status.
+func (s *GetAutoscaleConfigurationPolicyResponsePolicyResponse) SetStatus(val OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus) {
+	s.Status = val
+}
+
+// SetPolicy sets the value of Policy.
+func (s *GetAutoscaleConfigurationPolicyResponsePolicyResponse) SetPolicy(val OptAutoscalePolicy) {
+	s.Policy = val
+}
+
+// The status of the response.
+type GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus string
+
+const (
+	GetAutoscaleConfigurationPolicyResponsePolicyResponseStatusSuccess GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus = "success"
+	GetAutoscaleConfigurationPolicyResponsePolicyResponseStatusError   GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus = "error"
+)
+
+// AllValues returns all GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus values.
+func (GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus) AllValues() []GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus {
+	return []GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus{
+		GetAutoscaleConfigurationPolicyResponsePolicyResponseStatusSuccess,
+		GetAutoscaleConfigurationPolicyResponsePolicyResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case GetAutoscaleConfigurationPolicyResponsePolicyResponseStatusSuccess:
+		return []byte(s), nil
+	case GetAutoscaleConfigurationPolicyResponsePolicyResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus) UnmarshalText(data []byte) error {
+	switch GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus(data) {
+	case GetAutoscaleConfigurationPolicyResponsePolicyResponseStatusSuccess:
+		*s = GetAutoscaleConfigurationPolicyResponsePolicyResponseStatusSuccess
+		return nil
+	case GetAutoscaleConfigurationPolicyResponsePolicyResponseStatusError:
+		*s = GetAutoscaleConfigurationPolicyResponsePolicyResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// The status of the response.
+type GetAutoscaleConfigurationPolicyResponseStatus string
+
+const (
+	GetAutoscaleConfigurationPolicyResponseStatusSuccess GetAutoscaleConfigurationPolicyResponseStatus = "success"
+	GetAutoscaleConfigurationPolicyResponseStatusError   GetAutoscaleConfigurationPolicyResponseStatus = "error"
+)
+
+// AllValues returns all GetAutoscaleConfigurationPolicyResponseStatus values.
+func (GetAutoscaleConfigurationPolicyResponseStatus) AllValues() []GetAutoscaleConfigurationPolicyResponseStatus {
+	return []GetAutoscaleConfigurationPolicyResponseStatus{
+		GetAutoscaleConfigurationPolicyResponseStatusSuccess,
+		GetAutoscaleConfigurationPolicyResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s GetAutoscaleConfigurationPolicyResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case GetAutoscaleConfigurationPolicyResponseStatusSuccess:
+		return []byte(s), nil
+	case GetAutoscaleConfigurationPolicyResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *GetAutoscaleConfigurationPolicyResponseStatus) UnmarshalText(data []byte) error {
+	switch GetAutoscaleConfigurationPolicyResponseStatus(data) {
+	case GetAutoscaleConfigurationPolicyResponseStatusSuccess:
+		*s = GetAutoscaleConfigurationPolicyResponseStatusSuccess
+		return nil
+	case GetAutoscaleConfigurationPolicyResponseStatusError:
+		*s = GetAutoscaleConfigurationPolicyResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// GetAutoscaleConfigurationPolicyResponseStatusCode wraps GetAutoscaleConfigurationPolicyResponse with StatusCode.
+type GetAutoscaleConfigurationPolicyResponseStatusCode struct {
+	StatusCode int
+	Response   GetAutoscaleConfigurationPolicyResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetAutoscaleConfigurationPolicyResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetAutoscaleConfigurationPolicyResponseStatusCode) GetResponse() GetAutoscaleConfigurationPolicyResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetAutoscaleConfigurationPolicyResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetAutoscaleConfigurationPolicyResponseStatusCode) SetResponse(val GetAutoscaleConfigurationPolicyResponse) {
+	s.Response = val
+}
+
+// An identifier for the configuration(s) to get.
+// Ref: #/components/schemas/GetAutoscaleConfigurationsRequestID
+type GetAutoscaleConfigurationsRequestID struct {
+	// The UUID of the service to create a configuration for.
+	//  Mutually exclusive with name.
+	UUID OptString `json:"uuid"`
+	// The name of the service to create a configuration for.
+	//  Mutually exclusive with UUID.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *GetAutoscaleConfigurationsRequestID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *GetAutoscaleConfigurationsRequestID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *GetAutoscaleConfigurationsRequestID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *GetAutoscaleConfigurationsRequestID) SetName(val OptString) {
+	s.Name = val
+}
+
+// Ref: #/components/schemas/GetAutoscaleConfigurationsResponse
+type GetAutoscaleConfigurationsResponse struct {
+	// The status of the response.
+	Status OptGetAutoscaleConfigurationsResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptGetAutoscaleConfigurationsResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *GetAutoscaleConfigurationsResponse) GetStatus() OptGetAutoscaleConfigurationsResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *GetAutoscaleConfigurationsResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *GetAutoscaleConfigurationsResponse) GetData() OptGetAutoscaleConfigurationsResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *GetAutoscaleConfigurationsResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *GetAutoscaleConfigurationsResponse) SetStatus(val OptGetAutoscaleConfigurationsResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *GetAutoscaleConfigurationsResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *GetAutoscaleConfigurationsResponse) SetData(val OptGetAutoscaleConfigurationsResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *GetAutoscaleConfigurationsResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/GetAutoscaleConfigurationsResponseData
+type GetAutoscaleConfigurationsResponseData struct {
+	// The configuration(s) which were retrieved by the request.
+	ServiceGroups []GetAutoscaleConfigurationsResponseServiceGroup `json:"service_groups"`
+}
+
+// GetServiceGroups returns the value of ServiceGroups.
+func (s *GetAutoscaleConfigurationsResponseData) GetServiceGroups() []GetAutoscaleConfigurationsResponseServiceGroup {
+	return s.ServiceGroups
+}
+
+// SetServiceGroups sets the value of ServiceGroups.
+func (s *GetAutoscaleConfigurationsResponseData) SetServiceGroups(val []GetAutoscaleConfigurationsResponseServiceGroup) {
+	s.ServiceGroups = val
+}
+
+// Ref: #/components/schemas/GetAutoscaleConfigurationsResponseServiceGroup
+type GetAutoscaleConfigurationsResponseServiceGroup struct {
+	// The status of the response.
+	Status OptGetAutoscaleConfigurationsResponseServiceGroupStatus `json:"status"`
+	// The UUID of the service where the configuration was created.
+	UUID OptString `json:"uuid"`
+	// The name of the service where the configuration was created.
+	Name OptString `json:"name"`
+	// If the autoscale configuration is enabled.
+	Enabled OptBool `json:"enabled"`
+	// The minimum number of instances to keep running.
+	//  Only if enabled is true.
+	MinSize OptInt64 `json:"min_size"`
+	// The maximum number of instances to keep running.
+	//  Only if enabled is true.
+	MaxSize OptInt64 `json:"max_size"`
+	// The warmup time in seconds for new instances.
+	//  Only if enabled is true.
+	WarmupTimeMs OptInt64 `json:"warmup_time_ms"`
+	// The cooldown time in seconds for the autoscale configuration.
+	//  Only if enabled is true.
+	CooldownTimeMs OptInt64 `json:"cooldown_time_ms"`
+	// The instance template used for the autoscale configuration.
+	//  Only if enabled is true.
+	Template OptServiceGroupTemplate `json:"template"`
+	// The policies applied to the autoscale configuration.
+	Policies []AutoscalePolicy `json:"policies"`
+}
+
+// GetStatus returns the value of Status.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) GetStatus() OptGetAutoscaleConfigurationsResponseServiceGroupStatus {
+	return s.Status
+}
+
+// GetUUID returns the value of UUID.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) GetName() OptString {
+	return s.Name
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetMinSize returns the value of MinSize.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) GetMinSize() OptInt64 {
+	return s.MinSize
+}
+
+// GetMaxSize returns the value of MaxSize.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) GetMaxSize() OptInt64 {
+	return s.MaxSize
+}
+
+// GetWarmupTimeMs returns the value of WarmupTimeMs.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) GetWarmupTimeMs() OptInt64 {
+	return s.WarmupTimeMs
+}
+
+// GetCooldownTimeMs returns the value of CooldownTimeMs.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) GetCooldownTimeMs() OptInt64 {
+	return s.CooldownTimeMs
+}
+
+// GetTemplate returns the value of Template.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) GetTemplate() OptServiceGroupTemplate {
+	return s.Template
+}
+
+// GetPolicies returns the value of Policies.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) GetPolicies() []AutoscalePolicy {
+	return s.Policies
+}
+
+// SetStatus sets the value of Status.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) SetStatus(val OptGetAutoscaleConfigurationsResponseServiceGroupStatus) {
+	s.Status = val
+}
+
+// SetUUID sets the value of UUID.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetMinSize sets the value of MinSize.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) SetMinSize(val OptInt64) {
+	s.MinSize = val
+}
+
+// SetMaxSize sets the value of MaxSize.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) SetMaxSize(val OptInt64) {
+	s.MaxSize = val
+}
+
+// SetWarmupTimeMs sets the value of WarmupTimeMs.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) SetWarmupTimeMs(val OptInt64) {
+	s.WarmupTimeMs = val
+}
+
+// SetCooldownTimeMs sets the value of CooldownTimeMs.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) SetCooldownTimeMs(val OptInt64) {
+	s.CooldownTimeMs = val
+}
+
+// SetTemplate sets the value of Template.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) SetTemplate(val OptServiceGroupTemplate) {
+	s.Template = val
+}
+
+// SetPolicies sets the value of Policies.
+func (s *GetAutoscaleConfigurationsResponseServiceGroup) SetPolicies(val []AutoscalePolicy) {
+	s.Policies = val
+}
+
+// The status of the response.
+type GetAutoscaleConfigurationsResponseServiceGroupStatus string
+
+const (
+	GetAutoscaleConfigurationsResponseServiceGroupStatusSuccess GetAutoscaleConfigurationsResponseServiceGroupStatus = "success"
+	GetAutoscaleConfigurationsResponseServiceGroupStatusError   GetAutoscaleConfigurationsResponseServiceGroupStatus = "error"
+)
+
+// AllValues returns all GetAutoscaleConfigurationsResponseServiceGroupStatus values.
+func (GetAutoscaleConfigurationsResponseServiceGroupStatus) AllValues() []GetAutoscaleConfigurationsResponseServiceGroupStatus {
+	return []GetAutoscaleConfigurationsResponseServiceGroupStatus{
+		GetAutoscaleConfigurationsResponseServiceGroupStatusSuccess,
+		GetAutoscaleConfigurationsResponseServiceGroupStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s GetAutoscaleConfigurationsResponseServiceGroupStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case GetAutoscaleConfigurationsResponseServiceGroupStatusSuccess:
+		return []byte(s), nil
+	case GetAutoscaleConfigurationsResponseServiceGroupStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *GetAutoscaleConfigurationsResponseServiceGroupStatus) UnmarshalText(data []byte) error {
+	switch GetAutoscaleConfigurationsResponseServiceGroupStatus(data) {
+	case GetAutoscaleConfigurationsResponseServiceGroupStatusSuccess:
+		*s = GetAutoscaleConfigurationsResponseServiceGroupStatusSuccess
+		return nil
+	case GetAutoscaleConfigurationsResponseServiceGroupStatusError:
+		*s = GetAutoscaleConfigurationsResponseServiceGroupStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// The status of the response.
+type GetAutoscaleConfigurationsResponseStatus string
+
+const (
+	GetAutoscaleConfigurationsResponseStatusSuccess GetAutoscaleConfigurationsResponseStatus = "success"
+	GetAutoscaleConfigurationsResponseStatusError   GetAutoscaleConfigurationsResponseStatus = "error"
+)
+
+// AllValues returns all GetAutoscaleConfigurationsResponseStatus values.
+func (GetAutoscaleConfigurationsResponseStatus) AllValues() []GetAutoscaleConfigurationsResponseStatus {
+	return []GetAutoscaleConfigurationsResponseStatus{
+		GetAutoscaleConfigurationsResponseStatusSuccess,
+		GetAutoscaleConfigurationsResponseStatusError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s GetAutoscaleConfigurationsResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case GetAutoscaleConfigurationsResponseStatusSuccess:
+		return []byte(s), nil
+	case GetAutoscaleConfigurationsResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *GetAutoscaleConfigurationsResponseStatus) UnmarshalText(data []byte) error {
+	switch GetAutoscaleConfigurationsResponseStatus(data) {
+	case GetAutoscaleConfigurationsResponseStatusSuccess:
+		*s = GetAutoscaleConfigurationsResponseStatusSuccess
+		return nil
+	case GetAutoscaleConfigurationsResponseStatusError:
+		*s = GetAutoscaleConfigurationsResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// GetAutoscaleConfigurationsResponseStatusCode wraps GetAutoscaleConfigurationsResponse with StatusCode.
+type GetAutoscaleConfigurationsResponseStatusCode struct {
+	StatusCode int
+	Response   GetAutoscaleConfigurationsResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetAutoscaleConfigurationsResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetAutoscaleConfigurationsResponseStatusCode) GetResponse() GetAutoscaleConfigurationsResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetAutoscaleConfigurationsResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetAutoscaleConfigurationsResponseStatusCode) SetResponse(val GetAutoscaleConfigurationsResponse) {
+	s.Response = val
 }
 
 // An identifier for the certificate(s) to get.
@@ -2005,6 +4938,32 @@ func (s *GetCertificatesResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// GetCertificatesResponseStatusCode wraps GetCertificatesResponse with StatusCode.
+type GetCertificatesResponseStatusCode struct {
+	StatusCode int
+	Response   GetCertificatesResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetCertificatesResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetCertificatesResponseStatusCode) GetResponse() GetCertificatesResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetCertificatesResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetCertificatesResponseStatusCode) SetResponse(val GetCertificatesResponse) {
+	s.Response = val
+}
+
 // The response message for retrieving a single image.
 // Ref: #/components/schemas/GetImageResponse
 type GetImageResponse struct {
@@ -2115,6 +5074,32 @@ func (s *GetImageResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// GetImageResponseStatusCode wraps GetImageResponse with StatusCode.
+type GetImageResponseStatusCode struct {
+	StatusCode int
+	Response   GetImageResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetImageResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetImageResponseStatusCode) GetResponse() GetImageResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetImageResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetImageResponseStatusCode) SetResponse(val GetImageResponse) {
+	s.Response = val
 }
 
 // The response message for getting the logs of an instance given its UUID(s) or
@@ -2354,6 +5339,32 @@ func (s *GetInstanceLogsResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// GetInstanceLogsResponseStatusCode wraps GetInstanceLogsResponse with StatusCode.
+type GetInstanceLogsResponseStatusCode struct {
+	StatusCode int
+	Response   GetInstanceLogsResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetInstanceLogsResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetInstanceLogsResponseStatusCode) GetResponse() GetInstanceLogsResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetInstanceLogsResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetInstanceLogsResponseStatusCode) SetResponse(val GetInstanceLogsResponse) {
+	s.Response = val
 }
 
 // The response message for getting the metrics of one or more instance(s)
@@ -2607,6 +5618,32 @@ func (s *GetInstanceMetricsResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// GetInstanceMetricsResponseStatusCode wraps GetInstanceMetricsResponse with StatusCode.
+type GetInstanceMetricsResponseStatusCode struct {
+	StatusCode int
+	Response   GetInstanceMetricsResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetInstanceMetricsResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetInstanceMetricsResponseStatusCode) GetResponse() GetInstanceMetricsResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetInstanceMetricsResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetInstanceMetricsResponseStatusCode) SetResponse(val GetInstanceMetricsResponse) {
+	s.Response = val
+}
+
 // An identifier for the instance(s) to get.
 // Ref: #/components/schemas/GetInstancesRequestID
 type GetInstancesRequestID struct {
@@ -2746,6 +5783,32 @@ func (s *GetInstancesResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// GetInstancesResponseStatusCode wraps GetInstancesResponse with StatusCode.
+type GetInstancesResponseStatusCode struct {
+	StatusCode int
+	Response   GetInstancesResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetInstancesResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetInstancesResponseStatusCode) GetResponse() GetInstancesResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetInstancesResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetInstancesResponseStatusCode) SetResponse(val GetInstancesResponse) {
+	s.Response = val
 }
 
 // An identifier for the service group(s) to get.
@@ -2892,43 +5955,200 @@ func (s *GetServiceGroupsResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
-// Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-// Ref: #/components/schemas/GoogleProtobufAny
-type GoogleProtobufAny struct {
-	// The type of the serialized message.
-	Type            OptString `json:"@type"`
-	AdditionalProps GoogleProtobufAnyAdditional
+// GetServiceGroupsResponseStatusCode wraps GetServiceGroupsResponse with StatusCode.
+type GetServiceGroupsResponseStatusCode struct {
+	StatusCode int
+	Response   GetServiceGroupsResponse
 }
 
-// GetType returns the value of Type.
-func (s *GoogleProtobufAny) GetType() OptString {
-	return s.Type
+// GetStatusCode returns the value of StatusCode.
+func (s *GetServiceGroupsResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
 }
 
-// GetAdditionalProps returns the value of AdditionalProps.
-func (s *GoogleProtobufAny) GetAdditionalProps() GoogleProtobufAnyAdditional {
-	return s.AdditionalProps
+// GetResponse returns the value of Response.
+func (s *GetServiceGroupsResponseStatusCode) GetResponse() GetServiceGroupsResponse {
+	return s.Response
 }
 
-// SetType sets the value of Type.
-func (s *GoogleProtobufAny) SetType(val OptString) {
-	s.Type = val
+// SetStatusCode sets the value of StatusCode.
+func (s *GetServiceGroupsResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
 }
 
-// SetAdditionalProps sets the value of AdditionalProps.
-func (s *GoogleProtobufAny) SetAdditionalProps(val GoogleProtobufAnyAdditional) {
-	s.AdditionalProps = val
+// SetResponse sets the value of Response.
+func (s *GetServiceGroupsResponseStatusCode) SetResponse(val GetServiceGroupsResponse) {
+	s.Response = val
 }
 
-type GoogleProtobufAnyAdditional map[string]jx.Raw
+// An identifier for the volume(s) to get.
+// Ref: #/components/schemas/GetVolumesRequestID
+type GetVolumesRequestID struct {
+	// The UUID of the volume to get.  Mutually exclusive with name.
+	UUID OptString `json:"uuid"`
+	// The name of the volume to get.  Mutually exclusive with UUID.
+	Name OptString `json:"name"`
+}
 
-func (s *GoogleProtobufAnyAdditional) init() GoogleProtobufAnyAdditional {
-	m := *s
-	if m == nil {
-		m = map[string]jx.Raw{}
-		*s = m
+// GetUUID returns the value of UUID.
+func (s *GetVolumesRequestID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *GetVolumesRequestID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *GetVolumesRequestID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *GetVolumesRequestID) SetName(val OptString) {
+	s.Name = val
+}
+
+// The response message for getting one or more volume(s) given their
+//
+//	UUID(s) or name(s).
+//
+// Ref: #/components/schemas/GetVolumesResponse
+type GetVolumesResponse struct {
+	// The status of the response.
+	Status OptGetVolumesResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptGetVolumesResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *GetVolumesResponse) GetStatus() OptGetVolumesResponseStatus {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *GetVolumesResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *GetVolumesResponse) GetData() OptGetVolumesResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *GetVolumesResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *GetVolumesResponse) SetStatus(val OptGetVolumesResponseStatus) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *GetVolumesResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *GetVolumesResponse) SetData(val OptGetVolumesResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *GetVolumesResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/GetVolumesResponseData
+type GetVolumesResponseData struct {
+	// The volume(s) which were retrieved by the request.
+	Volumes []Volume `json:"volumes"`
+}
+
+// GetVolumes returns the value of Volumes.
+func (s *GetVolumesResponseData) GetVolumes() []Volume {
+	return s.Volumes
+}
+
+// SetVolumes sets the value of Volumes.
+func (s *GetVolumesResponseData) SetVolumes(val []Volume) {
+	s.Volumes = val
+}
+
+// The status of the response.
+type GetVolumesResponseStatus string
+
+const (
+	GetVolumesResponseStatusSuccess GetVolumesResponseStatus = "success"
+	GetVolumesResponseStatusError   GetVolumesResponseStatus = "error"
+)
+
+// AllValues returns all GetVolumesResponseStatus values.
+func (GetVolumesResponseStatus) AllValues() []GetVolumesResponseStatus {
+	return []GetVolumesResponseStatus{
+		GetVolumesResponseStatusSuccess,
+		GetVolumesResponseStatusError,
 	}
-	return m
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s GetVolumesResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case GetVolumesResponseStatusSuccess:
+		return []byte(s), nil
+	case GetVolumesResponseStatusError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *GetVolumesResponseStatus) UnmarshalText(data []byte) error {
+	switch GetVolumesResponseStatus(data) {
+	case GetVolumesResponseStatusSuccess:
+		*s = GetVolumesResponseStatusSuccess
+		return nil
+	case GetVolumesResponseStatusError:
+		*s = GetVolumesResponseStatusError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// GetVolumesResponseStatusCode wraps GetVolumesResponse with StatusCode.
+type GetVolumesResponseStatusCode struct {
+	StatusCode int
+	Response   GetVolumesResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *GetVolumesResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *GetVolumesResponseStatusCode) GetResponse() GetVolumesResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *GetVolumesResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetVolumesResponseStatusCode) SetResponse(val GetVolumesResponse) {
+	s.Response = val
 }
 
 // Ref: #/components/schemas/Image
@@ -3583,6 +6803,62 @@ func (s *Instance) SetNetworkInterfaces(val []InstanceNetworkInterface) {
 	s.NetworkInterfaces = val
 }
 
+// Ref: #/components/schemas/InstanceCreateArgsInstanceCreateRequestRoms
+type InstanceCreateArgsInstanceCreateRequestRoms struct {
+	// The name of the ROM to use for the autoscale configuration.
+	Name OptString `json:"name"`
+	// The image of the ROM to use for the autoscale configuration.
+	Image string `json:"image"`
+}
+
+// GetName returns the value of Name.
+func (s *InstanceCreateArgsInstanceCreateRequestRoms) GetName() OptString {
+	return s.Name
+}
+
+// GetImage returns the value of Image.
+func (s *InstanceCreateArgsInstanceCreateRequestRoms) GetImage() string {
+	return s.Image
+}
+
+// SetName sets the value of Name.
+func (s *InstanceCreateArgsInstanceCreateRequestRoms) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetImage sets the value of Image.
+func (s *InstanceCreateArgsInstanceCreateRequestRoms) SetImage(val string) {
+	s.Image = val
+}
+
+// Ref: #/components/schemas/InstanceCreateArgsInstanceTemplateCreateRequest
+type InstanceCreateArgsInstanceTemplateCreateRequest struct {
+	// The name of the template to use for the autoscale configuration.
+	Name OptString `json:"name"`
+	// The UUID of the template to use for the autoscale configuration.
+	UUID OptString `json:"uuid"`
+}
+
+// GetName returns the value of Name.
+func (s *InstanceCreateArgsInstanceTemplateCreateRequest) GetName() OptString {
+	return s.Name
+}
+
+// GetUUID returns the value of UUID.
+func (s *InstanceCreateArgsInstanceTemplateCreateRequest) GetUUID() OptString {
+	return s.UUID
+}
+
+// SetName sets the value of Name.
+func (s *InstanceCreateArgsInstanceTemplateCreateRequest) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetUUID sets the value of UUID.
+func (s *InstanceCreateArgsInstanceTemplateCreateRequest) SetUUID(val OptString) {
+	s.UUID = val
+}
+
 // The certificate associated with the domain.
 //
 //	The certificate is used to secure the domain with TLS/SSL.  If no
@@ -4190,6 +7466,282 @@ func (s *Object) SetSize(val OptInt64) {
 	s.Size = val
 }
 
+// NewOptAttachVolumesResponseAttachedVolumeStatus returns new OptAttachVolumesResponseAttachedVolumeStatus with value set to v.
+func NewOptAttachVolumesResponseAttachedVolumeStatus(v AttachVolumesResponseAttachedVolumeStatus) OptAttachVolumesResponseAttachedVolumeStatus {
+	return OptAttachVolumesResponseAttachedVolumeStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAttachVolumesResponseAttachedVolumeStatus is optional AttachVolumesResponseAttachedVolumeStatus.
+type OptAttachVolumesResponseAttachedVolumeStatus struct {
+	Value AttachVolumesResponseAttachedVolumeStatus
+	Set   bool
+}
+
+// IsSet returns true if OptAttachVolumesResponseAttachedVolumeStatus was set.
+func (o OptAttachVolumesResponseAttachedVolumeStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAttachVolumesResponseAttachedVolumeStatus) Reset() {
+	var v AttachVolumesResponseAttachedVolumeStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAttachVolumesResponseAttachedVolumeStatus) SetTo(v AttachVolumesResponseAttachedVolumeStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAttachVolumesResponseAttachedVolumeStatus) Get() (v AttachVolumesResponseAttachedVolumeStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAttachVolumesResponseAttachedVolumeStatus) Or(d AttachVolumesResponseAttachedVolumeStatus) AttachVolumesResponseAttachedVolumeStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptAttachVolumesResponseData returns new OptAttachVolumesResponseData with value set to v.
+func NewOptAttachVolumesResponseData(v AttachVolumesResponseData) OptAttachVolumesResponseData {
+	return OptAttachVolumesResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAttachVolumesResponseData is optional AttachVolumesResponseData.
+type OptAttachVolumesResponseData struct {
+	Value AttachVolumesResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptAttachVolumesResponseData was set.
+func (o OptAttachVolumesResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAttachVolumesResponseData) Reset() {
+	var v AttachVolumesResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAttachVolumesResponseData) SetTo(v AttachVolumesResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAttachVolumesResponseData) Get() (v AttachVolumesResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAttachVolumesResponseData) Or(d AttachVolumesResponseData) AttachVolumesResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptAttachVolumesResponseStatus returns new OptAttachVolumesResponseStatus with value set to v.
+func NewOptAttachVolumesResponseStatus(v AttachVolumesResponseStatus) OptAttachVolumesResponseStatus {
+	return OptAttachVolumesResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAttachVolumesResponseStatus is optional AttachVolumesResponseStatus.
+type OptAttachVolumesResponseStatus struct {
+	Value AttachVolumesResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptAttachVolumesResponseStatus was set.
+func (o OptAttachVolumesResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAttachVolumesResponseStatus) Reset() {
+	var v AttachVolumesResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAttachVolumesResponseStatus) SetTo(v AttachVolumesResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAttachVolumesResponseStatus) Get() (v AttachVolumesResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAttachVolumesResponseStatus) Or(d AttachVolumesResponseStatus) AttachVolumesResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptAutoscalePolicy returns new OptAutoscalePolicy with value set to v.
+func NewOptAutoscalePolicy(v AutoscalePolicy) OptAutoscalePolicy {
+	return OptAutoscalePolicy{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAutoscalePolicy is optional AutoscalePolicy.
+type OptAutoscalePolicy struct {
+	Value AutoscalePolicy
+	Set   bool
+}
+
+// IsSet returns true if OptAutoscalePolicy was set.
+func (o OptAutoscalePolicy) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAutoscalePolicy) Reset() {
+	var v AutoscalePolicy
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAutoscalePolicy) SetTo(v AutoscalePolicy) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAutoscalePolicy) Get() (v AutoscalePolicy, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAutoscalePolicy) Or(d AutoscalePolicy) AutoscalePolicy {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptAutoscalePolicyAdjustmentType returns new OptAutoscalePolicyAdjustmentType with value set to v.
+func NewOptAutoscalePolicyAdjustmentType(v AutoscalePolicyAdjustmentType) OptAutoscalePolicyAdjustmentType {
+	return OptAutoscalePolicyAdjustmentType{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAutoscalePolicyAdjustmentType is optional AutoscalePolicyAdjustmentType.
+type OptAutoscalePolicyAdjustmentType struct {
+	Value AutoscalePolicyAdjustmentType
+	Set   bool
+}
+
+// IsSet returns true if OptAutoscalePolicyAdjustmentType was set.
+func (o OptAutoscalePolicyAdjustmentType) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAutoscalePolicyAdjustmentType) Reset() {
+	var v AutoscalePolicyAdjustmentType
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAutoscalePolicyAdjustmentType) SetTo(v AutoscalePolicyAdjustmentType) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAutoscalePolicyAdjustmentType) Get() (v AutoscalePolicyAdjustmentType, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAutoscalePolicyAdjustmentType) Or(d AutoscalePolicyAdjustmentType) AutoscalePolicyAdjustmentType {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptAutoscalePolicyMetric returns new OptAutoscalePolicyMetric with value set to v.
+func NewOptAutoscalePolicyMetric(v AutoscalePolicyMetric) OptAutoscalePolicyMetric {
+	return OptAutoscalePolicyMetric{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAutoscalePolicyMetric is optional AutoscalePolicyMetric.
+type OptAutoscalePolicyMetric struct {
+	Value AutoscalePolicyMetric
+	Set   bool
+}
+
+// IsSet returns true if OptAutoscalePolicyMetric was set.
+func (o OptAutoscalePolicyMetric) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAutoscalePolicyMetric) Reset() {
+	var v AutoscalePolicyMetric
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAutoscalePolicyMetric) SetTo(v AutoscalePolicyMetric) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAutoscalePolicyMetric) Get() (v AutoscalePolicyMetric, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAutoscalePolicyMetric) Or(d AutoscalePolicyMetric) AutoscalePolicyMetric {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptBool returns new OptBool with value set to v.
 func NewOptBool(v bool) OptBool {
 	return OptBool{
@@ -4322,6 +7874,330 @@ func (o OptCertificateState) Get() (v CertificateState, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptCertificateState) Or(d CertificateState) CertificateState {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateAutoscaleConfigurationPolicyResponseData returns new OptCreateAutoscaleConfigurationPolicyResponseData with value set to v.
+func NewOptCreateAutoscaleConfigurationPolicyResponseData(v CreateAutoscaleConfigurationPolicyResponseData) OptCreateAutoscaleConfigurationPolicyResponseData {
+	return OptCreateAutoscaleConfigurationPolicyResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateAutoscaleConfigurationPolicyResponseData is optional CreateAutoscaleConfigurationPolicyResponseData.
+type OptCreateAutoscaleConfigurationPolicyResponseData struct {
+	Value CreateAutoscaleConfigurationPolicyResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptCreateAutoscaleConfigurationPolicyResponseData was set.
+func (o OptCreateAutoscaleConfigurationPolicyResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateAutoscaleConfigurationPolicyResponseData) Reset() {
+	var v CreateAutoscaleConfigurationPolicyResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateAutoscaleConfigurationPolicyResponseData) SetTo(v CreateAutoscaleConfigurationPolicyResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateAutoscaleConfigurationPolicyResponseData) Get() (v CreateAutoscaleConfigurationPolicyResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateAutoscaleConfigurationPolicyResponseData) Or(d CreateAutoscaleConfigurationPolicyResponseData) CreateAutoscaleConfigurationPolicyResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateAutoscaleConfigurationPolicyResponsePolicyStatus returns new OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus with value set to v.
+func NewOptCreateAutoscaleConfigurationPolicyResponsePolicyStatus(v CreateAutoscaleConfigurationPolicyResponsePolicyStatus) OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus {
+	return OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus is optional CreateAutoscaleConfigurationPolicyResponsePolicyStatus.
+type OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus struct {
+	Value CreateAutoscaleConfigurationPolicyResponsePolicyStatus
+	Set   bool
+}
+
+// IsSet returns true if OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus was set.
+func (o OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus) Reset() {
+	var v CreateAutoscaleConfigurationPolicyResponsePolicyStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus) SetTo(v CreateAutoscaleConfigurationPolicyResponsePolicyStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus) Get() (v CreateAutoscaleConfigurationPolicyResponsePolicyStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateAutoscaleConfigurationPolicyResponsePolicyStatus) Or(d CreateAutoscaleConfigurationPolicyResponsePolicyStatus) CreateAutoscaleConfigurationPolicyResponsePolicyStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateAutoscaleConfigurationPolicyResponseStatus returns new OptCreateAutoscaleConfigurationPolicyResponseStatus with value set to v.
+func NewOptCreateAutoscaleConfigurationPolicyResponseStatus(v CreateAutoscaleConfigurationPolicyResponseStatus) OptCreateAutoscaleConfigurationPolicyResponseStatus {
+	return OptCreateAutoscaleConfigurationPolicyResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateAutoscaleConfigurationPolicyResponseStatus is optional CreateAutoscaleConfigurationPolicyResponseStatus.
+type OptCreateAutoscaleConfigurationPolicyResponseStatus struct {
+	Value CreateAutoscaleConfigurationPolicyResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptCreateAutoscaleConfigurationPolicyResponseStatus was set.
+func (o OptCreateAutoscaleConfigurationPolicyResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateAutoscaleConfigurationPolicyResponseStatus) Reset() {
+	var v CreateAutoscaleConfigurationPolicyResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateAutoscaleConfigurationPolicyResponseStatus) SetTo(v CreateAutoscaleConfigurationPolicyResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateAutoscaleConfigurationPolicyResponseStatus) Get() (v CreateAutoscaleConfigurationPolicyResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateAutoscaleConfigurationPolicyResponseStatus) Or(d CreateAutoscaleConfigurationPolicyResponseStatus) CreateAutoscaleConfigurationPolicyResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateAutoscaleConfigurationRequestInstanceCreateArgs returns new OptCreateAutoscaleConfigurationRequestInstanceCreateArgs with value set to v.
+func NewOptCreateAutoscaleConfigurationRequestInstanceCreateArgs(v CreateAutoscaleConfigurationRequestInstanceCreateArgs) OptCreateAutoscaleConfigurationRequestInstanceCreateArgs {
+	return OptCreateAutoscaleConfigurationRequestInstanceCreateArgs{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateAutoscaleConfigurationRequestInstanceCreateArgs is optional CreateAutoscaleConfigurationRequestInstanceCreateArgs.
+type OptCreateAutoscaleConfigurationRequestInstanceCreateArgs struct {
+	Value CreateAutoscaleConfigurationRequestInstanceCreateArgs
+	Set   bool
+}
+
+// IsSet returns true if OptCreateAutoscaleConfigurationRequestInstanceCreateArgs was set.
+func (o OptCreateAutoscaleConfigurationRequestInstanceCreateArgs) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateAutoscaleConfigurationRequestInstanceCreateArgs) Reset() {
+	var v CreateAutoscaleConfigurationRequestInstanceCreateArgs
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateAutoscaleConfigurationRequestInstanceCreateArgs) SetTo(v CreateAutoscaleConfigurationRequestInstanceCreateArgs) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateAutoscaleConfigurationRequestInstanceCreateArgs) Get() (v CreateAutoscaleConfigurationRequestInstanceCreateArgs, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateAutoscaleConfigurationRequestInstanceCreateArgs) Or(d CreateAutoscaleConfigurationRequestInstanceCreateArgs) CreateAutoscaleConfigurationRequestInstanceCreateArgs {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus returns new OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus with value set to v.
+func NewOptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus(v CreateAutoscaleConfigurationResponseConfigurationsResponseStatus) OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus {
+	return OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus is optional CreateAutoscaleConfigurationResponseConfigurationsResponseStatus.
+type OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus struct {
+	Value CreateAutoscaleConfigurationResponseConfigurationsResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus was set.
+func (o OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus) IsSet() bool {
+	return o.Set
+}
+
+// Reset unsets value.
+func (o *OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus) Reset() {
+	var v CreateAutoscaleConfigurationResponseConfigurationsResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus) SetTo(v CreateAutoscaleConfigurationResponseConfigurationsResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus) Get() (v CreateAutoscaleConfigurationResponseConfigurationsResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateAutoscaleConfigurationResponseConfigurationsResponseStatus) Or(d CreateAutoscaleConfigurationResponseConfigurationsResponseStatus) CreateAutoscaleConfigurationResponseConfigurationsResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateAutoscaleConfigurationResponseData returns new OptCreateAutoscaleConfigurationResponseData with value set to v.
+func NewOptCreateAutoscaleConfigurationResponseData(v CreateAutoscaleConfigurationResponseData) OptCreateAutoscaleConfigurationResponseData {
+	return OptCreateAutoscaleConfigurationResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateAutoscaleConfigurationResponseData is optional CreateAutoscaleConfigurationResponseData.
+type OptCreateAutoscaleConfigurationResponseData struct {
+	Value CreateAutoscaleConfigurationResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptCreateAutoscaleConfigurationResponseData was set.
+func (o OptCreateAutoscaleConfigurationResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateAutoscaleConfigurationResponseData) Reset() {
+	var v CreateAutoscaleConfigurationResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateAutoscaleConfigurationResponseData) SetTo(v CreateAutoscaleConfigurationResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateAutoscaleConfigurationResponseData) Get() (v CreateAutoscaleConfigurationResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateAutoscaleConfigurationResponseData) Or(d CreateAutoscaleConfigurationResponseData) CreateAutoscaleConfigurationResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateAutoscaleConfigurationResponseStatus returns new OptCreateAutoscaleConfigurationResponseStatus with value set to v.
+func NewOptCreateAutoscaleConfigurationResponseStatus(v CreateAutoscaleConfigurationResponseStatus) OptCreateAutoscaleConfigurationResponseStatus {
+	return OptCreateAutoscaleConfigurationResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateAutoscaleConfigurationResponseStatus is optional CreateAutoscaleConfigurationResponseStatus.
+type OptCreateAutoscaleConfigurationResponseStatus struct {
+	Value CreateAutoscaleConfigurationResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptCreateAutoscaleConfigurationResponseStatus was set.
+func (o OptCreateAutoscaleConfigurationResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateAutoscaleConfigurationResponseStatus) Reset() {
+	var v CreateAutoscaleConfigurationResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateAutoscaleConfigurationResponseStatus) SetTo(v CreateAutoscaleConfigurationResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateAutoscaleConfigurationResponseStatus) Get() (v CreateAutoscaleConfigurationResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateAutoscaleConfigurationResponseStatus) Or(d CreateAutoscaleConfigurationResponseStatus) CreateAutoscaleConfigurationResponseStatus {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -4788,6 +8664,144 @@ func (o OptCreateServiceGroupResponseStatus) Or(d CreateServiceGroupResponseStat
 	return d
 }
 
+// NewOptCreateVolumeResponseData returns new OptCreateVolumeResponseData with value set to v.
+func NewOptCreateVolumeResponseData(v CreateVolumeResponseData) OptCreateVolumeResponseData {
+	return OptCreateVolumeResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateVolumeResponseData is optional CreateVolumeResponseData.
+type OptCreateVolumeResponseData struct {
+	Value CreateVolumeResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptCreateVolumeResponseData was set.
+func (o OptCreateVolumeResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateVolumeResponseData) Reset() {
+	var v CreateVolumeResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateVolumeResponseData) SetTo(v CreateVolumeResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateVolumeResponseData) Get() (v CreateVolumeResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateVolumeResponseData) Or(d CreateVolumeResponseData) CreateVolumeResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateVolumeResponseStatus returns new OptCreateVolumeResponseStatus with value set to v.
+func NewOptCreateVolumeResponseStatus(v CreateVolumeResponseStatus) OptCreateVolumeResponseStatus {
+	return OptCreateVolumeResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateVolumeResponseStatus is optional CreateVolumeResponseStatus.
+type OptCreateVolumeResponseStatus struct {
+	Value CreateVolumeResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptCreateVolumeResponseStatus was set.
+func (o OptCreateVolumeResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateVolumeResponseStatus) Reset() {
+	var v CreateVolumeResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateVolumeResponseStatus) SetTo(v CreateVolumeResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateVolumeResponseStatus) Get() (v CreateVolumeResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateVolumeResponseStatus) Or(d CreateVolumeResponseStatus) CreateVolumeResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateVolumeResponseVolumeStatus returns new OptCreateVolumeResponseVolumeStatus with value set to v.
+func NewOptCreateVolumeResponseVolumeStatus(v CreateVolumeResponseVolumeStatus) OptCreateVolumeResponseVolumeStatus {
+	return OptCreateVolumeResponseVolumeStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateVolumeResponseVolumeStatus is optional CreateVolumeResponseVolumeStatus.
+type OptCreateVolumeResponseVolumeStatus struct {
+	Value CreateVolumeResponseVolumeStatus
+	Set   bool
+}
+
+// IsSet returns true if OptCreateVolumeResponseVolumeStatus was set.
+func (o OptCreateVolumeResponseVolumeStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateVolumeResponseVolumeStatus) Reset() {
+	var v CreateVolumeResponseVolumeStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateVolumeResponseVolumeStatus) SetTo(v CreateVolumeResponseVolumeStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateVolumeResponseVolumeStatus) Get() (v CreateVolumeResponseVolumeStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateVolumeResponseVolumeStatus) Or(d CreateVolumeResponseVolumeStatus) CreateVolumeResponseVolumeStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptDateTime returns new OptDateTime with value set to v.
 func NewOptDateTime(v time.Time) OptDateTime {
 	return OptDateTime{
@@ -4828,6 +8842,284 @@ func (o OptDateTime) Get() (v time.Time, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteAutoscaleConfigurationPolicyResponseData returns new OptDeleteAutoscaleConfigurationPolicyResponseData with value set to v.
+func NewOptDeleteAutoscaleConfigurationPolicyResponseData(v DeleteAutoscaleConfigurationPolicyResponseData) OptDeleteAutoscaleConfigurationPolicyResponseData {
+	return OptDeleteAutoscaleConfigurationPolicyResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteAutoscaleConfigurationPolicyResponseData is optional DeleteAutoscaleConfigurationPolicyResponseData.
+type OptDeleteAutoscaleConfigurationPolicyResponseData struct {
+	Value DeleteAutoscaleConfigurationPolicyResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteAutoscaleConfigurationPolicyResponseData was set.
+func (o OptDeleteAutoscaleConfigurationPolicyResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteAutoscaleConfigurationPolicyResponseData) Reset() {
+	var v DeleteAutoscaleConfigurationPolicyResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteAutoscaleConfigurationPolicyResponseData) SetTo(v DeleteAutoscaleConfigurationPolicyResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteAutoscaleConfigurationPolicyResponseData) Get() (v DeleteAutoscaleConfigurationPolicyResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteAutoscaleConfigurationPolicyResponseData) Or(d DeleteAutoscaleConfigurationPolicyResponseData) DeleteAutoscaleConfigurationPolicyResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus returns new OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus with value set to v.
+func NewOptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus(v DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus) OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus {
+	return OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus is optional DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus.
+type OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus struct {
+	Value DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus was set.
+func (o OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus) IsSet() bool {
+	return o.Set
+}
+
+// Reset unsets value.
+func (o *OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus) Reset() {
+	var v DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus) SetTo(v DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus) Get() (v DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus) Or(d DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus) DeleteAutoscaleConfigurationPolicyResponsePoliciesResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteAutoscaleConfigurationPolicyResponseStatus returns new OptDeleteAutoscaleConfigurationPolicyResponseStatus with value set to v.
+func NewOptDeleteAutoscaleConfigurationPolicyResponseStatus(v DeleteAutoscaleConfigurationPolicyResponseStatus) OptDeleteAutoscaleConfigurationPolicyResponseStatus {
+	return OptDeleteAutoscaleConfigurationPolicyResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteAutoscaleConfigurationPolicyResponseStatus is optional DeleteAutoscaleConfigurationPolicyResponseStatus.
+type OptDeleteAutoscaleConfigurationPolicyResponseStatus struct {
+	Value DeleteAutoscaleConfigurationPolicyResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteAutoscaleConfigurationPolicyResponseStatus was set.
+func (o OptDeleteAutoscaleConfigurationPolicyResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteAutoscaleConfigurationPolicyResponseStatus) Reset() {
+	var v DeleteAutoscaleConfigurationPolicyResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteAutoscaleConfigurationPolicyResponseStatus) SetTo(v DeleteAutoscaleConfigurationPolicyResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteAutoscaleConfigurationPolicyResponseStatus) Get() (v DeleteAutoscaleConfigurationPolicyResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteAutoscaleConfigurationPolicyResponseStatus) Or(d DeleteAutoscaleConfigurationPolicyResponseStatus) DeleteAutoscaleConfigurationPolicyResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteAutoscaleConfigurationsResponseData returns new OptDeleteAutoscaleConfigurationsResponseData with value set to v.
+func NewOptDeleteAutoscaleConfigurationsResponseData(v DeleteAutoscaleConfigurationsResponseData) OptDeleteAutoscaleConfigurationsResponseData {
+	return OptDeleteAutoscaleConfigurationsResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteAutoscaleConfigurationsResponseData is optional DeleteAutoscaleConfigurationsResponseData.
+type OptDeleteAutoscaleConfigurationsResponseData struct {
+	Value DeleteAutoscaleConfigurationsResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteAutoscaleConfigurationsResponseData was set.
+func (o OptDeleteAutoscaleConfigurationsResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteAutoscaleConfigurationsResponseData) Reset() {
+	var v DeleteAutoscaleConfigurationsResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteAutoscaleConfigurationsResponseData) SetTo(v DeleteAutoscaleConfigurationsResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteAutoscaleConfigurationsResponseData) Get() (v DeleteAutoscaleConfigurationsResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteAutoscaleConfigurationsResponseData) Or(d DeleteAutoscaleConfigurationsResponseData) DeleteAutoscaleConfigurationsResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteAutoscaleConfigurationsResponseServiceGroupStatus returns new OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus with value set to v.
+func NewOptDeleteAutoscaleConfigurationsResponseServiceGroupStatus(v DeleteAutoscaleConfigurationsResponseServiceGroupStatus) OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus {
+	return OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus is optional DeleteAutoscaleConfigurationsResponseServiceGroupStatus.
+type OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus struct {
+	Value DeleteAutoscaleConfigurationsResponseServiceGroupStatus
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus was set.
+func (o OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus) Reset() {
+	var v DeleteAutoscaleConfigurationsResponseServiceGroupStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus) SetTo(v DeleteAutoscaleConfigurationsResponseServiceGroupStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus) Get() (v DeleteAutoscaleConfigurationsResponseServiceGroupStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteAutoscaleConfigurationsResponseServiceGroupStatus) Or(d DeleteAutoscaleConfigurationsResponseServiceGroupStatus) DeleteAutoscaleConfigurationsResponseServiceGroupStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteAutoscaleConfigurationsResponseStatus returns new OptDeleteAutoscaleConfigurationsResponseStatus with value set to v.
+func NewOptDeleteAutoscaleConfigurationsResponseStatus(v DeleteAutoscaleConfigurationsResponseStatus) OptDeleteAutoscaleConfigurationsResponseStatus {
+	return OptDeleteAutoscaleConfigurationsResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteAutoscaleConfigurationsResponseStatus is optional DeleteAutoscaleConfigurationsResponseStatus.
+type OptDeleteAutoscaleConfigurationsResponseStatus struct {
+	Value DeleteAutoscaleConfigurationsResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteAutoscaleConfigurationsResponseStatus was set.
+func (o OptDeleteAutoscaleConfigurationsResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteAutoscaleConfigurationsResponseStatus) Reset() {
+	var v DeleteAutoscaleConfigurationsResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteAutoscaleConfigurationsResponseStatus) SetTo(v DeleteAutoscaleConfigurationsResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteAutoscaleConfigurationsResponseStatus) Get() (v DeleteAutoscaleConfigurationsResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteAutoscaleConfigurationsResponseStatus) Or(d DeleteAutoscaleConfigurationsResponseStatus) DeleteAutoscaleConfigurationsResponseStatus {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -5242,6 +9534,512 @@ func (o OptDeleteServiceGroupsResponseStatus) Get() (v DeleteServiceGroupsRespon
 
 // Or returns value if set, or given parameter if does not.
 func (o OptDeleteServiceGroupsResponseStatus) Or(d DeleteServiceGroupsResponseStatus) DeleteServiceGroupsResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteVolumesResponseData returns new OptDeleteVolumesResponseData with value set to v.
+func NewOptDeleteVolumesResponseData(v DeleteVolumesResponseData) OptDeleteVolumesResponseData {
+	return OptDeleteVolumesResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteVolumesResponseData is optional DeleteVolumesResponseData.
+type OptDeleteVolumesResponseData struct {
+	Value DeleteVolumesResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteVolumesResponseData was set.
+func (o OptDeleteVolumesResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteVolumesResponseData) Reset() {
+	var v DeleteVolumesResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteVolumesResponseData) SetTo(v DeleteVolumesResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteVolumesResponseData) Get() (v DeleteVolumesResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteVolumesResponseData) Or(d DeleteVolumesResponseData) DeleteVolumesResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteVolumesResponseDeletedVolumeStatus returns new OptDeleteVolumesResponseDeletedVolumeStatus with value set to v.
+func NewOptDeleteVolumesResponseDeletedVolumeStatus(v DeleteVolumesResponseDeletedVolumeStatus) OptDeleteVolumesResponseDeletedVolumeStatus {
+	return OptDeleteVolumesResponseDeletedVolumeStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteVolumesResponseDeletedVolumeStatus is optional DeleteVolumesResponseDeletedVolumeStatus.
+type OptDeleteVolumesResponseDeletedVolumeStatus struct {
+	Value DeleteVolumesResponseDeletedVolumeStatus
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteVolumesResponseDeletedVolumeStatus was set.
+func (o OptDeleteVolumesResponseDeletedVolumeStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteVolumesResponseDeletedVolumeStatus) Reset() {
+	var v DeleteVolumesResponseDeletedVolumeStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteVolumesResponseDeletedVolumeStatus) SetTo(v DeleteVolumesResponseDeletedVolumeStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteVolumesResponseDeletedVolumeStatus) Get() (v DeleteVolumesResponseDeletedVolumeStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteVolumesResponseDeletedVolumeStatus) Or(d DeleteVolumesResponseDeletedVolumeStatus) DeleteVolumesResponseDeletedVolumeStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDeleteVolumesResponseStatus returns new OptDeleteVolumesResponseStatus with value set to v.
+func NewOptDeleteVolumesResponseStatus(v DeleteVolumesResponseStatus) OptDeleteVolumesResponseStatus {
+	return OptDeleteVolumesResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDeleteVolumesResponseStatus is optional DeleteVolumesResponseStatus.
+type OptDeleteVolumesResponseStatus struct {
+	Value DeleteVolumesResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptDeleteVolumesResponseStatus was set.
+func (o OptDeleteVolumesResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDeleteVolumesResponseStatus) Reset() {
+	var v DeleteVolumesResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDeleteVolumesResponseStatus) SetTo(v DeleteVolumesResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDeleteVolumesResponseStatus) Get() (v DeleteVolumesResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDeleteVolumesResponseStatus) Or(d DeleteVolumesResponseStatus) DeleteVolumesResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDetachVolumesResponseData returns new OptDetachVolumesResponseData with value set to v.
+func NewOptDetachVolumesResponseData(v DetachVolumesResponseData) OptDetachVolumesResponseData {
+	return OptDetachVolumesResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDetachVolumesResponseData is optional DetachVolumesResponseData.
+type OptDetachVolumesResponseData struct {
+	Value DetachVolumesResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptDetachVolumesResponseData was set.
+func (o OptDetachVolumesResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDetachVolumesResponseData) Reset() {
+	var v DetachVolumesResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDetachVolumesResponseData) SetTo(v DetachVolumesResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDetachVolumesResponseData) Get() (v DetachVolumesResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDetachVolumesResponseData) Or(d DetachVolumesResponseData) DetachVolumesResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDetachVolumesResponseStatus returns new OptDetachVolumesResponseStatus with value set to v.
+func NewOptDetachVolumesResponseStatus(v DetachVolumesResponseStatus) OptDetachVolumesResponseStatus {
+	return OptDetachVolumesResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDetachVolumesResponseStatus is optional DetachVolumesResponseStatus.
+type OptDetachVolumesResponseStatus struct {
+	Value DetachVolumesResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptDetachVolumesResponseStatus was set.
+func (o OptDetachVolumesResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDetachVolumesResponseStatus) Reset() {
+	var v DetachVolumesResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDetachVolumesResponseStatus) SetTo(v DetachVolumesResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDetachVolumesResponseStatus) Get() (v DetachVolumesResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDetachVolumesResponseStatus) Or(d DetachVolumesResponseStatus) DetachVolumesResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetAutoscaleConfigurationPolicyResponseData returns new OptGetAutoscaleConfigurationPolicyResponseData with value set to v.
+func NewOptGetAutoscaleConfigurationPolicyResponseData(v GetAutoscaleConfigurationPolicyResponseData) OptGetAutoscaleConfigurationPolicyResponseData {
+	return OptGetAutoscaleConfigurationPolicyResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetAutoscaleConfigurationPolicyResponseData is optional GetAutoscaleConfigurationPolicyResponseData.
+type OptGetAutoscaleConfigurationPolicyResponseData struct {
+	Value GetAutoscaleConfigurationPolicyResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptGetAutoscaleConfigurationPolicyResponseData was set.
+func (o OptGetAutoscaleConfigurationPolicyResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetAutoscaleConfigurationPolicyResponseData) Reset() {
+	var v GetAutoscaleConfigurationPolicyResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetAutoscaleConfigurationPolicyResponseData) SetTo(v GetAutoscaleConfigurationPolicyResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetAutoscaleConfigurationPolicyResponseData) Get() (v GetAutoscaleConfigurationPolicyResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetAutoscaleConfigurationPolicyResponseData) Or(d GetAutoscaleConfigurationPolicyResponseData) GetAutoscaleConfigurationPolicyResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus returns new OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus with value set to v.
+func NewOptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus(v GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus) OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus {
+	return OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus is optional GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus.
+type OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus struct {
+	Value GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus was set.
+func (o OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus) Reset() {
+	var v GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus) SetTo(v GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus) Get() (v GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetAutoscaleConfigurationPolicyResponsePolicyResponseStatus) Or(d GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus) GetAutoscaleConfigurationPolicyResponsePolicyResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetAutoscaleConfigurationPolicyResponseStatus returns new OptGetAutoscaleConfigurationPolicyResponseStatus with value set to v.
+func NewOptGetAutoscaleConfigurationPolicyResponseStatus(v GetAutoscaleConfigurationPolicyResponseStatus) OptGetAutoscaleConfigurationPolicyResponseStatus {
+	return OptGetAutoscaleConfigurationPolicyResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetAutoscaleConfigurationPolicyResponseStatus is optional GetAutoscaleConfigurationPolicyResponseStatus.
+type OptGetAutoscaleConfigurationPolicyResponseStatus struct {
+	Value GetAutoscaleConfigurationPolicyResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptGetAutoscaleConfigurationPolicyResponseStatus was set.
+func (o OptGetAutoscaleConfigurationPolicyResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetAutoscaleConfigurationPolicyResponseStatus) Reset() {
+	var v GetAutoscaleConfigurationPolicyResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetAutoscaleConfigurationPolicyResponseStatus) SetTo(v GetAutoscaleConfigurationPolicyResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetAutoscaleConfigurationPolicyResponseStatus) Get() (v GetAutoscaleConfigurationPolicyResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetAutoscaleConfigurationPolicyResponseStatus) Or(d GetAutoscaleConfigurationPolicyResponseStatus) GetAutoscaleConfigurationPolicyResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetAutoscaleConfigurationsResponseData returns new OptGetAutoscaleConfigurationsResponseData with value set to v.
+func NewOptGetAutoscaleConfigurationsResponseData(v GetAutoscaleConfigurationsResponseData) OptGetAutoscaleConfigurationsResponseData {
+	return OptGetAutoscaleConfigurationsResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetAutoscaleConfigurationsResponseData is optional GetAutoscaleConfigurationsResponseData.
+type OptGetAutoscaleConfigurationsResponseData struct {
+	Value GetAutoscaleConfigurationsResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptGetAutoscaleConfigurationsResponseData was set.
+func (o OptGetAutoscaleConfigurationsResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetAutoscaleConfigurationsResponseData) Reset() {
+	var v GetAutoscaleConfigurationsResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetAutoscaleConfigurationsResponseData) SetTo(v GetAutoscaleConfigurationsResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetAutoscaleConfigurationsResponseData) Get() (v GetAutoscaleConfigurationsResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetAutoscaleConfigurationsResponseData) Or(d GetAutoscaleConfigurationsResponseData) GetAutoscaleConfigurationsResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetAutoscaleConfigurationsResponseServiceGroupStatus returns new OptGetAutoscaleConfigurationsResponseServiceGroupStatus with value set to v.
+func NewOptGetAutoscaleConfigurationsResponseServiceGroupStatus(v GetAutoscaleConfigurationsResponseServiceGroupStatus) OptGetAutoscaleConfigurationsResponseServiceGroupStatus {
+	return OptGetAutoscaleConfigurationsResponseServiceGroupStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetAutoscaleConfigurationsResponseServiceGroupStatus is optional GetAutoscaleConfigurationsResponseServiceGroupStatus.
+type OptGetAutoscaleConfigurationsResponseServiceGroupStatus struct {
+	Value GetAutoscaleConfigurationsResponseServiceGroupStatus
+	Set   bool
+}
+
+// IsSet returns true if OptGetAutoscaleConfigurationsResponseServiceGroupStatus was set.
+func (o OptGetAutoscaleConfigurationsResponseServiceGroupStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetAutoscaleConfigurationsResponseServiceGroupStatus) Reset() {
+	var v GetAutoscaleConfigurationsResponseServiceGroupStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetAutoscaleConfigurationsResponseServiceGroupStatus) SetTo(v GetAutoscaleConfigurationsResponseServiceGroupStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetAutoscaleConfigurationsResponseServiceGroupStatus) Get() (v GetAutoscaleConfigurationsResponseServiceGroupStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetAutoscaleConfigurationsResponseServiceGroupStatus) Or(d GetAutoscaleConfigurationsResponseServiceGroupStatus) GetAutoscaleConfigurationsResponseServiceGroupStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetAutoscaleConfigurationsResponseStatus returns new OptGetAutoscaleConfigurationsResponseStatus with value set to v.
+func NewOptGetAutoscaleConfigurationsResponseStatus(v GetAutoscaleConfigurationsResponseStatus) OptGetAutoscaleConfigurationsResponseStatus {
+	return OptGetAutoscaleConfigurationsResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetAutoscaleConfigurationsResponseStatus is optional GetAutoscaleConfigurationsResponseStatus.
+type OptGetAutoscaleConfigurationsResponseStatus struct {
+	Value GetAutoscaleConfigurationsResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptGetAutoscaleConfigurationsResponseStatus was set.
+func (o OptGetAutoscaleConfigurationsResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetAutoscaleConfigurationsResponseStatus) Reset() {
+	var v GetAutoscaleConfigurationsResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetAutoscaleConfigurationsResponseStatus) SetTo(v GetAutoscaleConfigurationsResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetAutoscaleConfigurationsResponseStatus) Get() (v GetAutoscaleConfigurationsResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetAutoscaleConfigurationsResponseStatus) Or(d GetAutoscaleConfigurationsResponseStatus) GetAutoscaleConfigurationsResponseStatus {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -5892,6 +10690,98 @@ func (o OptGetServiceGroupsResponseStatus) Or(d GetServiceGroupsResponseStatus) 
 	return d
 }
 
+// NewOptGetVolumesResponseData returns new OptGetVolumesResponseData with value set to v.
+func NewOptGetVolumesResponseData(v GetVolumesResponseData) OptGetVolumesResponseData {
+	return OptGetVolumesResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetVolumesResponseData is optional GetVolumesResponseData.
+type OptGetVolumesResponseData struct {
+	Value GetVolumesResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptGetVolumesResponseData was set.
+func (o OptGetVolumesResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetVolumesResponseData) Reset() {
+	var v GetVolumesResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetVolumesResponseData) SetTo(v GetVolumesResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetVolumesResponseData) Get() (v GetVolumesResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetVolumesResponseData) Or(d GetVolumesResponseData) GetVolumesResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetVolumesResponseStatus returns new OptGetVolumesResponseStatus with value set to v.
+func NewOptGetVolumesResponseStatus(v GetVolumesResponseStatus) OptGetVolumesResponseStatus {
+	return OptGetVolumesResponseStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetVolumesResponseStatus is optional GetVolumesResponseStatus.
+type OptGetVolumesResponseStatus struct {
+	Value GetVolumesResponseStatus
+	Set   bool
+}
+
+// IsSet returns true if OptGetVolumesResponseStatus was set.
+func (o OptGetVolumesResponseStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetVolumesResponseStatus) Reset() {
+	var v GetVolumesResponseStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetVolumesResponseStatus) SetTo(v GetVolumesResponseStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetVolumesResponseStatus) Get() (v GetVolumesResponseStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetVolumesResponseStatus) Or(d GetVolumesResponseStatus) GetVolumesResponseStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptImage returns new OptImage with value set to v.
 func NewOptImage(v Image) OptImage {
 	return OptImage{
@@ -5978,6 +10868,98 @@ func (o OptImageLabels) Get() (v ImageLabels, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptImageLabels) Or(d ImageLabels) ImageLabels {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptInstanceCreateArgsInstanceCreateRequestRoms returns new OptInstanceCreateArgsInstanceCreateRequestRoms with value set to v.
+func NewOptInstanceCreateArgsInstanceCreateRequestRoms(v InstanceCreateArgsInstanceCreateRequestRoms) OptInstanceCreateArgsInstanceCreateRequestRoms {
+	return OptInstanceCreateArgsInstanceCreateRequestRoms{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptInstanceCreateArgsInstanceCreateRequestRoms is optional InstanceCreateArgsInstanceCreateRequestRoms.
+type OptInstanceCreateArgsInstanceCreateRequestRoms struct {
+	Value InstanceCreateArgsInstanceCreateRequestRoms
+	Set   bool
+}
+
+// IsSet returns true if OptInstanceCreateArgsInstanceCreateRequestRoms was set.
+func (o OptInstanceCreateArgsInstanceCreateRequestRoms) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptInstanceCreateArgsInstanceCreateRequestRoms) Reset() {
+	var v InstanceCreateArgsInstanceCreateRequestRoms
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptInstanceCreateArgsInstanceCreateRequestRoms) SetTo(v InstanceCreateArgsInstanceCreateRequestRoms) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptInstanceCreateArgsInstanceCreateRequestRoms) Get() (v InstanceCreateArgsInstanceCreateRequestRoms, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptInstanceCreateArgsInstanceCreateRequestRoms) Or(d InstanceCreateArgsInstanceCreateRequestRoms) InstanceCreateArgsInstanceCreateRequestRoms {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptInstanceCreateArgsInstanceTemplateCreateRequest returns new OptInstanceCreateArgsInstanceTemplateCreateRequest with value set to v.
+func NewOptInstanceCreateArgsInstanceTemplateCreateRequest(v InstanceCreateArgsInstanceTemplateCreateRequest) OptInstanceCreateArgsInstanceTemplateCreateRequest {
+	return OptInstanceCreateArgsInstanceTemplateCreateRequest{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptInstanceCreateArgsInstanceTemplateCreateRequest is optional InstanceCreateArgsInstanceTemplateCreateRequest.
+type OptInstanceCreateArgsInstanceTemplateCreateRequest struct {
+	Value InstanceCreateArgsInstanceTemplateCreateRequest
+	Set   bool
+}
+
+// IsSet returns true if OptInstanceCreateArgsInstanceTemplateCreateRequest was set.
+func (o OptInstanceCreateArgsInstanceTemplateCreateRequest) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptInstanceCreateArgsInstanceTemplateCreateRequest) Reset() {
+	var v InstanceCreateArgsInstanceTemplateCreateRequest
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptInstanceCreateArgsInstanceTemplateCreateRequest) SetTo(v InstanceCreateArgsInstanceTemplateCreateRequest) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptInstanceCreateArgsInstanceTemplateCreateRequest) Get() (v InstanceCreateArgsInstanceTemplateCreateRequest, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptInstanceCreateArgsInstanceTemplateCreateRequest) Or(d InstanceCreateArgsInstanceTemplateCreateRequest) InstanceCreateArgsInstanceTemplateCreateRequest {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -6392,6 +11374,190 @@ func (o OptObject) Get() (v Object, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptObject) Or(d Object) Object {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptQuotasLimits returns new OptQuotasLimits with value set to v.
+func NewOptQuotasLimits(v QuotasLimits) OptQuotasLimits {
+	return OptQuotasLimits{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptQuotasLimits is optional QuotasLimits.
+type OptQuotasLimits struct {
+	Value QuotasLimits
+	Set   bool
+}
+
+// IsSet returns true if OptQuotasLimits was set.
+func (o OptQuotasLimits) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptQuotasLimits) Reset() {
+	var v QuotasLimits
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptQuotasLimits) SetTo(v QuotasLimits) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptQuotasLimits) Get() (v QuotasLimits, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptQuotasLimits) Or(d QuotasLimits) QuotasLimits {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptQuotasResponseData returns new OptQuotasResponseData with value set to v.
+func NewOptQuotasResponseData(v QuotasResponseData) OptQuotasResponseData {
+	return OptQuotasResponseData{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptQuotasResponseData is optional QuotasResponseData.
+type OptQuotasResponseData struct {
+	Value QuotasResponseData
+	Set   bool
+}
+
+// IsSet returns true if OptQuotasResponseData was set.
+func (o OptQuotasResponseData) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptQuotasResponseData) Reset() {
+	var v QuotasResponseData
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptQuotasResponseData) SetTo(v QuotasResponseData) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptQuotasResponseData) Get() (v QuotasResponseData, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptQuotasResponseData) Or(d QuotasResponseData) QuotasResponseData {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptQuotasStats returns new OptQuotasStats with value set to v.
+func NewOptQuotasStats(v QuotasStats) OptQuotasStats {
+	return OptQuotasStats{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptQuotasStats is optional QuotasStats.
+type OptQuotasStats struct {
+	Value QuotasStats
+	Set   bool
+}
+
+// IsSet returns true if OptQuotasStats was set.
+func (o OptQuotasStats) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptQuotasStats) Reset() {
+	var v QuotasStats
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptQuotasStats) SetTo(v QuotasStats) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptQuotasStats) Get() (v QuotasStats, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptQuotasStats) Or(d QuotasStats) QuotasStats {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptServiceGroupTemplate returns new OptServiceGroupTemplate with value set to v.
+func NewOptServiceGroupTemplate(v ServiceGroupTemplate) OptServiceGroupTemplate {
+	return OptServiceGroupTemplate{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptServiceGroupTemplate is optional ServiceGroupTemplate.
+type OptServiceGroupTemplate struct {
+	Value ServiceGroupTemplate
+	Set   bool
+}
+
+// IsSet returns true if OptServiceGroupTemplate was set.
+func (o OptServiceGroupTemplate) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptServiceGroupTemplate) Reset() {
+	var v ServiceGroupTemplate
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptServiceGroupTemplate) SetTo(v ServiceGroupTemplate) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptServiceGroupTemplate) Get() (v ServiceGroupTemplate, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptServiceGroupTemplate) Or(d ServiceGroupTemplate) ServiceGroupTemplate {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -7088,6 +12254,319 @@ func (o OptWaitInstancesState) Or(d WaitInstancesState) WaitInstancesState {
 	return d
 }
 
+// Ref: #/components/schemas/Quotas
+type Quotas struct {
+	// The UUID of the quota.
+	UUID OptString `json:"uuid"`
+	// Used quota
+	Used OptQuotasStats `json:"used"`
+	// Configured quota limits
+	Hard OptQuotasStats `json:"hard"`
+	// Additional limits
+	Limits OptQuotasLimits `json:"limits"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *Quotas) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetUsed returns the value of Used.
+func (s *Quotas) GetUsed() OptQuotasStats {
+	return s.Used
+}
+
+// GetHard returns the value of Hard.
+func (s *Quotas) GetHard() OptQuotasStats {
+	return s.Hard
+}
+
+// GetLimits returns the value of Limits.
+func (s *Quotas) GetLimits() OptQuotasLimits {
+	return s.Limits
+}
+
+// SetUUID sets the value of UUID.
+func (s *Quotas) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetUsed sets the value of Used.
+func (s *Quotas) SetUsed(val OptQuotasStats) {
+	s.Used = val
+}
+
+// SetHard sets the value of Hard.
+func (s *Quotas) SetHard(val OptQuotasStats) {
+	s.Hard = val
+}
+
+// SetLimits sets the value of Limits.
+func (s *Quotas) SetLimits(val OptQuotasLimits) {
+	s.Limits = val
+}
+
+// Ref: #/components/schemas/QuotasLimits
+type QuotasLimits struct {
+	// Minimum amount of memory assigned to live instances in megabytes
+	MinMemoryMB OptInt64 `json:"min_memory_mb"`
+	// Maximum amount of memory assigned to live instances in megabytes
+	MaxMemoryMB OptInt64 `json:"max_memory_mb"`
+	// Minimum size of a volume in megabytes
+	MinVolumeMB OptInt64 `json:"min_volume_mb"`
+	// Maximum size of a volume in megabytes
+	MaxVolumeMB OptInt64 `json:"max_volume_mb"`
+	// Minimum size of an autoscale group
+	MinAutoscaleSize OptInt64 `json:"min_autoscale_size"`
+	// Maximum size of an autoscale group
+	MaxAutoscaleSize OptInt64 `json:"max_autoscale_size"`
+}
+
+// GetMinMemoryMB returns the value of MinMemoryMB.
+func (s *QuotasLimits) GetMinMemoryMB() OptInt64 {
+	return s.MinMemoryMB
+}
+
+// GetMaxMemoryMB returns the value of MaxMemoryMB.
+func (s *QuotasLimits) GetMaxMemoryMB() OptInt64 {
+	return s.MaxMemoryMB
+}
+
+// GetMinVolumeMB returns the value of MinVolumeMB.
+func (s *QuotasLimits) GetMinVolumeMB() OptInt64 {
+	return s.MinVolumeMB
+}
+
+// GetMaxVolumeMB returns the value of MaxVolumeMB.
+func (s *QuotasLimits) GetMaxVolumeMB() OptInt64 {
+	return s.MaxVolumeMB
+}
+
+// GetMinAutoscaleSize returns the value of MinAutoscaleSize.
+func (s *QuotasLimits) GetMinAutoscaleSize() OptInt64 {
+	return s.MinAutoscaleSize
+}
+
+// GetMaxAutoscaleSize returns the value of MaxAutoscaleSize.
+func (s *QuotasLimits) GetMaxAutoscaleSize() OptInt64 {
+	return s.MaxAutoscaleSize
+}
+
+// SetMinMemoryMB sets the value of MinMemoryMB.
+func (s *QuotasLimits) SetMinMemoryMB(val OptInt64) {
+	s.MinMemoryMB = val
+}
+
+// SetMaxMemoryMB sets the value of MaxMemoryMB.
+func (s *QuotasLimits) SetMaxMemoryMB(val OptInt64) {
+	s.MaxMemoryMB = val
+}
+
+// SetMinVolumeMB sets the value of MinVolumeMB.
+func (s *QuotasLimits) SetMinVolumeMB(val OptInt64) {
+	s.MinVolumeMB = val
+}
+
+// SetMaxVolumeMB sets the value of MaxVolumeMB.
+func (s *QuotasLimits) SetMaxVolumeMB(val OptInt64) {
+	s.MaxVolumeMB = val
+}
+
+// SetMinAutoscaleSize sets the value of MinAutoscaleSize.
+func (s *QuotasLimits) SetMinAutoscaleSize(val OptInt64) {
+	s.MinAutoscaleSize = val
+}
+
+// SetMaxAutoscaleSize sets the value of MaxAutoscaleSize.
+func (s *QuotasLimits) SetMaxAutoscaleSize(val OptInt64) {
+	s.MaxAutoscaleSize = val
+}
+
+// The response message for getting the quota of a user given their UUID.
+// Ref: #/components/schemas/QuotasResponse
+type QuotasResponse struct {
+	// The status of the response.
+	Status OptString `json:"status"`
+	// An optional message providing additional information about the response.
+	Message OptString `json:"message"`
+	// The response data for this request.
+	Data OptQuotasResponseData `json:"data"`
+	// The operation time in microseconds.  This is the time it took to process
+	//  the request and generate the response.
+	OpTimeUs OptUint64 `json:"op_time_us"`
+}
+
+// GetStatus returns the value of Status.
+func (s *QuotasResponse) GetStatus() OptString {
+	return s.Status
+}
+
+// GetMessage returns the value of Message.
+func (s *QuotasResponse) GetMessage() OptString {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *QuotasResponse) GetData() OptQuotasResponseData {
+	return s.Data
+}
+
+// GetOpTimeUs returns the value of OpTimeUs.
+func (s *QuotasResponse) GetOpTimeUs() OptUint64 {
+	return s.OpTimeUs
+}
+
+// SetStatus sets the value of Status.
+func (s *QuotasResponse) SetStatus(val OptString) {
+	s.Status = val
+}
+
+// SetMessage sets the value of Message.
+func (s *QuotasResponse) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *QuotasResponse) SetData(val OptQuotasResponseData) {
+	s.Data = val
+}
+
+// SetOpTimeUs sets the value of OpTimeUs.
+func (s *QuotasResponse) SetOpTimeUs(val OptUint64) {
+	s.OpTimeUs = val
+}
+
+// Ref: #/components/schemas/QuotasResponseData
+type QuotasResponseData struct {
+	// The quota(s) which were retrieved by the request.
+	Quotas []Quotas `json:"quotas"`
+}
+
+// GetQuotas returns the value of Quotas.
+func (s *QuotasResponseData) GetQuotas() []Quotas {
+	return s.Quotas
+}
+
+// SetQuotas sets the value of Quotas.
+func (s *QuotasResponseData) SetQuotas(val []Quotas) {
+	s.Quotas = val
+}
+
+// QuotasResponseStatusCode wraps QuotasResponse with StatusCode.
+type QuotasResponseStatusCode struct {
+	StatusCode int
+	Response   QuotasResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *QuotasResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *QuotasResponseStatusCode) GetResponse() QuotasResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *QuotasResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *QuotasResponseStatusCode) SetResponse(val QuotasResponse) {
+	s.Response = val
+}
+
+// Ref: #/components/schemas/QuotasStats
+type QuotasStats struct {
+	// Number of instances
+	Instances OptInt64 `json:"instances"`
+	// Number of instances that are not in the `stopped` state
+	LiveInstances OptInt64 `json:"live_instances"`
+	// Amount of memory assigned to instances that are not in the `stopped`
+	//  state in megabytes
+	LiveMemoryMB OptInt64 `json:"live_memory_mb"`
+	// Number of services
+	ServiceGroups OptInt64 `json:"service_groups"`
+	// Number of published network ports over all existing services
+	Services OptInt64 `json:"services"`
+	// Number of volumes
+	Volumes OptInt64 `json:"volumes"`
+	// Total size of all volumes in megabytes
+	TotalVolumeMB OptInt64 `json:"total_volume_mb"`
+}
+
+// GetInstances returns the value of Instances.
+func (s *QuotasStats) GetInstances() OptInt64 {
+	return s.Instances
+}
+
+// GetLiveInstances returns the value of LiveInstances.
+func (s *QuotasStats) GetLiveInstances() OptInt64 {
+	return s.LiveInstances
+}
+
+// GetLiveMemoryMB returns the value of LiveMemoryMB.
+func (s *QuotasStats) GetLiveMemoryMB() OptInt64 {
+	return s.LiveMemoryMB
+}
+
+// GetServiceGroups returns the value of ServiceGroups.
+func (s *QuotasStats) GetServiceGroups() OptInt64 {
+	return s.ServiceGroups
+}
+
+// GetServices returns the value of Services.
+func (s *QuotasStats) GetServices() OptInt64 {
+	return s.Services
+}
+
+// GetVolumes returns the value of Volumes.
+func (s *QuotasStats) GetVolumes() OptInt64 {
+	return s.Volumes
+}
+
+// GetTotalVolumeMB returns the value of TotalVolumeMB.
+func (s *QuotasStats) GetTotalVolumeMB() OptInt64 {
+	return s.TotalVolumeMB
+}
+
+// SetInstances sets the value of Instances.
+func (s *QuotasStats) SetInstances(val OptInt64) {
+	s.Instances = val
+}
+
+// SetLiveInstances sets the value of LiveInstances.
+func (s *QuotasStats) SetLiveInstances(val OptInt64) {
+	s.LiveInstances = val
+}
+
+// SetLiveMemoryMB sets the value of LiveMemoryMB.
+func (s *QuotasStats) SetLiveMemoryMB(val OptInt64) {
+	s.LiveMemoryMB = val
+}
+
+// SetServiceGroups sets the value of ServiceGroups.
+func (s *QuotasStats) SetServiceGroups(val OptInt64) {
+	s.ServiceGroups = val
+}
+
+// SetServices sets the value of Services.
+func (s *QuotasStats) SetServices(val OptInt64) {
+	s.Services = val
+}
+
+// SetVolumes sets the value of Volumes.
+func (s *QuotasStats) SetVolumes(val OptInt64) {
+	s.Volumes = val
+}
+
+// SetTotalVolumeMB sets the value of TotalVolumeMB.
+func (s *QuotasStats) SetTotalVolumeMB(val OptInt64) {
+	s.TotalVolumeMB = val
+}
+
 // A service connects a public-facing port to an internal destination port on
 //
 //	which an application instance listens on.  Additional handlers can be defined
@@ -7353,6 +12832,34 @@ func (s *ServiceGroupInstance) SetUUID(val OptString) {
 // SetName sets the value of Name.
 func (s *ServiceGroupInstance) SetName(val OptString) {
 	s.Name = val
+}
+
+// Ref: #/components/schemas/ServiceGroupTemplate
+type ServiceGroupTemplate struct {
+	// The name of the template used for the autoscale configuration.
+	Name OptString `json:"name"`
+	// The UUID of the template used for the autoscale configuration.
+	UUID OptString `json:"uuid"`
+}
+
+// GetName returns the value of Name.
+func (s *ServiceGroupTemplate) GetName() OptString {
+	return s.Name
+}
+
+// GetUUID returns the value of UUID.
+func (s *ServiceGroupTemplate) GetUUID() OptString {
+	return s.UUID
+}
+
+// SetName sets the value of Name.
+func (s *ServiceGroupTemplate) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetUUID sets the value of UUID.
+func (s *ServiceGroupTemplate) SetUUID(val OptString) {
+	s.UUID = val
 }
 
 type ServiceHandlersItem string
@@ -7627,70 +13134,29 @@ func (s *StartInstanceResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
-// The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).
-// Ref: #/components/schemas/Status
-type Status struct {
-	// The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
-	Code OptInt32 `json:"code"`
-	// A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
-	Message OptString `json:"message"`
-	// A list of messages that carry the error details.  There is a common set of message types for APIs to use.
-	Details []GoogleProtobufAny `json:"details"`
-}
-
-// GetCode returns the value of Code.
-func (s *Status) GetCode() OptInt32 {
-	return s.Code
-}
-
-// GetMessage returns the value of Message.
-func (s *Status) GetMessage() OptString {
-	return s.Message
-}
-
-// GetDetails returns the value of Details.
-func (s *Status) GetDetails() []GoogleProtobufAny {
-	return s.Details
-}
-
-// SetCode sets the value of Code.
-func (s *Status) SetCode(val OptInt32) {
-	s.Code = val
-}
-
-// SetMessage sets the value of Message.
-func (s *Status) SetMessage(val OptString) {
-	s.Message = val
-}
-
-// SetDetails sets the value of Details.
-func (s *Status) SetDetails(val []GoogleProtobufAny) {
-	s.Details = val
-}
-
-// StatusStatusCode wraps Status with StatusCode.
-type StatusStatusCode struct {
+// StartInstanceResponseStatusCode wraps StartInstanceResponse with StatusCode.
+type StartInstanceResponseStatusCode struct {
 	StatusCode int
-	Response   Status
+	Response   StartInstanceResponse
 }
 
 // GetStatusCode returns the value of StatusCode.
-func (s *StatusStatusCode) GetStatusCode() int {
+func (s *StartInstanceResponseStatusCode) GetStatusCode() int {
 	return s.StatusCode
 }
 
 // GetResponse returns the value of Response.
-func (s *StatusStatusCode) GetResponse() Status {
+func (s *StartInstanceResponseStatusCode) GetResponse() StartInstanceResponse {
 	return s.Response
 }
 
 // SetStatusCode sets the value of StatusCode.
-func (s *StatusStatusCode) SetStatusCode(val int) {
+func (s *StartInstanceResponseStatusCode) SetStatusCode(val int) {
 	s.StatusCode = val
 }
 
 // SetResponse sets the value of Response.
-func (s *StatusStatusCode) SetResponse(val Status) {
+func (s *StartInstanceResponseStatusCode) SetResponse(val StartInstanceResponse) {
 	s.Response = val
 }
 
@@ -7807,6 +13273,32 @@ func (s *StopInstanceResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// StopInstanceResponseStatusCode wraps StopInstanceResponse with StatusCode.
+type StopInstanceResponseStatusCode struct {
+	StatusCode int
+	Response   StopInstanceResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *StopInstanceResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *StopInstanceResponseStatusCode) GetResponse() StopInstanceResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *StopInstanceResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *StopInstanceResponseStatusCode) SetResponse(val StopInstanceResponse) {
+	s.Response = val
 }
 
 // Ref: #/components/schemas/StopInstanceResponseStoppedInstance
@@ -8030,6 +13522,185 @@ func (s *StopInstancesRequestID) SetName(val OptString) {
 	s.Name = val
 }
 
+// Ref: #/components/schemas/Volume
+type Volume struct {
+	// The UUID of the volume.
+	//
+	//  This is a unique identifier for the volume that is generated when the
+	//  volume is created.  The UUID is used to reference the volume in
+	//  API calls and can be used to identify the volume in all API calls that
+	//  require an identifier.
+	UUID OptString `json:"uuid"`
+	// The name of the volume.
+	//
+	//  This is a human-readable name that can be used to identify the volume.
+	//  The name must be unique within the context of your account.  The name can
+	//  also be used to identify the volume in API calls.
+	Name OptString `json:"name"`
+	// The time the volume was created.
+	CreatedAt OptDateTime `json:"created_at"`
+	// Current state of the volume.
+	State OptString `json:"state"`
+	// The size of the volume in megabytes.
+	SizeMB OptUint64 `json:"size_mb"`
+	// Indicates if the volume will stay alive when the last instance is deleted
+	//  that this volume is attached to.
+	Persistent OptBool `json:"persistent"`
+	// List of instances that this volume is attached to.
+	AttachedTo []VolumeInstanceID `json:"attached_to"`
+	// List of instances that have this volume mounted.
+	MountedBy []VolumeVolumeInstanceMount `json:"mounted_by"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *Volume) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *Volume) GetName() OptString {
+	return s.Name
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Volume) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetState returns the value of State.
+func (s *Volume) GetState() OptString {
+	return s.State
+}
+
+// GetSizeMB returns the value of SizeMB.
+func (s *Volume) GetSizeMB() OptUint64 {
+	return s.SizeMB
+}
+
+// GetPersistent returns the value of Persistent.
+func (s *Volume) GetPersistent() OptBool {
+	return s.Persistent
+}
+
+// GetAttachedTo returns the value of AttachedTo.
+func (s *Volume) GetAttachedTo() []VolumeInstanceID {
+	return s.AttachedTo
+}
+
+// GetMountedBy returns the value of MountedBy.
+func (s *Volume) GetMountedBy() []VolumeVolumeInstanceMount {
+	return s.MountedBy
+}
+
+// SetUUID sets the value of UUID.
+func (s *Volume) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *Volume) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Volume) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetState sets the value of State.
+func (s *Volume) SetState(val OptString) {
+	s.State = val
+}
+
+// SetSizeMB sets the value of SizeMB.
+func (s *Volume) SetSizeMB(val OptUint64) {
+	s.SizeMB = val
+}
+
+// SetPersistent sets the value of Persistent.
+func (s *Volume) SetPersistent(val OptBool) {
+	s.Persistent = val
+}
+
+// SetAttachedTo sets the value of AttachedTo.
+func (s *Volume) SetAttachedTo(val []VolumeInstanceID) {
+	s.AttachedTo = val
+}
+
+// SetMountedBy sets the value of MountedBy.
+func (s *Volume) SetMountedBy(val []VolumeVolumeInstanceMount) {
+	s.MountedBy = val
+}
+
+// Reference to the instance to attach the volume to.
+// Ref: #/components/schemas/VolumeInstanceID
+type VolumeInstanceID struct {
+	// The UUID of the instance that the volume is attached to.
+	UUID OptString `json:"uuid"`
+	// The name of the instance that the volume is attached to.
+	Name OptString `json:"name"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *VolumeInstanceID) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *VolumeInstanceID) GetName() OptString {
+	return s.Name
+}
+
+// SetUUID sets the value of UUID.
+func (s *VolumeInstanceID) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *VolumeInstanceID) SetName(val OptString) {
+	s.Name = val
+}
+
+// Ref: #/components/schemas/VolumeVolumeInstanceMount
+type VolumeVolumeInstanceMount struct {
+	// The UUID of the instance that the volume is mounted in.
+	UUID OptString `json:"uuid"`
+	// The name of the instance that the volume is mounted in.
+	Name OptString `json:"name"`
+	// Whether the volume is mounted read-only or read-write.
+	ReadOnly OptBool `json:"read_only"`
+}
+
+// GetUUID returns the value of UUID.
+func (s *VolumeVolumeInstanceMount) GetUUID() OptString {
+	return s.UUID
+}
+
+// GetName returns the value of Name.
+func (s *VolumeVolumeInstanceMount) GetName() OptString {
+	return s.Name
+}
+
+// GetReadOnly returns the value of ReadOnly.
+func (s *VolumeVolumeInstanceMount) GetReadOnly() OptBool {
+	return s.ReadOnly
+}
+
+// SetUUID sets the value of UUID.
+func (s *VolumeVolumeInstanceMount) SetUUID(val OptString) {
+	s.UUID = val
+}
+
+// SetName sets the value of Name.
+func (s *VolumeVolumeInstanceMount) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetReadOnly sets the value of ReadOnly.
+func (s *VolumeVolumeInstanceMount) SetReadOnly(val OptBool) {
+	s.ReadOnly = val
+}
+
 type WaitInstanceByUUIDState string
 
 const (
@@ -8212,6 +13883,32 @@ func (s *WaitInstanceResponseStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// WaitInstanceResponseStatusCode wraps WaitInstanceResponse with StatusCode.
+type WaitInstanceResponseStatusCode struct {
+	StatusCode int
+	Response   WaitInstanceResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *WaitInstanceResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *WaitInstanceResponseStatusCode) GetResponse() WaitInstanceResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *WaitInstanceResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *WaitInstanceResponseStatusCode) SetResponse(val WaitInstanceResponse) {
+	s.Response = val
 }
 
 // Ref: #/components/schemas/WaitInstanceResponseWaitedInstance
