@@ -22,187 +22,365 @@ func trimTrailingSlashes(u *url.URL) {
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
+	// AttachVolumeByUUID invokes AttachVolumeByUUID operation.
+	//
+	// Attaches a volume by UUID to an instance so that the volume is mounted when
+	// the instance starts. The volume needs to be in available state and the
+	// instance must in stopped state. Currently, each instance can have only one
+	// volume attached at most.
+	//
+	// GET /v1/volumes/{uuid}/attach
+	AttachVolumeByUUID(ctx context.Context, params AttachVolumeByUUIDParams) (*AttachVolumesResponseStatusCode, error)
+	// AttachVolumes invokes AttachVolumes operation.
+	//
+	// Attaches a volume to an instance so that the volume is mounted when the
+	// instance starts. The volume needs to be in available state and the instance
+	// must in stopped state. Currently, each instance can have only one volume
+	// attached at most.
+	//
+	// PUT /v1/volumes/attach
+	AttachVolumes(ctx context.Context, request []AttachVolumesRequestID, params AttachVolumesParams) (*AttachVolumesResponseStatusCode, error)
+	// CreateAutoscaleConfiguration invokes CreateAutoscaleConfiguration operation.
+	//
+	// CreateAutoscaleConfiguration creates an autoscale configuration for the
+	// specified service.
+	//
+	// POST /v1/service/autoscale
+	CreateAutoscaleConfiguration(ctx context.Context, request *CreateAutoscaleConfigurationRequest) (*CreateAutoscaleConfigurationResponseStatusCode, error)
+	// CreateAutoscaleConfigurationPolicy invokes CreateAutoscaleConfigurationPolicy operation.
+	//
+	// CreateAutoscaleConfigurationPolicy adds a new autoscale policy to an
+	// autoscale configuration.
+	//
+	// POST /v1/service/autoscale/{uuid}/policies
+	CreateAutoscaleConfigurationPolicy(ctx context.Context, request *CreateAutoscaleConfigurationPolicyRequest, params CreateAutoscaleConfigurationPolicyParams) (*CreateAutoscaleConfigurationPolicyResponseStatusCode, error)
+	// CreateAutoscaleConfigurationsByServiceGroupUUID invokes CreateAutoscaleConfigurationsByServiceGroupUUID operation.
+	//
+	// CreateAutoscaleConfigurationsByServiceGroupUUID creates an autoscale
+	// configuration for the specified service by UUID.
+	//
+	// POST /v1/service/{uuid}/autoscale
+	CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, params CreateAutoscaleConfigurationsByServiceGroupUUIDParams) (*CreateAutoscaleConfigurationResponseStatusCode, error)
 	// CreateCertificate invokes CreateCertificate operation.
 	//
 	// Upload a new certificate with the given configuration.
 	//
 	// POST /v1/certificates
-	CreateCertificate(ctx context.Context, request *CreateCertificateRequest) (*CreateCertificateResponse, error)
+	CreateCertificate(ctx context.Context, request *CreateCertificateRequest) (*CreateCertificateResponseStatusCode, error)
 	// CreateInstance invokes CreateInstance operation.
 	//
 	// Creates one or more new instances.
 	//
 	// POST /v1/instances
-	CreateInstance(ctx context.Context, request *CreateInstanceRequest) (*CreateInstanceResponse, error)
+	CreateInstance(ctx context.Context, request *CreateInstanceRequest) (*CreateInstanceResponseStatusCode, error)
 	// CreateServiceGroup invokes CreateServiceGroup operation.
 	//
 	// Create a new service with the given configuration.
 	//
-	//  Note that the service properties like published ports can only be defined
-	//  during creation.  They cannot be changed later.  Each port in a service can
-	//  specify a list of handlers that determine how traffic arriving at the port
-	//  is handled. See Connection Handlers for a complete overview.
+	// Note that the service properties like published ports can only be defined
+	// during creation.  They cannot be changed later.  Each port in a service can
+	// specify a list of handlers that determine how traffic arriving at the port
+	// is handled. See Connection Handlers for a complete overview.
 	//
 	// POST /v1/services
-	CreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (*CreateServiceGroupResponse, error)
+	CreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (*CreateServiceGroupResponseStatusCode, error)
+	// CreateVolume invokes CreateVolume operation.
+	//
+	// Creates one or more volumes with the given configuration.
+	// The volumes are automatically initialized with an empty file system.
+	// After initialization the volumes are in the available state and can be
+	// attached to an instance with the `PUT /v1/volumes/attach` endpoint.
+	// Note that, the size of a volume cannot be changed after creation.
+	//
+	// POST /v1/volumes
+	CreateVolume(ctx context.Context, request *CreateVolumeRequest) (*CreateVolumeResponseStatusCode, error)
+	// DeleteAutoscaleConfigurationPolicies invokes DeleteAutoscaleConfigurationPolicies operation.
+	//
+	// DeleteAutoscaleConfigurationPolicies deletes an autoscale policy.
+	//
+	// DELETE /v1/service/autoscale/{uuid}/policies
+	DeleteAutoscaleConfigurationPolicies(ctx context.Context, request *DeletePolicyRequest, params DeleteAutoscaleConfigurationPoliciesParams) (*DeleteAutoscaleConfigurationPolicyResponseStatusCode, error)
+	// DeleteAutoscaleConfigurationPolicyByName invokes DeleteAutoscaleConfigurationPolicyByName operation.
+	//
+	// DeleteAutoscaleConfigurationPolicyByName deletes an autoscale policy by
+	// name.
+	//
+	// DELETE /v1/service/autoscale/{uuid}/policies/{name}
+	DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, params DeleteAutoscaleConfigurationPolicyByNameParams) (*DeleteAutoscaleConfigurationPolicyResponseStatusCode, error)
+	// DeleteAutoscaleConfigurations invokes DeleteAutoscaleConfigurations operation.
+	//
+	// DeleteAutoscaleConfigurations deletes autoscale configurations.
+	//
+	// DELETE /v1/service/autoscale
+	DeleteAutoscaleConfigurations(ctx context.Context, request []DeleteAutoscaleConfigurationsRequestID) (*DeleteAutoscaleConfigurationsResponseStatusCode, error)
+	// DeleteAutoscaleConfigurationsByServiceGroupUUID invokes DeleteAutoscaleConfigurationsByServiceGroupUUID operation.
+	//
+	// DeleteAutoscaleConfigurationsByServiceGroupUUID deletes autoscale
+	// configurations by service UUID.
+	//
+	// DELETE /v1/service/{uuid}/autoscale
+	DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, params DeleteAutoscaleConfigurationsByServiceGroupUUIDParams) (*DeleteAutoscaleConfigurationsResponseStatusCode, error)
 	// DeleteCertificateByUUID invokes DeleteCertificateByUUID operation.
 	//
 	// Delete the specified certificate(s).  After this call the name of the
-	//  certificate(s) are no longer valid.
+	// certificate(s) are no longer valid.
 	//
 	// DELETE /v1/certificates/{uuid}
-	DeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (*DeleteCertificatesResponse, error)
+	DeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (*DeleteCertificatesResponseStatusCode, error)
 	// DeleteCertificates invokes DeleteCertificates operation.
 	//
 	// Delete a specified certificate by its UUID.  After this call the UUID of
-	//  the certificate are no longer valid.
+	// the certificate are no longer valid.
 	//
 	// DELETE /v1/certificates
-	DeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (*DeleteCertificatesResponse, error)
+	DeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (*DeleteCertificatesResponseStatusCode, error)
 	// DeleteInstanceByUUID invokes DeleteInstanceByUUID operation.
 	//
 	// Delete a specified instance by its UUID.  After this call the UUID of the
-	//  instances are no longer valid.  If the instances are currently running,
-	//  they are force stopped.
+	// instances are no longer valid.  If the instances are currently running,
+	// they are force stopped.
 	//
 	// DELETE /v1/instances/{uuid}
-	DeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (*DeleteInstancesResponse, error)
+	DeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (*DeleteInstancesResponseStatusCode, error)
+	// DeleteInstances invokes DeleteInstances operation.
+	//
+	// Delete the specified instance(s).  After this call the name of the
+	// instances are no longer valid.  If the instances are currently running,
+	// they are force stopped.
+	//
+	// DELETE /v1/instances
+	DeleteInstances(ctx context.Context, request []DeleteInstancesRequestID) (*DeleteInstancesResponseStatusCode, error)
 	// DeleteServiceGroupByUUID invokes DeleteServiceGroupByUUID operation.
 	//
 	// Delete the specified service group(s).  After this call the name of the
-	//  service group(s) are no longer valid.
+	// service group(s) are no longer valid.
 	//
 	// DELETE /v1/services/{uuid}
-	DeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (*DeleteServiceGroupsResponse, error)
+	DeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (*DeleteServiceGroupsResponseStatusCode, error)
 	// DeleteServiceGroups invokes DeleteServiceGroups operation.
 	//
 	// Delete a specified service group by its UUID.  After this call the UUID of
-	//  the service group are no longer valid.
+	// the service group are no longer valid.
 	//
 	// DELETE /v1/services
-	DeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (*DeleteServiceGroupsResponse, error)
+	DeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (*DeleteServiceGroupsResponseStatusCode, error)
+	// DeleteVolume invokes DeleteVolume operation.
+	//
+	// Deletes the specified volume by its name or UUID. Fails if the volume is
+	// still attached to an instance. After this call the IDs associated with
+	// the volume are no longer valid.
+	//
+	// DELETE /v1/volumes
+	DeleteVolume(ctx context.Context, request []DeleteVolumesRequestID) (*DeleteVolumesResponseStatusCode, error)
+	// DeleteVolumeByUUID invokes DeleteVolumeByUUID operation.
+	//
+	// Deletes the specified volume by its UUID. Fails if the volume is still
+	// attached to an instance. After this call the IDs associated with the
+	// volume are no longer valid.
+	//
+	// GET /v1/volumes/{uuid}
+	DeleteVolumeByUUID(ctx context.Context, params DeleteVolumeByUUIDParams) (*DeleteVolumesResponseStatusCode, error)
+	// DetachVolumeByUUID invokes DetachVolumeByUUID operation.
+	//
+	// Detaches a volume by UUID from instances. If no particular instance is
+	// specified the volume is detached from all instances. The instances from
+	// which to detach must not have the volume mounted. The API returns an error
+	// for each instance from which it was unable to detach the volume. If the
+	// volume has been created together with an instance, detaching the volume
+	// will make it persistent (i.e., it survives the deletion of the instance).
+	//
+	// GET /v1/volumes/{uuid}/detach
+	DetachVolumeByUUID(ctx context.Context, params DetachVolumeByUUIDParams) (*DetachVolumesResponseStatusCode, error)
+	// DetachVolumes invokes DetachVolumes operation.
+	//
+	// Detaches a volume from instances. If no particular instance is specified
+	// the volume is detached from all instances. The instances from which to
+	// detach must not have the volume mounted. The API returns an error for each
+	// instance from which it was unable to detach the volume. If the volume has
+	// been created together with an instance, detaching the volume will make it
+	// persistent (i.e., it survives the deletion of the instance).
+	//
+	// POST /v1/volumes/detach
+	DetachVolumes(ctx context.Context, request []DetachVolumesRequestID, params DetachVolumesParams) (*DetachVolumesResponseStatusCode, error)
+	// GetAutoscaleConfigurationPolicies invokes GetAutoscaleConfigurationPolicies operation.
+	//
+	// GetAutoscaleConfigurationPolicies returns the current state and
+	// configuration of an autoscale policy.
+	//
+	// GET /v1/service/autoscale/{uuid}/policies
+	GetAutoscaleConfigurationPolicies(ctx context.Context, request *GetAutoscaleConfigurationPolicyRequest, params GetAutoscaleConfigurationPoliciesParams) (*GetAutoscaleConfigurationPolicyResponseStatusCode, error)
+	// GetAutoscaleConfigurationPolicyByName invokes GetAutoscaleConfigurationPolicyByName operation.
+	//
+	// GetAutoscaleConfigurationPolicyByName returns the current state and
+	// configuration of an autoscale policy by it's name.
+	//
+	// GET /v1/service/autoscale/{uuid}/policies/{name}
+	GetAutoscaleConfigurationPolicyByName(ctx context.Context, params GetAutoscaleConfigurationPolicyByNameParams) (*GetAutoscaleConfigurationPolicyResponseStatusCode, error)
+	// GetAutoscaleConfigurations invokes GetAutoscaleConfigurations operation.
+	//
+	// GetAutoscaleConfigurations returns the current states and configurations of
+	// autoscale configurations.
+	//
+	// GET /v1/service/autoscale
+	GetAutoscaleConfigurations(ctx context.Context, request []GetAutoscaleConfigurationsRequestID) (*GetAutoscaleConfigurationsResponseStatusCode, error)
+	// GetAutoscaleConfigurationsByServiceGroupUUID invokes GetAutoscaleConfigurationsByServiceGroupUUID operation.
+	//
+	// GetAutoscaleConfigurationsByServiceGroupUUID returns the current states
+	// and configurations of autoscale configurations by service UUID.
+	//
+	// GET /v1/service/{uuid}/autoscale
+	GetAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, params GetAutoscaleConfigurationsByServiceGroupUUIDParams) (*GetAutoscaleConfigurationsResponseStatusCode, error)
 	// GetCertificateByUUID invokes GetCertificateByUUID operation.
 	//
 	// Get a specified certificate by its UUID.
 	//
 	// GET /v1/certificates/{uuid}
-	GetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (*GetCertificatesResponse, error)
+	GetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (*GetCertificatesResponseStatusCode, error)
 	// GetCertificates invokes GetCertificates operation.
 	//
 	// Get one or many certificates with their current status and configuration.
-	//  It's possible to filter this list by name or UUID.
+	// It's possible to filter this list by name or UUID.
 	//
 	// GET /v1/certificates
-	GetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (*GetCertificatesResponse, error)
+	GetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (*GetCertificatesResponseStatusCode, error)
 	// GetImageByDigest invokes GetImageByDigest operation.
 	//
 	// GetImageByDigest retrieves an image by its digest.
 	//
 	// GET /v1/images/digest/{digest}
-	GetImageByDigest(ctx context.Context, params GetImageByDigestParams) (*GetImageResponse, error)
+	GetImageByDigest(ctx context.Context, params GetImageByDigestParams) (*GetImageResponseStatusCode, error)
 	// GetImageByTag invokes GetImageByTag operation.
 	//
 	// GetImageByTag retrieves an image by its tag.
 	//
 	// GET /v1/images/tag/{tag}
-	GetImageByTag(ctx context.Context, params GetImageByTagParams) (*GetImageResponse, error)
+	GetImageByTag(ctx context.Context, params GetImageByTagParams) (*GetImageResponseStatusCode, error)
 	// GetInstanceByUUID invokes GetInstanceByUUID operation.
 	//
 	// Get a single instance by its ID which can either be its name or UUID.
 	//
 	// GET /v1/instances/{uuid}
-	GetInstanceByUUID(ctx context.Context, params GetInstanceByUUIDParams) (*GetInstancesResponse, error)
+	GetInstanceByUUID(ctx context.Context, params GetInstanceByUUIDParams) (*GetInstancesResponseStatusCode, error)
 	// GetInstanceLogs invokes GetInstanceLogs operation.
 	//
 	// Retrieve the logs of an instance by its UUID or name.
 	//
 	// PUT /v1/instances/logs
-	GetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (*GetInstanceLogsResponse, error)
+	GetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (*GetInstanceLogsResponseStatusCode, error)
 	// GetInstanceLogsByUUID invokes GetInstanceLogsByUUID operation.
 	//
 	// Retrieve the logs of an instance by its UUID.
 	//
 	// PUT /v1/instances/{uuid}/logs
-	GetInstanceLogsByUUID(ctx context.Context, params GetInstanceLogsByUUIDParams) (*GetInstanceLogsResponse, error)
+	GetInstanceLogsByUUID(ctx context.Context, params GetInstanceLogsByUUIDParams) (*GetInstanceLogsResponseStatusCode, error)
 	// GetInstanceMetrics invokes GetInstanceMetrics operation.
 	//
 	// Get the metrics of an instance by its UUID or name.
 	//
 	// PUT /v1/instances/metrics
-	GetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (*GetInstanceMetricsResponse, error)
+	GetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (*GetInstanceMetricsResponseStatusCode, error)
 	// GetInstanceMetricsByUUID invokes GetInstanceMetricsByUUID operation.
 	//
 	// Get the metrics of an instance by its UUID.
 	//
 	// PUT /v1/instances/{uuid}/metrics
-	GetInstanceMetricsByUUID(ctx context.Context, params GetInstanceMetricsByUUIDParams) (*GetInstanceMetricsResponse, error)
+	GetInstanceMetricsByUUID(ctx context.Context, params GetInstanceMetricsByUUIDParams) (*GetInstanceMetricsResponseStatusCode, error)
 	// GetInstances invokes GetInstances operation.
 	//
 	// Get one or many instances with their current status and configuration.
-	//  It's possible to filter this list by name or UUID.
+	// It's possible to filter this list by name or UUID.
 	//
 	// GET /v1/instances
-	GetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (*GetInstancesResponse, error)
+	GetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (*GetInstancesResponseStatusCode, error)
 	// GetServiceGroupByUUID invokes GetServiceGroupByUUID operation.
 	//
 	// Get a specified service group by its UUID.
 	//
 	// GET /v1/services/{uuid}
-	GetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (*GetServiceGroupsResponse, error)
+	GetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (*GetServiceGroupsResponseStatusCode, error)
 	// GetServiceGroups invokes GetServiceGroups operation.
 	//
 	// Get one or many service groups with their current status and configuration.
-	//  It's possible to filter this list by name or UUID.
+	// It's possible to filter this list by name or UUID.
 	//
 	// GET /v1/services
-	GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (*GetServiceGroupsResponse, error)
+	GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (*GetServiceGroupsResponseStatusCode, error)
+	// GetUser invokes GetUser operation.
+	//
+	// Lists quota usage and limits of your user account.
+	// Limits are hard limits that cannot be exceeded.
+	//
+	// GET /v1/users/quotas
+	GetUser(ctx context.Context) (*QuotasResponseStatusCode, error)
+	// GetUserByUUID invokes GetUserByUUID operation.
+	//
+	// Lists quota usage and limits of your user account by UUID.
+	// Limits are hard limits that cannot be exceeded.
+	//
+	// GET /v1/users/{uuid}/quotas
+	GetUserByUUID(ctx context.Context, params GetUserByUUIDParams) (*QuotasResponseStatusCode, error)
+	// GetVolumes invokes GetVolumes operation.
+	//
+	// Returns the current status and the configuration of a particular volume if
+	// name is specified. Otherwise, returns the current status and configuration
+	// of all volumes.
+	//
+	// GET /v1/volumes
+	GetVolumes(ctx context.Context, request []GetVolumesRequestID, params GetVolumesParams) (*GetVolumesResponseStatusCode, error)
 	// StartInstanceByUUID invokes StartInstanceByUUID operation.
 	//
 	// Starts previously stopped instance by its UUID or does nothing if the
-	//  instance is already running.
+	// instance is already running.
 	//
 	// PUT /v1/instances/{uuid}/start
-	StartInstanceByUUID(ctx context.Context, params StartInstanceByUUIDParams) (*StartInstanceResponse, error)
+	StartInstanceByUUID(ctx context.Context, params StartInstanceByUUIDParams) (*StartInstanceResponseStatusCode, error)
+	// StartInstances invokes StartInstances operation.
+	//
+	// Starts previously stopped instances by their UUID(s) or name(s) or does
+	// nothing if the instance is already running.
+	//
+	// PUT /v1/instances/start
+	StartInstances(ctx context.Context, request []StartInstancesRequestID) (*StartInstanceResponseStatusCode, error)
 	// StopInstanceByUUID invokes StopInstanceByUUID operation.
 	//
 	// Stops a running instance by its UUID or does nothing if the instance is
-	//  already stopped.
+	// already stopped.
 	//
 	// PUT /v1/instances/{uuid}/stop
-	StopInstanceByUUID(ctx context.Context, params StopInstanceByUUIDParams) (*StopInstanceResponse, error)
+	StopInstanceByUUID(ctx context.Context, params StopInstanceByUUIDParams) (*StopInstanceResponseStatusCode, error)
 	// StopInstances invokes StopInstances operation.
 	//
 	// Stops one or more running instance by their UUID(s) or name(s) or does
-	//  nothing if the instance is already stopped.
+	// nothing if the instance is already stopped.
 	//
 	// PUT /v1/instances/stop
-	StopInstances(ctx context.Context, request []StopInstancesRequestID, params StopInstancesParams) (*StopInstanceResponse, error)
+	StopInstances(ctx context.Context, request []StopInstancesRequestID, params StopInstancesParams) (*StopInstanceResponseStatusCode, error)
 	// WaitInstanceByUUID invokes WaitInstanceByUUID operation.
 	//
 	// Waits for an instance to reach a certain state by its UUID.
 	//
-	//  If the instance is already in the desired state, the request will return
-	//  immediately.  If the instance is not in the desired state, the request will
-	//  block until the instance reaches the desired state or the timeout is
-	//  reached.  If the timeout is reached, the request will fail with an error.
-	//  If the timeout is -1, the request will block indefinitely until the
-	//  instance reaches the desired state.
+	// If the instance is already in the desired state, the request will return
+	// immediately.  If the instance is not in the desired state, the request will
+	// block until the instance reaches the desired state or the timeout is
+	// reached.  If the timeout is reached, the request will fail with an error.
+	// If the timeout is -1, the request will block indefinitely until the
+	// instance reaches the desired state.
 	//
 	// GET /v1/instances/{uuid}/wait
-	WaitInstanceByUUID(ctx context.Context, params WaitInstanceByUUIDParams) (*WaitInstanceResponse, error)
+	WaitInstanceByUUID(ctx context.Context, params WaitInstanceByUUIDParams) (*WaitInstanceResponseStatusCode, error)
 	// WaitInstances invokes WaitInstances operation.
 	//
 	// Waits for an instance to reach a certain state by its UUID or name.
 	//
-	//  If the instance is already in the desired state, the request will return
-	//  immediately.  If the instance is not in the desired state, the request will
-	//  block until the instance reaches the desired state or the timeout is
-	//  reached.  If the timeout is reached, the request will fail with an error.
-	//  If the timeout is -1, the request will block indefinitely until the
-	//  instance reaches the desired state.
+	// If the instance is already in the desired state, the request will return
+	// immediately.  If the instance is not in the desired state, the request will
+	// block until the instance reaches the desired state or the timeout is
+	// reached.  If the timeout is reached, the request will fail with an error.
+	// If the timeout is -1, the request will block indefinitely until the
+	// instance reaches the desired state.
 	//
 	// GET /v1/instances/wait
-	WaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (*WaitInstanceResponse, error)
+	WaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (*WaitInstanceResponseStatusCode, error)
 }
 
 // Client implements OAS client.
@@ -246,17 +424,513 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 	return u
 }
 
+// AttachVolumeByUUID invokes AttachVolumeByUUID operation.
+//
+// Attaches a volume by UUID to an instance so that the volume is mounted when
+// the instance starts. The volume needs to be in available state and the
+// instance must in stopped state. Currently, each instance can have only one
+// volume attached at most.
+//
+// GET /v1/volumes/{uuid}/attach
+func (c *Client) AttachVolumeByUUID(ctx context.Context, params AttachVolumeByUUIDParams) (*AttachVolumesResponseStatusCode, error) {
+	res, err := c.sendAttachVolumeByUUID(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendAttachVolumeByUUID(ctx context.Context, params AttachVolumeByUUIDParams) (res *AttachVolumesResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/volumes/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/attach"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, AttachVolumeByUUIDOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeAttachVolumeByUUIDResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AttachVolumes invokes AttachVolumes operation.
+//
+// Attaches a volume to an instance so that the volume is mounted when the
+// instance starts. The volume needs to be in available state and the instance
+// must in stopped state. Currently, each instance can have only one volume
+// attached at most.
+//
+// PUT /v1/volumes/attach
+func (c *Client) AttachVolumes(ctx context.Context, request []AttachVolumesRequestID, params AttachVolumesParams) (*AttachVolumesResponseStatusCode, error) {
+	res, err := c.sendAttachVolumes(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendAttachVolumes(ctx context.Context, request []AttachVolumesRequestID, params AttachVolumesParams) (res *AttachVolumesResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/volumes/attach"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "attach_to.uuid" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "attach_to.uuid",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.AttachToUUID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "attach_to.name" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "attach_to.name",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.AttachToName.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "at" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "at",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.At.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "read_only" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "read_only",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.ReadOnly.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeAttachVolumesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, AttachVolumesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeAttachVolumesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// CreateAutoscaleConfiguration invokes CreateAutoscaleConfiguration operation.
+//
+// CreateAutoscaleConfiguration creates an autoscale configuration for the
+// specified service.
+//
+// POST /v1/service/autoscale
+func (c *Client) CreateAutoscaleConfiguration(ctx context.Context, request *CreateAutoscaleConfigurationRequest) (*CreateAutoscaleConfigurationResponseStatusCode, error) {
+	res, err := c.sendCreateAutoscaleConfiguration(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendCreateAutoscaleConfiguration(ctx context.Context, request *CreateAutoscaleConfigurationRequest) (res *CreateAutoscaleConfigurationResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/service/autoscale"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateAutoscaleConfigurationRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, CreateAutoscaleConfigurationOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeCreateAutoscaleConfigurationResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// CreateAutoscaleConfigurationPolicy invokes CreateAutoscaleConfigurationPolicy operation.
+//
+// CreateAutoscaleConfigurationPolicy adds a new autoscale policy to an
+// autoscale configuration.
+//
+// POST /v1/service/autoscale/{uuid}/policies
+func (c *Client) CreateAutoscaleConfigurationPolicy(ctx context.Context, request *CreateAutoscaleConfigurationPolicyRequest, params CreateAutoscaleConfigurationPolicyParams) (*CreateAutoscaleConfigurationPolicyResponseStatusCode, error) {
+	res, err := c.sendCreateAutoscaleConfigurationPolicy(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendCreateAutoscaleConfigurationPolicy(ctx context.Context, request *CreateAutoscaleConfigurationPolicyRequest, params CreateAutoscaleConfigurationPolicyParams) (res *CreateAutoscaleConfigurationPolicyResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/service/autoscale/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/policies"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateAutoscaleConfigurationPolicyRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, CreateAutoscaleConfigurationPolicyOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeCreateAutoscaleConfigurationPolicyResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// CreateAutoscaleConfigurationsByServiceGroupUUID invokes CreateAutoscaleConfigurationsByServiceGroupUUID operation.
+//
+// CreateAutoscaleConfigurationsByServiceGroupUUID creates an autoscale
+// configuration for the specified service by UUID.
+//
+// POST /v1/service/{uuid}/autoscale
+func (c *Client) CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, params CreateAutoscaleConfigurationsByServiceGroupUUIDParams) (*CreateAutoscaleConfigurationResponseStatusCode, error) {
+	res, err := c.sendCreateAutoscaleConfigurationsByServiceGroupUUID(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendCreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, params CreateAutoscaleConfigurationsByServiceGroupUUIDParams) (res *CreateAutoscaleConfigurationResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/service/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/autoscale"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, CreateAutoscaleConfigurationsByServiceGroupUUIDOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeCreateAutoscaleConfigurationsByServiceGroupUUIDResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // CreateCertificate invokes CreateCertificate operation.
 //
 // Upload a new certificate with the given configuration.
 //
 // POST /v1/certificates
-func (c *Client) CreateCertificate(ctx context.Context, request *CreateCertificateRequest) (*CreateCertificateResponse, error) {
+func (c *Client) CreateCertificate(ctx context.Context, request *CreateCertificateRequest) (*CreateCertificateResponseStatusCode, error) {
 	res, err := c.sendCreateCertificate(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendCreateCertificate(ctx context.Context, request *CreateCertificateRequest) (res *CreateCertificateResponse, err error) {
+func (c *Client) sendCreateCertificate(ctx context.Context, request *CreateCertificateRequest) (res *CreateCertificateResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -324,12 +998,12 @@ func (c *Client) sendCreateCertificate(ctx context.Context, request *CreateCerti
 // Creates one or more new instances.
 //
 // POST /v1/instances
-func (c *Client) CreateInstance(ctx context.Context, request *CreateInstanceRequest) (*CreateInstanceResponse, error) {
+func (c *Client) CreateInstance(ctx context.Context, request *CreateInstanceRequest) (*CreateInstanceResponseStatusCode, error) {
 	res, err := c.sendCreateInstance(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendCreateInstance(ctx context.Context, request *CreateInstanceRequest) (res *CreateInstanceResponse, err error) {
+func (c *Client) sendCreateInstance(ctx context.Context, request *CreateInstanceRequest) (res *CreateInstanceResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -396,18 +1070,18 @@ func (c *Client) sendCreateInstance(ctx context.Context, request *CreateInstance
 //
 // Create a new service with the given configuration.
 //
-//	Note that the service properties like published ports can only be defined
-//	during creation.  They cannot be changed later.  Each port in a service can
-//	specify a list of handlers that determine how traffic arriving at the port
-//	is handled. See Connection Handlers for a complete overview.
+// Note that the service properties like published ports can only be defined
+// during creation.  They cannot be changed later.  Each port in a service can
+// specify a list of handlers that determine how traffic arriving at the port
+// is handled. See Connection Handlers for a complete overview.
 //
 // POST /v1/services
-func (c *Client) CreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (*CreateServiceGroupResponse, error) {
+func (c *Client) CreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (*CreateServiceGroupResponseStatusCode, error) {
 	res, err := c.sendCreateServiceGroup(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendCreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (res *CreateServiceGroupResponse, err error) {
+func (c *Client) sendCreateServiceGroup(ctx context.Context, request *CreateServiceGroupRequest) (res *CreateServiceGroupResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -470,19 +1144,458 @@ func (c *Client) sendCreateServiceGroup(ctx context.Context, request *CreateServ
 	return result, nil
 }
 
+// CreateVolume invokes CreateVolume operation.
+//
+// Creates one or more volumes with the given configuration.
+// The volumes are automatically initialized with an empty file system.
+// After initialization the volumes are in the available state and can be
+// attached to an instance with the `PUT /v1/volumes/attach` endpoint.
+// Note that, the size of a volume cannot be changed after creation.
+//
+// POST /v1/volumes
+func (c *Client) CreateVolume(ctx context.Context, request *CreateVolumeRequest) (*CreateVolumeResponseStatusCode, error) {
+	res, err := c.sendCreateVolume(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendCreateVolume(ctx context.Context, request *CreateVolumeRequest) (res *CreateVolumeResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/volumes"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateVolumeRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, CreateVolumeOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeCreateVolumeResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteAutoscaleConfigurationPolicies invokes DeleteAutoscaleConfigurationPolicies operation.
+//
+// DeleteAutoscaleConfigurationPolicies deletes an autoscale policy.
+//
+// DELETE /v1/service/autoscale/{uuid}/policies
+func (c *Client) DeleteAutoscaleConfigurationPolicies(ctx context.Context, request *DeletePolicyRequest, params DeleteAutoscaleConfigurationPoliciesParams) (*DeleteAutoscaleConfigurationPolicyResponseStatusCode, error) {
+	res, err := c.sendDeleteAutoscaleConfigurationPolicies(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteAutoscaleConfigurationPolicies(ctx context.Context, request *DeletePolicyRequest, params DeleteAutoscaleConfigurationPoliciesParams) (res *DeleteAutoscaleConfigurationPolicyResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/service/autoscale/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/policies"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeDeleteAutoscaleConfigurationPoliciesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DeleteAutoscaleConfigurationPoliciesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteAutoscaleConfigurationPoliciesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteAutoscaleConfigurationPolicyByName invokes DeleteAutoscaleConfigurationPolicyByName operation.
+//
+// DeleteAutoscaleConfigurationPolicyByName deletes an autoscale policy by
+// name.
+//
+// DELETE /v1/service/autoscale/{uuid}/policies/{name}
+func (c *Client) DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, params DeleteAutoscaleConfigurationPolicyByNameParams) (*DeleteAutoscaleConfigurationPolicyResponseStatusCode, error) {
+	res, err := c.sendDeleteAutoscaleConfigurationPolicyByName(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteAutoscaleConfigurationPolicyByName(ctx context.Context, params DeleteAutoscaleConfigurationPolicyByNameParams) (res *DeleteAutoscaleConfigurationPolicyResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/v1/service/autoscale/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/policies/"
+	{
+		// Encode "name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Name))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DeleteAutoscaleConfigurationPolicyByNameOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteAutoscaleConfigurationPolicyByNameResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteAutoscaleConfigurations invokes DeleteAutoscaleConfigurations operation.
+//
+// DeleteAutoscaleConfigurations deletes autoscale configurations.
+//
+// DELETE /v1/service/autoscale
+func (c *Client) DeleteAutoscaleConfigurations(ctx context.Context, request []DeleteAutoscaleConfigurationsRequestID) (*DeleteAutoscaleConfigurationsResponseStatusCode, error) {
+	res, err := c.sendDeleteAutoscaleConfigurations(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendDeleteAutoscaleConfigurations(ctx context.Context, request []DeleteAutoscaleConfigurationsRequestID) (res *DeleteAutoscaleConfigurationsResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/service/autoscale"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeDeleteAutoscaleConfigurationsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DeleteAutoscaleConfigurationsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteAutoscaleConfigurationsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteAutoscaleConfigurationsByServiceGroupUUID invokes DeleteAutoscaleConfigurationsByServiceGroupUUID operation.
+//
+// DeleteAutoscaleConfigurationsByServiceGroupUUID deletes autoscale
+// configurations by service UUID.
+//
+// DELETE /v1/service/{uuid}/autoscale
+func (c *Client) DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, params DeleteAutoscaleConfigurationsByServiceGroupUUIDParams) (*DeleteAutoscaleConfigurationsResponseStatusCode, error) {
+	res, err := c.sendDeleteAutoscaleConfigurationsByServiceGroupUUID(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, params DeleteAutoscaleConfigurationsByServiceGroupUUIDParams) (res *DeleteAutoscaleConfigurationsResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/service/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/autoscale"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DeleteAutoscaleConfigurationsByServiceGroupUUIDOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteAutoscaleConfigurationsByServiceGroupUUIDResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // DeleteCertificateByUUID invokes DeleteCertificateByUUID operation.
 //
 // Delete the specified certificate(s).  After this call the name of the
-//
-//	certificate(s) are no longer valid.
+// certificate(s) are no longer valid.
 //
 // DELETE /v1/certificates/{uuid}
-func (c *Client) DeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (*DeleteCertificatesResponse, error) {
+func (c *Client) DeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (*DeleteCertificatesResponseStatusCode, error) {
 	res, err := c.sendDeleteCertificateByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendDeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (res *DeleteCertificatesResponse, err error) {
+func (c *Client) sendDeleteCertificateByUUID(ctx context.Context, params DeleteCertificateByUUIDParams) (res *DeleteCertificatesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -563,16 +1676,15 @@ func (c *Client) sendDeleteCertificateByUUID(ctx context.Context, params DeleteC
 // DeleteCertificates invokes DeleteCertificates operation.
 //
 // Delete a specified certificate by its UUID.  After this call the UUID of
-//
-//	the certificate are no longer valid.
+// the certificate are no longer valid.
 //
 // DELETE /v1/certificates
-func (c *Client) DeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (*DeleteCertificatesResponse, error) {
+func (c *Client) DeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (*DeleteCertificatesResponseStatusCode, error) {
 	res, err := c.sendDeleteCertificates(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendDeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (res *DeleteCertificatesResponse, err error) {
+func (c *Client) sendDeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID) (res *DeleteCertificatesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -638,17 +1750,16 @@ func (c *Client) sendDeleteCertificates(ctx context.Context, request []DeleteCer
 // DeleteInstanceByUUID invokes DeleteInstanceByUUID operation.
 //
 // Delete a specified instance by its UUID.  After this call the UUID of the
-//
-//	instances are no longer valid.  If the instances are currently running,
-//	they are force stopped.
+// instances are no longer valid.  If the instances are currently running,
+// they are force stopped.
 //
 // DELETE /v1/instances/{uuid}
-func (c *Client) DeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (*DeleteInstancesResponse, error) {
+func (c *Client) DeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (*DeleteInstancesResponseStatusCode, error) {
 	res, err := c.sendDeleteInstanceByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendDeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (res *DeleteInstancesResponse, err error) {
+func (c *Client) sendDeleteInstanceByUUID(ctx context.Context, params DeleteInstanceByUUIDParams) (res *DeleteInstancesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -726,19 +1837,93 @@ func (c *Client) sendDeleteInstanceByUUID(ctx context.Context, params DeleteInst
 	return result, nil
 }
 
+// DeleteInstances invokes DeleteInstances operation.
+//
+// Delete the specified instance(s).  After this call the name of the
+// instances are no longer valid.  If the instances are currently running,
+// they are force stopped.
+//
+// DELETE /v1/instances
+func (c *Client) DeleteInstances(ctx context.Context, request []DeleteInstancesRequestID) (*DeleteInstancesResponseStatusCode, error) {
+	res, err := c.sendDeleteInstances(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendDeleteInstances(ctx context.Context, request []DeleteInstancesRequestID) (res *DeleteInstancesResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/instances"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeDeleteInstancesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DeleteInstancesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteInstancesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // DeleteServiceGroupByUUID invokes DeleteServiceGroupByUUID operation.
 //
 // Delete the specified service group(s).  After this call the name of the
-//
-//	service group(s) are no longer valid.
+// service group(s) are no longer valid.
 //
 // DELETE /v1/services/{uuid}
-func (c *Client) DeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (*DeleteServiceGroupsResponse, error) {
+func (c *Client) DeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (*DeleteServiceGroupsResponseStatusCode, error) {
 	res, err := c.sendDeleteServiceGroupByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendDeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (res *DeleteServiceGroupsResponse, err error) {
+func (c *Client) sendDeleteServiceGroupByUUID(ctx context.Context, params DeleteServiceGroupByUUIDParams) (res *DeleteServiceGroupsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -819,16 +2004,15 @@ func (c *Client) sendDeleteServiceGroupByUUID(ctx context.Context, params Delete
 // DeleteServiceGroups invokes DeleteServiceGroups operation.
 //
 // Delete a specified service group by its UUID.  After this call the UUID of
-//
-//	the service group are no longer valid.
+// the service group are no longer valid.
 //
 // DELETE /v1/services
-func (c *Client) DeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (*DeleteServiceGroupsResponse, error) {
+func (c *Client) DeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (*DeleteServiceGroupsResponseStatusCode, error) {
 	res, err := c.sendDeleteServiceGroups(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendDeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (res *DeleteServiceGroupsResponse, err error) {
+func (c *Client) sendDeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID) (res *DeleteServiceGroupsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -891,17 +2075,756 @@ func (c *Client) sendDeleteServiceGroups(ctx context.Context, request []DeleteSe
 	return result, nil
 }
 
+// DeleteVolume invokes DeleteVolume operation.
+//
+// Deletes the specified volume by its name or UUID. Fails if the volume is
+// still attached to an instance. After this call the IDs associated with
+// the volume are no longer valid.
+//
+// DELETE /v1/volumes
+func (c *Client) DeleteVolume(ctx context.Context, request []DeleteVolumesRequestID) (*DeleteVolumesResponseStatusCode, error) {
+	res, err := c.sendDeleteVolume(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendDeleteVolume(ctx context.Context, request []DeleteVolumesRequestID) (res *DeleteVolumesResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/volumes"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeDeleteVolumeRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DeleteVolumeOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteVolumeResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteVolumeByUUID invokes DeleteVolumeByUUID operation.
+//
+// Deletes the specified volume by its UUID. Fails if the volume is still
+// attached to an instance. After this call the IDs associated with the
+// volume are no longer valid.
+//
+// GET /v1/volumes/{uuid}
+func (c *Client) DeleteVolumeByUUID(ctx context.Context, params DeleteVolumeByUUIDParams) (*DeleteVolumesResponseStatusCode, error) {
+	res, err := c.sendDeleteVolumeByUUID(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteVolumeByUUID(ctx context.Context, params DeleteVolumeByUUIDParams) (res *DeleteVolumesResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/volumes/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DeleteVolumeByUUIDOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteVolumeByUUIDResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DetachVolumeByUUID invokes DetachVolumeByUUID operation.
+//
+// Detaches a volume by UUID from instances. If no particular instance is
+// specified the volume is detached from all instances. The instances from
+// which to detach must not have the volume mounted. The API returns an error
+// for each instance from which it was unable to detach the volume. If the
+// volume has been created together with an instance, detaching the volume
+// will make it persistent (i.e., it survives the deletion of the instance).
+//
+// GET /v1/volumes/{uuid}/detach
+func (c *Client) DetachVolumeByUUID(ctx context.Context, params DetachVolumeByUUIDParams) (*DetachVolumesResponseStatusCode, error) {
+	res, err := c.sendDetachVolumeByUUID(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDetachVolumeByUUID(ctx context.Context, params DetachVolumeByUUIDParams) (res *DetachVolumesResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/volumes/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/detach"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DetachVolumeByUUIDOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeDetachVolumeByUUIDResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DetachVolumes invokes DetachVolumes operation.
+//
+// Detaches a volume from instances. If no particular instance is specified
+// the volume is detached from all instances. The instances from which to
+// detach must not have the volume mounted. The API returns an error for each
+// instance from which it was unable to detach the volume. If the volume has
+// been created together with an instance, detaching the volume will make it
+// persistent (i.e., it survives the deletion of the instance).
+//
+// POST /v1/volumes/detach
+func (c *Client) DetachVolumes(ctx context.Context, request []DetachVolumesRequestID, params DetachVolumesParams) (*DetachVolumesResponseStatusCode, error) {
+	res, err := c.sendDetachVolumes(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendDetachVolumes(ctx context.Context, request []DetachVolumesRequestID, params DetachVolumesParams) (res *DetachVolumesResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/volumes/detach"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "from.uuid" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "from.uuid",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.FromUUID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "from.name" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "from.name",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.FromName.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeDetachVolumesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, DetachVolumesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeDetachVolumesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetAutoscaleConfigurationPolicies invokes GetAutoscaleConfigurationPolicies operation.
+//
+// GetAutoscaleConfigurationPolicies returns the current state and
+// configuration of an autoscale policy.
+//
+// GET /v1/service/autoscale/{uuid}/policies
+func (c *Client) GetAutoscaleConfigurationPolicies(ctx context.Context, request *GetAutoscaleConfigurationPolicyRequest, params GetAutoscaleConfigurationPoliciesParams) (*GetAutoscaleConfigurationPolicyResponseStatusCode, error) {
+	res, err := c.sendGetAutoscaleConfigurationPolicies(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendGetAutoscaleConfigurationPolicies(ctx context.Context, request *GetAutoscaleConfigurationPolicyRequest, params GetAutoscaleConfigurationPoliciesParams) (res *GetAutoscaleConfigurationPolicyResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/service/autoscale/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/policies"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeGetAutoscaleConfigurationPoliciesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, GetAutoscaleConfigurationPoliciesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeGetAutoscaleConfigurationPoliciesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetAutoscaleConfigurationPolicyByName invokes GetAutoscaleConfigurationPolicyByName operation.
+//
+// GetAutoscaleConfigurationPolicyByName returns the current state and
+// configuration of an autoscale policy by it's name.
+//
+// GET /v1/service/autoscale/{uuid}/policies/{name}
+func (c *Client) GetAutoscaleConfigurationPolicyByName(ctx context.Context, params GetAutoscaleConfigurationPolicyByNameParams) (*GetAutoscaleConfigurationPolicyResponseStatusCode, error) {
+	res, err := c.sendGetAutoscaleConfigurationPolicyByName(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetAutoscaleConfigurationPolicyByName(ctx context.Context, params GetAutoscaleConfigurationPolicyByNameParams) (res *GetAutoscaleConfigurationPolicyResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/v1/service/autoscale/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/policies/"
+	{
+		// Encode "name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Name))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, GetAutoscaleConfigurationPolicyByNameOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeGetAutoscaleConfigurationPolicyByNameResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetAutoscaleConfigurations invokes GetAutoscaleConfigurations operation.
+//
+// GetAutoscaleConfigurations returns the current states and configurations of
+// autoscale configurations.
+//
+// GET /v1/service/autoscale
+func (c *Client) GetAutoscaleConfigurations(ctx context.Context, request []GetAutoscaleConfigurationsRequestID) (*GetAutoscaleConfigurationsResponseStatusCode, error) {
+	res, err := c.sendGetAutoscaleConfigurations(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendGetAutoscaleConfigurations(ctx context.Context, request []GetAutoscaleConfigurationsRequestID) (res *GetAutoscaleConfigurationsResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/service/autoscale"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeGetAutoscaleConfigurationsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, GetAutoscaleConfigurationsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeGetAutoscaleConfigurationsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetAutoscaleConfigurationsByServiceGroupUUID invokes GetAutoscaleConfigurationsByServiceGroupUUID operation.
+//
+// GetAutoscaleConfigurationsByServiceGroupUUID returns the current states
+// and configurations of autoscale configurations by service UUID.
+//
+// GET /v1/service/{uuid}/autoscale
+func (c *Client) GetAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, params GetAutoscaleConfigurationsByServiceGroupUUIDParams) (*GetAutoscaleConfigurationsResponseStatusCode, error) {
+	res, err := c.sendGetAutoscaleConfigurationsByServiceGroupUUID(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, params GetAutoscaleConfigurationsByServiceGroupUUIDParams) (res *GetAutoscaleConfigurationsResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/service/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/autoscale"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, GetAutoscaleConfigurationsByServiceGroupUUIDOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeGetAutoscaleConfigurationsByServiceGroupUUIDResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetCertificateByUUID invokes GetCertificateByUUID operation.
 //
 // Get a specified certificate by its UUID.
 //
 // GET /v1/certificates/{uuid}
-func (c *Client) GetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (*GetCertificatesResponse, error) {
+func (c *Client) GetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (*GetCertificatesResponseStatusCode, error) {
 	res, err := c.sendGetCertificateByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (res *GetCertificatesResponse, err error) {
+func (c *Client) sendGetCertificateByUUID(ctx context.Context, params GetCertificateByUUIDParams) (res *GetCertificatesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -982,16 +2905,15 @@ func (c *Client) sendGetCertificateByUUID(ctx context.Context, params GetCertifi
 // GetCertificates invokes GetCertificates operation.
 //
 // Get one or many certificates with their current status and configuration.
-//
-//	It's possible to filter this list by name or UUID.
+// It's possible to filter this list by name or UUID.
 //
 // GET /v1/certificates
-func (c *Client) GetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (*GetCertificatesResponse, error) {
+func (c *Client) GetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (*GetCertificatesResponseStatusCode, error) {
 	res, err := c.sendGetCertificates(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendGetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (res *GetCertificatesResponse, err error) {
+func (c *Client) sendGetCertificates(ctx context.Context, request []GetCertificatesRequestID, params GetCertificatesParams) (res *GetCertificatesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -1079,12 +3001,12 @@ func (c *Client) sendGetCertificates(ctx context.Context, request []GetCertifica
 // GetImageByDigest retrieves an image by its digest.
 //
 // GET /v1/images/digest/{digest}
-func (c *Client) GetImageByDigest(ctx context.Context, params GetImageByDigestParams) (*GetImageResponse, error) {
+func (c *Client) GetImageByDigest(ctx context.Context, params GetImageByDigestParams) (*GetImageResponseStatusCode, error) {
 	res, err := c.sendGetImageByDigest(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetImageByDigest(ctx context.Context, params GetImageByDigestParams) (res *GetImageResponse, err error) {
+func (c *Client) sendGetImageByDigest(ctx context.Context, params GetImageByDigestParams) (res *GetImageResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -1167,12 +3089,12 @@ func (c *Client) sendGetImageByDigest(ctx context.Context, params GetImageByDige
 // GetImageByTag retrieves an image by its tag.
 //
 // GET /v1/images/tag/{tag}
-func (c *Client) GetImageByTag(ctx context.Context, params GetImageByTagParams) (*GetImageResponse, error) {
+func (c *Client) GetImageByTag(ctx context.Context, params GetImageByTagParams) (*GetImageResponseStatusCode, error) {
 	res, err := c.sendGetImageByTag(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetImageByTag(ctx context.Context, params GetImageByTagParams) (res *GetImageResponse, err error) {
+func (c *Client) sendGetImageByTag(ctx context.Context, params GetImageByTagParams) (res *GetImageResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -1255,12 +3177,12 @@ func (c *Client) sendGetImageByTag(ctx context.Context, params GetImageByTagPara
 // Get a single instance by its ID which can either be its name or UUID.
 //
 // GET /v1/instances/{uuid}
-func (c *Client) GetInstanceByUUID(ctx context.Context, params GetInstanceByUUIDParams) (*GetInstancesResponse, error) {
+func (c *Client) GetInstanceByUUID(ctx context.Context, params GetInstanceByUUIDParams) (*GetInstancesResponseStatusCode, error) {
 	res, err := c.sendGetInstanceByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstanceByUUID(ctx context.Context, params GetInstanceByUUIDParams) (res *GetInstancesResponse, err error) {
+func (c *Client) sendGetInstanceByUUID(ctx context.Context, params GetInstanceByUUIDParams) (res *GetInstancesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -1343,12 +3265,12 @@ func (c *Client) sendGetInstanceByUUID(ctx context.Context, params GetInstanceBy
 // Retrieve the logs of an instance by its UUID or name.
 //
 // PUT /v1/instances/logs
-func (c *Client) GetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (*GetInstanceLogsResponse, error) {
+func (c *Client) GetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (*GetInstanceLogsResponseStatusCode, error) {
 	res, err := c.sendGetInstanceLogs(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (res *GetInstanceLogsResponse, err error) {
+func (c *Client) sendGetInstanceLogs(ctx context.Context, params GetInstanceLogsParams) (res *GetInstanceLogsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -1484,12 +3406,12 @@ func (c *Client) sendGetInstanceLogs(ctx context.Context, params GetInstanceLogs
 // Retrieve the logs of an instance by its UUID.
 //
 // PUT /v1/instances/{uuid}/logs
-func (c *Client) GetInstanceLogsByUUID(ctx context.Context, params GetInstanceLogsByUUIDParams) (*GetInstanceLogsResponse, error) {
+func (c *Client) GetInstanceLogsByUUID(ctx context.Context, params GetInstanceLogsByUUIDParams) (*GetInstanceLogsResponseStatusCode, error) {
 	res, err := c.sendGetInstanceLogsByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstanceLogsByUUID(ctx context.Context, params GetInstanceLogsByUUIDParams) (res *GetInstanceLogsResponse, err error) {
+func (c *Client) sendGetInstanceLogsByUUID(ctx context.Context, params GetInstanceLogsByUUIDParams) (res *GetInstanceLogsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
@@ -1610,12 +3532,12 @@ func (c *Client) sendGetInstanceLogsByUUID(ctx context.Context, params GetInstan
 // Get the metrics of an instance by its UUID or name.
 //
 // PUT /v1/instances/metrics
-func (c *Client) GetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (*GetInstanceMetricsResponse, error) {
+func (c *Client) GetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (*GetInstanceMetricsResponseStatusCode, error) {
 	res, err := c.sendGetInstanceMetrics(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (res *GetInstanceMetricsResponse, err error) {
+func (c *Client) sendGetInstanceMetrics(ctx context.Context, params GetInstanceMetricsParams) (res *GetInstanceMetricsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -1717,12 +3639,12 @@ func (c *Client) sendGetInstanceMetrics(ctx context.Context, params GetInstanceM
 // Get the metrics of an instance by its UUID.
 //
 // PUT /v1/instances/{uuid}/metrics
-func (c *Client) GetInstanceMetricsByUUID(ctx context.Context, params GetInstanceMetricsByUUIDParams) (*GetInstanceMetricsResponse, error) {
+func (c *Client) GetInstanceMetricsByUUID(ctx context.Context, params GetInstanceMetricsByUUIDParams) (*GetInstanceMetricsResponseStatusCode, error) {
 	res, err := c.sendGetInstanceMetricsByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstanceMetricsByUUID(ctx context.Context, params GetInstanceMetricsByUUIDParams) (res *GetInstanceMetricsResponse, err error) {
+func (c *Client) sendGetInstanceMetricsByUUID(ctx context.Context, params GetInstanceMetricsByUUIDParams) (res *GetInstanceMetricsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
@@ -1804,16 +3726,15 @@ func (c *Client) sendGetInstanceMetricsByUUID(ctx context.Context, params GetIns
 // GetInstances invokes GetInstances operation.
 //
 // Get one or many instances with their current status and configuration.
-//
-//	It's possible to filter this list by name or UUID.
+// It's possible to filter this list by name or UUID.
 //
 // GET /v1/instances
-func (c *Client) GetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (*GetInstancesResponse, error) {
+func (c *Client) GetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (*GetInstancesResponseStatusCode, error) {
 	res, err := c.sendGetInstances(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendGetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (res *GetInstancesResponse, err error) {
+func (c *Client) sendGetInstances(ctx context.Context, request []GetInstancesRequestID, params GetInstancesParams) (res *GetInstancesResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -1918,12 +3839,12 @@ func (c *Client) sendGetInstances(ctx context.Context, request []GetInstancesReq
 // Get a specified service group by its UUID.
 //
 // GET /v1/services/{uuid}
-func (c *Client) GetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (*GetServiceGroupsResponse, error) {
+func (c *Client) GetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (*GetServiceGroupsResponseStatusCode, error) {
 	res, err := c.sendGetServiceGroupByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (res *GetServiceGroupsResponse, err error) {
+func (c *Client) sendGetServiceGroupByUUID(ctx context.Context, params GetServiceGroupByUUIDParams) (res *GetServiceGroupsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -2004,16 +3925,15 @@ func (c *Client) sendGetServiceGroupByUUID(ctx context.Context, params GetServic
 // GetServiceGroups invokes GetServiceGroups operation.
 //
 // Get one or many service groups with their current status and configuration.
-//
-//	It's possible to filter this list by name or UUID.
+// It's possible to filter this list by name or UUID.
 //
 // GET /v1/services
-func (c *Client) GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (*GetServiceGroupsResponse, error) {
+func (c *Client) GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (*GetServiceGroupsResponseStatusCode, error) {
 	res, err := c.sendGetServiceGroups(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendGetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (res *GetServiceGroupsResponse, err error) {
+func (c *Client) sendGetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, params GetServiceGroupsParams) (res *GetServiceGroupsResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -2096,19 +4016,274 @@ func (c *Client) sendGetServiceGroups(ctx context.Context, request []GetServiceG
 	return result, nil
 }
 
+// GetUser invokes GetUser operation.
+//
+// Lists quota usage and limits of your user account.
+// Limits are hard limits that cannot be exceeded.
+//
+// GET /v1/users/quotas
+func (c *Client) GetUser(ctx context.Context) (*QuotasResponseStatusCode, error) {
+	res, err := c.sendGetUser(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetUser(ctx context.Context) (res *QuotasResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/users/quotas"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, GetUserOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeGetUserResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetUserByUUID invokes GetUserByUUID operation.
+//
+// Lists quota usage and limits of your user account by UUID.
+// Limits are hard limits that cannot be exceeded.
+//
+// GET /v1/users/{uuid}/quotas
+func (c *Client) GetUserByUUID(ctx context.Context, params GetUserByUUIDParams) (*QuotasResponseStatusCode, error) {
+	res, err := c.sendGetUserByUUID(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetUserByUUID(ctx context.Context, params GetUserByUUIDParams) (res *QuotasResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/users/"
+	{
+		// Encode "uuid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "uuid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.UUID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/quotas"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, GetUserByUUIDOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeGetUserByUUIDResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetVolumes invokes GetVolumes operation.
+//
+// Returns the current status and the configuration of a particular volume if
+// name is specified. Otherwise, returns the current status and configuration
+// of all volumes.
+//
+// GET /v1/volumes
+func (c *Client) GetVolumes(ctx context.Context, request []GetVolumesRequestID, params GetVolumesParams) (*GetVolumesResponseStatusCode, error) {
+	res, err := c.sendGetVolumes(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendGetVolumes(ctx context.Context, request []GetVolumesRequestID, params GetVolumesParams) (res *GetVolumesResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/volumes"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "details" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "details",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Details.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeGetVolumesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, GetVolumesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeGetVolumesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // StartInstanceByUUID invokes StartInstanceByUUID operation.
 //
 // Starts previously stopped instance by its UUID or does nothing if the
-//
-//	instance is already running.
+// instance is already running.
 //
 // PUT /v1/instances/{uuid}/start
-func (c *Client) StartInstanceByUUID(ctx context.Context, params StartInstanceByUUIDParams) (*StartInstanceResponse, error) {
+func (c *Client) StartInstanceByUUID(ctx context.Context, params StartInstanceByUUIDParams) (*StartInstanceResponseStatusCode, error) {
 	res, err := c.sendStartInstanceByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendStartInstanceByUUID(ctx context.Context, params StartInstanceByUUIDParams) (res *StartInstanceResponse, err error) {
+func (c *Client) sendStartInstanceByUUID(ctx context.Context, params StartInstanceByUUIDParams) (res *StartInstanceResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
@@ -2187,19 +4362,92 @@ func (c *Client) sendStartInstanceByUUID(ctx context.Context, params StartInstan
 	return result, nil
 }
 
+// StartInstances invokes StartInstances operation.
+//
+// Starts previously stopped instances by their UUID(s) or name(s) or does
+// nothing if the instance is already running.
+//
+// PUT /v1/instances/start
+func (c *Client) StartInstances(ctx context.Context, request []StartInstancesRequestID) (*StartInstanceResponseStatusCode, error) {
+	res, err := c.sendStartInstances(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendStartInstances(ctx context.Context, request []StartInstancesRequestID) (res *StartInstanceResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/instances/start"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeStartInstancesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityBearerToken(ctx, StartInstancesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+
+	defer resp.Body.Close()
+
+	result, err := decodeStartInstancesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // StopInstanceByUUID invokes StopInstanceByUUID operation.
 //
 // Stops a running instance by its UUID or does nothing if the instance is
-//
-//	already stopped.
+// already stopped.
 //
 // PUT /v1/instances/{uuid}/stop
-func (c *Client) StopInstanceByUUID(ctx context.Context, params StopInstanceByUUIDParams) (*StopInstanceResponse, error) {
+func (c *Client) StopInstanceByUUID(ctx context.Context, params StopInstanceByUUIDParams) (*StopInstanceResponseStatusCode, error) {
 	res, err := c.sendStopInstanceByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendStopInstanceByUUID(ctx context.Context, params StopInstanceByUUIDParams) (res *StopInstanceResponse, err error) {
+func (c *Client) sendStopInstanceByUUID(ctx context.Context, params StopInstanceByUUIDParams) (res *StopInstanceResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
@@ -2318,16 +4566,15 @@ func (c *Client) sendStopInstanceByUUID(ctx context.Context, params StopInstance
 // StopInstances invokes StopInstances operation.
 //
 // Stops one or more running instance by their UUID(s) or name(s) or does
-//
-//	nothing if the instance is already stopped.
+// nothing if the instance is already stopped.
 //
 // PUT /v1/instances/stop
-func (c *Client) StopInstances(ctx context.Context, request []StopInstancesRequestID, params StopInstancesParams) (*StopInstanceResponse, error) {
+func (c *Client) StopInstances(ctx context.Context, request []StopInstancesRequestID, params StopInstancesParams) (*StopInstanceResponseStatusCode, error) {
 	res, err := c.sendStopInstances(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendStopInstances(ctx context.Context, request []StopInstancesRequestID, params StopInstancesParams) (res *StopInstanceResponse, err error) {
+func (c *Client) sendStopInstances(ctx context.Context, request []StopInstancesRequestID, params StopInstancesParams) (res *StopInstanceResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -2431,20 +4678,20 @@ func (c *Client) sendStopInstances(ctx context.Context, request []StopInstancesR
 //
 // Waits for an instance to reach a certain state by its UUID.
 //
-//	If the instance is already in the desired state, the request will return
-//	immediately.  If the instance is not in the desired state, the request will
-//	block until the instance reaches the desired state or the timeout is
-//	reached.  If the timeout is reached, the request will fail with an error.
-//	If the timeout is -1, the request will block indefinitely until the
-//	instance reaches the desired state.
+// If the instance is already in the desired state, the request will return
+// immediately.  If the instance is not in the desired state, the request will
+// block until the instance reaches the desired state or the timeout is
+// reached.  If the timeout is reached, the request will fail with an error.
+// If the timeout is -1, the request will block indefinitely until the
+// instance reaches the desired state.
 //
 // GET /v1/instances/{uuid}/wait
-func (c *Client) WaitInstanceByUUID(ctx context.Context, params WaitInstanceByUUIDParams) (*WaitInstanceResponse, error) {
+func (c *Client) WaitInstanceByUUID(ctx context.Context, params WaitInstanceByUUIDParams) (*WaitInstanceResponseStatusCode, error) {
 	res, err := c.sendWaitInstanceByUUID(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendWaitInstanceByUUID(ctx context.Context, params WaitInstanceByUUIDParams) (res *WaitInstanceResponse, err error) {
+func (c *Client) sendWaitInstanceByUUID(ctx context.Context, params WaitInstanceByUUIDParams) (res *WaitInstanceResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
@@ -2564,20 +4811,20 @@ func (c *Client) sendWaitInstanceByUUID(ctx context.Context, params WaitInstance
 //
 // Waits for an instance to reach a certain state by its UUID or name.
 //
-//	If the instance is already in the desired state, the request will return
-//	immediately.  If the instance is not in the desired state, the request will
-//	block until the instance reaches the desired state or the timeout is
-//	reached.  If the timeout is reached, the request will fail with an error.
-//	If the timeout is -1, the request will block indefinitely until the
-//	instance reaches the desired state.
+// If the instance is already in the desired state, the request will return
+// immediately.  If the instance is not in the desired state, the request will
+// block until the instance reaches the desired state or the timeout is
+// reached.  If the timeout is reached, the request will fail with an error.
+// If the timeout is -1, the request will block indefinitely until the
+// instance reaches the desired state.
 //
 // GET /v1/instances/wait
-func (c *Client) WaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (*WaitInstanceResponse, error) {
+func (c *Client) WaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (*WaitInstanceResponseStatusCode, error) {
 	res, err := c.sendWaitInstances(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendWaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (res *WaitInstanceResponse, err error) {
+func (c *Client) sendWaitInstances(ctx context.Context, request []WaitInstancesRequestID, params WaitInstancesParams) (res *WaitInstanceResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
