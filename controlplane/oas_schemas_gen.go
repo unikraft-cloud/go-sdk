@@ -3,21 +3,14 @@
 package controlplane
 
 import (
-	"fmt"
-
 	"github.com/go-faster/errors"
-	"github.com/go-faster/jx"
 )
-
-func (s *StatusStatusCode) Error() string {
-	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
-}
 
 // The request message for checking authorization given a request ID.
 // Ref: #/components/schemas/CheckAuthorizationRequest
 type CheckAuthorizationRequest struct {
 	// The request ID is a unique identifier for the request.  This is used to
-	//  track the request in the system and should be provided by the client.
+	// track the request in the system and should be provided by the client.
 	RequestID OptString `json:"request_id"`
 }
 
@@ -41,7 +34,7 @@ type CheckAuthorizationResponse struct {
 	// The response data for this request.
 	Data OptCheckAuthorizationResponseData `json:"data"`
 	// The operation time in microseconds.  This is the time it took to process
-	//  the request and generate the response.
+	// the request and generate the response.
 	OpTimeUs OptUint64 `json:"op_time_us"`
 }
 
@@ -143,43 +136,30 @@ func (s *CheckAuthorizationResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
-// Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-// Ref: #/components/schemas/GoogleProtobufAny
-type GoogleProtobufAny struct {
-	// The type of the serialized message.
-	Type            OptString `json:"@type"`
-	AdditionalProps GoogleProtobufAnyAdditional
+// CheckAuthorizationResponseStatusCode wraps CheckAuthorizationResponse with StatusCode.
+type CheckAuthorizationResponseStatusCode struct {
+	StatusCode int
+	Response   CheckAuthorizationResponse
 }
 
-// GetType returns the value of Type.
-func (s *GoogleProtobufAny) GetType() OptString {
-	return s.Type
+// GetStatusCode returns the value of StatusCode.
+func (s *CheckAuthorizationResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
 }
 
-// GetAdditionalProps returns the value of AdditionalProps.
-func (s *GoogleProtobufAny) GetAdditionalProps() GoogleProtobufAnyAdditional {
-	return s.AdditionalProps
+// GetResponse returns the value of Response.
+func (s *CheckAuthorizationResponseStatusCode) GetResponse() CheckAuthorizationResponse {
+	return s.Response
 }
 
-// SetType sets the value of Type.
-func (s *GoogleProtobufAny) SetType(val OptString) {
-	s.Type = val
+// SetStatusCode sets the value of StatusCode.
+func (s *CheckAuthorizationResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
 }
 
-// SetAdditionalProps sets the value of AdditionalProps.
-func (s *GoogleProtobufAny) SetAdditionalProps(val GoogleProtobufAnyAdditional) {
-	s.AdditionalProps = val
-}
-
-type GoogleProtobufAnyAdditional map[string]jx.Raw
-
-func (s *GoogleProtobufAnyAdditional) init() GoogleProtobufAnyAdditional {
-	m := *s
-	if m == nil {
-		m = map[string]jx.Raw{}
-		*s = m
-	}
-	return m
+// SetResponse sets the value of Response.
+func (s *CheckAuthorizationResponseStatusCode) SetResponse(val CheckAuthorizationResponse) {
+	s.Response = val
 }
 
 // NewOptBool returns new OptBool with value set to v.
@@ -314,52 +294,6 @@ func (o OptCheckAuthorizationResponseStatus) Get() (v CheckAuthorizationResponse
 
 // Or returns value if set, or given parameter if does not.
 func (o OptCheckAuthorizationResponseStatus) Or(d CheckAuthorizationResponseStatus) CheckAuthorizationResponseStatus {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptInt32 returns new OptInt32 with value set to v.
-func NewOptInt32(v int32) OptInt32 {
-	return OptInt32{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptInt32 is optional int32.
-type OptInt32 struct {
-	Value int32
-	Set   bool
-}
-
-// IsSet returns true if OptInt32 was set.
-func (o OptInt32) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptInt32) Reset() {
-	var v int32
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptInt32) SetTo(v int32) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptInt32) Get() (v int32, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptInt32) Or(d int32) int32 {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -554,17 +488,17 @@ func (o OptUint64) Or(d uint64) uint64 {
 // Ref: #/components/schemas/RequestSigninRequest
 type RequestSigninRequest struct {
 	// The hostname is the name of the machine making the request.  This is
-	//  mandatory as it consitutes a unique identifier for the machine.
+	// mandatory as it consitutes a unique identifier for the machine.
 	Hostname OptString `json:"hostname"`
 	// The operating system of the machine making the request.
 	Os OptString `json:"os"`
 	// The version of the operating system of the machine making the request, if
-	//  available.
+	// available.
 	//
-	//  For Android, it's like "10", "11", "12", etc.  For iOS and macOS it's like
-	//  "15.6.1" or "12.4.0".  For Windows it's like "10.0.19044.1889". For FreeBSD
-	//  it's like "12.3-STABLE".  For Linux, this is simply the kernel version on
-	//  Linux, like "5.10.0-17-amd64".
+	// For Android, it's like "10", "11", "12", etc.  For iOS and macOS it's like
+	// "15.6.1" or "12.4.0".  For Windows it's like "10.0.19044.1889". For FreeBSD
+	// it's like "12.3-STABLE".  For Linux, this is simply the kernel version on
+	// Linux, like "5.10.0-17-amd64".
 	OsVersion OptString `json:"os_version"`
 	// A best-effort whether the client is running in a container.
 	Container OptBool `json:"container"`
@@ -575,7 +509,7 @@ type RequestSigninRequest struct {
 	// THe OS distribution codename if known.  E.g. "jammy", "bullseye", ...
 	DistroCodename OptString `json:"distro_codename"`
 	// The CLI version is the version of the Unikraft CLI that is making the
-	//  request.
+	// request.
 	CliVersion OptString `json:"cli_version"`
 	// If available, the GOARCH value (of the built binary).
 	Goarch OptString `json:"goarch"`
@@ -705,7 +639,7 @@ type RequestSigninResponse struct {
 	// The response data for this request.
 	Data OptRequestSigninResponseData `json:"data"`
 	// The operation time in microseconds.  This is the time it took to process
-	//  the request and generate the response.
+	// the request and generate the response.
 	OpTimeUs OptUint64 `json:"op_time_us"`
 }
 
@@ -754,7 +688,7 @@ type RequestSigninResponseData struct {
 	// The full URL which can be used to remotely confirm the signin.
 	AuthorizationURL OptString `json:"authorization_url"`
 	// A unique identifier for the request.  This can be used to track the
-	//  request in the system.
+	// request in the system.
 	RequestID OptString `json:"request_id"`
 }
 
@@ -820,69 +754,28 @@ func (s *RequestSigninResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
-// The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).
-// Ref: #/components/schemas/Status
-type Status struct {
-	// The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
-	Code OptInt32 `json:"code"`
-	// A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
-	Message OptString `json:"message"`
-	// A list of messages that carry the error details.  There is a common set of message types for APIs to use.
-	Details []GoogleProtobufAny `json:"details"`
-}
-
-// GetCode returns the value of Code.
-func (s *Status) GetCode() OptInt32 {
-	return s.Code
-}
-
-// GetMessage returns the value of Message.
-func (s *Status) GetMessage() OptString {
-	return s.Message
-}
-
-// GetDetails returns the value of Details.
-func (s *Status) GetDetails() []GoogleProtobufAny {
-	return s.Details
-}
-
-// SetCode sets the value of Code.
-func (s *Status) SetCode(val OptInt32) {
-	s.Code = val
-}
-
-// SetMessage sets the value of Message.
-func (s *Status) SetMessage(val OptString) {
-	s.Message = val
-}
-
-// SetDetails sets the value of Details.
-func (s *Status) SetDetails(val []GoogleProtobufAny) {
-	s.Details = val
-}
-
-// StatusStatusCode wraps Status with StatusCode.
-type StatusStatusCode struct {
+// RequestSigninResponseStatusCode wraps RequestSigninResponse with StatusCode.
+type RequestSigninResponseStatusCode struct {
 	StatusCode int
-	Response   Status
+	Response   RequestSigninResponse
 }
 
 // GetStatusCode returns the value of StatusCode.
-func (s *StatusStatusCode) GetStatusCode() int {
+func (s *RequestSigninResponseStatusCode) GetStatusCode() int {
 	return s.StatusCode
 }
 
 // GetResponse returns the value of Response.
-func (s *StatusStatusCode) GetResponse() Status {
+func (s *RequestSigninResponseStatusCode) GetResponse() RequestSigninResponse {
 	return s.Response
 }
 
 // SetStatusCode sets the value of StatusCode.
-func (s *StatusStatusCode) SetStatusCode(val int) {
+func (s *RequestSigninResponseStatusCode) SetStatusCode(val int) {
 	s.StatusCode = val
 }
 
 // SetResponse sets the value of Response.
-func (s *StatusStatusCode) SetResponse(val Status) {
+func (s *RequestSigninResponseStatusCode) SetResponse(val RequestSigninResponse) {
 	s.Response = val
 }

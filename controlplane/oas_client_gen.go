@@ -23,18 +23,18 @@ type Invoker interface {
 	// CheckAuthorization invokes CheckAuthorization operation.
 	//
 	// CheckAuthorization is used to check the authorization status of a request.
-	//  It streams responses back to the client, indicating whether the signin
-	//  request is authorized or not.
+	// It streams responses back to the client, indicating whether the signin
+	// request is authorized or not.
 	//
 	// POST /v1/auth/check
-	CheckAuthorization(ctx context.Context, request *CheckAuthorizationRequest) (<-chan *CheckAuthorizationResponse, error)
+	CheckAuthorization(ctx context.Context, request *CheckAuthorizationRequest) (<-chan *CheckAuthorizationResponseStatusCode, error)
 	// RequestSignin invokes RequestSignin operation.
 	//
 	// RequestSignin initiates the sign-in process and returns an authorization
-	//  URL.  The user should be redirected to this URL to complete the sign-in.
+	// URL.  The user should be redirected to this URL to complete the sign-in.
 	//
 	// POST /v1/auth/signin
-	RequestSignin(ctx context.Context, request *RequestSigninRequest) (*RequestSigninResponse, error)
+	RequestSignin(ctx context.Context, request *RequestSigninRequest) (*RequestSigninResponseStatusCode, error)
 }
 
 // Client implements OAS client.
@@ -79,17 +79,16 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 // CheckAuthorization invokes CheckAuthorization operation.
 //
 // CheckAuthorization is used to check the authorization status of a request.
-//
-//	It streams responses back to the client, indicating whether the signin
-//	request is authorized or not.
+// It streams responses back to the client, indicating whether the signin
+// request is authorized or not.
 //
 // POST /v1/auth/check
-func (c *Client) CheckAuthorization(ctx context.Context, request *CheckAuthorizationRequest) (<-chan *CheckAuthorizationResponse, error) {
+func (c *Client) CheckAuthorization(ctx context.Context, request *CheckAuthorizationRequest) (<-chan *CheckAuthorizationResponseStatusCode, error) {
 	res, err := c.sendCheckAuthorization(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendCheckAuthorization(ctx context.Context, request *CheckAuthorizationRequest) (res <-chan *CheckAuthorizationResponse, err error) {
+func (c *Client) sendCheckAuthorization(ctx context.Context, request *CheckAuthorizationRequest) (res <-chan *CheckAuthorizationResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -120,16 +119,15 @@ func (c *Client) sendCheckAuthorization(ctx context.Context, request *CheckAutho
 // RequestSignin invokes RequestSignin operation.
 //
 // RequestSignin initiates the sign-in process and returns an authorization
-//
-//	URL.  The user should be redirected to this URL to complete the sign-in.
+// URL.  The user should be redirected to this URL to complete the sign-in.
 //
 // POST /v1/auth/signin
-func (c *Client) RequestSignin(ctx context.Context, request *RequestSigninRequest) (*RequestSigninResponse, error) {
+func (c *Client) RequestSignin(ctx context.Context, request *RequestSigninRequest) (*RequestSigninResponseStatusCode, error) {
 	res, err := c.sendRequestSignin(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendRequestSignin(ctx context.Context, request *RequestSigninRequest) (res *RequestSigninResponse, err error) {
+func (c *Client) sendRequestSignin(ctx context.Context, request *RequestSigninRequest) (res *RequestSigninResponseStatusCode, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string

@@ -2,6 +2,60 @@
 
 package platform
 
+// AttachVolumeByUUIDParams is parameters of AttachVolumeByUUID operation.
+type AttachVolumeByUUIDParams struct {
+	//
+	UUID string
+}
+
+// AttachVolumesParams is parameters of AttachVolumes operation.
+type AttachVolumesParams struct {
+	// The UUID of the instance that the volume is attached to.
+	AttachToUUID OptString
+	// The name of the instance that the volume is attached to.
+	AttachToName OptString
+	// Path of the mountpoint.
+	//
+	// The path must be absolute, not contain `.` and `..` components, and not
+	// contain colons (`:`). The path must point to an empty directory. If the
+	// directory does not exist, it is created.
+	At OptString
+	// Whether the volume should be mounted read-only.
+	ReadOnly OptBool
+}
+
+// CreateAutoscaleConfigurationPolicyParams is parameters of CreateAutoscaleConfigurationPolicy operation.
+type CreateAutoscaleConfigurationPolicyParams struct {
+	//
+	UUID string
+}
+
+// CreateAutoscaleConfigurationsByServiceGroupUUIDParams is parameters of CreateAutoscaleConfigurationsByServiceGroupUUID operation.
+type CreateAutoscaleConfigurationsByServiceGroupUUIDParams struct {
+	//
+	UUID string
+}
+
+// DeleteAutoscaleConfigurationPoliciesParams is parameters of DeleteAutoscaleConfigurationPolicies operation.
+type DeleteAutoscaleConfigurationPoliciesParams struct {
+	//
+	UUID string
+}
+
+// DeleteAutoscaleConfigurationPolicyByNameParams is parameters of DeleteAutoscaleConfigurationPolicyByName operation.
+type DeleteAutoscaleConfigurationPolicyByNameParams struct {
+	//
+	UUID string
+	//
+	Name string
+}
+
+// DeleteAutoscaleConfigurationsByServiceGroupUUIDParams is parameters of DeleteAutoscaleConfigurationsByServiceGroupUUID operation.
+type DeleteAutoscaleConfigurationsByServiceGroupUUIDParams struct {
+	//
+	UUID string
+}
+
 // DeleteCertificateByUUIDParams is parameters of DeleteCertificateByUUID operation.
 type DeleteCertificateByUUIDParams struct {
 	//
@@ -20,6 +74,46 @@ type DeleteServiceGroupByUUIDParams struct {
 	UUID string
 }
 
+// DeleteVolumeByUUIDParams is parameters of DeleteVolumeByUUID operation.
+type DeleteVolumeByUUIDParams struct {
+	//
+	UUID string
+}
+
+// DetachVolumeByUUIDParams is parameters of DetachVolumeByUUID operation.
+type DetachVolumeByUUIDParams struct {
+	//
+	UUID string
+}
+
+// DetachVolumesParams is parameters of DetachVolumes operation.
+type DetachVolumesParams struct {
+	// The UUID of the instance that the volume is detached from.
+	FromUUID OptString
+	// The name of the instance that the volume is detached from.
+	FromName OptString
+}
+
+// GetAutoscaleConfigurationPoliciesParams is parameters of GetAutoscaleConfigurationPolicies operation.
+type GetAutoscaleConfigurationPoliciesParams struct {
+	//
+	UUID string
+}
+
+// GetAutoscaleConfigurationPolicyByNameParams is parameters of GetAutoscaleConfigurationPolicyByName operation.
+type GetAutoscaleConfigurationPolicyByNameParams struct {
+	//
+	UUID string
+	//
+	Name string
+}
+
+// GetAutoscaleConfigurationsByServiceGroupUUIDParams is parameters of GetAutoscaleConfigurationsByServiceGroupUUID operation.
+type GetAutoscaleConfigurationsByServiceGroupUUIDParams struct {
+	//
+	UUID string
+}
+
 // GetCertificateByUUIDParams is parameters of GetCertificateByUUID operation.
 type GetCertificateByUUIDParams struct {
 	//
@@ -29,10 +123,10 @@ type GetCertificateByUUIDParams struct {
 // GetCertificatesParams is parameters of GetCertificates operation.
 type GetCertificatesParams struct {
 	// Whether to include details about the certificate in the response.  By
-	//  default this is set to true, meaning that all information about the
-	//  certificate will be included in the response.  If set to false, only the
-	//  basic information about the certificate will be included, such as its name
-	//  and UUID.
+	// default this is set to true, meaning that all information about the
+	// certificate will be included in the response.  If set to false, only the
+	// basic information about the certificate will be included, such as its name
+	// and UUID.
 	Details OptBool
 }
 
@@ -57,13 +151,13 @@ type GetInstanceByUUIDParams struct {
 // GetInstanceLogsParams is parameters of GetInstanceLogs operation.
 type GetInstanceLogsParams struct {
 	// The UUID of the instance to retrieve logs for.  Mutually exclusive with
-	//  name.
+	// name.
 	UUID OptString
 	// The name of the instance to retrieve logs for.  Mutually exclusive with
-	//  UUID.
+	// UUID.
 	Name OptString
 	// The byte offset of the log output to receive.  A negative sign makes the
-	//  offset relative to the end of the log.
+	// offset relative to the end of the log.
 	Offset OptUint64
 	// The amount of bytes to return at most.
 	Limit OptInt64
@@ -74,7 +168,7 @@ type GetInstanceLogsByUUIDParams struct {
 	//
 	UUID string
 	// The byte offset of the log output to receive.  A negative sign makes the
-	//  offset relative to the end of the log.
+	// offset relative to the end of the log.
 	Offset OptUint64
 	// The amount of bytes to return at most.
 	Limit OptInt64
@@ -83,10 +177,10 @@ type GetInstanceLogsByUUIDParams struct {
 // GetInstanceMetricsParams is parameters of GetInstanceMetrics operation.
 type GetInstanceMetricsParams struct {
 	// The UUID of the instance to retrieve metrics for.  Mutually exclusive
-	//  with name.
+	// with name.
 	UUID OptString
 	// The name of the instance to retrieve metrics for.  Mutually exclusive
-	//  with UUID.
+	// with UUID.
 	Name OptString
 }
 
@@ -99,13 +193,13 @@ type GetInstanceMetricsByUUIDParams struct {
 // GetInstancesParams is parameters of GetInstances operation.
 type GetInstancesParams struct {
 	// Whether to include details about the instance in the response.  By default
-	//  this is set to true, meaning that all information about the instance will
-	//  be included in the response.  If set to false, only the basic information
-	//  about the instance will be included, such as its name and UUID.
+	// this is set to true, meaning that all information about the instance will
+	// be included in the response.  If set to false, only the basic information
+	// about the instance will be included, such as its name and UUID.
 	Details OptBool
 	// Whether to include metrics about the instance in the response.  By default
-	//  this is set to false, meaning that no metrics will be included in the
-	//  response.
+	// this is set to false, meaning that no metrics will be included in the
+	// response.
 	Metrics OptBool
 }
 
@@ -118,10 +212,26 @@ type GetServiceGroupByUUIDParams struct {
 // GetServiceGroupsParams is parameters of GetServiceGroups operation.
 type GetServiceGroupsParams struct {
 	// Whether to include details about the service group in the response.  By
-	//  default this is set to true, meaning that all information about the service
-	//  group will be included in the response.  If set to false, only the basic
-	//  information about the service group will be included, such as its name and
-	//  UUID.
+	// default this is set to true, meaning that all information about the service
+	// group will be included in the response.  If set to false, only the basic
+	// information about the service group will be included, such as its name and
+	// UUID.
+	Details OptBool
+}
+
+// GetUserByUUIDParams is parameters of GetUserByUUID operation.
+type GetUserByUUIDParams struct {
+	//
+	UUID string
+}
+
+// GetVolumesParams is parameters of GetVolumes operation.
+type GetVolumesParams struct {
+	// Whether to include details about the volume in the response.  By
+	// default this is set to true, meaning that all information about the
+	// volume will be included in the response.  If set to false, only the
+	// basic information about the volume will be included, such as its name
+	// and UUID.
 	Details OptBool
 }
 
@@ -138,12 +248,12 @@ type StopInstanceByUUIDParams struct {
 	// Whether to immediately force stop the instance.
 	Force OptBool
 	// Timeout for draining connections in milliseconds.  The instance does not
-	//  receive new connections in the draining phase.  The instance is stopped
-	//  when the last connection has been closed or the timeout expired.  The
-	//  maximum timeout may vary.  Use -1 for the largest possible value.
+	// receive new connections in the draining phase.  The instance is stopped
+	// when the last connection has been closed or the timeout expired.  The
+	// maximum timeout may vary.  Use -1 for the largest possible value.
 	//
-	//  Note: This endpoint does not block.  Use the wait endpoint for the instance
-	//  to reach the stopped state.
+	// Note: This endpoint does not block.  Use the wait endpoint for the instance
+	// to reach the stopped state.
 	DrainTimeoutMs OptUint64
 }
 
@@ -152,12 +262,12 @@ type StopInstancesParams struct {
 	// Whether to immediately force stop the instance.
 	Force OptBool
 	// Timeout for draining connections in milliseconds.  The instance does not
-	//  receive new connections in the draining phase.  The instance is stopped
-	//  when the last connection has been closed or the timeout expired.  The
-	//  maximum timeout may vary.  Use -1 for the largest possible value.
+	// receive new connections in the draining phase.  The instance is stopped
+	// when the last connection has been closed or the timeout expired.  The
+	// maximum timeout may vary.  Use -1 for the largest possible value.
 	//
-	//  Note: This endpoint does not block.  Use the wait endpoint for the
-	//  instance to reach the stopped state.
+	// Note: This endpoint does not block.  Use the wait endpoint for the
+	// instance to reach the stopped state.
 	DrainTimeoutMs OptUint64
 }
 
@@ -168,9 +278,9 @@ type WaitInstanceByUUIDParams struct {
 	// The desired state to wait for.  Default is `running`.
 	State OptWaitInstanceByUUIDState
 	// Timeout in milliseconds to wait for the instance to reach the desired
-	//  state.  If the timeout is reached, the request will fail with an error.
-	//  A value of -1 means to wait indefinitely until the instance reaches the
-	//  desired state.
+	// state.  If the timeout is reached, the request will fail with an error.
+	// A value of -1 means to wait indefinitely until the instance reaches the
+	// desired state.
 	TimeoutMs OptInt64
 }
 
@@ -179,8 +289,8 @@ type WaitInstancesParams struct {
 	// The desired state to wait for.  Default is `running`.
 	State OptWaitInstancesState
 	// Timeout in milliseconds to wait for the instance to reach the desired
-	//  state.  If the timeout is reached, the request will fail with an error.
-	//  A value of -1 means to wait indefinitely until the instance reaches the
-	//  desired state.
+	// state.  If the timeout is reached, the request will fail with an error.
+	// A value of -1 means to wait indefinitely until the instance reaches the
+	// desired state.
 	TimeoutMs OptInt64
 }
