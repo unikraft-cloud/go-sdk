@@ -326,18 +326,13 @@ type Client interface {
 	// 	be included in the response.  If set to false, only the basic information
 	// 	about the instance will be included, such as its name and UUID.
 	//
-	// @param `metrics`
-	// 	Whether to include metrics about the instance in the response.  By default
-	// 	this is set to false, meaning that no metrics will be included in the
-	// 	response.
-	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/instances/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-by-uuid
-	GetInstanceByUUID(ctx context.Context, uuid string, details bool, metrics bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	GetInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
 	// Retrieve the logs of an instance by its UUID or name.
 	//
 	// @param `request`
@@ -406,18 +401,13 @@ type Client interface {
 	// 	be included in the response.  If set to false, only the basic information
 	// 	about the instance will be included, such as its name and UUID.
 	//
-	// @param `metrics`
-	// 	Whether to include metrics about the instance in the response.  By default
-	// 	this is set to false, meaning that no metrics will be included in the
-	// 	response.
-	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instances
-	GetInstances(ctx context.Context, request []GetInstancesRequestID, details bool, metrics bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	GetInstances(ctx context.Context, request []GetInstancesRequestID, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
 	// Starts previously stopped instance by its UUID or does nothing if the
 	// instance is already running.
 	//
@@ -1190,13 +1180,12 @@ func (c *client) DeleteInstances(ctx context.Context, request []DeleteInstancesR
 	return resp, nil
 }
 
-func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, details bool, metrics bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
+func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	query := make(url.Values)
 	query.Add("details", fmt.Sprintf("%t", details))
-	query.Add("metrics", fmt.Sprintf("%t", metrics))
 
 	resp := &Response[GetInstancesResponseData]{}
 	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
@@ -1261,12 +1250,11 @@ func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropt
 	return resp, nil
 }
 
-func (c *client) GetInstances(ctx context.Context, request []GetInstancesRequestID, details bool, metrics bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
+func (c *client) GetInstances(ctx context.Context, request []GetInstancesRequestID, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances"
 
 	query := make(url.Values)
 	query.Add("details", fmt.Sprintf("%t", details))
-	query.Add("metrics", fmt.Sprintf("%t", metrics))
 
 	var body []byte
 	var err error
