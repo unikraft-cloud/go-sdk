@@ -1,3 +1,4 @@
+// This file is auto-generated. DO NOT EDIT.
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright (c) 2025, Unikraft GmbH.
 // Licensed under the BSD-3-Clause License (the "License").
@@ -5,9 +6,17 @@
 
 package platform
 
+// The status of the response.
+type CreateAutoscaleConfigurationResponseAllOfStatus string
+
+const (
+	CreateAutoscaleConfigurationResponseAllOfStatusSuccess CreateAutoscaleConfigurationResponseAllOfStatus = "success"
+	CreateAutoscaleConfigurationResponseAllOfStatusError   CreateAutoscaleConfigurationResponseAllOfStatus = "error"
+)
+
 type CreateAutoscaleConfigurationResponseAllOf struct {
 	// The status of the response.
-	Status *string `json:"status,omitempty"`
+	Status *CreateAutoscaleConfigurationResponseAllOfStatus `json:"status,omitempty"`
 	// The response data for this request.
 	Data *CreateAutoscaleConfigurationResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.

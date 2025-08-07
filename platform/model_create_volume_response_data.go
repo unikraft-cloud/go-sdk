@@ -8,5 +8,5 @@ package platform
 
 type CreateVolumeResponseData struct {
 	// The volume(s) which were created by the request.
-	Volumes []string `json:"volumes,omitempty"`
+	Volumes []CreateVolumeResponseVolume `json:"volumes,omitempty"`
 }

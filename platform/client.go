@@ -21,6 +21,19 @@ import (
 )
 
 type Client interface {
+	// Creates an autoscale configuration for the specified service groups given
+	// their UUIDs or names.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/services/autoscale
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configuration
+	CreateAutoscaleConfiguration(ctx context.Context, request CreateAutoscaleConfigurationRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationResponseData], error)
 	// Adds a new autoscale policy to an autoscale configuration given a serivce
 	// group UUID.
 	//
@@ -36,19 +49,6 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configuration-policy
 	CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error)
-	// Creates an autoscale configuration for the specified service groups given
-	// their UUIDs or names.
-	//
-	// @param `request`
-	// 	The request body for this operation.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
-	// Performs: POST /v1/services/autoscale
-	//
-	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configurations
-	CreateAutoscaleConfigurations(ctx context.Context, request []CreateAutoscaleConfigurationsRequestConfiguration, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error)
 	// Creates an autoscale configuration for the specified service group given
 	// its UUID.
 	//
@@ -65,7 +65,7 @@ type Client interface {
 	// Performs: POST /v1/services/{uuid}/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configurations-by-service-group-uuid
-	CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error)
+	CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationResponseData], error)
 	// Deletes one or more autoscale policies for a given service group.
 	//
 	// @param `uuid`
@@ -326,13 +326,18 @@ type Client interface {
 	// 	be included in the response.  If set to false, only the basic information
 	// 	about the instance will be included, such as its name and UUID.
 	//
+	// @param `metrics`
+	// 	Whether to include metrics about the instance in the response.  By default
+	// 	this is set to false, meaning that no metrics will be included in the
+	// 	response.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/instances/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-by-uuid
-	GetInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	GetInstanceByUUID(ctx context.Context, uuid string, details bool, metrics bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
 	// Retrieve the logs of an instance by its UUID or name.
 	//
 	// @param `request`
@@ -401,13 +406,18 @@ type Client interface {
 	// 	be included in the response.  If set to false, only the basic information
 	// 	about the instance will be included, such as its name and UUID.
 	//
+	// @param `metrics`
+	// 	Whether to include metrics about the instance in the response.  By default
+	// 	this is set to false, meaning that no metrics will be included in the
+	// 	response.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instances
-	GetInstances(ctx context.Context, request []GetInstancesRequestID, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	GetInstances(ctx context.Context, request []GetInstancesRequestID, details bool, metrics bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
 	// Starts previously stopped instance by its UUID or does nothing if the
 	// instance is already running.
 	//
@@ -465,13 +475,25 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
+	// @param `force`
+	// 	Whether to immediately force stop the instance.
+	//
+	// @param `drainTimeoutMs`
+	// 	Timeout for draining connections in milliseconds.  The instance does not
+	// 	receive new connections in the draining phase.  The instance is stopped
+	// 	when the last connection has been closed or the timeout expired.  The
+	// 	maximum timeout may vary.  Use -1 for the largest possible value.
+	//
+	// 	Note: This endpoint does not block.  Use the wait endpoint for the
+	// 	instance to reach the stopped state.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: PUT /v1/instances/stop
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instances
-	StopInstances(ctx context.Context, request StopInstancesRequest, ropts ...RequestOption) (*Response[StopInstanceResponseData], error)
+	StopInstances(ctx context.Context, request []StopInstancesRequestID, force bool, drainTimeoutMs int32, ropts ...RequestOption) (*Response[StopInstanceResponseData], error)
 	// Waits for an instance to reach a certain state by its UUID.
 	//
 	// If the instance is already in the desired state, the request will return
@@ -860,6 +882,21 @@ func (c *client) clone() *client {
 	return &ccpy
 }
 
+func (c *client) CreateAutoscaleConfiguration(ctx context.Context, request CreateAutoscaleConfigurationRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationResponseData], error) {
+	requestPath := "/v1/services/autoscale"
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[CreateAutoscaleConfigurationResponseData]{}
+	if err := doRequest[CreateAutoscaleConfigurationResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
 func (c *client) CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
@@ -876,26 +913,7 @@ func (c *client) CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid st
 	return resp, nil
 }
 
-func (c *client) CreateAutoscaleConfigurations(ctx context.Context, request []CreateAutoscaleConfigurationsRequestConfiguration, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
-	requestPath := "/v1/services/autoscale"
-
-	var body []byte
-	var err error
-	if request != nil {
-		body, err = json.Marshal(request)
-		if err != nil {
-			return nil, fmt.Errorf("error marshalling request body: %w", err)
-		}
-	}
-
-	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, fmt.Errorf("performing the request: %w", err)
-	}
-	return resp, nil
-}
-
-func (c *client) CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
+func (c *client) CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
@@ -904,8 +922,8 @@ func (c *client) CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Con
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	resp := &Response[CreateAutoscaleConfigurationResponseData]{}
+	if err := doRequest[CreateAutoscaleConfigurationResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -1172,12 +1190,13 @@ func (c *client) DeleteInstances(ctx context.Context, request []DeleteInstancesR
 	return resp, nil
 }
 
-func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
+func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, details bool, metrics bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	query := make(url.Values)
 	query.Add("details", fmt.Sprintf("%t", details))
+	query.Add("metrics", fmt.Sprintf("%t", metrics))
 
 	resp := &Response[GetInstancesResponseData]{}
 	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
@@ -1242,11 +1261,12 @@ func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropt
 	return resp, nil
 }
 
-func (c *client) GetInstances(ctx context.Context, request []GetInstancesRequestID, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
+func (c *client) GetInstances(ctx context.Context, request []GetInstancesRequestID, details bool, metrics bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances"
 
 	query := make(url.Values)
 	query.Add("details", fmt.Sprintf("%t", details))
+	query.Add("metrics", fmt.Sprintf("%t", metrics))
 
 	var body []byte
 	var err error
@@ -1309,16 +1329,24 @@ func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, force bool
 	return resp, nil
 }
 
-func (c *client) StopInstances(ctx context.Context, request StopInstancesRequest, ropts ...RequestOption) (*Response[StopInstanceResponseData], error) {
+func (c *client) StopInstances(ctx context.Context, request []StopInstancesRequestID, force bool, drainTimeoutMs int32, ropts ...RequestOption) (*Response[StopInstanceResponseData], error) {
 	requestPath := "/v1/instances/stop"
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	query := make(url.Values)
+	query.Add("force", fmt.Sprintf("%t", force))
+	query.Add("drain_timeout_ms", fmt.Sprintf("%d", drainTimeoutMs))
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[StopInstanceResponseData]{}
-	if err := doRequest[StopInstanceResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[StopInstanceResponseData](ctx, c.request, http.MethodPut, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil

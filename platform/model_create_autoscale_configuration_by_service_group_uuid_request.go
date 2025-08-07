@@ -10,6 +10,9 @@ package platform
 // its UUID.
 
 type CreateAutoscaleConfigurationByServiceGroupUUIDRequest struct {
+	// The UUID of the service to create a configuration for.
+	// Mutually exclusive with name.
+	Uuid *string `json:"uuid,omitempty"`
 	// The minimum number of instances to keep running.
 	MinSize *int64 `json:"min_size,omitempty"`
 	// The maximum number of instances to keep running.
