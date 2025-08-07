@@ -6,4 +6,4 @@
 package controlplane
 
 // The default control plane API endpoint.
-var DefaultControlPlane = "https://controlplane.unikraft.cloud"
+var DefaultEndpoint = "https://controlplane.unikraft.cloud"
