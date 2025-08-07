@@ -1,0 +1,27 @@
+// This file is auto-generated. DO NOT EDIT.
+// SPDX-License-Identifier: BSD-3-Clause
+// Copyright (c) 2025, Unikraft GmbH.
+// Licensed under the BSD-3-Clause License (the "License").
+// You may not use this file except in compliance with the License.
+
+package platform
+
+// Details of the certificate which was deleted by this request.
+// Indicates whether the delete operation was successful or not for this
+// certificate.
+type DeleteCertificatesResponseDeletedCertificateStatus string
+
+const (
+	DeleteCertificatesResponseDeletedCertificateStatusSuccess DeleteCertificatesResponseDeletedCertificateStatus = "success"
+	DeleteCertificatesResponseDeletedCertificateStatusError   DeleteCertificatesResponseDeletedCertificateStatus = "error"
+)
+
+type DeleteCertificatesResponseDeletedCertificate struct {
+	// Indicates whether the delete operation was successful or not for this
+	// certificate.
+	Status *DeleteCertificatesResponseDeletedCertificateStatus `json:"status,omitempty"`
+	// The UUID of the certificate which was deleted.
+	Uuid *string `json:"uuid,omitempty"`
+	// The name of the certificate which was deleted.
+	Name *string `json:"name,omitempty"`
+}

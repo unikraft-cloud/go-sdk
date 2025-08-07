@@ -1,0 +1,38 @@
+{{#if unescapedDescription}}
+// {{{ replace unescapedDescription "
+" "
+// "}}}
+{{~/if}}
+
+{{~#each vars}}
+{{~#unless deprecated}}
+{{~#if isEnum}}
+{{~#if unescapedDescription}}
+// {{{ replace unescapedDescription "
+" "
+	// "}}}
+{{~/if}}
+type {{classname}}{{name}} string
+
+const (
+{{~#each allowableValues.values}}
+	{{classname}}{{name}}{{capitalize .}} {{classname}}{{name}} = "{{.}}"
+{{~/each}}
+)
+{{~/if}}
+{{~/unless}}
+{{~/each}}
+
+type {{classname}} struct {
+{{~#each vars}}
+{{~#if deprecated}}
+	// Deprecated.
+{{~/if}}
+{{~#if unescapedDescription}}
+	// {{{ replace unescapedDescription "
+" "
+	// "}}}
+{{~/if}}
+	{{name}} {{#unless required}}{{#unless isArray}}*{{/unless}}{{/unless}}{{~#if isEnum}}{{classname}}{{name}}{{~else}}{{{dataType}}}{{~/if}} `json:"{{baseName}}{{#unless required}},omitempty{{/unless}}"{{#with withXml}} xml:"{{baseName}}{{#if isXmlAttribute}},attr{{/if}}"{{/with}}{{#with vendorExtensions.x-go-custom-tag}} {{{.}}}{{/with}}`
+{{~/each}}
+}
