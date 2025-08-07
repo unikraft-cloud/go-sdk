@@ -22,7 +22,7 @@ all: generate
 generate: platform
 
 .PHONY: platform
-platform:
+platform: platform.yaml
 	$(DOCKER) run \
 		--rm \
 		--volume "$(WORKDIR):/local" \
