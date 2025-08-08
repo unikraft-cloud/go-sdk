@@ -18,7 +18,7 @@ type GetInstanceLogsRequest struct {
 	Name string `json:"name"`
 	// The byte offset of the log output to receive.  A negative sign makes the
 	// offset relative to the end of the log.
-	Offset *int32 `json:"offset,omitempty"`
+	Offset *uint64 `json:"offset,omitempty"`
 	// The amount of bytes to return at most.
 	Limit *int64 `json:"limit,omitempty"`
 }

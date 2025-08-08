@@ -8,7 +8,7 @@ package platform
 
 type GetInstanceLogsResponseAvailable struct {
 	// The first byte offset that can be retrieved.
-	Start *int32 `json:"start,omitempty"`
+	Start *uint64 `json:"start,omitempty"`
 	// The last byte offset that can be retrieved.
-	End *int32 `json:"end,omitempty"`
+	End *uint64 `json:"end,omitempty"`
 }

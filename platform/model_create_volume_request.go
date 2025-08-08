@@ -14,7 +14,7 @@ package platform
 
 type CreateVolumeRequest struct {
 	// The size of the volume in megabytes.
-	SizeMb int32 `json:"size_mb"`
+	SizeMb uint64 `json:"size_mb"`
 	// The name of the volume.
 	//
 	// This is a human-readable name that can be used to identify the volume.

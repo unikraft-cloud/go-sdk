@@ -40,7 +40,7 @@ type Volume struct {
 	// Current state of the volume.
 	State *VolumeState `json:"state,omitempty"`
 	// The size of the volume in megabytes.
-	SizeMb *int32 `json:"size_mb,omitempty"`
+	SizeMb *uint64 `json:"size_mb,omitempty"`
 	// Indicates if the volume will stay alive when the last instance is deleted
 	// that this volume is attached to.
 	Persistent *bool `json:"persistent,omitempty"`
