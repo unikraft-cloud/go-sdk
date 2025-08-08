@@ -95,11 +95,11 @@ type Instance struct {
 	// The amount of memory in megabytes allocated for the instance.  This is the
 	// total amount of memory that is available to the instance for its
 	// operations.
-	MemoryMb *int32 `json:"memory_mb,omitempty"`
+	MemoryMb *uint64 `json:"memory_mb,omitempty"`
 	// The number of vCPUs allocated for the instance.  This is the total
 	// number of virtual CPUs that are available to the instance for its
 	// operations.
-	Vcpus *int32 `json:"vcpus,omitempty"`
+	Vcpus *uint32 `json:"vcpus,omitempty"`
 	// The arguments passed to the instance when it was started.  This is a
 	// list of command-line arguments that were provided to the instance at
 	// startup.  These arguments can be used to configure the behavior of the
@@ -109,7 +109,7 @@ type Instance struct {
 	// that increments each time the instance is started, regardless of whether it
 	// was manually stopped or restarted.  This can be useful for tracking the
 	// usage of the instance over time and/or for debugging purposes.
-	StartCount *int32 `json:"start_count,omitempty"`
+	StartCount *uint64 `json:"start_count,omitempty"`
 	// The time the instance was started.  This is the timestamp when the
 	// instance was last started.
 	StartedAt *time.Time `json:"started_at,omitempty"`
@@ -118,23 +118,23 @@ type Instance struct {
 	// field will be empty.
 	StoppedAt *time.Time `json:"stopped_at,omitempty"`
 	// The total amount of time the instance has been running in milliseconds.
-	UptimeMs *int32 `json:"uptime_ms,omitempty"`
+	UptimeMs *uint64 `json:"uptime_ms,omitempty"`
 	// (Developer-only).  The time taken between the main controller and the
 	// beginning of execution of the VMM (Virtual Machine Monitor) measured in
 	// microseconds.  This field is primarily used for debugging and performance
 	// analysis purposes.
-	VmmStartTimeUs *int32 `json:"vmm_start_time_us,omitempty"`
+	VmmStartTimeUs *uint64 `json:"vmm_start_time_us,omitempty"`
 	// (Developer-only).  The time it took the VMM (Virtual Machine Monitor) to
 	// load the instance's kernel and initramfs into VM memory measured in
 	// microseconds.  This field is primarily used for debugging and performance
 	// analysis purposes.
-	VmmLoadTimeUs *int32 `json:"vmm_load_time_us,omitempty"`
+	VmmLoadTimeUs *uint64 `json:"vmm_load_time_us,omitempty"`
 	// (Developer-only).  The time taken for the VMM (Virtual Machine Monitor) to
 	// become ready to execute the instance measured in microseconds.  This is the
 	// time from when the VMM started until it was ready to execute the instance's
 	// code.  This field is primarily used for debugging and performance analysis
 	// purposes.
-	VmmReadyTimeUs *int32 `json:"vmm_ready_time_us,omitempty"`
+	VmmReadyTimeUs *uint64 `json:"vmm_ready_time_us,omitempty"`
 	// The boot time of the instance in microseconds.  We take a pragmatic
 	// approach is to define the boot time.  We calculate this as the difference
 	// in time between the moment the virtualization toolstack is invoked to
@@ -143,13 +143,13 @@ type Instance struct {
 	// time that a user would experience in a deployment, minus the application
 	// initialization time, which we leave out since it is independent from the
 	// OS.
-	BootTimeUs *int32 `json:"boot_time_us,omitempty"`
+	BootTimeUs *uint64 `json:"boot_time_us,omitempty"`
 	// This is the time it took for the user-level application to start listening
 	// on a non-localhost port measured in microseconds.  This is the time from
 	// when the instance started until it reasonably ready to start responding to
 	// network requests.  This is useful for measuring the time it takes for the
 	// instance to become operationally ready.
-	NetTimeUs *int32 `json:"net_time_us,omitempty"`
+	NetTimeUs *uint64 `json:"net_time_us,omitempty"`
 	// The instance stop reason.
 	//
 	// Provides reason as to why an instance is stopped or in the process of
@@ -182,14 +182,14 @@ type Instance struct {
 	// | 3     | `00011` | `---AK` | The application exited. The exit_code and stop_code indicate if the application and kernel shut down cleanly. |
 	// | 1     | `00001` | `----K` | The instance likely expierenced a fatal crash and the stop_code contains more information about the cause of the crash. |
 	// | 0     | `00000` | `-----` | The stop reason is unknown. |
-	StopReason *int32 `json:"stop_reason,omitempty"`
+	StopReason *uint32 `json:"stop_reason,omitempty"`
 	// The application exit code.
 	//
 	// This is the code which the application returns upon leaving its main entry
 	// point.  The encoding of the exit code is application specific. See the
 	// documentation of the application for more details.  Usually, an exit code
 	// of `0` indicates success / no failure.
-	ExitCode *int32 `json:"exit_code,omitempty"`
+	ExitCode *uint32 `json:"exit_code,omitempty"`
 	// The kernel stop code.
 	//
 	// This value encodes multiple details about the stop irrespective of the
@@ -212,7 +212,7 @@ type Instance struct {
 	// - **reason**:    The reason for the stop. See `StopCodeReason`.
 	//
 	// [^1]: Reserved for future use.
-	StopCode *int32 `json:"stop_code,omitempty"`
+	StopCode *uint32 `json:"stop_code,omitempty"`
 	// The restart configuration for the instance.
 	//
 	// When an instance stops either because the application exits or the instance

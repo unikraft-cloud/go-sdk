@@ -8,5 +8,5 @@ package platform
 
 type CreateVolumeRequestAllOf struct {
 	// The size of the volume in megabytes.
-	SizeMb *int32 `json:"size_mb,omitempty"`
+	SizeMb *uint64 `json:"size_mb,omitempty"`
 }

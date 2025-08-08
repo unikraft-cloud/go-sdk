@@ -29,10 +29,10 @@ const (
 type Service struct {
 	// This is the public-facing port that the service will be accessible from
 	// on the Internet.
-	Port int32 `json:"port"`
+	Port uint32 `json:"port"`
 	// The port number that the instance is listening on.  This is the internal
 	// port which Unikraft Cloud will forward traffic to.
-	DestinationPort *int32 `json:"destination_port,omitempty"`
+	DestinationPort *uint32 `json:"destination_port,omitempty"`
 	// Connection handlers to use for the service.  Handlers define how the
 	// service will handle incoming connections and forward traffic from the
 	// Internet to your application.  For example, a service can be configured

@@ -19,11 +19,11 @@ type InstanceNetworkInterface struct {
 	// The MAC address of the network interface.
 	Mac *string `json:"mac,omitempty"`
 	// Amount of bytes received from interface.
-	RxBytes *int32 `json:"rx_bytes,omitempty"`
+	RxBytes *uint64 `json:"rx_bytes,omitempty"`
 	// Count of packets received from interface
-	RxPackets *int32 `json:"rx_packets,omitempty"`
+	RxPackets *uint64 `json:"rx_packets,omitempty"`
 	// Amount of bytes sent to interface.
-	TxBytes *int32 `json:"tx_bytes,omitempty"`
+	TxBytes *uint64 `json:"tx_bytes,omitempty"`
 	// Count of packets sent to interface
-	TxPackets *int32 `json:"tx_packets,omitempty"`
+	TxPackets *uint64 `json:"tx_packets,omitempty"`
 }

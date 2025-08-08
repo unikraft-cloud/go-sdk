@@ -26,12 +26,12 @@ type CreateServiceGroupRequest struct {
 	// assigned to each instance will exceed the soft limit.  The load balancer
 	// makes sure that when the number of in-flight requests goes down again,
 	// instances are put into standby as fast as possible.
-	SoftLimit *int32 `json:"soft_limit,omitempty"`
+	SoftLimit *uint64 `json:"soft_limit,omitempty"`
 	// The hard limit defines the maximum number of concurrent requests that an
 	// instance assigned to the this service can handle.
 	//
 	// The load balancer will never assign more requests to a single instance.  In
 	// case there are no other instances available, excess requests fail (i.e.,
 	// they are blocked and not queued).
-	HardLimit *int32 `json:"hard_limit,omitempty"`
+	HardLimit *uint64 `json:"hard_limit,omitempty"`
 }
