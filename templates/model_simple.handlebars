@@ -33,6 +33,6 @@ type {{classname}} struct {
 " "
 	// "}}}
 {{~/if}}
-	{{name}} {{#unless required}}{{#unless isArray}}*{{/unless}}{{/unless}}{{#if isEnum}}{{#if isArray}}[]{{/if}}{{classname}}{{name}}{{~else}}{{#if (eq openApiType "integer")}}{{{dataFormat}}}{{else}}{{dataType}}{{/if}}{{/if}} `json:"{{baseName}}{{#unless required}},omitempty{{/unless}}"{{#with withXml}} xml:"{{baseName}}{{#if isXmlAttribute}},attr{{/if}}"{{/with}}{{#with vendorExtensions.x-go-custom-tag}} {{{.}}}{{/with}}`
+	{{name}} {{#unless required}}{{#unless (or isArray (eq openApiType "object"))}}*{{/unless}}{{/unless}}{{#if isEnum}}{{#if isArray}}[]{{/if}}{{classname}}{{name}}{{~else}}{{#if (eq openApiType "integer")}}{{{dataFormat}}}{{else}}{{dataType}}{{/if}}{{/if}} `json:"{{baseName}}{{#unless required}},omitempty{{/unless}}"{{#with withXml}} xml:"{{baseName}}{{#if isXmlAttribute}},attr{{/if}}"{{/with}}{{#with vendorExtensions.x-go-custom-tag}} {{{.}}}{{/with}}`
 {{~/each}}
 }
