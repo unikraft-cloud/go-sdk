@@ -33,7 +33,7 @@ type Image struct {
 	// Documented volumes for the image.
 	Volumes []string `json:"volumes,omitempty"`
 	// Labels are key-value pairs.
-	Labels *map[string]string `json:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 	// The working directory for the image is the directory that is set as the
 	// current working directory when the image is started.
 	Workdir *string      `json:"workdir,omitempty"`
