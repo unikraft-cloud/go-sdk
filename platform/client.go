@@ -21,19 +21,6 @@ import (
 )
 
 type Client interface {
-	// Creates an autoscale configuration for the specified service groups given
-	// their UUIDs or names.
-	//
-	// @param `request`
-	// 	The request body for this operation.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
-	// Performs: POST /v1/services/autoscale
-	//
-	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configuration
-	CreateAutoscaleConfiguration(ctx context.Context, request CreateAutoscaleConfigurationRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationResponseData], error)
 	// Adds a new autoscale policy to an autoscale configuration given a serivce
 	// group UUID.
 	//
@@ -49,6 +36,19 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configuration-policy
 	CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error)
+	// Creates an autoscale configuration for the specified service groups given
+	// their UUIDs or names.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/services/autoscale
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configurations
+	CreateAutoscaleConfigurations(ctx context.Context, request []CreateAutoscaleConfigurationsRequestConfiguration, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error)
 	// Creates an autoscale configuration for the specified service group given
 	// its UUID.
 	//
@@ -65,7 +65,7 @@ type Client interface {
 	// Performs: POST /v1/services/{uuid}/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configurations-by-service-group-uuid
-	CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationResponseData], error)
+	CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error)
 	// Deletes one or more autoscale policies for a given service group.
 	//
 	// @param `uuid`
@@ -860,21 +860,6 @@ func (c *client) clone() *client {
 	return &ccpy
 }
 
-func (c *client) CreateAutoscaleConfiguration(ctx context.Context, request CreateAutoscaleConfigurationRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationResponseData], error) {
-	requestPath := "/v1/services/autoscale"
-
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
-	}
-
-	resp := &Response[CreateAutoscaleConfigurationResponseData]{}
-	if err := doRequest[CreateAutoscaleConfigurationResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, fmt.Errorf("performing the request: %w", err)
-	}
-	return resp, nil
-}
-
 func (c *client) CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
@@ -891,7 +876,26 @@ func (c *client) CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid st
 	return resp, nil
 }
 
-func (c *client) CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationResponseData], error) {
+func (c *client) CreateAutoscaleConfigurations(ctx context.Context, request []CreateAutoscaleConfigurationsRequestConfiguration, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
+	requestPath := "/v1/services/autoscale"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
+	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
@@ -900,8 +904,8 @@ func (c *client) CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Con
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CreateAutoscaleConfigurationResponseData]{}
-	if err := doRequest[CreateAutoscaleConfigurationResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
+	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
