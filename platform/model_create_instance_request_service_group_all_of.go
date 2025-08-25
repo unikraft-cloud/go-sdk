@@ -12,4 +12,8 @@ type CreateInstanceRequestServiceGroupAllOf struct {
 	// to the services it must expose, you can specify which domains it should
 	// use too.
 	Domains []CreateInstanceRequestDomain `json:"domains,omitempty"`
+	// If no existing service identifier is provided, one or more new
+	// (ephemeral, non-persistent) service(s) can be created with the following
+	// definitions.
+	Services []Service `json:"services,omitempty"`
 }
