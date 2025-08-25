@@ -35,7 +35,7 @@ type CreateInstanceRequest struct {
 	// (Optional).  The arguments to pass to the instance when it starts.
 	Args []string `json:"args,omitempty"`
 	// (Optional).  Environment variables to set for the instance.
-	Env *map[string]string `json:"env,omitempty"`
+	Env map[string]string `json:"env,omitempty"`
 	// (Optional).  Memory in MB to allocate for the instance.  Default is 128.
 	MemoryMb     *int64                             `json:"memory_mb,omitempty"`
 	ServiceGroup *CreateInstanceRequestServiceGroup `json:"service_group,omitempty"`
