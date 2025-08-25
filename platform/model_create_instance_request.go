@@ -64,5 +64,5 @@ type CreateInstanceRequest struct {
 	WaitTimeoutMs *int64 `json:"wait_timeout_ms,omitempty"`
 	// Features to enable for the instance.  Features are specific
 	// configurations or capabilities that can be enabled for the instance.
-	Features CreateInstanceRequestFeatures `json:"features,omitempty"`
+	Features []CreateInstanceRequestFeatures `json:"features,omitempty"`
 }
