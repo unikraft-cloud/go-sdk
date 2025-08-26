@@ -472,6 +472,36 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instances
 	StopInstances(ctx context.Context, request []StopInstancesRequestID, ropts ...RequestOption) (*Response[StopInstanceResponseData], error)
+	// Update (modify) an instance by its UUID. The instance must be in a stopped
+	// state for most update operations. Supported properties include: image, args,
+	// env, memory_mb, vcpus, scale_to_zero, tags, and delete_lock.
+	//
+	// @param `uuid`
+	// 	The UUID of the instance to update.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/instances/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#update-instance-by-uuid
+	UpdateInstanceByUUID(ctx context.Context, uuid string, request UpdateInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error)
+	// Update (modify) one or more instances. The instances must be in a stopped
+	// state for most update operations.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/instances
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#update-instances
+	UpdateInstances(ctx context.Context, request UpdateInstancesRequest, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error)
 	// Waits for an instance to reach a certain state by its UUID.
 	//
 	// If the instance is already in the desired state, the request will return
@@ -1332,6 +1362,37 @@ func (c *client) StopInstances(ctx context.Context, request []StopInstancesReque
 
 	resp := &Response[StopInstanceResponseData]{}
 	if err := doRequest[StopInstanceResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateInstanceByUUID(ctx context.Context, uuid string, request UpdateInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error) {
+	requestPath := "/v1/instances/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[UpdateInstancesResponseData]{}
+	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateInstances(ctx context.Context, request UpdateInstancesRequest, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error) {
+	requestPath := "/v1/instances"
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[UpdateInstancesResponseData]{}
+	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
