@@ -135,6 +135,8 @@ model_get_volumes_request_id.go
 model_get_volumes_response.go
 model_get_volumes_response_all_of.go
 model_get_volumes_response_data.go
+model_healthz_response.go
+model_healthz_response_all_of.go
 model_image.go
 model_image_kernel.go
 model_instance.go
