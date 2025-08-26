@@ -604,6 +604,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#get-service-groups
 	GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, details bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
+	// Return the status of a full-system health check of the platform.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/healthz
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/system#healthz
+	Healthz(ctx context.Context, ropts ...RequestOption) (*Response[HealthzResponseData], error)
 	// Lists quota usage and limits of your user account.
 	// Limits are hard limits that cannot be exceeded.
 	//
@@ -1443,6 +1452,16 @@ func (c *client) GetServiceGroups(ctx context.Context, request []GetServiceGroup
 
 	resp := &Response[GetServiceGroupsResponseData]{}
 	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) Healthz(ctx context.Context, ropts ...RequestOption) (*Response[HealthzResponseData], error) {
+	requestPath := "/v1/healthz"
+
+	resp := &Response[HealthzResponseData]{}
+	if err := doRequest[HealthzResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
