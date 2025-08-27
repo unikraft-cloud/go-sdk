@@ -6,7 +6,7 @@
 
 package platform
 
-// For now, no additional data is returned by the health check.
+// The response data for this request.
 
 type HealthzResponseData struct {
 	Services map[string]string `json:"services,omitempty"`
