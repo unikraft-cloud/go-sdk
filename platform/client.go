@@ -634,6 +634,33 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#get-service-groups
 	GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, details bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
+	// Update a service group by its UUID.
+	//
+	// @param `uuid`
+	// 	The UUID of the service group to update.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/services/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/service-groups#update-service-group-by-uuid
+	UpdateServiceGroupByUUID(ctx context.Context, uuid string, request UpdateServiceGroupByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateServiceGroupsResponseData], error)
+	// Update one or more service groups.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/services
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/service-groups#update-service-groups
+	UpdateServiceGroups(ctx context.Context, request []UpdateServiceGroupsRequestItem, ropts ...RequestOption) (*Response[UpdateServiceGroupsResponseData], error)
 	// Return the status of a full-system health check of the platform.
 	//
 	// @param `ropts`
@@ -1540,6 +1567,41 @@ func (c *client) GetServiceGroups(ctx context.Context, request []GetServiceGroup
 
 	resp := &Response[GetServiceGroupsResponseData]{}
 	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateServiceGroupByUUID(ctx context.Context, uuid string, request UpdateServiceGroupByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateServiceGroupsResponseData], error) {
+	requestPath := "/v1/services/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[UpdateServiceGroupsResponseData]{}
+	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateServiceGroups(ctx context.Context, request []UpdateServiceGroupsRequestItem, ropts ...RequestOption) (*Response[UpdateServiceGroupsResponseData], error) {
+	requestPath := "/v1/services"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[UpdateServiceGroupsResponseData]{}
+	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
