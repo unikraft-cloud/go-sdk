@@ -821,6 +821,33 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volumes
 	GetVolumes(ctx context.Context, request []GetVolumesRequestID, details bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
+	// Updates the specified volume by its UUID.
+	//
+	// @param `uuid`
+	// 	The UUID of the service group to update.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/volumes/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-volume-by-uuid
+	UpdateVolumeByUUID(ctx context.Context, uuid string, request UpdateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateVolumesResponseData], error)
+	// Updates one or more volumes specified by either UUID(s) or name(s)
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/volumes
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-volumes
+	UpdateVolumes(ctx context.Context, request []UpdateVolumesRequestItem, ropts ...RequestOption) (*Response[UpdateVolumesResponseData], error)
 	// WithMetro sets the metro to use when connecting to the API.
 	WithMetro(string) Client
 	// WithTimeout sets the timeout when making the request.
@@ -1687,6 +1714,41 @@ func (c *client) GetVolumes(ctx context.Context, request []GetVolumesRequestID, 
 
 	resp := &Response[GetVolumesResponseData]{}
 	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateVolumeByUUID(ctx context.Context, uuid string, request UpdateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[UpdateVolumesResponseData]{}
+	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateVolumes(ctx context.Context, request []UpdateVolumesRequestItem, ropts ...RequestOption) (*Response[UpdateVolumesResponseData], error) {
+	requestPath := "/v1/volumes"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[UpdateVolumesResponseData]{}
+	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
