@@ -6,15 +6,7 @@
 
 package platform
 
-// The property to modify. Must be one of the supported properties:
-// - "image": Change the instance image (SET only)
-// - "args": Update application arguments (SET only)
-// - "env": Modify environment variables (SET, ADD, DEL)
-// - "memory_mb": Change memory allocation (SET only)
-// - "vcpus": Change CPU allocation (SET only)
-// - "scale_to_zero": Configure scale-to-zero settings (SET only)
-// - "tags": Manage instance tags (SET, ADD, DEL)
-// - "delete_lock": Enable/disable deletion protection (SET only)
+// The property to modify.
 type UpdateInstanceByUUIDRequestBodyProp string
 
 const (
@@ -28,10 +20,7 @@ const (
 	UpdateInstanceByUUIDRequestBodyPropDelete_lock   UpdateInstanceByUUIDRequestBodyProp = "delete_lock"
 )
 
-// The operation to perform on the property. Valid operations depend on the property:
-// - "set": Supported by all properties
-// - "add": Only supported by "env" and "tags"
-// - "del": Only supported by "env" and "tags"
+// The operation to perform on the property.
 type UpdateInstanceByUUIDRequestBodyOp string
 
 const (
@@ -43,20 +32,9 @@ const (
 type UpdateInstanceByUUIDRequestBody struct {
 	// (Optional). A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitempty"`
-	// The property to modify. Must be one of the supported properties:
-	// - "image": Change the instance image (SET only)
-	// - "args": Update application arguments (SET only)
-	// - "env": Modify environment variables (SET, ADD, DEL)
-	// - "memory_mb": Change memory allocation (SET only)
-	// - "vcpus": Change CPU allocation (SET only)
-	// - "scale_to_zero": Configure scale-to-zero settings (SET only)
-	// - "tags": Manage instance tags (SET, ADD, DEL)
-	// - "delete_lock": Enable/disable deletion protection (SET only)
+	// The property to modify.
 	Prop UpdateInstanceByUUIDRequestBodyProp `json:"prop"`
-	// The operation to perform on the property. Valid operations depend on the property:
-	// - "set": Supported by all properties
-	// - "add": Only supported by "env" and "tags"
-	// - "del": Only supported by "env" and "tags"
+	// The operation to perform on the property.
 	Op UpdateInstanceByUUIDRequestBodyOp `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "image": string

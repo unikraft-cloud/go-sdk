@@ -7,15 +7,7 @@
 package platform
 
 // A single update operation to be applied to an instance.
-// The property to modify. Must be one of the supported properties:
-// - "image": Change the instance image (SET only)
-// - "args": Update application arguments (SET only)
-// - "env": Modify environment variables (SET, ADD, DEL)
-// - "memory_mb": Change memory allocation (SET only)
-// - "vcpus": Change CPU allocation (SET only)
-// - "scale_to_zero": Configure scale-to-zero settings (SET only)
-// - "tags": Manage instance tags (SET, ADD, DEL)
-// - "delete_lock": Enable/disable deletion protection (SET only)
+// The property to modify.
 type UpdateInstancesRequestProp string
 
 const (
@@ -29,10 +21,7 @@ const (
 	UpdateInstancesRequestPropDelete_lock   UpdateInstancesRequestProp = "delete_lock"
 )
 
-// The operation to perform on the property. Valid operations depend on the property:
-// - "set": Supported by all properties
-// - "add": Only supported by "env" and "tags"
-// - "del": Only supported by "env" and "tags"
+// The operation to perform on the property.
 type UpdateInstancesRequestOp string
 
 const (
@@ -48,20 +37,9 @@ type UpdateInstancesRequest struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance to update. Mutually exclusive with UUID.
 	Name *string `json:"name,omitempty"`
-	// The property to modify. Must be one of the supported properties:
-	// - "image": Change the instance image (SET only)
-	// - "args": Update application arguments (SET only)
-	// - "env": Modify environment variables (SET, ADD, DEL)
-	// - "memory_mb": Change memory allocation (SET only)
-	// - "vcpus": Change CPU allocation (SET only)
-	// - "scale_to_zero": Configure scale-to-zero settings (SET only)
-	// - "tags": Manage instance tags (SET, ADD, DEL)
-	// - "delete_lock": Enable/disable deletion protection (SET only)
+	// The property to modify.
 	Prop UpdateInstancesRequestProp `json:"prop"`
-	// The operation to perform on the property. Valid operations depend on the property:
-	// - "set": Supported by all properties
-	// - "add": Only supported by "env" and "tags"
-	// - "del": Only supported by "env" and "tags"
+	// The operation to perform on the property.
 	Op UpdateInstancesRequestOp `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "image": string
