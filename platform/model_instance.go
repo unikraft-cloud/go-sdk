@@ -105,6 +105,8 @@ type Instance struct {
 	// startup.  These arguments can be used to configure the behavior of the
 	// instance and its applications.
 	Args []string `json:"args,omitempty"`
+	// Environment variables set for the instance.
+	Env map[string]string `json:"env,omitempty"`
 	// The total number of times the instance has been started.  This is a counter
 	// that increments each time the instance is started, regardless of whether it
 	// was manually stopped or restarted.  This can be useful for tracking the
