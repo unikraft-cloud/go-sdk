@@ -107,7 +107,7 @@ type Client interface {
 	// Performs: DELETE /v1/services/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configurations
-	DeleteAutoscaleConfigurations(ctx context.Context, request []DeleteAutoscaleConfigurationsRequestID, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationsResponseData], error)
+	DeleteAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationsResponseData], error)
 	// Deletes the autoscale configuration for the service group given its UUID.
 	//
 	// Unikraft Cloud will immediately drain all connections from all instances
@@ -169,7 +169,7 @@ type Client interface {
 	// Performs: GET /v1/services/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configurations
-	GetAutoscaleConfigurations(ctx context.Context, request []GetAutoscaleConfigurationsRequestID, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error)
+	GetAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error)
 	// Returns the current states and configurations of autoscale configurations
 	// given a service group UUID.
 	//
@@ -220,7 +220,7 @@ type Client interface {
 	// Performs: DELETE /v1/certificates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#delete-certificates
-	DeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID, ropts ...RequestOption) (*Response[DeleteCertificatesResponseData], error)
+	DeleteCertificates(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteCertificatesResponseData], error)
 	// Get a specified certificate by its UUID.
 	//
 	// @param `uuid`
@@ -252,7 +252,7 @@ type Client interface {
 	// Performs: GET /v1/certificates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#get-certificates
-	GetCertificates(ctx context.Context, request []GetCertificatesRequestID, details bool, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error)
+	GetCertificates(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error)
 	// GetImageByDigest retrieves an image by its digest.
 	//
 	// @param `digest`
@@ -314,7 +314,7 @@ type Client interface {
 	// Performs: DELETE /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instances
-	DeleteInstances(ctx context.Context, request []DeleteInstancesRequestID, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
+	DeleteInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
 	// Get a single instance by its ID which can either be its name or UUID.
 	//
 	// @param `uuid`
@@ -363,12 +363,10 @@ type Client interface {
 	// Get the metrics of an instance by its UUID or name.
 	//
 	// @param `uuid`
-	// 	The UUID of the instance to retrieve metrics for.  Mutually exclusive
-	// 	with name.
+	// 	Mutually exclusive with name.
 	//
 	// @param `name`
-	// 	The name of the instance to retrieve metrics for.  Mutually exclusive
-	// 	with UUID.
+	// 	Mutually exclusive with UUID.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -407,7 +405,7 @@ type Client interface {
 	// Performs: GET /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instances
-	GetInstances(ctx context.Context, request []GetInstancesRequestID, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	GetInstances(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
 	// Starts previously stopped instance by its UUID or does nothing if the
 	// instance is already running.
 	//
@@ -433,7 +431,7 @@ type Client interface {
 	// Performs: PUT /v1/instances/start
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instances
-	StartInstances(ctx context.Context, request []StartInstancesRequestID, ropts ...RequestOption) (*Response[StartInstanceResponseData], error)
+	StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstanceResponseData], error)
 	// Stops a running instance by its UUID or does nothing if the instance is
 	// already stopped.
 	//
@@ -551,7 +549,7 @@ type Client interface {
 	// Performs: GET /v1/instances/wait
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#wait-instances
-	WaitInstances(ctx context.Context, request []WaitInstancesRequestID, state string, timeoutMs int64, ropts ...RequestOption) (*Response[WaitInstanceResponseData], error)
+	WaitInstances(ctx context.Context, request []NameOrUUID, state string, timeoutMs int64, ropts ...RequestOption) (*Response[WaitInstanceResponseData], error)
 	// Create a new service with the given configuration.
 	//
 	// Note that the service properties like published ports can only be defined
@@ -594,7 +592,7 @@ type Client interface {
 	// Performs: DELETE /v1/services
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#delete-service-groups
-	DeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID, ropts ...RequestOption) (*Response[DeleteServiceGroupsResponseData], error)
+	DeleteServiceGroups(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteServiceGroupsResponseData], error)
 	// Get a specified service group by its UUID.
 	//
 	// @param `uuid`
@@ -633,7 +631,7 @@ type Client interface {
 	// Performs: GET /v1/services
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#get-service-groups
-	GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, details bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
+	GetServiceGroups(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
 	// Update a service group by its UUID.
 	//
 	// @param `uuid`
@@ -755,7 +753,7 @@ type Client interface {
 	// Performs: DELETE /v1/volumes
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-volume
-	DeleteVolume(ctx context.Context, request []DeleteVolumesRequestID, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error)
+	DeleteVolume(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error)
 	// Deletes the specified volume by its UUID. Fails if the volume is still
 	// attached to an instance. After this call the IDs associated with the
 	// volume are no longer valid.
@@ -847,7 +845,7 @@ type Client interface {
 	// Performs: GET /v1/volumes
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volumes
-	GetVolumes(ctx context.Context, request []GetVolumesRequestID, details bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
+	GetVolumes(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
 	// Updates the specified volume by its UUID.
 	//
 	// @param `uuid`
@@ -1032,7 +1030,7 @@ func (c *client) DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, u
 	return resp, nil
 }
 
-func (c *client) DeleteAutoscaleConfigurations(ctx context.Context, request []DeleteAutoscaleConfigurationsRequestID, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationsResponseData], error) {
+func (c *client) DeleteAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/autoscale"
 
 	var body []byte
@@ -1090,7 +1088,7 @@ func (c *client) GetAutoscaleConfigurationPolicyByName(ctx context.Context, uuid
 	return resp, nil
 }
 
-func (c *client) GetAutoscaleConfigurations(ctx context.Context, request []GetAutoscaleConfigurationsRequestID, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error) {
+func (c *client) GetAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/autoscale"
 
 	var body []byte
@@ -1146,7 +1144,7 @@ func (c *client) DeleteCertificateByUUID(ctx context.Context, uuid string, ropts
 	return resp, nil
 }
 
-func (c *client) DeleteCertificates(ctx context.Context, request []DeleteCertificatesRequestID, ropts ...RequestOption) (*Response[DeleteCertificatesResponseData], error) {
+func (c *client) DeleteCertificates(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteCertificatesResponseData], error) {
 	requestPath := "/v1/certificates"
 
 	var body []byte
@@ -1176,7 +1174,7 @@ func (c *client) GetCertificateByUUID(ctx context.Context, uuid string, ropts ..
 	return resp, nil
 }
 
-func (c *client) GetCertificates(ctx context.Context, request []GetCertificatesRequestID, details bool, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error) {
+func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error) {
 	requestPath := "/v1/certificates"
 
 	query := make(url.Values)
@@ -1246,7 +1244,7 @@ func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, ropts ..
 	return resp, nil
 }
 
-func (c *client) DeleteInstances(ctx context.Context, request []DeleteInstancesRequestID, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
+func (c *client) DeleteInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
 	requestPath := "/v1/instances"
 
 	var body []byte
@@ -1335,7 +1333,7 @@ func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropt
 	return resp, nil
 }
 
-func (c *client) GetInstances(ctx context.Context, request []GetInstancesRequestID, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
+func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances"
 
 	query := make(url.Values)
@@ -1368,7 +1366,7 @@ func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, ropts ...
 	return resp, nil
 }
 
-func (c *client) StartInstances(ctx context.Context, request []StartInstancesRequestID, ropts ...RequestOption) (*Response[StartInstanceResponseData], error) {
+func (c *client) StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstanceResponseData], error) {
 	requestPath := "/v1/instances/start"
 
 	var body []byte
@@ -1468,7 +1466,7 @@ func (c *client) WaitInstanceByUUID(ctx context.Context, uuid string, request Wa
 	return resp, nil
 }
 
-func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesRequestID, state string, timeoutMs int64, ropts ...RequestOption) (*Response[WaitInstanceResponseData], error) {
+func (c *client) WaitInstances(ctx context.Context, request []NameOrUUID, state string, timeoutMs int64, ropts ...RequestOption) (*Response[WaitInstanceResponseData], error) {
 	requestPath := "/v1/instances/wait"
 
 	query := make(url.Values)
@@ -1517,7 +1515,7 @@ func (c *client) DeleteServiceGroupByUUID(ctx context.Context, uuid string, ropt
 	return resp, nil
 }
 
-func (c *client) DeleteServiceGroups(ctx context.Context, request []DeleteServiceGroupsRequestID, ropts ...RequestOption) (*Response[DeleteServiceGroupsResponseData], error) {
+func (c *client) DeleteServiceGroups(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteServiceGroupsResponseData], error) {
 	requestPath := "/v1/services"
 
 	var body []byte
@@ -1550,7 +1548,7 @@ func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, details
 	return resp, nil
 }
 
-func (c *client) GetServiceGroups(ctx context.Context, request []GetServiceGroupsRequestID, details bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
+func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
 	requestPath := "/v1/services"
 
 	query := make(url.Values)
@@ -1684,7 +1682,7 @@ func (c *client) CreateVolume(ctx context.Context, request CreateVolumeRequest, 
 	return resp, nil
 }
 
-func (c *client) DeleteVolume(ctx context.Context, request []DeleteVolumesRequestID, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error) {
+func (c *client) DeleteVolume(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error) {
 	requestPath := "/v1/volumes"
 
 	var body []byte
@@ -1759,7 +1757,7 @@ func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, details bool,
 	return resp, nil
 }
 
-func (c *client) GetVolumes(ctx context.Context, request []GetVolumesRequestID, details bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
+func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
 	requestPath := "/v1/volumes"
 
 	query := make(url.Values)
