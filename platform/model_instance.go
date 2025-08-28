@@ -112,6 +112,11 @@ type Instance struct {
 	// was manually stopped or restarted.  This can be useful for tracking the
 	// usage of the instance over time and/or for debugging purposes.
 	StartCount *uint64 `json:"start_count,omitempty"`
+	// The total number of times the instance has been restarted. This is a counter
+	// that increments each time the instance has been restarted. This can be
+	// useful for tracking the usage of the instance over time and/or for
+	// debugging purposes.
+	RestartCount *uint64 `json:"restart_count,omitempty"`
 	// The time the instance was started.  This is the timestamp when the
 	// instance was last started.
 	StartedAt *time.Time `json:"started_at,omitempty"`
