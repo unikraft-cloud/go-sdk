@@ -8,6 +8,11 @@ package platform
 
 import "time"
 
+// The current state of the certificate.
+//
+// This indicates whether the certificate is pending issuance, valid and
+// ready for use, or in an error state. See CertificateState enum for
+// detailed state descriptions.
 type CertificateState string
 
 const (
@@ -31,7 +36,45 @@ type Certificate struct {
 	// also be used to identify the certificate in API calls.
 	Name *string `json:"name,omitempty"`
 	// The time the certificate was created.
-	CreatedAt  *time.Time        `json:"created_at,omitempty"`
-	CommonName *string           `json:"common_name,omitempty"`
-	State      *CertificateState `json:"state,omitempty"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	// The common name (CN) field from the certificate's subject.
+	//
+	// This is typically the primary domain name that the certificate is issued
+	// for. It represents the main identity that the certificate validates.
+	CommonName *string `json:"common_name,omitempty"`
+	// The complete subject distinguished name (DN) of the certificate.
+	//
+	// This contains the full subject information from the certificate, including
+	// the common name, organization, organizational unit, locality, state, and
+	// country. The subject identifies the entity that the certificate is issued to.
+	Subject *string `json:"subject,omitempty"`
+	// The complete issuer distinguished name (DN) of the certificate.
+	//
+	// This identifies the Certificate Authority (CA) that issued the certificate.
+	// It contains information about the CA including its common name, organization,
+	// and country.
+	Issuer *string `json:"issuer,omitempty"`
+	// The unique serial number assigned to the certificate by the issuing CA.
+	//
+	// This is a unique identifier within the scope of the issuing CA that can be
+	// used to identify and track the certificate. Serial numbers are typically
+	// represented as hexadecimal strings.
+	SerialNumber *string `json:"serial_number,omitempty"`
+	// The date and time when the certificate becomes valid.
+	//
+	// The certificate should not be trusted before this date. This timestamp
+	// marks the beginning of the certificate's validity period.
+	NotBefore *time.Time `json:"not_before,omitempty"`
+	// The date and time when the certificate expires.
+	//
+	// The certificate should not be trusted after this date. This timestamp
+	// marks the end of the certificate's validity period. Certificates should
+	// be renewed before this date to maintain service availability.
+	NotAfter *time.Time `json:"not_after,omitempty"`
+	// The current state of the certificate.
+	//
+	// This indicates whether the certificate is pending issuance, valid and
+	// ready for use, or in an error state. See CertificateState enum for
+	// detailed state descriptions.
+	State *CertificateState `json:"state,omitempty"`
 }

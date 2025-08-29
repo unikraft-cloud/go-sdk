@@ -48,4 +48,6 @@ type Volume struct {
 	AttachedTo []VolumeInstanceID `json:"attached_to,omitempty"`
 	// List of instances that have this volume mounted.
 	MountedBy []VolumeVolumeInstanceMount `json:"mounted_by,omitempty"`
+	// The tags associated with the volume.
+	Tags []string `json:"tags,omitempty"`
 }
