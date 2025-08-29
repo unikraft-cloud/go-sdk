@@ -254,6 +254,8 @@ type Instance struct {
 	ServiceGroup *InstanceServiceGroup    `json:"service_group,omitempty"`
 	// The network interfaces of the instance.
 	NetworkInterfaces []InstanceNetworkInterface `json:"network_interfaces,omitempty"`
+	// The tags associated with the instance.
+	Tags []string `json:"tags,omitempty"`
 	// The status of the instance.  This field is only set when this message
 	// object is used as a response message.
 	Status *InstanceStatus `json:"status,omitempty"`
