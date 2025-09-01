@@ -13,6 +13,8 @@ type QuotasUsed struct {
 	Instances *int64 `json:"instances,omitempty"`
 	// Number of instances that are not in the `stopped` state
 	LiveInstances *int64 `json:"live_instances,omitempty"`
+	// Number of vCPUs
+	LiveVcpus *int64 `json:"live_vcpus,omitempty"`
 	// Amount of memory assigned to instances that are not in the `stopped`
 	// state in megabytes
 	LiveMemoryMb *int64 `json:"live_memory_mb,omitempty"`
