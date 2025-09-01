@@ -21,4 +21,8 @@ type QuotasLimits struct {
 	MinAutoscaleSize *int64 `json:"min_autoscale_size,omitempty"`
 	// Maximum size of an autoscale group
 	MaxAutoscaleSize *int64 `json:"max_autoscale_size,omitempty"`
+	// Minimum number of vCPUs
+	MinVcpus *int64 `json:"min_vcpus,omitempty"`
+	// Maximum number of vCPUs
+	MaxVcpus *int64 `json:"max_vcpus,omitempty"`
 }
