@@ -21,6 +21,21 @@ type GetInstanceMetricsResponseInstanceMetrics struct {
 	RssBytes *uint64 `json:"rss_bytes,omitempty"`
 	// Consumed CPU time in milliseconds.
 	CpuTimeMs *uint64 `json:"cpu_time_ms,omitempty"`
+	// The boot time of the instance in microseconds.  We take a pragmatic
+	// approach is to define the boot time.  We calculate this as the difference
+	// in time between the moment the virtualization toolstack is invoked to
+	// respond to a VM boot request and the moment the OS starts executing user
+	// code (i.e., the end of the guest OS boot process).  This is essentially the
+	// time that a user would experience in a deployment, minus the application
+	// initialization time, which we leave out since it is independent from the
+	// OS.
+	BootTimeUs *uint64 `json:"boot_time_us,omitempty"`
+	// This is the time it took for the user-level application to start listening
+	// on a non-localhost port measured in microseconds.  This is the time from
+	// when the instance started until it reasonably ready to start responding to
+	// network requests.  This is useful for measuring the time it takes for the
+	// instance to become operationally ready.
+	NetTimeUs *uint64 `json:"net_time_us,omitempty"`
 	// Total amount of bytes received from network.
 	RxBytes *uint64 `json:"rx_bytes,omitempty"`
 	// Total count of packets received from network.
