@@ -6,12 +6,11 @@
 
 package platform
 
-// Use an existing certificate for the domain.  If this field is
-// specified, the domain must be associated with a valid certificate.
+// An identifier for a resource.  Either a name or a UUID.
 
-type CreateServiceGroupRequestDomainCertificate struct {
+type NameOrUUID struct {
 	// Mutually exclusive with name.
-	Uuid string `json:"uuid"`
+	Uuid *string `json:"uuid,omitempty"`
 	// Mutually exclusive with UUID.
-	Name string `json:"name"`
+	Name *string `json:"name,omitempty"`
 }
