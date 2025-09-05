@@ -24,6 +24,23 @@ const (
 {{~/each}}
 
 type {{classname}} struct {
+{{~#if (and (not allOf) composedSchemas.allOf)}}
+{{~#each composedSchemas.allOf}}
+{{~#each composedSchemas.oneOf}}
+{{~#each vars}}
+{{~#if deprecated}}
+	// Deprecated.
+{{~/if}}
+{{~#if unescapedDescription}}
+	// {{{ replace unescapedDescription "
+" "
+	// "}}}
+{{~/if}}
+	{{name}} *{{#if isEnum}}{{#if isArray}}[]{{/if}}{{classname}}{{name}}{{~else}}{{#if (eq openApiType "integer")}}{{{dataFormat}}}{{else}}{{dataType}}{{/if}}{{/if}} `json:"{{baseName}},omitempty"{{#with withXml}} xml:"{{baseName}}{{#if isXmlAttribute}},attr{{/if}}"{{/with}}{{#with vendorExtensions.x-go-custom-tag}} {{{.}}}{{/with}}`
+{{~/each}}
+{{~/each}}
+{{~/each}}
+{{~else}}
 {{~#each vars}}
 {{~#if deprecated}}
 	// Deprecated.
@@ -35,4 +52,5 @@ type {{classname}} struct {
 {{~/if}}
 	{{name}} {{#unless required}}{{#unless (or isArray (eq openApiType "object"))}}*{{/unless}}{{/unless}}{{#if isEnum}}{{#if isArray}}[]{{/if}}{{classname}}{{name}}{{~else}}{{#if (eq openApiType "integer")}}{{{dataFormat}}}{{else}}{{dataType}}{{/if}}{{/if}} `json:"{{baseName}}{{#unless required}},omitempty{{/unless}}"{{#with withXml}} xml:"{{baseName}}{{#if isXmlAttribute}},attr{{/if}}"{{/with}}{{#with vendorExtensions.x-go-custom-tag}} {{{.}}}{{/with}}`
 {{~/each}}
+{{~/if}}
 }
