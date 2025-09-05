@@ -30,7 +30,8 @@ const (
 )
 
 type UpdateInstanceByUUIDRequestBody struct {
-	// (Optional). A client-provided identifier for tracking this operation in the response.
+	// (Optional).  A client-provided identifier for tracking this operation in
+	// the response.
 	Id *string `json:"id,omitempty"`
 	// The property to modify.
 	Prop UpdateInstanceByUUIDRequestBodyProp `json:"prop"`

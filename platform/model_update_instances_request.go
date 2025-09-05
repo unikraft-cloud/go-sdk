@@ -6,7 +6,7 @@
 
 package platform
 
-// A single update operation to be applied to an instance.
+// The request message for updating one or more instances.
 // The property to modify.
 type UpdateInstancesRequestProp string
 
@@ -31,7 +31,7 @@ const (
 )
 
 type UpdateInstancesRequest struct {
-	// (Optional). A client-provided identifier for tracking this operation in the response.
+	// (Optional).  A client-provided identifier for tracking this operation in the response.
 	Id *interface{} `json:"id,omitempty"`
 	// The UUID of the instance to update. Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitempty"`

@@ -14,7 +14,7 @@ type GetInstanceMetricsResponseInstanceMetrics struct {
 	// instance on the Unikraft Cloud server.  The RSS grows until the instance
 	// has touched all memory assigned to it via the memory_mb setting and may
 	// also exceed this value as supporting services running outside the
-	// instance acquire memory. The RSS is different from the current amount of
+	// instance acquire memory.  The RSS is different from the current amount of
 	// memory allocated by the application, which is likely to fluctuate over
 	// the lifetime of the application.  The RSS is not a cumulative metric.
 	// When the instance is stopped rss goes down to 0.

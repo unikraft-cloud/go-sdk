@@ -13,6 +13,6 @@ type UpdateInstancesResponseUpdatedInstance struct {
 	Name *string `json:"name,omitempty"`
 	// The status of this particular instance update operation.
 	Status *string `json:"status,omitempty"`
-	// (Optional). The client-provided ID from the request.
+	// (Optional).  The client-provided ID from the request.
 	Id *string `json:"id,omitempty"`
 }

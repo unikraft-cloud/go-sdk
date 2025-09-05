@@ -28,7 +28,7 @@ const (
 type CreateInstanceRequest struct {
 	// (Optional).  The name of the instance.
 	//
-	// If not provided, a random name will be generated. The name must be unique.
+	// If not provided, a random name will be generated.  The name must be unique.
 	Name *string `json:"name,omitempty"`
 	// The image to use for the instance.
 	Image string `json:"image"`
