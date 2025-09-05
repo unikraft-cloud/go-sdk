@@ -10,8 +10,9 @@ package platform
 type GetAutoscaleConfigurationsResponseStatus string
 
 const (
-	GetAutoscaleConfigurationsResponseStatusSuccess GetAutoscaleConfigurationsResponseStatus = "success"
-	GetAutoscaleConfigurationsResponseStatusError   GetAutoscaleConfigurationsResponseStatus = "error"
+	GetAutoscaleConfigurationsResponseStatusSuccess      GetAutoscaleConfigurationsResponseStatus = "success"
+	GetAutoscaleConfigurationsResponseStatusError        GetAutoscaleConfigurationsResponseStatus = "error"
+	GetAutoscaleConfigurationsResponseStatusUnconfigured GetAutoscaleConfigurationsResponseStatus = "unconfigured"
 )
 
 type GetAutoscaleConfigurationsResponse struct {
