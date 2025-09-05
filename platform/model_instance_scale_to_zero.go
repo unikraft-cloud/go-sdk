@@ -18,7 +18,7 @@ package platform
 // To enable scale-to-zero for an instance it is sufficient to add a
 // `scale_to_zero` configuration block.  Unikraft Cloud will then put the
 // instance into standby if there is no traffic to your service within the
-// window of a cooldown period. When there is new traffic coming in, it is
+// window of a cooldown period.  When there is new traffic coming in, it is
 // automatically started again.
 //
 // If you have a heavyweight application that takes long to cold boot or has

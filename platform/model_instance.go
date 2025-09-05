@@ -40,7 +40,7 @@ const (
 // When an instance stops, the stop reason and the configured restart policy
 // are evaluated to decide if a restart should be performed.  Unikraft Cloud
 // uses an exponential back-off delay (immediate, 5s, 10s, 20s, 40s, ..., 5m)
-// to slow down restarts in tight crash loops. If an instance runs without
+// to slow down restarts in tight crash loops.  If an instance runs without
 // problems for 10s the back-off delay is reset and the restart sequence ends.
 //
 // The `restart.attempt` attribute reported in counts the number of restarts
@@ -193,7 +193,7 @@ type Instance struct {
 	// The application exit code.
 	//
 	// This is the code which the application returns upon leaving its main entry
-	// point.  The encoding of the exit code is application specific. See the
+	// point.  The encoding of the exit code is application specific.  See the
 	// documentation of the application for more details.  Usually, an exit code
 	// of `0` indicates success / no failure.
 	ExitCode *uint32 `json:"exit_code,omitempty"`
@@ -216,7 +216,7 @@ type Instance struct {
 	// - **shutdown**:  Whether the shutdown originated from the inittable (0) or
 	//                  from the termtable (1).
 	// - **initlevel**: The initlevel at the time of the stop.
-	// - **reason**:    The reason for the stop. See `StopCodeReason`.
+	// - **reason**:    The reason for the stop.  See `StopCodeReason`.
 	//
 	// [^1]: Reserved for future use.
 	StopCode *uint32 `json:"stop_code,omitempty"`
@@ -238,7 +238,7 @@ type Instance struct {
 	// When an instance stops, the stop reason and the configured restart policy
 	// are evaluated to decide if a restart should be performed.  Unikraft Cloud
 	// uses an exponential back-off delay (immediate, 5s, 10s, 20s, 40s, ..., 5m)
-	// to slow down restarts in tight crash loops. If an instance runs without
+	// to slow down restarts in tight crash loops.  If an instance runs without
 	// problems for 10s the back-off delay is reset and the restart sequence ends.
 	//
 	// The `restart.attempt` attribute reported in counts the number of restarts

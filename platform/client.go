@@ -275,7 +275,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-image-by-tag
 	GetImageByTag(ctx context.Context, tag string, ropts ...RequestOption) (*Response[GetImageResponseData], error)
-	// Creates one or more new instances.
+	// Create one or more new instances.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -288,8 +288,8 @@ type Client interface {
 	// See: https://unikraft.com/docs/api/platform/v1/instances#create-instance
 	CreateInstance(ctx context.Context, request CreateInstanceRequest, ropts ...RequestOption) (*Response[CreateInstanceResponseData], error)
 	// Delete a specified instance by its UUID.  After this call the UUID of the
-	// instances are no longer valid.  If the instances are currently running,
-	// they are force stopped.
+	// instance is no longer valid.  If the instance is currently running,
+	// it is force-stopped.
 	//
 	// @param `uuid`
 	// 	The UUID of the instance to delete.
@@ -301,9 +301,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instance-by-uuid
 	DeleteInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
-	// Delete the specified instance(s).  After this call the name of the
-	// instances are no longer valid.  If the instances are currently running,
-	// they are force stopped.
+	// Delete the specified instance(s) by ID(s) (name or UUID).  After this call
+	// the name of the instances are no longer valid.  If the instances are
+	// currently running, they are force-stopped.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -315,7 +315,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instances
 	DeleteInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
-	// Get a single instance by its ID which can either be its name or UUID.
+	// Get a single instance by its UUID.
 	//
 	// @param `uuid`
 	// 	The UUID of the instance to get.
@@ -333,7 +333,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-by-uuid
 	GetInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
-	// Retrieve the logs of an instance by its UUID or name.
+	// Retrieve the logs of one or more instances by ID(s) (name or UUID).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -388,7 +388,7 @@ type Client interface {
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-metrics-by-uuid
 	GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetInstanceMetricsResponseData], error)
 	// Get one or many instances with their current status and configuration.
-	// It's possible to filter this list by name or UUID.
+	// It's possible to filter this list by ID(s) (name or UUID).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -406,7 +406,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instances
 	GetInstances(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
-	// Starts previously stopped instance by its UUID or does nothing if the
+	// Start a previously stopped instance by its UUID or do nothing if the
 	// instance is already running.
 	//
 	// @param `uuid`
@@ -419,8 +419,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instance-by-uuid
 	StartInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[StartInstanceResponseData], error)
-	// Starts previously stopped instances by their UUID(s) or name(s) or does
-	// nothing if the instance is already running.
+	// Start previously stopped instances by ID(s) (name or UUID) or do
+	// nothing if the instances are already running.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -432,7 +432,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instances
 	StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstanceResponseData], error)
-	// Stops a running instance by its UUID or does nothing if the instance is
+	// Stop a running instance by its UUID or do nothing if the instance is
 	// already stopped.
 	//
 	// @param `uuid`
@@ -457,8 +457,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instance-by-uuid
 	StopInstanceByUUID(ctx context.Context, uuid string, force bool, drainTimeoutMs int32, ropts ...RequestOption) (*Response[StopInstanceResponseData], error)
-	// Stops one or more running instance by their UUID(s) or name(s) or does
-	// nothing if the instance is already stopped.
+	// Stop one or more running instance by ID(s) (name or UUID) or do
+	// nothing if the instances are already stopped.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -470,9 +470,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instances
 	StopInstances(ctx context.Context, request []StopInstancesRequestID, ropts ...RequestOption) (*Response[StopInstanceResponseData], error)
-	// Update (modify) an instance by its UUID. The instance must be in a stopped
-	// state for most update operations. Supported properties include: image, args,
-	// env, memory_mb, vcpus, scale_to_zero, tags, and delete_lock.
+	// Update (modify) an instance by its UUID.  The instance must be in a stopped
+	// state for most update operations.
 	//
 	// @param `uuid`
 	// 	The UUID of the instance to update.
@@ -487,8 +486,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-instance-by-uuid
 	UpdateInstanceByUUID(ctx context.Context, uuid string, request UpdateInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error)
-	// Update (modify) one or more instances. The instances must be in a stopped
-	// state for most update operations.
+	// Update (modify) one or more instances by ID(s) (name or UUID).  The
+	// instances must be in a stopped state for most update operations.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -500,7 +499,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-instances
 	UpdateInstances(ctx context.Context, request UpdateInstancesRequest, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error)
-	// Waits for an instance to reach a certain state by its UUID.
+	// Wait for an instance to reach a certain state, by its UUID.
 	//
 	// If the instance is already in the desired state, the request will return
 	// immediately.  If the instance is not in the desired state, the request will
@@ -522,14 +521,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#wait-instance-by-uuid
 	WaitInstanceByUUID(ctx context.Context, uuid string, request WaitInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[WaitInstanceResponseData], error)
-	// Waits for an instance to reach a certain state by its UUID or name.
+	// Wait for one or more instances to reach certain states by ID(s)
+	// (name or UUID).
 	//
-	// If the instance is already in the desired state, the request will return
-	// immediately.  If the instance is not in the desired state, the request will
-	// block until the instance reaches the desired state or the timeout is
+	// If the instances are already in the desired states, the request will return
+	// immediately.  If the instances are not in the desired state, the request will
+	// block until the instances reach the desired state or the timeout is
 	// reached.  If the timeout is reached, the request will fail with an error.
 	// If the timeout is -1, the request will block indefinitely until the
-	// instance reaches the desired state.
+	// instances reach the desired states.
 	//
 	// @param `request`
 	// 	The request body for this operation.

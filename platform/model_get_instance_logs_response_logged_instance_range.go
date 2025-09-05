@@ -6,7 +6,7 @@
 
 package platform
 
-// Description of the range that was returned. Useful for requests with
+// Description of the range that was returned.  Useful for requests with
 // offset relative to end.
 
 type GetInstanceLogsResponseLoggedInstanceRange struct {
