@@ -5,8 +5,8 @@ type {{{classname}}} {{{format}}}{{^format}}{{dataType}}{{/format}}
 const (
 	{{#allowableValues}}
 	{{#enumVars}}
-	{{^-first}}
-	{{/-first}}
+	{{^@first}}
+	{{/@first}}
 	{{#enumClassPrefix}}{{{classname.toUpperCase}}}_{{/enumClassPrefix}}{{name}} {{{classname}}} = {{{value}}}
 	{{/enumVars}}
 	{{/allowableValues}}
