@@ -23,6 +23,7 @@ generate: platform
 
 .PHONY: platform
 platform: platform.yaml
+	rm -rf $(WORKDIR)/platform/model_*
 	$(DOCKER) run \
 		--rm \
 		--volume "$(WORKDIR):/local" \
@@ -43,6 +44,7 @@ platform.yaml:
 
 .PHONY: controlplane
 controlplane: controlplane.yaml
+	rm -rf $(WORKDIR)/controlplane/model_*
 	$(DOCKER) run \
 		--rm \
 		--volume "$(WORKDIR):/local" \
