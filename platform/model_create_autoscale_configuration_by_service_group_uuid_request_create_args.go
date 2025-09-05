@@ -12,5 +12,5 @@ type CreateAutoscaleConfigurationByServiceGroupUUIDRequestCreateArgs struct {
 	// The ROM to use for the autoscale configuration.
 	Roms *InstanceCreateArgsInstanceCreateRequestRoms `json:"roms,omitempty"`
 	// The template to use for the autoscale configuration.
-	Template *InstanceCreateArgsInstanceTemplateCreateRequest `json:"template,omitempty"`
+	Template *NameOrUUID `json:"template,omitempty"`
 }

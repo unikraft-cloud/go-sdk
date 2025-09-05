@@ -25,7 +25,9 @@ type CreateInstanceRequestDomain struct {
 	// subdomain of the target metro, e.g. `example` becomes
 	// `example.fra0.unikraft.app`.
 	Name string `json:"name"`
-	// Use an existing certificate for the domain.  If this field is specified,
-	// the domain must be associated with a valid certificate.
-	Certificate *CreateInstanceRequestCertificate `json:"certificate,omitempty"`
+	// A reference to an existing certificate which can be used for the
+	// specified domain.  If unspecified, Unikraft Cloud will
+	// automatically generate a new certificate for the domain based on Let's
+	// Encrypt and seek to accomplish a DNS-01 challenge.
+	Certificate *NameOrUUID `json:"certificate,omitempty"`
 }

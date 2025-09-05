@@ -23,5 +23,10 @@ type InstanceServiceGroupInstanceDomain struct {
 	// metro.
 	Fqdn *string `json:"fqdn,omitempty"`
 	// The certificate associated with the domain.
-	Certificate *InstanceDomainInstanceDomainCertificate `json:"certificate,omitempty"`
+	//
+	// The certificate is used to secure the domain with TLS/SSL.  If no
+	// certificate is specified, Unikraft Cloud will automatically generate a
+	// new certificate for the domain based on Let's Encrypt and seek to
+	// accomplish a DNS-01 challenge.
+	Certificate *NameOrUUID `json:"certificate,omitempty"`
 }
