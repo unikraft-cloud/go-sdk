@@ -7,19 +7,11 @@
 package platform
 
 // Details of the instance which was deleted by this request.
-// Indicates whether the start operation was successful or not for this
-// instance.
-type DeleteInstancesResponseDeletedInstanceStatus string
-
-const (
-	DeleteInstancesResponseDeletedInstanceStatusSuccess DeleteInstancesResponseDeletedInstanceStatus = "success"
-	DeleteInstancesResponseDeletedInstanceStatusError   DeleteInstancesResponseDeletedInstanceStatus = "error"
-)
 
 type DeleteInstancesResponseDeletedInstance struct {
 	// Indicates whether the start operation was successful or not for this
 	// instance.
-	Status *DeleteInstancesResponseDeletedInstanceStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The UUID of the instance which was deleted.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance which was deleted.

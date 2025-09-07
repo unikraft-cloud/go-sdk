@@ -7,19 +7,11 @@
 package platform
 
 // Details of the certificate which was deleted by this request.
-// Indicates whether the delete operation was successful or not for this
-// certificate.
-type DeleteCertificatesResponseDeletedCertificateStatus string
-
-const (
-	DeleteCertificatesResponseDeletedCertificateStatusSuccess DeleteCertificatesResponseDeletedCertificateStatus = "success"
-	DeleteCertificatesResponseDeletedCertificateStatusError   DeleteCertificatesResponseDeletedCertificateStatus = "error"
-)
 
 type DeleteCertificatesResponseDeletedCertificate struct {
 	// Indicates whether the delete operation was successful or not for this
 	// certificate.
-	Status *DeleteCertificatesResponseDeletedCertificateStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The UUID of the certificate which was deleted.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the certificate which was deleted.

@@ -7,17 +7,10 @@
 package platform
 
 // The response to a CreateAutoscaleConfigurationRequest.
-// The status of the response.
-type CreateAutoscaleConfigurationsResponseStatus string
-
-const (
-	CreateAutoscaleConfigurationsResponseStatusSuccess CreateAutoscaleConfigurationsResponseStatus = "success"
-	CreateAutoscaleConfigurationsResponseStatusError   CreateAutoscaleConfigurationsResponseStatus = "error"
-)
 
 type CreateAutoscaleConfigurationsResponse struct {
 	// The status of the response.
-	Status *CreateAutoscaleConfigurationsResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The response data for this request.
 	Data *CreateAutoscaleConfigurationsResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.

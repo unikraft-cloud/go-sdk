@@ -8,17 +8,10 @@ package platform
 
 // The response message for deleting one or more instance(s) given their UUID(s)
 // or name(s).
-// The status of the response.
-type DeleteInstancesResponseStatus string
-
-const (
-	DeleteInstancesResponseStatusSuccess DeleteInstancesResponseStatus = "success"
-	DeleteInstancesResponseStatusError   DeleteInstancesResponseStatus = "error"
-)
 
 type DeleteInstancesResponse struct {
 	// The status of the response.
-	Status *DeleteInstancesResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                      `json:"message,omitempty"`
 	Data    *DeleteInstancesResponseData `json:"data,omitempty"`

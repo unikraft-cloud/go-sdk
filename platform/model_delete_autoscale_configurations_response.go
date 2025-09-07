@@ -6,17 +6,9 @@
 
 package platform
 
-// The status of the response.
-type DeleteAutoscaleConfigurationsResponseStatus string
-
-const (
-	DeleteAutoscaleConfigurationsResponseStatusSuccess DeleteAutoscaleConfigurationsResponseStatus = "success"
-	DeleteAutoscaleConfigurationsResponseStatusError   DeleteAutoscaleConfigurationsResponseStatus = "error"
-)
-
 type DeleteAutoscaleConfigurationsResponse struct {
 	// The status of the response.
-	Status *DeleteAutoscaleConfigurationsResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The response data for this request.
 	Data *DeleteAutoscaleConfigurationsResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.

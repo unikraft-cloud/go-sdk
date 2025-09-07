@@ -8,17 +8,10 @@ package platform
 
 // The response message for waiting for one or more instance(s) to reach a
 // certain state given their UUID(s) or name(s).
-// The status of the response.
-type WaitInstanceResponseStatus string
-
-const (
-	WaitInstanceResponseStatusSuccess WaitInstanceResponseStatus = "success"
-	WaitInstanceResponseStatusError   WaitInstanceResponseStatus = "error"
-)
 
 type WaitInstanceResponse struct {
 	// The status of the response.
-	Status *WaitInstanceResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                   `json:"message,omitempty"`
 	Data    *WaitInstanceResponseData `json:"data,omitempty"`

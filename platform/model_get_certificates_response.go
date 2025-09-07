@@ -8,17 +8,10 @@ package platform
 
 // The response message for getting one or more certificate(s) given their
 // UUID(s) or name(s).
-// The status of the response.
-type GetCertificatesResponseStatus string
-
-const (
-	GetCertificatesResponseStatusSuccess GetCertificatesResponseStatus = "success"
-	GetCertificatesResponseStatusError   GetCertificatesResponseStatus = "error"
-)
 
 type GetCertificatesResponse struct {
 	// The status of the response.
-	Status *GetCertificatesResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                      `json:"message,omitempty"`
 	Data    *GetCertificatesResponseData `json:"data,omitempty"`

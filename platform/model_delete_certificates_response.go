@@ -8,17 +8,10 @@ package platform
 
 // The response message for deleting of one or more certificate(s) given their
 // UUID(s) or name(s).
-// The status of the response.
-type DeleteCertificatesResponseStatus string
-
-const (
-	DeleteCertificatesResponseStatusSuccess DeleteCertificatesResponseStatus = "success"
-	DeleteCertificatesResponseStatusError   DeleteCertificatesResponseStatus = "error"
-)
 
 type DeleteCertificatesResponse struct {
 	// The status of the response.
-	Status *DeleteCertificatesResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                         `json:"message,omitempty"`
 	Data    *DeleteCertificatesResponseData `json:"data,omitempty"`

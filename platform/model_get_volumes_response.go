@@ -8,17 +8,10 @@ package platform
 
 // The response message for getting one or more volume(s) given their
 // UUID(s) or name(s).
-// The status of the response.
-type GetVolumesResponseStatus string
-
-const (
-	GetVolumesResponseStatusSuccess GetVolumesResponseStatus = "success"
-	GetVolumesResponseStatusError   GetVolumesResponseStatus = "error"
-)
 
 type GetVolumesResponse struct {
 	// The status of the response.
-	Status *GetVolumesResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The response data for this request.
 	Data *GetVolumesResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.

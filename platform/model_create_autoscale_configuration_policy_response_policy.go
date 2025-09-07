@@ -6,17 +6,9 @@
 
 package platform
 
-// The status of the response.
-type CreateAutoscaleConfigurationPolicyResponsePolicyStatus string
-
-const (
-	CreateAutoscaleConfigurationPolicyResponsePolicyStatusSuccess CreateAutoscaleConfigurationPolicyResponsePolicyStatus = "success"
-	CreateAutoscaleConfigurationPolicyResponsePolicyStatusError   CreateAutoscaleConfigurationPolicyResponsePolicyStatus = "error"
-)
-
 type CreateAutoscaleConfigurationPolicyResponsePolicy struct {
 	// The status of the response.
-	Status *CreateAutoscaleConfigurationPolicyResponsePolicyStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The UUID of the service of the added policy.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the service of the added policy.

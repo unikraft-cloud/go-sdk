@@ -7,17 +7,10 @@
 package platform
 
 // The response message for updating one or more volume(s).
-// The status of the response.
-type UpdateVolumesResponseStatus string
-
-const (
-	UpdateVolumesResponseStatusSuccess UpdateVolumesResponseStatus = "success"
-	UpdateVolumesResponseStatusError   UpdateVolumesResponseStatus = "error"
-)
 
 type UpdateVolumesResponse struct {
 	// The status of the response.
-	Status *UpdateVolumesResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                    `json:"message,omitempty"`
 	Data    *UpdateVolumesResponseData `json:"data,omitempty"`

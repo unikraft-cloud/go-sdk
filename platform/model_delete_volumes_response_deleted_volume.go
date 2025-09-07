@@ -6,17 +6,9 @@
 
 package platform
 
-// The status of the response.
-type DeleteVolumesResponseDeletedVolumeStatus string
-
-const (
-	DeleteVolumesResponseDeletedVolumeStatusSuccess DeleteVolumesResponseDeletedVolumeStatus = "success"
-	DeleteVolumesResponseDeletedVolumeStatusError   DeleteVolumesResponseDeletedVolumeStatus = "error"
-)
-
 type DeleteVolumesResponseDeletedVolume struct {
 	// The status of the response.
-	Status *DeleteVolumesResponseDeletedVolumeStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The UUID of the volume that was deleted.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the volume that was deleted.

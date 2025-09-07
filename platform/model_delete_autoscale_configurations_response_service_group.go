@@ -6,17 +6,9 @@
 
 package platform
 
-// The status of the response.
-type DeleteAutoscaleConfigurationsResponseServiceGroupStatus string
-
-const (
-	DeleteAutoscaleConfigurationsResponseServiceGroupStatusSuccess DeleteAutoscaleConfigurationsResponseServiceGroupStatus = "success"
-	DeleteAutoscaleConfigurationsResponseServiceGroupStatusError   DeleteAutoscaleConfigurationsResponseServiceGroupStatus = "error"
-)
-
 type DeleteAutoscaleConfigurationsResponseServiceGroup struct {
 	// The status of the response.
-	Status *DeleteAutoscaleConfigurationsResponseServiceGroupStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The UUID of the service where the configuration was deleted.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the service where the configuration was deleted.

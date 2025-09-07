@@ -7,17 +7,10 @@
 package platform
 
 // The response message for getting the quota of a user given their UUID.
-// The status of the response.
-type QuotasResponseStatus string
-
-const (
-	QuotasResponseStatusSuccess QuotasResponseStatus = "success"
-	QuotasResponseStatusError   QuotasResponseStatus = "error"
-)
 
 type QuotasResponse struct {
 	// The status of the response.
-	Status *QuotasResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The response data for this request.
 	Data *QuotasResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.

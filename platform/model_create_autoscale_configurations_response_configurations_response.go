@@ -6,17 +6,9 @@
 
 package platform
 
-// The status of the response.
-type CreateAutoscaleConfigurationsResponseConfigurationsResponseStatus string
-
-const (
-	CreateAutoscaleConfigurationsResponseConfigurationsResponseStatusSuccess CreateAutoscaleConfigurationsResponseConfigurationsResponseStatus = "success"
-	CreateAutoscaleConfigurationsResponseConfigurationsResponseStatusError   CreateAutoscaleConfigurationsResponseConfigurationsResponseStatus = "error"
-)
-
 type CreateAutoscaleConfigurationsResponseConfigurationsResponse struct {
 	// The status of the response.
-	Status *CreateAutoscaleConfigurationsResponseConfigurationsResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The UUID of the service where the configuration was created.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the service where the configuration was created.

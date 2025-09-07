@@ -6,17 +6,9 @@
 
 package platform
 
-// The status of the response.
-type GetAutoscaleConfigurationPolicyResponseStatus string
-
-const (
-	GetAutoscaleConfigurationPolicyResponseStatusSuccess GetAutoscaleConfigurationPolicyResponseStatus = "success"
-	GetAutoscaleConfigurationPolicyResponseStatusError   GetAutoscaleConfigurationPolicyResponseStatus = "error"
-)
-
 type GetAutoscaleConfigurationPolicyResponse struct {
 	// The status of the response.
-	Status *GetAutoscaleConfigurationPolicyResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The response data for this request.
 	Data *GetAutoscaleConfigurationPolicyResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.
