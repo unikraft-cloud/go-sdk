@@ -13,3 +13,4 @@ go.mod
 go.sum
 api_*
 .gitignore
+*all_of.go
