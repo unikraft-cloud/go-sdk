@@ -6,17 +6,9 @@
 
 package platform
 
-// The status of the response.
-type DeleteVolumesResponseStatus string
-
-const (
-	DeleteVolumesResponseStatusSuccess DeleteVolumesResponseStatus = "success"
-	DeleteVolumesResponseStatusError   DeleteVolumesResponseStatus = "error"
-)
-
 type DeleteVolumesResponse struct {
 	// The status of the response.
-	Status *DeleteVolumesResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The response data for this request.
 	Data *DeleteVolumesResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.

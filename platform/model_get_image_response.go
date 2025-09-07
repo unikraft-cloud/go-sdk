@@ -7,17 +7,10 @@
 package platform
 
 // The response message for retrieving a single image.
-// The status of the response.
-type GetImageResponseStatus string
-
-const (
-	GetImageResponseStatusSuccess GetImageResponseStatus = "success"
-	GetImageResponseStatusError   GetImageResponseStatus = "error"
-)
 
 type GetImageResponse struct {
 	// The status of the response.
-	Status *GetImageResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string               `json:"message,omitempty"`
 	Data    *GetImageResponseData `json:"data,omitempty"`

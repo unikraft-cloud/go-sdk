@@ -8,17 +8,10 @@ package platform
 
 // The response message for getting the logs of an instance given its UUID(s) or
 // name(s).
-// The status of the response.
-type GetInstanceLogsResponseStatus string
-
-const (
-	GetInstanceLogsResponseStatusSuccess GetInstanceLogsResponseStatus = "success"
-	GetInstanceLogsResponseStatusError   GetInstanceLogsResponseStatus = "error"
-)
 
 type GetInstanceLogsResponse struct {
 	// The status of the response.
-	Status *GetInstanceLogsResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                      `json:"message,omitempty"`
 	Data    *GetInstanceLogsResponseData `json:"data,omitempty"`

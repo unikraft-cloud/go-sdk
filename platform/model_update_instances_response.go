@@ -7,17 +7,10 @@
 package platform
 
 // The response message for updating one or more instances.
-// The status of the response.
-type UpdateInstancesResponseStatus string
-
-const (
-	UpdateInstancesResponseStatusSuccess UpdateInstancesResponseStatus = "success"
-	UpdateInstancesResponseStatusError   UpdateInstancesResponseStatus = "error"
-)
 
 type UpdateInstancesResponse struct {
 	// The status of the response.
-	Status *UpdateInstancesResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                      `json:"message,omitempty"`
 	Data    *UpdateInstancesResponseData `json:"data,omitempty"`

@@ -8,17 +8,10 @@ package platform
 
 // The response message for starting one or more instance(s) given their UUID(s)
 // or name(s).
-// The status of the response.
-type StartInstanceResponseStatus string
-
-const (
-	StartInstanceResponseStatusSuccess StartInstanceResponseStatus = "success"
-	StartInstanceResponseStatusError   StartInstanceResponseStatus = "error"
-)
 
 type StartInstanceResponse struct {
 	// The status of the response.
-	Status *StartInstanceResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                    `json:"message,omitempty"`
 	Data    *StartInstanceResponseData `json:"data,omitempty"`

@@ -6,17 +6,9 @@
 
 package platform
 
-// The status of the response.
-type DetachVolumesResponseStatus string
-
-const (
-	DetachVolumesResponseStatusSuccess DetachVolumesResponseStatus = "success"
-	DetachVolumesResponseStatusError   DetachVolumesResponseStatus = "error"
-)
-
 type DetachVolumesResponse struct {
 	// The status of the response.
-	Status *DetachVolumesResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The response data for this request.
 	Data *DetachVolumesResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.

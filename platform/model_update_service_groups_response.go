@@ -7,17 +7,10 @@
 package platform
 
 // The response message for updating one or more service groups.
-// The status of the response.
-type UpdateServiceGroupsResponseStatus string
-
-const (
-	UpdateServiceGroupsResponseStatusSuccess UpdateServiceGroupsResponseStatus = "success"
-	UpdateServiceGroupsResponseStatusError   UpdateServiceGroupsResponseStatus = "error"
-)
 
 type UpdateServiceGroupsResponse struct {
 	// The status of the response.
-	Status *UpdateServiceGroupsResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                          `json:"message,omitempty"`
 	Data    *UpdateServiceGroupsResponseData `json:"data,omitempty"`

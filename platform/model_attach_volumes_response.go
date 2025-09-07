@@ -8,17 +8,10 @@ package platform
 
 // The response message for attaching one or more volume(s) given their
 // UUID(s) or name(s).
-// The status of the response.
-type AttachVolumesResponseStatus string
-
-const (
-	AttachVolumesResponseStatusSuccess AttachVolumesResponseStatus = "success"
-	AttachVolumesResponseStatusError   AttachVolumesResponseStatus = "error"
-)
 
 type AttachVolumesResponse struct {
 	// The status of the response.
-	Status *AttachVolumesResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The response data for this request.
 	Data *AttachVolumesResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.

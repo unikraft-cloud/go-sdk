@@ -8,17 +8,10 @@ package platform
 
 // The response message for getting the metrics of one or more instance(s)
 // given their UUID(s) or name(s).
-// The status of the response.
-type GetInstanceMetricsResponseStatus string
-
-const (
-	GetInstanceMetricsResponseStatusSuccess GetInstanceMetricsResponseStatus = "success"
-	GetInstanceMetricsResponseStatusError   GetInstanceMetricsResponseStatus = "error"
-)
 
 type GetInstanceMetricsResponse struct {
 	// The status of the response.
-	Status *GetInstanceMetricsResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                         `json:"message,omitempty"`
 	Data    *GetInstanceMetricsResponseData `json:"data,omitempty"`

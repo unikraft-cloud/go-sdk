@@ -6,17 +6,9 @@
 
 package platform
 
-// The status of the response.
-type CreateVolumeResponseVolumeStatus string
-
-const (
-	CreateVolumeResponseVolumeStatusSuccess CreateVolumeResponseVolumeStatus = "success"
-	CreateVolumeResponseVolumeStatusError   CreateVolumeResponseVolumeStatus = "error"
-)
-
 type CreateVolumeResponseVolume struct {
 	// The status of the response.
-	Status *CreateVolumeResponseVolumeStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// UUID of the newly created volume.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the newly created volume.

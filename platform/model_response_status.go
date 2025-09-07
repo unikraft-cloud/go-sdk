@@ -6,9 +6,10 @@
 
 package platform
 
-type DomainAllOf struct {
-	// Publicly accessible domain name.  If this name ends in a period `.` it must
-	// be a valid Full Qualified Domain Name (FQDN), otherwise it will become a
-	// subdomain of the target metro.
-	Fqdn *string `json:"fqdn,omitempty"`
-}
+// The response status of an API request.
+type ResponseStatus string
+
+const (
+	ResponseStatusSUCCESS ResponseStatus = "success"
+	ResponseStatusERROR   ResponseStatus = "error"
+)

@@ -7,18 +7,11 @@
 package platform
 
 // The response message for creating of a volume.
-// The status of the response.
-type CreateVolumeResponseStatus string
-
-const (
-	CreateVolumeResponseStatusSuccess CreateVolumeResponseStatus = "success"
-	CreateVolumeResponseStatusError   CreateVolumeResponseStatus = "error"
-)
 
 type CreateVolumeResponse struct {
 	// The status of the response.
-	Status *CreateVolumeResponseStatus `json:"status,omitempty"`
-	Data   *CreateVolumeResponseData   `json:"data,omitempty"`
+	Status *ResponseStatus           `json:"status,omitempty"`
+	Data   *CreateVolumeResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process

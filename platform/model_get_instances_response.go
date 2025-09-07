@@ -7,17 +7,10 @@
 package platform
 
 // The response after retrieving an instance by its name or UUID.
-// The status of the response.
-type GetInstancesResponseStatus string
-
-const (
-	GetInstancesResponseStatusSuccess GetInstancesResponseStatus = "success"
-	GetInstancesResponseStatusError   GetInstancesResponseStatus = "error"
-)
 
 type GetInstancesResponse struct {
 	// The status of the response.
-	Status *GetInstancesResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                   `json:"message,omitempty"`
 	Data    *GetInstancesResponseData `json:"data,omitempty"`

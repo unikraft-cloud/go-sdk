@@ -8,17 +8,10 @@ package platform
 
 // The response message for deleting of one or more service group(s) given their
 // UUID(s) or name(s).
-// The status of the response.
-type DeleteServiceGroupsResponseStatus string
-
-const (
-	DeleteServiceGroupsResponseStatusSuccess DeleteServiceGroupsResponseStatus = "success"
-	DeleteServiceGroupsResponseStatusError   DeleteServiceGroupsResponseStatus = "error"
-)
 
 type DeleteServiceGroupsResponse struct {
 	// The status of the response.
-	Status *DeleteServiceGroupsResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                          `json:"message,omitempty"`
 	Data    *DeleteServiceGroupsResponseData `json:"data,omitempty"`

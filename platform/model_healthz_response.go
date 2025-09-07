@@ -6,17 +6,9 @@
 
 package platform
 
-// The status of the response.
-type HealthzResponseStatus string
-
-const (
-	HealthzResponseStatusSuccess HealthzResponseStatus = "success"
-	HealthzResponseStatusError   HealthzResponseStatus = "error"
-)
-
 type HealthzResponse struct {
 	// The status of the response.
-	Status *HealthzResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string `json:"message,omitempty"`
 	// A list of errors which may have occurred during the request.

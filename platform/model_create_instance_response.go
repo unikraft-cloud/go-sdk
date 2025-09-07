@@ -7,17 +7,10 @@
 package platform
 
 // The response message for creating a new instance.
-// The status of the response.
-type CreateInstanceResponseStatus string
-
-const (
-	CreateInstanceResponseStatusSuccess CreateInstanceResponseStatus = "success"
-	CreateInstanceResponseStatusError   CreateInstanceResponseStatus = "error"
-)
 
 type CreateInstanceResponse struct {
 	// The status of the response.
-	Status *CreateInstanceResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                     `json:"message,omitempty"`
 	Data    *CreateInstanceResponseData `json:"data,omitempty"`

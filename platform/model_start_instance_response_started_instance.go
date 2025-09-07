@@ -6,19 +6,10 @@
 
 package platform
 
-// Indicates whether the start operation was successful or not for this
-// instance.
-type StartInstanceResponseStartedInstanceStatus string
-
-const (
-	StartInstanceResponseStartedInstanceStatusSuccess StartInstanceResponseStartedInstanceStatus = "success"
-	StartInstanceResponseStartedInstanceStatusError   StartInstanceResponseStartedInstanceStatus = "error"
-)
-
 type StartInstanceResponseStartedInstance struct {
 	// Indicates whether the start operation was successful or not for this
 	// instance.
-	Status *StartInstanceResponseStartedInstanceStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The UUID of the instance which was deleted.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance which was deleted.

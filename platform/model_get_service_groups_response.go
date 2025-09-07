@@ -8,17 +8,10 @@ package platform
 
 // The response message for getting one or more service group(s) given their
 // UUID(s) or name(s).
-// The status of the response.
-type GetServiceGroupsResponseStatus string
-
-const (
-	GetServiceGroupsResponseStatusSuccess GetServiceGroupsResponseStatus = "success"
-	GetServiceGroupsResponseStatusError   GetServiceGroupsResponseStatus = "error"
-)
 
 type GetServiceGroupsResponse struct {
 	// The status of the response.
-	Status *GetServiceGroupsResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                       `json:"message,omitempty"`
 	Data    *GetServiceGroupsResponseData `json:"data,omitempty"`

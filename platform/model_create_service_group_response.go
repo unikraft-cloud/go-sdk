@@ -7,17 +7,10 @@
 package platform
 
 // The response message for creating of a service group.
-// The status of the response.
-type CreateServiceGroupResponseStatus string
-
-const (
-	CreateServiceGroupResponseStatusSuccess CreateServiceGroupResponseStatus = "success"
-	CreateServiceGroupResponseStatusError   CreateServiceGroupResponseStatus = "error"
-)
 
 type CreateServiceGroupResponse struct {
 	// The status of the response.
-	Status *CreateServiceGroupResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                         `json:"message,omitempty"`
 	Data    *CreateServiceGroupResponseData `json:"data,omitempty"`

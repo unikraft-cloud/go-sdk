@@ -57,15 +57,6 @@ const (
 	InstanceRestartPolicyOn_failure InstanceRestartPolicy = "on_failure"
 )
 
-// The status of the instance.  This field is only set when this message
-// object is used as a response message.
-type InstanceStatus string
-
-const (
-	InstanceStatusSuccess InstanceStatus = "success"
-	InstanceStatusError   InstanceStatus = "error"
-)
-
 type Instance struct {
 	// The UUID of the instance.
 	//
@@ -258,7 +249,7 @@ type Instance struct {
 	Tags []string `json:"tags,omitempty"`
 	// The status of the instance.  This field is only set when this message
 	// object is used as a response message.
-	Status *InstanceStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string `json:"message,omitempty"`
 }

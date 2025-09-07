@@ -7,17 +7,10 @@
 package platform
 
 // The response message for creating of a certificate.
-// The status of the response.
-type CreateCertificateResponseStatus string
-
-const (
-	CreateCertificateResponseStatusSuccess CreateCertificateResponseStatus = "success"
-	CreateCertificateResponseStatusError   CreateCertificateResponseStatus = "error"
-)
 
 type CreateCertificateResponse struct {
 	// The status of the response.
-	Status *CreateCertificateResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                        `json:"message,omitempty"`
 	Data    *CreateCertificateResponseData `json:"data,omitempty"`
