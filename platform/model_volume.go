@@ -8,6 +8,7 @@ package platform
 
 import "time"
 
+// A volume represents a storage device that can be attached to an instance.
 // Current state of the volume.
 type VolumeState string
 
