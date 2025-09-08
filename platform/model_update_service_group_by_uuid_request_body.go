@@ -27,7 +27,7 @@ const (
 
 type UpdateServiceGroupByUUIDRequestBody struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
-	Id *interface{} `json:"id,omitempty"`
+	Id *string `json:"id,omitempty"`
 	// The property to modify.
 	Prop UpdateServiceGroupByUUIDRequestBodyProp `json:"prop"`
 	// The operation to perform.
