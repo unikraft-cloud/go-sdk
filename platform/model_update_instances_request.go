@@ -32,7 +32,7 @@ const (
 
 type UpdateInstancesRequest struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
-	Id *interface{} `json:"id,omitempty"`
+	Id *string `json:"id,omitempty"`
 	// The UUID of the instance to update. Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance to update. Mutually exclusive with UUID.
