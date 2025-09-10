@@ -11,4 +11,10 @@ type DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse struct {
 	Status *ResponseStatus `json:"status,omitempty"`
 	// The name of the service of the deleted policy.
 	Name *string `json:"name,omitempty"`
+	// An optional message providing additional information about the status.
+	// This field is useful when the status is not `success`.
+	Message *string `json:"message,omitempty"`
+	// An optional error code providing additional information about the status.
+	// This field is useful when the status is not `success`.
+	Error *int32 `json:"error,omitempty"`
 }

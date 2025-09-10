@@ -39,4 +39,10 @@ type StopInstanceResponseStoppedInstance struct {
 	State *StopInstanceResponseStoppedInstanceState `json:"state,omitempty"`
 	// The previous state of the instance before the stop operation was invoked.
 	PreviousState *StopInstanceResponseStoppedInstancePreviousState `json:"previous_state,omitempty"`
+	// An optional message providing additional information about the status.
+	// This field is useful when the status is not `success`.
+	Message *string `json:"message,omitempty"`
+	// An optional error code providing additional information about the status.
+	// This field is useful when the status is not `success`.
+	Error *int32 `json:"error,omitempty"`
 }

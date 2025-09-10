@@ -25,4 +25,10 @@ type WaitInstanceResponseWaitedInstance struct {
 	Name *string `json:"name,omitempty"`
 	// The current state of the instance.
 	State *WaitInstanceResponseWaitedInstanceState `json:"state,omitempty"`
+	// An optional message providing additional information about the status.
+	// This field is useful when the status is not `success`.
+	Message *string `json:"message,omitempty"`
+	// An optional error code providing additional information about the status.
+	// This field is useful when the status is not `success`.
+	Error *int32 `json:"error,omitempty"`
 }
