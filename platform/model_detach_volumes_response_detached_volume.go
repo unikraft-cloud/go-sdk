@@ -6,20 +6,17 @@
 
 package platform
 
-// The response message for getting one or more volume(s) given their
-// UUID(s) or name(s).
-
-type GetVolumesResponse struct {
+type DetachVolumesResponseDetachedVolume struct {
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
-	// The response data for this request.
-	Data *GetVolumesResponseData `json:"data,omitempty"`
-	// A list of errors which may have occurred during the request.
-	Errors []ResponseError `json:"errors,omitempty"`
-	// The operation time in microseconds.  This is the time it took to process
-	// the request and generate the response.
-	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
+	// The UUID of the volume that was detached.
+	Uuid *string `json:"uuid,omitempty"`
+	// The name of the volume that was detached.
+	Name *string `json:"name,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`
+	// An optional error code providing additional information about the status.
+	// This field is useful when the status is not `success`.
+	Error *int32 `json:"error,omitempty"`
 }

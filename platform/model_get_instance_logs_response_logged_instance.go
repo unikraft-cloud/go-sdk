@@ -29,4 +29,10 @@ type GetInstanceLogsResponseLoggedInstance struct {
 	Range     *GetInstanceLogsResponseLoggedInstanceRange     `json:"range,omitempty"`
 	// State of the instance when the logs were retrieved.
 	State *GetInstanceLogsResponseLoggedInstanceState `json:"state,omitempty"`
+	// An optional message providing additional information about the status.
+	// This field is useful when the status is not `success`.
+	Message *string `json:"message,omitempty"`
+	// An optional error code providing additional information about the status.
+	// This field is useful when the status is not `success`.
+	Error *int32 `json:"error,omitempty"`
 }

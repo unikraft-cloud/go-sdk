@@ -16,4 +16,12 @@ type DeleteServiceGroupsResponseDeletedServiceGroup struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the service group which was deleted.
 	Name *string `json:"name,omitempty"`
+	// An optional message providing additional information about the status.
+	// This field is only set when this message object is used as a response
+	// message, and is useful when the status is not `success`.
+	Message *string `json:"message,omitempty"`
+	// An optional error code providing additional information about the status.
+	// This field is only set when this message object is used as a response
+	// message, and is useful when the status is not `success`.
+	Error *int32 `json:"error,omitempty"`
 }

@@ -15,4 +15,12 @@ type UpdateServiceGroupsResponseUpdatedServiceGroup struct {
 	Status *string `json:"status,omitempty"`
 	// (Optional).  The client-provided ID from the request.
 	Id *string `json:"id,omitempty"`
+	// An optional message providing additional information about the status.
+	// This field is only set when this message object is used as a response
+	// message, and is useful when the status is not `success`.
+	Message *string `json:"message,omitempty"`
+	// An optional error code providing additional information about the status.
+	// This field is only set when this message object is used as a response
+	// message, and is useful when the status is not `success`.
+	Error *int32 `json:"error,omitempty"`
 }

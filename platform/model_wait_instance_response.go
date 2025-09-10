@@ -12,7 +12,8 @@ package platform
 type WaitInstanceResponse struct {
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
-	// An optional message providing additional information about the response.
+	// An optional message providing additional information about the status.
+	// This field is useful when the status is not `success`.
 	Message *string                   `json:"message,omitempty"`
 	Data    *WaitInstanceResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.

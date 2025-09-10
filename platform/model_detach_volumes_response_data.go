@@ -8,5 +8,5 @@ package platform
 
 type DetachVolumesResponseData struct {
 	// The volume(s) which were detached by the request.
-	Volumes []DetachVolumesResponseInstanceID `json:"volumes,omitempty"`
+	Volumes []DetachVolumesResponseDetachedVolume `json:"volumes,omitempty"`
 }
