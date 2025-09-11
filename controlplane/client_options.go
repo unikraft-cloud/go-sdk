@@ -7,7 +7,7 @@
 package controlplane
 
 import (
-	"github.com/unikraft-cloud/go-sdk/pkg/httpclient"
+	"unikraft.com/cloud/sdk/pkg/httpclient"
 )
 
 // ClientOption is an option function used during initialization of a client.

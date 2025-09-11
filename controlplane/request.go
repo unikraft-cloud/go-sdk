@@ -17,8 +17,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/unikraft-cloud/go-sdk/pkg/httpclient"
-	"github.com/unikraft-cloud/go-sdk/pkg/sse"
+	"unikraft.com/cloud/sdk/pkg/httpclient"
+	"unikraft.com/cloud/sdk/pkg/sse"
 )
 
 // Request is the utility structure for performing individual requests to
