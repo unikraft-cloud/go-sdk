@@ -6,8 +6,8 @@
 
 package platform
 
-// The request to create an autoscale configuration for a service group based on
-// its UUID.
+// The request message to create an autoscale configuration for a service group
+// based on its UUID.
 
 type CreateAutoscaleConfigurationByServiceGroupUUIDRequest struct {
 	// The UUID of the service to create a configuration for.

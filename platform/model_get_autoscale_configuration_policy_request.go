@@ -6,7 +6,9 @@
 
 package platform
 
+// The request message to get an autoscale configuration policy by name.
+
 type GetAutoscaleConfigurationPolicyRequest struct {
-	// The Name  of the policy to get.
+	// The Name of the policy to get.
 	Name string `json:"name"`
 }

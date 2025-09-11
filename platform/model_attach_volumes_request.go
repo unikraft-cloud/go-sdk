@@ -8,11 +8,6 @@ package platform
 
 // The request message for attaching one or more volume(s) to instances by
 // their UUID(s) or name(s).
-//
-// Attaches a volume to an instance so that the volume is mounted when the
-// instance starts. The volume needs to be in available state and the instance
-// must in stopped state. Currently, each instance can have only one volume
-// attached at most.
 
 type AttachVolumesRequest struct {
 	// The UUID of the volume to attach. Mutually exclusive with name.

@@ -6,6 +6,9 @@
 
 package platform
 
+// The request message to create an autoscale configuration policy for a
+// service.
+
 type CreateAutoscaleConfigurationPolicyRequest struct {
 	// The Name of the service to add a policy to.
 	Name string                                        `json:"name"`
