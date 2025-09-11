@@ -21,35 +21,7 @@ import (
 )
 
 type Client interface {
-	// Adds a new autoscale policy to an autoscale configuration given a serivce
-	// group UUID.
-	//
-	// @param `uuid`
-	//
-	// @param `request`
-	// 	The request body for this operation.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
-	// Performs: POST /v1/services/{uuid}/autoscale/policies
-	//
-	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configuration-policy
-	CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error)
-	// Creates an autoscale configuration for the specified service groups given
-	// their UUIDs or names.
-	//
-	// @param `request`
-	// 	The request body for this operation.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
-	// Performs: POST /v1/services/autoscale
-	//
-	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configurations
-	CreateAutoscaleConfigurations(ctx context.Context, request []CreateAutoscaleConfigurationsRequestConfiguration, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error)
-	// Creates an autoscale configuration for the specified service group given
+	// Create an autoscale configuration for the specified service group given
 	// its UUID.
 	//
 	// @param `uuid`
@@ -64,9 +36,37 @@ type Client interface {
 	//
 	// Performs: POST /v1/services/{uuid}/autoscale
 	//
-	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configurations-by-service-group-uuid
-	CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error)
-	// Deletes one or more autoscale policies for a given service group.
+	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configuration-by-service-group-uuid
+	CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error)
+	// Add a new autoscale policy to an autoscale configuration given a service
+	// group UUID.
+	//
+	// @param `uuid`
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/services/{uuid}/autoscale/policies
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configuration-policy
+	CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error)
+	// Create one or more autoscale configurations for the specified service groups
+	// given their UUIDs or names.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/services/autoscale
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configurations
+	CreateAutoscaleConfigurations(ctx context.Context, request []CreateAutoscaleConfigurationsRequestConfiguration, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error)
+	// Delete one or more autoscale policies for a given service group.
 	//
 	// @param `uuid`
 	//
@@ -80,7 +80,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configuration-policies
 	DeleteAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request DeletePolicyRequest, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error)
-	// Deletes an autoscale policy by name given the service group UUID.
+	// Delete an autoscale policy by name given the service group UUID.
 	//
 	// @param `uuid`
 	// 	The UUID of the service group.
@@ -95,7 +95,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configuration-policy-by-name
 	DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error)
-	// Deletes autoscale configuration for a given set of service groups given
+	// Delete autoscale configuration for a given set of service groups given
 	// their UUIDs or names.
 	//
 	// @param `request`
@@ -108,7 +108,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configurations
 	DeleteAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationsResponseData], error)
-	// Deletes the autoscale configuration for the service group given its UUID.
+	// Delete the autoscale configuration for the service group given its UUID.
 	//
 	// Unikraft Cloud will immediately drain all connections from all instances
 	// that have been created by autoscale and delete the instances afterwards.
@@ -127,7 +127,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configurations-by-service-group-uuid
 	DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationsResponseData], error)
-	// Lists the autoscale policies for a given service group given its UUID.
+	// List the autoscale policies for a given service group given its UUID.
 	//
 	// @param `uuid`
 	//
@@ -141,7 +141,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configuration-policies
 	GetAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request GetAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationPolicyResponseData], error)
-	// Returns the current state and configuration of an autoscale policy given
+	// Return the current state and configuration of an autoscale policy given
 	// the service group UUID and the name of the policy.
 	//
 	// @param `uuid`
@@ -157,7 +157,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configuration-policy-by-name
 	GetAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationPolicyResponseData], error)
-	// Returns the current states and configurations of autoscale configurations
+	// Return the current states and configurations of autoscale configurations
 	// for a given set of service groups given their UUIDs or names.
 	//
 	// @param `request`
@@ -170,7 +170,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configurations
 	GetAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error)
-	// Returns the current states and configurations of autoscale configurations
+	// Return the current states and configurations of autoscale configurations
 	// given a service group UUID.
 	//
 	// @param `uuid`
@@ -195,8 +195,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#create-certificate
 	CreateCertificate(ctx context.Context, request CreateCertificateRequest, ropts ...RequestOption) (*Response[CreateCertificateResponseData], error)
-	// Delete the specified certificate(s).  After this call the name of the
-	// certificate(s) are no longer valid.
+	// Delete a specified certificate by its UUID.  After this call the UUID of
+	// the certificate are no longer valid.
 	//
 	// @param `uuid`
 	// 	The UUID of the certificate to delete.
@@ -208,8 +208,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#delete-certificate-by-uuid
 	DeleteCertificateByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteCertificatesResponseData], error)
-	// Delete a specified certificate by its UUID.  After this call the UUID of
-	// the certificate are no longer valid.
+	// Delete the specified certificate(s).  After this call the name of the
+	// certificate(s) are no longer valid.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -253,7 +253,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#get-certificates
 	GetCertificates(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error)
-	// GetImageByDigest retrieves an image by its digest.
+	// Retrieve an image by its digest.
 	//
 	// @param `digest`
 	//
@@ -264,7 +264,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-image-by-digest
 	GetImageByDigest(ctx context.Context, digest string, ropts ...RequestOption) (*Response[GetImageResponseData], error)
-	// GetImageByTag retrieves an image by its tag.
+	// Retrieve an image by its tag.
 	//
 	// @param `tag`
 	//
@@ -275,7 +275,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-image-by-tag
 	GetImageByTag(ctx context.Context, tag string, ropts ...RequestOption) (*Response[GetImageResponseData], error)
-	// Create one or more new instances.
+	// Create an instance in Unikraft Cloud.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -567,8 +567,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#create-service-group
 	CreateServiceGroup(ctx context.Context, request CreateServiceGroupRequest, ropts ...RequestOption) (*Response[CreateServiceGroupResponseData], error)
-	// Delete the specified service group(s).  After this call the name of the
-	// service group(s) are no longer valid.
+	// Delete a specified service group by its UUID.  After this call the UUID of
+	// the service group is no longer valid.
 	//
 	// @param `uuid`
 	// 	The UUID of the service group to delete.
@@ -580,8 +580,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#delete-service-group-by-uuid
 	DeleteServiceGroupByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteServiceGroupsResponseData], error)
-	// Delete a specified service group by its UUID.  After this call the UUID of
-	// the service group are no longer valid.
+	// Delete the specified service group(s).  After this call the name of the
+	// service group(s) are no longer valid.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -668,7 +668,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/system#healthz
 	Healthz(ctx context.Context, ropts ...RequestOption) (*Response[HealthzResponseData], error)
-	// Lists quota usage and limits of your user account.
+	// List quota usage and limits of your user account.
 	// Limits are hard limits that cannot be exceeded.
 	//
 	// @param `ropts`
@@ -678,7 +678,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/users#get-user
 	GetUser(ctx context.Context, ropts ...RequestOption) (*Response[QuotasResponseData], error)
-	// Lists quota usage and limits of your user account by UUID.
+	// List quota usage and limits of a user account by UUID.
 	// Limits are hard limits that cannot be exceeded.
 	//
 	// @param `uuid`
@@ -691,10 +691,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/users#get-user-by-uuid
 	GetUserByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[QuotasResponseData], error)
-	// Attaches a volume by UUID to an instance so that the volume is mounted when
-	// the instance starts. The volume needs to be in available state and the
-	// instance must in stopped state. Currently, each instance can have only one
-	// volume attached at most.
+	// Attach a volume by UUID to an instance so that the volume is mounted when
+	// the instance starts.  The volume needs to be in `available` state and the
+	// instance must be in `stopped` state.
 	//
 	// @param `uuid`
 	// 	The UUID of the volume to attach.
@@ -709,10 +708,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#attach-volume-by-uuid
 	AttachVolumeByUUID(ctx context.Context, uuid string, request AttachVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error)
-	// Attaches a volume to an instance so that the volume is mounted when the
-	// instance starts. The volume needs to be in available state and the instance
-	// must in stopped state. Currently, each instance can have only one volume
-	// attached at most.
+	// Attach one or more volumes specified by ID(s) (name or UUID) to instances
+	// so that the volumes are mounted when the instances start.  The volumes need
+	// to be in `available` state and the instances must be in `stopped` state.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -724,9 +722,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#attach-volumes
 	AttachVolumes(ctx context.Context, request AttachVolumesRequest, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error)
-	// Creates one or more volumes with the given configuration.
-	// The volumes are automatically initialized with an empty file system.
-	// After initialization the volumes are in the available state and can be
+	// Create a volume given the specified configuration parameters.
+	// The volume is automatically initialized with an empty file system.
+	// After initialization, the volume is in the `available` state and can be
 	// attached to an instance with the `PUT /v1/volumes/attach` endpoint.
 	// Note that, the size of a volume cannot be changed after creation.
 	//
@@ -740,23 +738,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#create-volume
 	CreateVolume(ctx context.Context, request CreateVolumeRequest, ropts ...RequestOption) (*Response[CreateVolumeResponseData], error)
-	// Deletes the specified volume by its name or UUID. Fails if the volume is
-	// still attached to an instance. After this call the IDs associated with
-	// the volume are no longer valid.
-	//
-	// @param `request`
-	// 	The request body for this operation.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
-	// Performs: DELETE /v1/volumes
-	//
-	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-volume
-	DeleteVolume(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error)
-	// Deletes the specified volume by its UUID. Fails if the volume is still
-	// attached to an instance. After this call the IDs associated with the
-	// volume are no longer valid.
+	// Delete the specified volume by its UUID.  If the volume is still attached
+	// to an instance, the operation fails.  After this call, the IDs associated
+	// with the volume are no longer valid.
 	//
 	// @param `uuid`
 	// 	The UUID of the volume to delete.
@@ -768,10 +752,24 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-volume-by-uuid
 	DeleteVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error)
-	// Detaches a volume by UUID from instances. If no particular instance is
-	// specified the volume is detached from all instances. The instances from
-	// which to detach must not have the volume mounted. The API returns an error
-	// for each instance from which it was unable to detach the volume. If the
+	// Delete one or more volumes by their UUID(s) or name(s).  If the volumes are
+	// still attached to an instance, the operation fails.  After this call, the
+	// IDs associated with the volumes are no longer valid.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: DELETE /v1/volumes
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-volumes
+	DeleteVolumes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error)
+	// Detaches a volume by UUID from instances.  If no particular instance is
+	// specified the volume is detached from all instances.  The instances from
+	// which to detach must not have the volume mounted.  The API returns an error
+	// for each instance from which it was unable to detach the volume.  If the
 	// volume has been created together with an instance, detaching the volume
 	// will make it persistent (i.e., it survives the deletion of the instance).
 	//
@@ -788,12 +786,13 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#detach-volume-by-uuid
 	DetachVolumeByUUID(ctx context.Context, uuid string, request DetachVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error)
-	// Detaches a volume from instances. If no particular instance is specified
-	// the volume is detached from all instances. The instances from which to
-	// detach must not have the volume mounted. The API returns an error for each
-	// instance from which it was unable to detach the volume. If the volume has
-	// been created together with an instance, detaching the volume will make it
-	// persistent (i.e., it survives the deletion of the instance).
+	// Detach volumes specified by ID(s) (name or UUID) from instances.  If no
+	// particular instance is specified the volume is detached from all instances.
+	// The instances from which to detach must not have the volumes mounted.  The
+	// API returns an error for each instance from which it was unable to detach
+	// the volume.  If the volume has been created together with an instance,
+	// detaching the volume will make it persistent (i.e., it survives the
+	// deletion of the instance).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -805,8 +804,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#detach-volumes
 	DetachVolumes(ctx context.Context, request DetachVolumesRequest, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error)
-	// Returns the current status and the configuration of a particular volume if
-	// the UUID is specified.
+	// Return the current status and the configuration of a particular volume by
+	// its UUID.
 	//
 	// @param `uuid`
 	// 	The UUID of the volume to retrieve.
@@ -825,9 +824,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volume-by-uuid
 	GetVolumeByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
-	// Returns the current status and the configuration of a particular volume if
-	// name is specified. Otherwise, returns the current status and configuration
-	// of all volumes.
+	// Return the current status and the configuration of one or more volumes
+	// specified by either UUID(s) or name(s).  If no identifier is provided,
+	// all volumes are returned.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -846,7 +845,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volumes
 	GetVolumes(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
-	// Updates the specified volume by its UUID.
+	// Update the specified volume by its UUID.
 	//
 	// @param `uuid`
 	// 	The UUID of the service group to update.
@@ -861,7 +860,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-volume-by-uuid
 	UpdateVolumeByUUID(ctx context.Context, uuid string, request UpdateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateVolumesResponseData], error)
-	// Updates one or more volumes specified by either UUID(s) or name(s)
+	// Update one or more volumes specified by either UUID(s) or name(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -951,6 +950,22 @@ func (c *client) clone() *client {
 	return &ccpy
 }
 
+func (c *client) CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
+	requestPath := "/v1/services/{uuid}/autoscale"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
+	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
 func (c *client) CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
@@ -977,22 +992,6 @@ func (c *client) CreateAutoscaleConfigurations(ctx context.Context, request []Cr
 		if err != nil {
 			return nil, fmt.Errorf("error marshalling request body: %w", err)
 		}
-	}
-
-	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, fmt.Errorf("performing the request: %w", err)
-	}
-	return resp, nil
-}
-
-func (c *client) CreateAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
-	requestPath := "/v1/services/{uuid}/autoscale"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
-
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
 	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
@@ -1682,7 +1681,18 @@ func (c *client) CreateVolume(ctx context.Context, request CreateVolumeRequest, 
 	return resp, nil
 }
 
-func (c *client) DeleteVolume(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error) {
+func (c *client) DeleteVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error) {
+	requestPath := "/v1/volumes/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	resp := &Response[DeleteVolumesResponseData]{}
+	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) DeleteVolumes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error) {
 	requestPath := "/v1/volumes"
 
 	var body []byte
@@ -1696,17 +1706,6 @@ func (c *client) DeleteVolume(ctx context.Context, request []NameOrUUID, ropts .
 
 	resp := &Response[DeleteVolumesResponseData]{}
 	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, fmt.Errorf("performing the request: %w", err)
-	}
-	return resp, nil
-}
-
-func (c *client) DeleteVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error) {
-	requestPath := "/v1/volumes/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
-
-	resp := &Response[DeleteVolumesResponseData]{}
-	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil

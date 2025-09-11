@@ -6,6 +6,7 @@
 
 package platform
 
+// The response message for a GetAutoscaleConfigurationsRequest.
 // The status of the response.
 type GetAutoscaleConfigurationsResponseStatus string
 

@@ -6,12 +6,8 @@
 
 package platform
 
-// Detaches a volume from instances. If no particular instance is specified the
-// volume is detached from all instances. The instances from which to detach
-// must not have the volume mounted. The API returns an error for each instance
-// from which it was unable to detach the volume. If the volume has been
-// created together with an instance, detaching the volume will make it
-// persistent (i.e., it survives the deletion of the instance).
+// The request message for detaching one or more volume(s) from instances by
+// their UUID(s) or name(s).
 
 type DetachVolumesRequest struct {
 	// The UUID of the volume to detach. Mutually exclusive with name.

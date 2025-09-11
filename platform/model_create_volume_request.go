@@ -6,11 +6,7 @@
 
 package platform
 
-// Creates one or more volumes with the given configuration. The volumes are
-// automatically initialized with an empty file system. After initialization
-// the volumes are in the available state and can be attached to an instance
-// with the `PUT /v1/volumes/attach` endpoint. Note that, the size of a volume
-// cannot be changed after creation.
+// The request message for creating a volume.
 
 type CreateVolumeRequest struct {
 	// The size of the volume in megabytes.
