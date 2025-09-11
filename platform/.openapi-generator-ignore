@@ -7,7 +7,7 @@ api/
 utils.go
 configuration.go
 defaults.go
-model_instance_stop_reason.go
+stop_reason.go
 errnos.go
 go.mod
 go.sum
