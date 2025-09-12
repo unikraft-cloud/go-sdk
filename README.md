@@ -1,6 +1,6 @@
 # Unikraft Cloud Go SDK
 
-[![](https://pkg.go.dev/badge/github.com/unikraft-cloud/go-sdk.svg)](https://pkg.go.dev/github.com/unikraft-cloud/go-sdk)
+[![](https://pkg.go.dev/badge/unikraft.com/cloud/sdk.svg)](https://pkg.go.dev/unikraft.com/cloud/sdk)
 
 This repository contains an auto-generated Go SDK which interfaces with
 [Unikraft Cloud](https://unikraft.cloud) based on the public
@@ -20,7 +20,7 @@ import (
 	"context"
 	"fmt"
 
-	ukp "github.com/unikraft-cloud/go-sdk/platform"
+	ukp "unikraft.com/cloud/sdk/platform"
 )
 
 func main() {

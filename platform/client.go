@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/unikraft-cloud/go-sdk/pkg/httpclient"
+	"unikraft.com/cloud/sdk/pkg/httpclient"
 )
 
 type Client interface {

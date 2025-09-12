@@ -1,4 +1,4 @@
-module github.com/unikraft-cloud/go-sdk
+module unikraft.com/cloud/sdk
 
 go 1.24.0
 
