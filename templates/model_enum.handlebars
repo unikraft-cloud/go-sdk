@@ -1,0 +1,14 @@
+{{~#if unescapedDescription}}
+	// 	{{{ replace unescapedDescription "
+" "
+	// 	"}}}
+{{~/if}}
+type {{{classname}}} string
+
+const (
+{{~#allowableValues}}
+{{~#enumVars}}
+	{{classname}}{{name}} {{classname}} = {{{value}}}
+{{~/enumVars}}
+{{~/allowableValues}}
+)

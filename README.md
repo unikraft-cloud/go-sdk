@@ -1,6 +1,6 @@
 # Unikraft Cloud Go SDK
 
-[![](https://pkg.go.dev/badge/github.com/unikraft-cloud/go-sdk.svg)](https://pkg.go.dev/github.com/unikraft-cloud/go-sdk)
+[![](https://pkg.go.dev/badge/unikraft.com/cloud/sdk.svg)](https://pkg.go.dev/unikraft.com/cloud/sdk)
 
 This repository contains an auto-generated Go SDK which interfaces with
 [Unikraft Cloud](https://unikraft.cloud) based on the public
@@ -20,28 +20,30 @@ import (
 	"context"
 	"fmt"
 
-	ukp "github.com/unikraft-cloud/go-sdk/platform"
+	ukp "unikraft.com/cloud/sdk/platform"
 )
 
 func main() {
 	ctx := context.Background()
 
-	client, err := ukp.NewClient(
-		"https://api.fra0.kraft.cloud",
-		ukp.Token("..."),
+	client := ukp.NewClient(
+		ukp.WithDefaultMetro("fra0"),
+		ukp.WithToken("...."),
 	)
+
+	instResp, err := client.GetInstances(ctx, nil, true)
 	if err != nil {
 		panic(err)
 	}
 
-	inst, err := client.GetInstanceByUUID(ctx, platform.GetInstanceByUUIDParams{
-		UUID: "ee5611f9-2d83-4ee4-8d76-c882ab0f2c22",
-	})
-	if err != nil {
-		panic(err)
+	for _, instance := range instResp.Data.Instances {
+		fmt.Printf("UUID:  %s\n", *instance.Uuid)
+		fmt.Printf("Name:  %s\n", *instance.Name)
+		fmt.Printf("Image: %s\n", *instance.Image)
+		fmt.Printf("Args:  %v\n", instance.Args)
+		fmt.Printf("State: %s\n", *instance.State)
+		fmt.Printf("-----------------------------------\n")
 	}
-
-	data, _ := inst.GetData().Get()
 
 	fmt.Sprintf("%#v\n", data)
 }

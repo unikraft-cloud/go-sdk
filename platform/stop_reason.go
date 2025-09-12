@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-// Copyright (c) 2023, Unikraft GmbH.
+// Copyright (c) 2025, Unikraft GmbH.
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
@@ -39,34 +39,31 @@ const (
 )
 
 // StopCodeErrno returns the application errno, using Linux's errno.h values.
-func (item *Instance) StopCodeErrno() uint8 {
-	stopCode, ok := item.StopCode.Get()
-	if !ok {
+func (instance *Instance) StopCodeErrno() uint8 {
+	if instance.StopCode == nil {
 		return 0
 	}
 
-	return uint8((stopCode & StopCodeMaskErrno) >> 16)
+	return uint8((*instance.StopCode & StopCodeMaskErrno) >> 16)
 }
 
 // StopCodeShutdownTable returns whether the stop originated from the inittable
 // (0) or from the termtable (1).
-func (item *Instance) StopCodeShutdownTable() uint8 {
-	stopCode, ok := item.StopCode.Get()
-	if !ok {
+func (instance *Instance) StopCodeShutdownTable() uint8 {
+	if instance.StopCode == nil {
 		return 0
 	}
 
-	return uint8((stopCode & StopCodeMaskShutdown) >> 15)
+	return uint8((*instance.StopCode & StopCodeMaskShutdown) >> 15)
 }
 
 // StopCodeInitLevel returns the initlevel at the time of the stop.
-func (item *Instance) StopCodeInitLevel() uint8 {
-	stopCode, ok := item.StopCode.Get()
-	if !ok {
+func (instance *Instance) StopCodeInitLevel() uint8 {
+	if instance.StopCode == nil {
 		return 0
 	}
 
-	return uint8((stopCode & StopCodeMaskInitLevel) >> 8)
+	return uint8((*instance.StopCode & StopCodeMaskInitLevel) >> 8)
 }
 
 const (
@@ -110,13 +107,12 @@ func StopCodeReasons() []string {
 }
 
 // StopCodeReason provides the identity value for the reason for the stop.
-func (item *Instance) StopCodeReason() uint8 {
-	stopCode, ok := item.StopCode.Get()
-	if !ok {
+func (instance *Instance) StopCodeReason() uint8 {
+	if instance.StopCode == nil {
 		return StopCodeReasonOK
 	}
 
-	return uint8(stopCode & StopCodeMaskReason)
+	return uint8(*instance.StopCode & StopCodeMaskReason)
 }
 
 const (
@@ -125,33 +121,43 @@ const (
 	StopReasonPlatform                       // 0b00100
 	StopReasonUser                           // 0b01000
 	StopReasonForced                         // 0b10000
+
+	// Common stop reason scenarios as constants
+	StopReasonUnknown                uint32 = 0                                                                              // 00000: -----
+	StopReasonKernelCrash            uint32 = StopReasonKernel                                                               // 00001: ----K
+	StopReasonAppExit                uint32 = StopReasonApplication | StopReasonKernel                                       // 00011: ---AK
+	StopReasonPlatformShutdown       uint32 = StopReasonPlatform | StopReasonApplication | StopReasonKernel                  // 00111: --PAK
+	StopReasonUserShutdownIncomplete uint32 = StopReasonUser | StopReasonPlatform | StopReasonKernel                         // 01101: -UP-K
+	StopReasonUserShutdownComplete   uint32 = StopReasonUser | StopReasonPlatform | StopReasonApplication | StopReasonKernel // 01111: -UPAK
+	StopReasonForcedUserShutdown     uint32 = StopReasonForced | StopReasonUser | StopReasonPlatform                         // 11100: FUP--
 )
 
 // DescribeStopOrigin provides a human-readable interpretation of the stop
 // reason.
-func (item Instance) DescribeStopOrigin() string {
-	stopReason, ok := item.StopReason.Get()
-	if !ok || stopReason == 0 {
+func (instance *Instance) DescribeStopOrigin() string {
+	if instance.StopReason == nil || *instance.StopReason == 0 {
 		return "unknown"
 	}
 
 	var ret strings.Builder
 
-	if stopReason&StopReasonForced != 0 {
+	if *instance.StopReason&StopReasonForced != 0 {
 		ret.WriteString("force ")
 	}
 
 	ret.WriteString("initiated by ")
 
 	switch true {
-	case stopReason&StopReasonPlatform == StopReasonPlatform && stopReason&StopReasonUser != StopReasonUser:
+	case *instance.StopReason&StopReasonPlatform == StopReasonPlatform && *instance.StopReason&StopReasonUser != StopReasonUser:
 		ret.WriteString("platform")
-	case stopReason&StopReasonUser == StopReasonUser:
+	case *instance.StopReason&StopReasonUser == StopReasonUser:
 		ret.WriteString("user")
-	case stopReason&StopReasonApplication == StopReasonApplication:
+	case *instance.StopReason&StopReasonApplication == StopReasonApplication:
 		ret.WriteString("app")
-	case stopReason&StopReasonKernel == StopReasonKernel:
+	case *instance.StopReason&StopReasonKernel == StopReasonKernel:
 		ret.WriteString("kernel")
+	default:
+		ret.WriteString("unknown")
 	}
 
 	return ret.String()
@@ -159,35 +165,34 @@ func (item Instance) DescribeStopOrigin() string {
 
 // StopOriginCode provides a human-readable interpretation of the stop reason in
 // the form of a short-code.
-func (item Instance) StopOriginCode() string {
-	stopReason, ok := item.StopReason.Get()
-	if !ok || stopReason == 0 {
+func (instance *Instance) StopOriginCode() string {
+	if instance.StopCode == nil || *instance.StopCode == 0 {
 		return "-----"
 	}
 
 	var ret strings.Builder
 
-	if stopReason&StopReasonForced == StopReasonForced {
+	if *instance.StopReason&StopReasonForced == StopReasonForced {
 		ret.WriteString("f")
 	} else {
 		ret.WriteString("-")
 	}
-	if stopReason&StopReasonUser == StopReasonUser {
+	if *instance.StopReason&StopReasonUser == StopReasonUser {
 		ret.WriteString("u")
 	} else {
 		ret.WriteString("-")
 	}
-	if stopReason&StopReasonPlatform == StopReasonPlatform {
+	if *instance.StopReason&StopReasonPlatform == StopReasonPlatform {
 		ret.WriteString("p")
 	} else {
 		ret.WriteString("-")
 	}
-	if stopReason&StopReasonApplication == StopReasonApplication {
+	if *instance.StopReason&StopReasonApplication == StopReasonApplication {
 		ret.WriteString("a")
 	} else {
 		ret.WriteString("-")
 	}
-	if stopReason&StopReasonKernel == StopReasonKernel {
+	if *instance.StopReason&StopReasonKernel == StopReasonKernel {
 		ret.WriteString("k")
 	} else {
 		ret.WriteString("-")
@@ -197,34 +202,33 @@ func (item Instance) StopOriginCode() string {
 }
 
 // DescribeStopReason provides a human-readable description of the stop reason.
-func (item Instance) DescribeStopReason() string {
-	stopReason, ok := item.StopReason.Get()
-	if !ok || stopReason == 0 {
+func (instance *Instance) DescribeStopReason() string {
+	if instance.StopCode == nil || *instance.StopCode == 0 {
 		return ""
 	}
 
 	var ret strings.Builder
 
 	switch true {
-	case item.StopCodeReason() == StopCodeReasonOK:
+	case instance.StopCodeReason() == StopCodeReasonOK:
 		ret.WriteString("shutdown")
-	case item.StopCodeReason() == StopCodeReasonEXP:
+	case instance.StopCodeReason() == StopCodeReasonEXP:
 		ret.WriteString("assertion error")
-	case item.StopCodeReason() == StopCodeReasonPGFAULT && item.StopCodeErrno() == 0xc:
+	case instance.StopCodeReason() == StopCodeReasonPGFAULT && instance.StopCodeErrno() == 0xc:
 		ret.WriteString("out of memory")
-	case item.StopCodeReason() == StopCodeReasonPGFAULT && (item.StopCodeErrno() == 0xe || item.StopCodeErrno() == 0x1):
+	case instance.StopCodeReason() == StopCodeReasonPGFAULT && (instance.StopCodeErrno() == 0xe || instance.StopCodeErrno() == 0x1):
 		ret.WriteString("illegal memory access")
-	case item.StopCodeReason() == StopCodeReasonSEGFAULT:
+	case instance.StopCodeReason() == StopCodeReasonSEGFAULT:
 		ret.WriteString("segmentation fault")
-	case item.StopCodeReason() == StopCodeReasonPGFAULT:
+	case instance.StopCodeReason() == StopCodeReasonPGFAULT:
 		ret.WriteString("page fault")
-	case item.StopCodeReason() == StopCodeReasonMATH:
+	case instance.StopCodeReason() == StopCodeReasonMATH:
 		ret.WriteString("arithmetic error")
-	case item.StopCodeReason() == StopCodeReasonINVLOP:
+	case instance.StopCodeReason() == StopCodeReasonINVLOP:
 		ret.WriteString("instruction error")
-	case item.StopCodeReason() == StopCodeReasonHWERR:
+	case instance.StopCodeReason() == StopCodeReasonHWERR:
 		ret.WriteString("hardware error")
-	case item.StopCodeReason() == StopCodeReasonSECERR:
+	case instance.StopCodeReason() == StopCodeReasonSECERR:
 		ret.WriteString("security violation")
 	default:
 		ret.WriteString("unexpected error")
@@ -235,33 +239,32 @@ func (item Instance) DescribeStopReason() string {
 
 // StopReasonCode returns a human-readable short-code representation of the stop
 // reason.
-func (item Instance) StopReasonCode() string {
-	stopReason, ok := item.StopReason.Get()
-	if !ok || stopReason == 0 {
+func (instance *Instance) StopReasonCode() string {
+	if instance.StopCode == nil || *instance.StopCode == 0 {
 		return ""
 	}
 
 	var ret strings.Builder
 
-	if item.StopCodeShutdownTable() == 0 {
+	if instance.StopCodeShutdownTable() == 0 {
 		ret.WriteString("i")
 	} else {
 		ret.WriteString("t")
 	}
 
-	ret.WriteString(fmt.Sprintf("%d", item.StopCodeInitLevel()))
+	ret.WriteString(fmt.Sprintf("%d", instance.StopCodeInitLevel()))
 
 	ret.WriteString(" ")
 
-	ret.WriteString(StopCodeReasons()[item.StopCodeReason()])
+	ret.WriteString(StopCodeReasons()[instance.StopCodeReason()])
 
-	if item.StopCodeErrno() != 0 {
+	if instance.StopCodeErrno() != 0 {
 		ret.WriteString(" ")
-		errno, ok := ErrnoNames()[syscall.Errno(item.StopCodeErrno())]
+		errno, ok := ErrnoNames()[syscall.Errno(instance.StopCodeErrno())]
 		if ok {
 			ret.WriteString(errno)
 		} else {
-			ret.WriteString(fmt.Sprintf("%d", item.StopCodeErrno()))
+			ret.WriteString(fmt.Sprintf("%d", instance.StopCodeErrno()))
 		}
 	}
 
@@ -269,10 +272,14 @@ func (item Instance) StopReasonCode() string {
 }
 
 // DescribeStatus returns a human-readable description of the instance's status.
-func (item Instance) DescribeStatus() string {
-	switch item.State.Value {
+func (instance *Instance) DescribeStatus() string {
+	if instance.State == nil {
+		return ""
+	}
+
+	switch *instance.State {
 	case InstanceStateRunning:
-		dur := time.Since(item.StartedAt.Value)
+		dur := time.Since(*instance.StartedAt)
 		days := int64(dur.Hours() / 24)
 		hours := int64(math.Mod(dur.Hours(), 24))
 		minutes := int64(math.Mod(dur.Minutes(), 60))
@@ -306,13 +313,13 @@ func (item Instance) DescribeStatus() string {
 
 		return fmt.Sprintf("since %s", strings.Join(parts, " "))
 	case InstanceStateStopped:
-		reason := item.DescribeStopReason()
+		reason := instance.DescribeStopReason()
 		if reason == "shutdown" {
 			return ""
 		}
 
 		return reason
 	default:
-		return string(item.State.Value)
+		return string(*instance.State)
 	}
 }
