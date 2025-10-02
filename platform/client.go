@@ -550,6 +550,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#wait-instances
 	WaitInstances(ctx context.Context, request []NameOrUUID, state string, timeoutMs int64, ropts ...RequestOption) (*Response[WaitInstanceResponseData], error)
+	// Return the status of a full-system health check of the node.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/healthz
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/node#healthz
+	Healthz(ctx context.Context, ropts ...RequestOption) (*Response[HealthzResponseData], error)
 	// Create a new service with the given configuration.
 	//
 	// Note that the service properties like published ports can only be defined
@@ -659,15 +668,6 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#update-service-groups
 	UpdateServiceGroups(ctx context.Context, request []UpdateServiceGroupsRequestItem, ropts ...RequestOption) (*Response[UpdateServiceGroupsResponseData], error)
-	// Return the status of a full-system health check of the platform.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
-	// Performs: GET /v1/healthz
-	//
-	// See: https://unikraft.com/docs/api/platform/v1/system#healthz
-	Healthz(ctx context.Context, ropts ...RequestOption) (*Response[HealthzResponseData], error)
 	// List quota usage and limits of your user account.
 	// Limits are hard limits that cannot be exceeded.
 	//
@@ -1488,6 +1488,16 @@ func (c *client) WaitInstances(ctx context.Context, request []NameOrUUID, state 
 	return resp, nil
 }
 
+func (c *client) Healthz(ctx context.Context, ropts ...RequestOption) (*Response[HealthzResponseData], error) {
+	requestPath := "/v1/healthz"
+
+	resp := &Response[HealthzResponseData]{}
+	if err := doRequest[HealthzResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
 func (c *client) CreateServiceGroup(ctx context.Context, request CreateServiceGroupRequest, ropts ...RequestOption) (*Response[CreateServiceGroupResponseData], error) {
 	requestPath := "/v1/services"
 
@@ -1599,16 +1609,6 @@ func (c *client) UpdateServiceGroups(ctx context.Context, request []UpdateServic
 
 	resp := &Response[UpdateServiceGroupsResponseData]{}
 	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, fmt.Errorf("performing the request: %w", err)
-	}
-	return resp, nil
-}
-
-func (c *client) Healthz(ctx context.Context, ropts ...RequestOption) (*Response[HealthzResponseData], error) {
-	requestPath := "/v1/healthz"
-
-	resp := &Response[HealthzResponseData]{}
-	if err := doRequest[HealthzResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
