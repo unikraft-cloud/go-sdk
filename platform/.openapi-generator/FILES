@@ -1,5 +1,7 @@
 client.go
 client_options.go
+model_add_users_response.go
+model_add_users_response_data.go
 model_attach_volume_by_uuid_request_body.go
 model_attach_volumes_request.go
 model_attach_volumes_request_attach_to.go
@@ -44,6 +46,7 @@ model_create_volume_request.go
 model_create_volume_response.go
 model_create_volume_response_data.go
 model_create_volume_response_volume.go
+model_data_result.go
 model_delete_autoscale_configuration_policy_response.go
 model_delete_autoscale_configuration_policy_response_data.go
 model_delete_autoscale_configuration_policy_response_policies_response.go
