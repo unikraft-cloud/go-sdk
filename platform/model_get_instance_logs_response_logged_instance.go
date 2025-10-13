@@ -15,6 +15,7 @@ const (
 	GetInstanceLogsResponseLoggedInstanceStateRunning  GetInstanceLogsResponseLoggedInstanceState = "running"
 	GetInstanceLogsResponseLoggedInstanceStateDraining GetInstanceLogsResponseLoggedInstanceState = "draining"
 	GetInstanceLogsResponseLoggedInstanceStateStopping GetInstanceLogsResponseLoggedInstanceState = "stopping"
+	GetInstanceLogsResponseLoggedInstanceStateTemplate GetInstanceLogsResponseLoggedInstanceState = "template"
 	GetInstanceLogsResponseLoggedInstanceStateStandby  GetInstanceLogsResponseLoggedInstanceState = "standby"
 )
 

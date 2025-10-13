@@ -11,7 +11,7 @@ package platform
 // Volumes can be used to store persistent data which should remain available
 // even if the instance is stopped or restarted.
 
-type InstanceInstanceVolume struct {
+type InstanceVolume struct {
 	// The UUID of the volume.
 	//
 	// This is a unique identifier for the volume that is generated when the
@@ -29,5 +29,5 @@ type InstanceInstanceVolume struct {
 	// the instance where the volume will be mounted.
 	At *string `json:"at,omitempty"`
 	// Whether the volume is read-only or not.
-	ReadOnly *bool `json:"read_only,omitempty"`
+	Readonly *bool `json:"readonly,omitempty"`
 }

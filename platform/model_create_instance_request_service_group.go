@@ -12,6 +12,7 @@ package platform
 // group can be referenced (either through its name or UUID), or a new
 // (ephemeral) service group can be created for the instance by specifying the
 // list of services it should expose and optionally the domains it should use.
+// Not used by template instances.
 
 type CreateInstanceRequestServiceGroup struct {
 	// Similarly, if no existing (persistent) service group is specified via its

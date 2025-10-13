@@ -8,7 +8,7 @@ package platform
 
 // The response data for this request.
 
-type DeleteInstancesResponseData struct {
-	// The instance(s) which were deleted by the request.
-	Instances []DeleteInstancesResponseInstance `json:"instances,omitempty"`
+type DeleteTemplateInstancesResponseData struct {
+	// List of template instances that were processed during the delete operation.
+	Instances []DeleteTemplateInstancesResponseTemplateInstance `json:"instances,omitempty"`
 }

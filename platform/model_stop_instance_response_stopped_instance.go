@@ -15,6 +15,7 @@ const (
 	StopInstanceResponseStoppedInstanceStateRunning  StopInstanceResponseStoppedInstanceState = "running"
 	StopInstanceResponseStoppedInstanceStateDraining StopInstanceResponseStoppedInstanceState = "draining"
 	StopInstanceResponseStoppedInstanceStateStopping StopInstanceResponseStoppedInstanceState = "stopping"
+	StopInstanceResponseStoppedInstanceStateTemplate StopInstanceResponseStoppedInstanceState = "template"
 	StopInstanceResponseStoppedInstanceStateStandby  StopInstanceResponseStoppedInstanceState = "standby"
 )
 
@@ -27,6 +28,7 @@ const (
 	StopInstanceResponseStoppedInstancePreviousStateRunning  StopInstanceResponseStoppedInstancePreviousState = "running"
 	StopInstanceResponseStoppedInstancePreviousStateDraining StopInstanceResponseStoppedInstancePreviousState = "draining"
 	StopInstanceResponseStoppedInstancePreviousStateStopping StopInstanceResponseStoppedInstancePreviousState = "stopping"
+	StopInstanceResponseStoppedInstancePreviousStateTemplate StopInstanceResponseStoppedInstancePreviousState = "template"
 	StopInstanceResponseStoppedInstancePreviousStateStandby  StopInstanceResponseStoppedInstancePreviousState = "standby"
 )
 
