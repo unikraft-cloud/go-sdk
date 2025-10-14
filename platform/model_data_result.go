@@ -6,9 +6,7 @@
 
 package platform
 
-// The response data for this request.
-
-type DeleteInstancesResponseData struct {
-	// The instance(s) which were deleted by the request.
-	Instances []DeleteInstancesResponseInstance `json:"instances,omitempty"`
+type DataResult struct {
+	Uuid  *string `json:"uuid,omitempty"`
+	Added *bool   `json:"added,omitempty"`
 }

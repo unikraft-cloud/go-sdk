@@ -15,6 +15,7 @@ const (
 	WaitInstanceResponseWaitedInstanceStateRunning  WaitInstanceResponseWaitedInstanceState = "running"
 	WaitInstanceResponseWaitedInstanceStateDraining WaitInstanceResponseWaitedInstanceState = "draining"
 	WaitInstanceResponseWaitedInstanceStateStopping WaitInstanceResponseWaitedInstanceState = "stopping"
+	WaitInstanceResponseWaitedInstanceStateTemplate WaitInstanceResponseWaitedInstanceState = "template"
 	WaitInstanceResponseWaitedInstanceStateStandby  WaitInstanceResponseWaitedInstanceState = "standby"
 )
 

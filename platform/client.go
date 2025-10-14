@@ -287,6 +287,22 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#create-instance
 	CreateInstance(ctx context.Context, request CreateInstanceRequest, ropts ...RequestOption) (*Response[CreateInstanceResponseData], error)
+	// Convert one or more existing instances by their UUID(s) or name(s) into
+	// template instances that can be used to create new instances.
+	//
+	// The existing instances must be in the `stopped` state and not have existing
+	// snapshots.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/instances/templates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#create-template-instances
+	CreateTemplateInstances(ctx context.Context, request CreateTemplateInstancesRequest, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error)
 	// Delete a specified instance by its UUID.  After this call the UUID of the
 	// instance is no longer valid.  If the instance is currently running,
 	// it is force-stopped.
@@ -302,7 +318,7 @@ type Client interface {
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instance-by-uuid
 	DeleteInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
 	// Delete the specified instance(s) by ID(s) (name or UUID).  After this call
-	// the name of the instances are no longer valid.  If the instances are
+	// the IDs of the instances are no longer valid.  If the instances are
 	// currently running, they are force-stopped.
 	//
 	// @param `request`
@@ -315,6 +331,32 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instances
 	DeleteInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
+	// Delete a specified template instance by its UUID.  After this call the UUID
+	// of the template instance is no longer valid.
+	//
+	// @param `uuid`
+	// 	The UUID of the template instance to delete.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: DELETE /v1/instances/templates/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-template-instance-by-uuid
+	DeleteTemplateInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteTemplateInstancesResponseData], error)
+	// Delete the specified template instance(s) by ID(s) (name or UUID).  After
+	// this call the IDs of the template instances are no longer valid.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: DELETE /v1/instances/templates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-template-instances
+	DeleteTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteTemplateInstancesResponseData], error)
 	// Get a single instance by its UUID.
 	//
 	// @param `uuid`
@@ -406,6 +448,51 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instances
 	GetInstances(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	// Get a single template instance by its UUID.
+	//
+	// @param `uuid`
+	// 	The UUID of the template instance to retrieve.
+	//
+	// @param `details`
+	// 	Whether to include details about the templates in the response.  By default
+	// 	this is set to true, meaning that all information about the templates will
+	// 	be included in the response.  If set to false, only the basic information
+	// 	about the templates will be included, such as their name and UUID.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/instances/templates/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instance-by-uuid
+	GetTemplateInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
+	// Get one or more template instances by their UUID(s) or name(s).
+	//
+	// @param `details`
+	// 	Whether to include details about the templates in the response.  By default
+	// 	this is set to true, meaning that all information about the templates will
+	// 	be included in the response.  If set to false, only the basic information
+	// 	about the templates will be included, such as their name and UUID.
+	//
+	// @param `fromUuid`
+	// 	If set, the listing starts from (but does not include) the template with
+	// 	the given UUID.  This is useful for pagination.
+	//
+	// @param `count`
+	// 	The maximum number of template instances to return.  This is useful for
+	// 	pagination.  If not set, all the template instances matching filters will
+	// 	be returned.  When filtering by IDs, this should not be set.
+	//
+	// @param `tags`
+	// 	A list of tags to filter the template instances by.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/instances/templates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instances
+	GetTemplateInstances(ctx context.Context, details bool, fromUuid string, count int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
 	// Start a previously stopped instance by its UUID or do nothing if the
 	// instance is already running.
 	//
@@ -499,6 +586,33 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-instances
 	UpdateInstances(ctx context.Context, request UpdateInstancesRequest, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error)
+	// Update (modify) a template instance by its UUID.
+	//
+	// @param `uuid`
+	// 	The UUID of the template instance to update.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/instances/templates/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#update-template-instance-by-uuid
+	UpdateTemplateInstanceByUUID(ctx context.Context, uuid string, request UpdateTemplateInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateTemplateInstancesResponseData], error)
+	// Update (modify) one or more template instances by ID(s) (name or UUID).
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/instances/templates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#update-template-instances
+	UpdateTemplateInstances(ctx context.Context, request []UpdateTemplateInstancesRequestItem, ropts ...RequestOption) (*Response[UpdateTemplateInstancesResponseData], error)
 	// Wait for an instance to reach a certain state, by its UUID.
 	//
 	// If the instance is already in the desired state, the request will return
@@ -668,6 +782,16 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#update-service-groups
 	UpdateServiceGroups(ctx context.Context, request []UpdateServiceGroupsRequestItem, ropts ...RequestOption) (*Response[UpdateServiceGroupsResponseData], error)
+	// Create new user accounts. This will return 409 Conflict when any of the
+	// requested users already existed on the target.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/users
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/users#add-users
+	AddUsers(ctx context.Context, ropts ...RequestOption) (*Response[AddUsersResponseData], error)
 	// List quota usage and limits of your user account.
 	// Limits are hard limits that cannot be exceeded.
 	//
@@ -1232,6 +1356,21 @@ func (c *client) CreateInstance(ctx context.Context, request CreateInstanceReque
 	return resp, nil
 }
 
+func (c *client) CreateTemplateInstances(ctx context.Context, request CreateTemplateInstancesRequest, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error) {
+	requestPath := "/v1/instances/templates"
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[CreateTemplateInstancesResponseData]{}
+	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
 func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
@@ -1257,6 +1396,36 @@ func (c *client) DeleteInstances(ctx context.Context, request []NameOrUUID, ropt
 
 	resp := &Response[DeleteInstancesResponseData]{}
 	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) DeleteTemplateInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteTemplateInstancesResponseData], error) {
+	requestPath := "/v1/instances/templates/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	resp := &Response[DeleteTemplateInstancesResponseData]{}
+	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) DeleteTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteTemplateInstancesResponseData], error) {
+	requestPath := "/v1/instances/templates"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[DeleteTemplateInstancesResponseData]{}
+	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -1354,6 +1523,38 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, details
 	return resp, nil
 }
 
+func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
+	requestPath := "/v1/instances/templates/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	query := make(url.Values)
+	query.Add("details", fmt.Sprintf("%t", details))
+
+	resp := &Response[GetTemplateInstancesResponseData]{}
+	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) GetTemplateInstances(ctx context.Context, details bool, fromUuid string, count int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
+	requestPath := "/v1/instances/templates"
+
+	query := make(url.Values)
+	query.Add("details", fmt.Sprintf("%t", details))
+	query.Add("from_uuid", fromUuid)
+	query.Add("count", fmt.Sprintf("%d", count))
+	for _, v := range tags {
+		query.Add("tags", v)
+	}
+
+	resp := &Response[GetTemplateInstancesResponseData]{}
+	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
 func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[StartInstanceResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/start"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
@@ -1444,6 +1645,41 @@ func (c *client) UpdateInstances(ctx context.Context, request UpdateInstancesReq
 
 	resp := &Response[UpdateInstancesResponseData]{}
 	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateTemplateInstanceByUUID(ctx context.Context, uuid string, request UpdateTemplateInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateTemplateInstancesResponseData], error) {
+	requestPath := "/v1/instances/templates/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[UpdateTemplateInstancesResponseData]{}
+	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateTemplateInstances(ctx context.Context, request []UpdateTemplateInstancesRequestItem, ropts ...RequestOption) (*Response[UpdateTemplateInstancesResponseData], error) {
+	requestPath := "/v1/instances/templates"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[UpdateTemplateInstancesResponseData]{}
+	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -1609,6 +1845,16 @@ func (c *client) UpdateServiceGroups(ctx context.Context, request []UpdateServic
 
 	resp := &Response[UpdateServiceGroupsResponseData]{}
 	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) AddUsers(ctx context.Context, ropts ...RequestOption) (*Response[AddUsersResponseData], error) {
+	requestPath := "/v1/users"
+
+	resp := &Response[AddUsersResponseData]{}
+	if err := doRequest[AddUsersResponseData](ctx, c.request, http.MethodPost, requestPath, nil, nil, resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil

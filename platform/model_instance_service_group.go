@@ -23,5 +23,5 @@ type InstanceServiceGroup struct {
 	// can also be used to identify the service group in API calls.
 	Name *string `json:"name,omitempty"`
 	// The domain configuration for the service group.
-	Domains []InstanceServiceGroupInstanceDomain `json:"domains,omitempty"`
+	Domains []ServiceGroupInstanceDomain `json:"domains,omitempty"`
 }

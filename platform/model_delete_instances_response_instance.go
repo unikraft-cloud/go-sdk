@@ -8,7 +8,7 @@ package platform
 
 // Details of the instance which was deleted by this request.
 
-type DeleteInstancesResponseDeletedInstance struct {
+type DeleteInstancesResponseInstance struct {
 	// Indicates whether the start operation was successful or not for this
 	// instance.
 	Status *ResponseStatus `json:"status,omitempty"`
