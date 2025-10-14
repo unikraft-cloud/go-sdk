@@ -6,9 +6,9 @@
 
 package platform
 
-// The response data for this request.
+// The snapshot of the instance, if exists.
 
-type DeleteInstancesResponseData struct {
-	// The instance(s) which were deleted by the request.
-	Instances []DeleteInstancesResponseInstance `json:"instances,omitempty"`
+type InstanceSnapshot struct {
+	// The UUID of the snapshot.
+	Uuid *string `json:"uuid,omitempty"`
 }

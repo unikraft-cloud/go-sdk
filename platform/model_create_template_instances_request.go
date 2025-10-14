@@ -6,9 +6,9 @@
 
 package platform
 
-// The response data for this request.
+// The request message for converting one or more instances to templates.
 
-type DeleteInstancesResponseData struct {
-	// The instance(s) which were deleted by the request.
-	Instances []DeleteInstancesResponseInstance `json:"instances,omitempty"`
+type CreateTemplateInstancesRequest struct {
+	// The list of IDs of the instances to convert to templates.
+	Ids []NameOrUUID `json:"ids"`
 }

@@ -15,7 +15,7 @@ package platform
 // automatically generate a new certificate for the domain based on Let's
 // Encrypt and seek to accomplish a DNS-01 challenge.
 
-type InstanceServiceGroupInstanceDomain struct {
+type ServiceGroupInstanceDomain struct {
 	// Publicly accessible domain name.
 	//
 	// If this name ends in a period `.` it must be a valid Full Qualified

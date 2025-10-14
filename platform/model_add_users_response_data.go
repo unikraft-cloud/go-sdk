@@ -6,9 +6,7 @@
 
 package platform
 
-// The response data for this request.
-
-type DeleteInstancesResponseData struct {
-	// The instance(s) which were deleted by the request.
-	Instances []DeleteInstancesResponseInstance `json:"instances,omitempty"`
+type AddUsersResponseData struct {
+	// The status of the operation for each user in the request.
+	Results []DataResult `json:"results,omitempty"`
 }

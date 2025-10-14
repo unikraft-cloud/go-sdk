@@ -19,6 +19,7 @@ const (
 	InstanceStateRunning  InstanceState = "running"
 	InstanceStateDraining InstanceState = "draining"
 	InstanceStateStopping InstanceState = "stopping"
+	InstanceStateTemplate InstanceState = "template"
 	InstanceStateStandby  InstanceState = "standby"
 )
 
@@ -102,36 +103,45 @@ type Instance struct {
 	// that increments each time the instance is started, regardless of whether it
 	// was manually stopped or restarted.  This can be useful for tracking the
 	// usage of the instance over time and/or for debugging purposes.
+	//
+	// Not used for template instances.
 	StartCount *uint64 `json:"start_count,omitempty"`
 	// The total number of times the instance has been restarted. This is a counter
 	// that increments each time the instance has been restarted. This can be
 	// useful for tracking the usage of the instance over time and/or for
 	// debugging purposes.
+	// Not used for template instances.
 	RestartCount *uint64 `json:"restart_count,omitempty"`
 	// The time the instance was started.  This is the timestamp when the
 	// instance was last started.
+	// Not used for template instances.
 	StartedAt *time.Time `json:"started_at,omitempty"`
 	// The time the instance was stopped.  This is the timestamp when the
 	// instance was last stopped.  If the instance is currently running, this
 	// field will be empty.
+	// Not used for template instances.
 	StoppedAt *time.Time `json:"stopped_at,omitempty"`
 	// The total amount of time the instance has been running in milliseconds.
+	// Not used for template instances.
 	UptimeMs *uint64 `json:"uptime_ms,omitempty"`
 	// (Developer-only).  The time taken between the main controller and the
 	// beginning of execution of the VMM (Virtual Machine Monitor) measured in
 	// microseconds.  This field is primarily used for debugging and performance
 	// analysis purposes.
+	// Not used for template instances.
 	VmmStartTimeUs *uint64 `json:"vmm_start_time_us,omitempty"`
 	// (Developer-only).  The time it took the VMM (Virtual Machine Monitor) to
 	// load the instance's kernel and initramfs into VM memory measured in
 	// microseconds.  This field is primarily used for debugging and performance
 	// analysis purposes.
+	// Not used for template instances.
 	VmmLoadTimeUs *uint64 `json:"vmm_load_time_us,omitempty"`
 	// (Developer-only).  The time taken for the VMM (Virtual Machine Monitor) to
 	// become ready to execute the instance measured in microseconds.  This is the
 	// time from when the VMM started until it was ready to execute the instance's
 	// code.  This field is primarily used for debugging and performance analysis
 	// purposes.
+	// Not used for template instances.
 	VmmReadyTimeUs *uint64 `json:"vmm_ready_time_us,omitempty"`
 	// The boot time of the instance in microseconds.  We take a pragmatic
 	// approach is to define the boot time.  We calculate this as the difference
@@ -141,12 +151,14 @@ type Instance struct {
 	// time that a user would experience in a deployment, minus the application
 	// initialization time, which we leave out since it is independent from the
 	// OS.
+	// Not used for template instances.
 	BootTimeUs *uint64 `json:"boot_time_us,omitempty"`
 	// This is the time it took for the user-level application to start listening
 	// on a non-localhost port measured in microseconds.  This is the time from
 	// when the instance started until it reasonably ready to start responding to
 	// network requests.  This is useful for measuring the time it takes for the
 	// instance to become operationally ready.
+	// Not used for template instances.
 	NetTimeUs *uint64 `json:"net_time_us,omitempty"`
 	// The instance stop reason.
 	//
@@ -180,6 +192,7 @@ type Instance struct {
 	// | 3     | `00011` | `---AK` | The application exited. The exit_code and stop_code indicate if the application and kernel shut down cleanly. |
 	// | 1     | `00001` | `----K` | The instance likely expierenced a fatal crash and the stop_code contains more information about the cause of the crash. |
 	// | 0     | `00000` | `-----` | The stop reason is unknown. |
+	// Not used for template instances.
 	StopReason *uint32 `json:"stop_reason,omitempty"`
 	// The application exit code.
 	//
@@ -187,6 +200,7 @@ type Instance struct {
 	// point.  The encoding of the exit code is application specific.  See the
 	// documentation of the application for more details.  Usually, an exit code
 	// of `0` indicates success / no failure.
+	// Not used for template instances.
 	ExitCode *uint32 `json:"exit_code,omitempty"`
 	// The kernel stop code.
 	//
@@ -210,6 +224,7 @@ type Instance struct {
 	// - **reason**:    The reason for the stop.  See `StopCodeReason`.
 	//
 	// [^1]: Reserved for future use.
+	// Not used for template instances.
 	StopCode *uint32 `json:"stop_code,omitempty"`
 	// The restart configuration for the instance.
 	//
@@ -241,9 +256,10 @@ type Instance struct {
 	RestartPolicy *InstanceRestartPolicy `json:"restart_policy,omitempty"`
 	ScaleToZero   *InstanceScaleToZero   `json:"scale_to_zero,omitempty"`
 	// The list of volumes attached to the instance.
-	Volumes      []InstanceInstanceVolume `json:"volumes,omitempty"`
-	ServiceGroup *InstanceServiceGroup    `json:"service_group,omitempty"`
+	Volumes      []InstanceVolume      `json:"volumes,omitempty"`
+	ServiceGroup *InstanceServiceGroup `json:"service_group,omitempty"`
 	// The network interfaces of the instance.
+	// Not used for template instances.
 	NetworkInterfaces []InstanceNetworkInterface `json:"network_interfaces,omitempty"`
 	// The tags associated with the instance.
 	Tags []string `json:"tags,omitempty"`
@@ -257,5 +273,9 @@ type Instance struct {
 	// An optional error code providing additional information about the status.
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	Error    *int32            `json:"error,omitempty"`
+	Snapshot *InstanceSnapshot `json:"snapshot,omitempty"`
+	// If set to true, the instance cannot be deleted until the lock is removed.
+	DeleteLock *bool            `json:"delete_lock,omitempty"`
+	Restart    *InstanceRestart `json:"restart,omitempty"`
 }

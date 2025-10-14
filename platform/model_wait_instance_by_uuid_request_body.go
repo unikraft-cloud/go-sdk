@@ -16,6 +16,7 @@ const (
 	WaitInstanceByUUIDRequestBodyStateRunning  WaitInstanceByUUIDRequestBodyState = "running"
 	WaitInstanceByUUIDRequestBodyStateDraining WaitInstanceByUUIDRequestBodyState = "draining"
 	WaitInstanceByUUIDRequestBodyStateStopping WaitInstanceByUUIDRequestBodyState = "stopping"
+	WaitInstanceByUUIDRequestBodyStateTemplate WaitInstanceByUUIDRequestBodyState = "template"
 	WaitInstanceByUUIDRequestBodyStateStandby  WaitInstanceByUUIDRequestBodyState = "standby"
 )
 
