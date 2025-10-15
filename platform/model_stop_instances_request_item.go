@@ -6,13 +6,13 @@
 
 package platform
 
-// An identifier for the instance(s) to start.
+// A single request item to stop an instance.
 
-type StopInstancesRequestID struct {
+type StopInstancesRequestItem struct {
 	// The UUID of the instance to stop.  Mutually exclusive with name.
-	Uuid string `json:"uuid"`
+	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance to stop.  Mutually exclusive with UUID.
-	Name string `json:"name"`
+	Name *string `json:"name,omitempty"`
 	// Whether to immediately force stop the instance.
 	Force *bool `json:"force,omitempty"`
 	// Timeout for draining connections in milliseconds.  The instance does not

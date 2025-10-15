@@ -6,12 +6,11 @@
 
 package platform
 
-// Description of the range that was returned.  Useful for requests with
-// offset relative to end.
+// Description of the log availability.
 
-type GetInstanceLogsResponseLoggedInstanceRange struct {
-	// The first retrieved byte.
+type GetInstancesLogsResponseLoggedInstanceAvailable struct {
+	// The first byte offset that can be retrieved.
 	Start *uint64 `json:"start,omitempty"`
-	// The last retrieved byte.
+	// The last byte offset that can be retrieved.
 	End *uint64 `json:"end,omitempty"`
 }

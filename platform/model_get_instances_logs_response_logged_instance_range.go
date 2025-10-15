@@ -6,7 +6,10 @@
 
 package platform
 
-type GetInstanceLogsResponseRange struct {
+// Description of the range that was returned.  Useful for requests with
+// offset relative to end.
+
+type GetInstancesLogsResponseLoggedInstanceRange struct {
 	// The first retrieved byte.
 	Start *uint64 `json:"start,omitempty"`
 	// The last retrieved byte.

@@ -8,7 +8,9 @@ package platform
 
 // The response data for this request.
 
-type WaitInstanceResponseData struct {
-	// The instance(s) which this requested waited on.
-	Instances []WaitInstanceResponseWaitedInstance `json:"instances,omitempty"`
+type GetInstancesMetricsResponseData struct {
+	// The instance which this requested metrics for.  Note: only one instance
+	// can be specified in the request, so this will always contain a single
+	// entry.
+	Instances []GetInstancesMetricsResponseInstanceMetrics `json:"instances,omitempty"`
 }

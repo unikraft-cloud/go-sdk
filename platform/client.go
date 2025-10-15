@@ -386,7 +386,7 @@ type Client interface {
 	// Performs: GET /v1/instances/log
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-logs
-	GetInstanceLogs(ctx context.Context, request GetInstanceLogsRequest, ropts ...RequestOption) (*Response[GetInstanceLogsResponseData], error)
+	GetInstanceLogs(ctx context.Context, request []GetInstancesLogsRequestItem, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error)
 	// Retrieve the logs of an instance by its UUID.
 	//
 	// @param `uuid`
@@ -401,14 +401,11 @@ type Client interface {
 	// Performs: GET /v1/instances/{uuid}/log
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-logs-by-uuid
-	GetInstanceLogsByUUID(ctx context.Context, uuid string, request GetInstanceLogsByUUIDRequestBody, ropts ...RequestOption) (*Response[GetInstanceLogsResponseData], error)
-	// Get the metrics of an instance by its UUID or name.
+	GetInstanceLogsByUUID(ctx context.Context, uuid string, request GetInstanceLogsByUUIDRequestBody, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error)
+	// Get the metrics of one or more instances by their ID(s) (name or UUID).
 	//
-	// @param `uuid`
-	// 	Mutually exclusive with name.
-	//
-	// @param `name`
-	// 	Mutually exclusive with UUID.
+	// @param `request`
+	// 	The request body for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -416,7 +413,7 @@ type Client interface {
 	// Performs: GET /v1/instances/metrics
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-metrics
-	GetInstanceMetrics(ctx context.Context, uuid string, name string, ropts ...RequestOption) (*Response[GetInstanceMetricsResponseData], error)
+	GetInstanceMetrics(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error)
 	// Get the metrics of an instance by its UUID.
 	//
 	// @param `uuid`
@@ -428,7 +425,7 @@ type Client interface {
 	// Performs: GET /v1/instances/{uuid}/metrics
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-metrics-by-uuid
-	GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetInstanceMetricsResponseData], error)
+	GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error)
 	// Get one or many instances with their current status and configuration.
 	// It's possible to filter this list by ID(s) (name or UUID).
 	//
@@ -505,7 +502,7 @@ type Client interface {
 	// Performs: PUT /v1/instances/{uuid}/start
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instance-by-uuid
-	StartInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[StartInstanceResponseData], error)
+	StartInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
 	// Start previously stopped instances by ID(s) (name or UUID) or do
 	// nothing if the instances are already running.
 	//
@@ -518,7 +515,7 @@ type Client interface {
 	// Performs: PUT /v1/instances/start
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instances
-	StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstanceResponseData], error)
+	StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
 	// Stop a running instance by its UUID or do nothing if the instance is
 	// already stopped.
 	//
@@ -543,7 +540,7 @@ type Client interface {
 	// Performs: PUT /v1/instances/{uuid}/stop
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instance-by-uuid
-	StopInstanceByUUID(ctx context.Context, uuid string, force bool, drainTimeoutMs int32, ropts ...RequestOption) (*Response[StopInstanceResponseData], error)
+	StopInstanceByUUID(ctx context.Context, uuid string, force bool, drainTimeoutMs int32, ropts ...RequestOption) (*Response[StopInstancesResponseData], error)
 	// Stop one or more running instance by ID(s) (name or UUID) or do
 	// nothing if the instances are already stopped.
 	//
@@ -556,7 +553,7 @@ type Client interface {
 	// Performs: PUT /v1/instances/stop
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instances
-	StopInstances(ctx context.Context, request []StopInstancesRequestID, ropts ...RequestOption) (*Response[StopInstanceResponseData], error)
+	StopInstances(ctx context.Context, request []StopInstancesRequestItem, ropts ...RequestOption) (*Response[StopInstancesResponseData], error)
 	// Update (modify) an instance by its UUID.  The instance must be in a stopped
 	// state for most update operations.
 	//
@@ -585,7 +582,7 @@ type Client interface {
 	// Performs: PATCH /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-instances
-	UpdateInstances(ctx context.Context, request UpdateInstancesRequest, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error)
+	UpdateInstances(ctx context.Context, request []UpdateInstancesRequestItem, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error)
 	// Update (modify) a template instance by its UUID.
 	//
 	// @param `uuid`
@@ -634,7 +631,7 @@ type Client interface {
 	// Performs: GET /v1/instances/{uuid}/wait
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#wait-instance-by-uuid
-	WaitInstanceByUUID(ctx context.Context, uuid string, request WaitInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[WaitInstanceResponseData], error)
+	WaitInstanceByUUID(ctx context.Context, uuid string, request WaitInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error)
 	// Wait for one or more instances to reach certain states by ID(s)
 	// (name or UUID).
 	//
@@ -648,22 +645,13 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `state`
-	// 	The desired state to wait for.  Default is `running`.
-	//
-	// @param `timeoutMs`
-	// 	Timeout in milliseconds to wait for the instance to reach the desired
-	// 	state.  If the timeout is reached, the request will fail with an error.
-	// 	A value of -1 means to wait indefinitely until the instance reaches the
-	// 	desired state.
-	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/instances/wait
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#wait-instances
-	WaitInstances(ctx context.Context, request []NameOrUUID, state string, timeoutMs int64, ropts ...RequestOption) (*Response[WaitInstanceResponseData], error)
+	WaitInstances(ctx context.Context, request []WaitInstancesRequestItem, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error)
 	// Return the status of a full-system health check of the node.
 	//
 	// @param `ropts`
@@ -1445,22 +1433,26 @@ func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, details boo
 	return resp, nil
 }
 
-func (c *client) GetInstanceLogs(ctx context.Context, request GetInstanceLogsRequest, ropts ...RequestOption) (*Response[GetInstanceLogsResponseData], error) {
+func (c *client) GetInstanceLogs(ctx context.Context, request []GetInstancesLogsRequestItem, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error) {
 	requestPath := "/v1/instances/log"
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
-	resp := &Response[GetInstanceLogsResponseData]{}
-	if err := doRequest[GetInstanceLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	resp := &Response[GetInstancesLogsResponseData]{}
+	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) GetInstanceLogsByUUID(ctx context.Context, uuid string, request GetInstanceLogsByUUIDRequestBody, ropts ...RequestOption) (*Response[GetInstanceLogsResponseData], error) {
+func (c *client) GetInstanceLogsByUUID(ctx context.Context, uuid string, request GetInstanceLogsByUUIDRequestBody, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/log"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
@@ -1469,33 +1461,38 @@ func (c *client) GetInstanceLogsByUUID(ctx context.Context, uuid string, request
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[GetInstanceLogsResponseData]{}
-	if err := doRequest[GetInstanceLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	resp := &Response[GetInstancesLogsResponseData]{}
+	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) GetInstanceMetrics(ctx context.Context, uuid string, name string, ropts ...RequestOption) (*Response[GetInstanceMetricsResponseData], error) {
+func (c *client) GetInstanceMetrics(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error) {
 	requestPath := "/v1/instances/metrics"
 
-	query := make(url.Values)
-	query.Add("uuid", uuid)
-	query.Add("name", name)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
 
-	resp := &Response[GetInstanceMetricsResponseData]{}
-	if err := doRequest[GetInstanceMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	resp := &Response[GetInstancesMetricsResponseData]{}
+	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetInstanceMetricsResponseData], error) {
+func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/metrics"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
-	resp := &Response[GetInstanceMetricsResponseData]{}
-	if err := doRequest[GetInstanceMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	resp := &Response[GetInstancesMetricsResponseData]{}
+	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -1555,18 +1552,18 @@ func (c *client) GetTemplateInstances(ctx context.Context, details bool, fromUui
 	return resp, nil
 }
 
-func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[StartInstanceResponseData], error) {
+func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/start"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
-	resp := &Response[StartInstanceResponseData]{}
-	if err := doRequest[StartInstanceResponseData](ctx, c.request, http.MethodPut, requestPath, nil, nil, resp, ropts...); err != nil {
+	resp := &Response[StartInstancesResponseData]{}
+	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, nil, resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstanceResponseData], error) {
+func (c *client) StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
 	requestPath := "/v1/instances/start"
 
 	var body []byte
@@ -1578,14 +1575,14 @@ func (c *client) StartInstances(ctx context.Context, request []NameOrUUID, ropts
 		}
 	}
 
-	resp := &Response[StartInstanceResponseData]{}
-	if err := doRequest[StartInstanceResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	resp := &Response[StartInstancesResponseData]{}
+	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, force bool, drainTimeoutMs int32, ropts ...RequestOption) (*Response[StopInstanceResponseData], error) {
+func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, force bool, drainTimeoutMs int32, ropts ...RequestOption) (*Response[StopInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/stop"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
@@ -1593,14 +1590,14 @@ func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, force bool
 	query.Add("force", fmt.Sprintf("%t", force))
 	query.Add("drain_timeout_ms", fmt.Sprintf("%d", drainTimeoutMs))
 
-	resp := &Response[StopInstanceResponseData]{}
-	if err := doRequest[StopInstanceResponseData](ctx, c.request, http.MethodPut, requestPath, query, nil, resp, ropts...); err != nil {
+	resp := &Response[StopInstancesResponseData]{}
+	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, query, nil, resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) StopInstances(ctx context.Context, request []StopInstancesRequestID, ropts ...RequestOption) (*Response[StopInstanceResponseData], error) {
+func (c *client) StopInstances(ctx context.Context, request []StopInstancesRequestItem, ropts ...RequestOption) (*Response[StopInstancesResponseData], error) {
 	requestPath := "/v1/instances/stop"
 
 	var body []byte
@@ -1612,8 +1609,8 @@ func (c *client) StopInstances(ctx context.Context, request []StopInstancesReque
 		}
 	}
 
-	resp := &Response[StopInstanceResponseData]{}
-	if err := doRequest[StopInstanceResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	resp := &Response[StopInstancesResponseData]{}
+	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -1635,12 +1632,16 @@ func (c *client) UpdateInstanceByUUID(ctx context.Context, uuid string, request 
 	return resp, nil
 }
 
-func (c *client) UpdateInstances(ctx context.Context, request UpdateInstancesRequest, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error) {
+func (c *client) UpdateInstances(ctx context.Context, request []UpdateInstancesRequestItem, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error) {
 	requestPath := "/v1/instances"
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[UpdateInstancesResponseData]{}
@@ -1685,7 +1686,7 @@ func (c *client) UpdateTemplateInstances(ctx context.Context, request []UpdateTe
 	return resp, nil
 }
 
-func (c *client) WaitInstanceByUUID(ctx context.Context, uuid string, request WaitInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[WaitInstanceResponseData], error) {
+func (c *client) WaitInstanceByUUID(ctx context.Context, uuid string, request WaitInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/wait"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
@@ -1694,19 +1695,15 @@ func (c *client) WaitInstanceByUUID(ctx context.Context, uuid string, request Wa
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[WaitInstanceResponseData]{}
-	if err := doRequest[WaitInstanceResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	resp := &Response[WaitInstancesResponseData]{}
+	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) WaitInstances(ctx context.Context, request []NameOrUUID, state string, timeoutMs int64, ropts ...RequestOption) (*Response[WaitInstanceResponseData], error) {
+func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesRequestItem, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error) {
 	requestPath := "/v1/instances/wait"
-
-	query := make(url.Values)
-	query.Add("state", state)
-	query.Add("timeout_ms", fmt.Sprintf("%d", timeoutMs))
 
 	var body []byte
 	var err error
@@ -1717,8 +1714,8 @@ func (c *client) WaitInstances(ctx context.Context, request []NameOrUUID, state 
 		}
 	}
 
-	resp := &Response[WaitInstanceResponseData]{}
-	if err := doRequest[WaitInstanceResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	resp := &Response[WaitInstancesResponseData]{}
+	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil

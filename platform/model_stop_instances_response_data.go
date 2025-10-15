@@ -8,7 +8,7 @@ package platform
 
 // The response data for this request.
 
-type StartInstanceResponseData struct {
-	// The instance(s) which were started by the request.
-	Instances []StartInstanceResponseStartedInstance `json:"instances,omitempty"`
+type StopInstancesResponseData struct {
+	// The instance(s) which were stopped by the request.
+	Instances []StopInstancesResponseStoppedInstance `json:"instances,omitempty"`
 }
