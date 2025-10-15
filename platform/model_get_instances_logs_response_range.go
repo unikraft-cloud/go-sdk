@@ -6,11 +6,9 @@
 
 package platform
 
-// Description of the log availability.
-
-type GetInstanceLogsResponseLoggedInstanceAvailable struct {
-	// The first byte offset that can be retrieved.
+type GetInstancesLogsResponseRange struct {
+	// The first retrieved byte.
 	Start *uint64 `json:"start,omitempty"`
-	// The last byte offset that can be retrieved.
+	// The last retrieved byte.
 	End *uint64 `json:"end,omitempty"`
 }

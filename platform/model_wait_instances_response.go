@@ -9,13 +9,13 @@ package platform
 // The response message for waiting for one or more instance(s) to reach a
 // certain state given their UUID(s) or name(s).
 
-type WaitInstanceResponse struct {
+type WaitInstancesResponse struct {
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Message *string                   `json:"message,omitempty"`
-	Data    *WaitInstanceResponseData `json:"data,omitempty"`
+	Message *string                    `json:"message,omitempty"`
+	Data    *WaitInstancesResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process

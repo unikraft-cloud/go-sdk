@@ -6,16 +6,15 @@
 
 package platform
 
-// The request message for getting the logs of an instance by their UUID or
-// name.
+// A single item in the request.
 
-type GetInstanceLogsRequest struct {
+type GetInstancesLogsRequestItem struct {
 	// The UUID of the instance to retrieve logs for.  Mutually exclusive with
 	// name.
-	Uuid string `json:"uuid"`
+	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance to retrieve logs for.  Mutually exclusive with
 	// UUID.
-	Name string `json:"name"`
+	Name *string `json:"name,omitempty"`
 	// The byte offset of the log output to receive.  A negative sign makes the
 	// offset relative to the end of the log.
 	Offset *uint64 `json:"offset,omitempty"`

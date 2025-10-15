@@ -6,7 +6,7 @@
 
 package platform
 
-type StartInstanceResponseStartedInstance struct {
+type StartInstancesResponseStartedInstance struct {
 	// Indicates whether the start operation was successful or not for this
 	// instance.
 	Status *ResponseStatus `json:"status,omitempty"`

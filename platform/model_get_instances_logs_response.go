@@ -6,16 +6,16 @@
 
 package platform
 
-// The response message for stopping one or more instance(s) given their UUID(s)
-// or name(s).
+// The response message for getting the logs of one or more instance(s) by
+// their UUID(s) or name(s).
 
-type StopInstanceResponse struct {
+type GetInstancesLogsResponse struct {
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Message *string                   `json:"message,omitempty"`
-	Data    *StopInstanceResponseData `json:"data,omitempty"`
+	Message *string                       `json:"message,omitempty"`
+	Data    *GetInstancesLogsResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process

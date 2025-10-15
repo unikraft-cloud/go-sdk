@@ -6,7 +6,7 @@
 
 package platform
 
-type GetInstanceMetricsResponseInstanceMetrics struct {
+type GetInstancesMetricsResponseInstanceMetrics struct {
 	// Resident set size of the VMM in bytes.
 	//
 	// The resident set size (RSS) specifies the amount of physical memory that
