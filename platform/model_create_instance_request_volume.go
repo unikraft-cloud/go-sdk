@@ -33,5 +33,5 @@ type CreateInstanceRequestVolume struct {
 	// If this field is set to true, the volume will be mounted as read-only in
 	// the instance.  This field is optional and defaults to false and is only
 	// applicable when using an existing volume.
-	ReadOnly *bool `json:"read_only,omitempty"`
+	Readonly *bool `json:"readonly,omitempty"`
 }

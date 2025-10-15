@@ -8,7 +8,9 @@ package platform
 
 // The response data for this request.
 
-type DeleteInstancesResponseData struct {
-	// The instance(s) which were deleted by the request.
-	Instances []DeleteInstancesResponseInstance `json:"instances,omitempty"`
+type GetInstancesMetricsResponseData struct {
+	// The instance which this requested metrics for.  Note: only one instance
+	// can be specified in the request, so this will always contain a single
+	// entry.
+	Instances []GetInstancesMetricsResponseInstanceMetrics `json:"instances,omitempty"`
 }

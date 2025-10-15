@@ -12,21 +12,28 @@ package platform
 // group can be referenced (either through its name or UUID), or a new
 // (ephemeral) service group can be created for the instance by specifying the
 // list of services it should expose and optionally the domains it should use.
+// Not used by template instances.
 
 type CreateInstanceRequestServiceGroup struct {
-	// Similarly, if no existing (persistent) service group is specified via its
+	// (Optional).  Reference an existing (persistent) service group by its
+	// UUID.  Mutually exclusive with name.
+	Uuid *string `json:"uuid,omitempty"`
+	// (Optional).  Reference an existing (persistent) service group by its
+	// name.  Mutually exclusive with UUID.
+	Name *string `json:"name,omitempty"`
+	// If no existing (persistent) service group is specified via its
 	// identifier, a new (ephemeral) service group can be created.  In addition
 	// to the services it must expose, you can specify which domains it should
 	// use too.
 	Domains []CreateInstanceRequestDomain `json:"domains,omitempty"`
-	// If no existing service identifier is provided, one or more new
+	// If no existing service group identifier is provided, one or more new
 	// (ephemeral, non-persistent) service(s) can be created with the following
 	// definitions.
 	Services []Service `json:"services,omitempty"`
-	// (Optional).  Reference an existing (persistent) service group by its
-	// UUID.  Mutually exclusive with name.
-	Uuid string `json:"uuid"`
-	// (Optional).  Reference an existing (persistent) service group by its
-	// name.  Mutually exclusive with UUID.
-	Name string `json:"name"`
+	// The soft limit for the number of services that can be created in this
+	// service group.
+	SoftLimit *uint32 `json:"soft_limit,omitempty"`
+	// The hard limit for the number of services that can be created in this
+	// service group.
+	HardLimit *uint32 `json:"hard_limit,omitempty"`
 }

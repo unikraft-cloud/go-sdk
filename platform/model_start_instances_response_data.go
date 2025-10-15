@@ -8,7 +8,7 @@ package platform
 
 // The response data for this request.
 
-type DeleteInstancesResponseData struct {
-	// The instance(s) which were deleted by the request.
-	Instances []DeleteInstancesResponseInstance `json:"instances,omitempty"`
+type StartInstancesResponseData struct {
+	// The instance(s) which were started by the request.
+	Instances []StartInstancesResponseStartedInstance `json:"instances,omitempty"`
 }

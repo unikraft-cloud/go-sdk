@@ -188,6 +188,11 @@ func (c *client) {{nickname}}(ctx context.Context{{#each pathParams}}, {{paramNa
 	query := make(url.Values)
 {{~#each queryParams}}
 {{~#neq paramName "list"}}
+{{~#if (startsWith dataType "[]")}}
+	for _, v := range {{paramName}} {
+		query.Add("{{baseName}}", v)
+	}
+{{~else}}
 	query.Add("{{baseName}}",
 {{~#or (eq dataType "int") (eq dataType "int32") (eq dataType "int64") (eq dataType "uint") (eq dataType "uint32") (eq dataType "uint64") ~}}
 fmt.Sprintf("%d", {{paramName}})
@@ -199,6 +204,7 @@ fmt.Sprintf("%d", {{paramName}})
 fmt.Sprintf("%t", {{paramName}})
 {{~/eq~}}
 )
+{{~/if}}
 {{~/neq}}
 {{~/each}}
 {{/if}}

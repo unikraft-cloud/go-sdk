@@ -6,9 +6,9 @@
 
 package platform
 
-// The response data for this request.
-
-type DeleteInstancesResponseData struct {
-	// The instance(s) which were deleted by the request.
-	Instances []DeleteInstancesResponseInstance `json:"instances,omitempty"`
+type GetInstancesLogsResponseRange struct {
+	// The first retrieved byte.
+	Start *uint64 `json:"start,omitempty"`
+	// The last retrieved byte.
+	End *uint64 `json:"end,omitempty"`
 }
