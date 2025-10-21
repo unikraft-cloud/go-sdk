@@ -19,9 +19,9 @@ import (
 )
 
 type Client interface {
-	// CheckAuthorization is used to check the authorization status of a request.
-	// It streams responses back to the client, indicating whether the signin
-	// request is authorized or not.
+	// Check the authorization status of a request.  The responses are streamed
+	// back to the client, indicating whether the signin request is authorized or
+	// not.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -33,8 +33,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/auth#check-authorization
 	CheckAuthorization(ctx context.Context, request CheckAuthorizationRequest, ropts ...RequestOption) (<-chan *Response[CheckAuthorizationResponseData], error)
-	// RequestSignin initiates the sign-in process and returns an authorization
-	// URL.  The user should be redirected to this URL to complete the sign-in.
+	// Initiate the sign-in process and return an authorization URL.  The user
+	// should be redirected to this URL to complete the sign-in.
 	//
 	// @param `request`
 	// 	The request body for this operation.

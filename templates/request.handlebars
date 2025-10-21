@@ -264,7 +264,11 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 				return fmt.Errorf("error parsing response: %w", err)
 			}
 
+            {{#if (eq packageName "platform")}}
+			return NewFromResponse(target)
+			{{~else}}
 			return target // implements error
+            {{~/if}}
 		}
 
 		target.events = make(chan *Response[T])
@@ -326,7 +330,11 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 		}
 
 		if target.Status != "success" {
+		    {{~#if (eq packageName "platform")}}
+			return NewFromResponse(target)
+			{{~else}}
 			return target // implements error
+            {{~/if}}
 		}
 	}
 

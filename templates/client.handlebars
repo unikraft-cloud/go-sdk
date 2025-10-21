@@ -229,7 +229,11 @@ fmt.Sprintf("%t", {{paramName}})
 {{~/if}}
 	resp := &Response[{{#with returnType}}{{{.}}}Data{{/with}}]{}
 	if err := doRequest[{{#with returnType}}{{{.}}}Data{{/with}}](ctx, c.request, http.Method{{httpMethod}}, requestPath, {{#if queryParams}}query{{else}}nil{{/if}}, {{#if bodyParams}}bytes.NewReader(body){{else}}nil{{/if}}, resp, ropts...); err != nil {
+	    {{~#if (eq packageName "platform")}}
+		return nil, err
+		{{~else}}
 		return nil, fmt.Errorf("performing the request: %w", err)
+        {{~/if}}
 	}
 
 {{~#with returnProperty}}

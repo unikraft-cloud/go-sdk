@@ -12,3 +12,6 @@ files:
   client_options.handlebars:
     templateType: SupportingFiles
     destinationFilename: client_options.go
+  http_api_errors.handlebars:
+    templateType: SupportingFiles
+    destinationFilename: http_api_errors.go

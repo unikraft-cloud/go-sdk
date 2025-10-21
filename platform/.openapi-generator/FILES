@@ -1,5 +1,6 @@
 client.go
 client_options.go
+http_api_errors.go
 model_add_users_response.go
 model_add_users_response_data.go
 model_attach_volume_by_uuid_request_body.go
