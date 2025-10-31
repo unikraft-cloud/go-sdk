@@ -7,17 +7,10 @@
 package controlplane
 
 // The response message for a sign-in request.
-// The status of the response.
-type RequestSigninResponseStatus string
-
-const (
-	RequestSigninResponseStatusSuccess RequestSigninResponseStatus = "success"
-	RequestSigninResponseStatusError   RequestSigninResponseStatus = "error"
-)
 
 type RequestSigninResponse struct {
 	// The status of the response.
-	Status *RequestSigninResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string                    `json:"message,omitempty"`
 	Data    *RequestSigninResponseData `json:"data,omitempty"`
@@ -25,5 +18,5 @@ type RequestSigninResponse struct {
 	Errors []ResponseError `json:"errors,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process
 	// the request and generate the response.
-	OpTimeUs *int32 `json:"op_time_us,omitempty"`
+	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
 }
