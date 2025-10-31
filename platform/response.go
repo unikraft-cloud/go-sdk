@@ -9,10 +9,7 @@ package platform
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"net/http"
-	"reflect"
-	"strings"
 )
 
 // The response for an invocation to an API on the Unikraft Cloud Platform.
@@ -63,51 +60,4 @@ func (r *Response[T]) Events() (<-chan *Response[T], error) {
 	}
 
 	return r.events, nil
-}
-
-func (r *Response[T]) Error() string {
-	if r == nil || r.Status == "success" {
-		return ""
-	}
-
-	// Use reflection to determine if the response data type is an array containing
-	// individual sub-errors.  This will be re-worked in the future when
-	// a top-level errors attribute is properly populated.
-	var errs []string
-
-	v := reflect.ValueOf(r.Data)
-	if v.Kind() == reflect.Ptr {
-		v = v.Elem()
-	}
-
-	if v.Kind() == reflect.Struct && v.NumField() == 1 {
-		innerData := v.Field(0)
-		if innerData.IsValid() && innerData.Kind() == reflect.Slice {
-			for i := 0; i < innerData.Len(); i++ {
-				item := innerData.Index(i)
-				if item.Kind() == reflect.Ptr {
-					item = item.Elem()
-				}
-
-				status := item.FieldByName("Status")
-				if status.Kind() == reflect.Ptr {
-					status = status.Elem()
-				}
-				message := item.FieldByName("Message")
-				if message.Kind() == reflect.Ptr {
-					message = message.Elem()
-				}
-
-				if status.IsValid() && message.IsValid() && status.String() == "error" {
-					errs = append(errs, message.String())
-				}
-			}
-		}
-	}
-
-	if len(errs) > 0 {
-		return fmt.Sprintf("API error: status code %d: %s: %s", r.raw.StatusCode, r.Message, strings.Join(errs, "; "))
-	}
-
-	return fmt.Sprintf("API error: status code %d: %s", r.raw.StatusCode, r.Message)
 }

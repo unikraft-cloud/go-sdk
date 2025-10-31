@@ -1,0 +1,141 @@
+// This file is auto-generated. DO NOT EDIT.
+// SPDX-License-Identifier: BSD-3-Clause
+// Copyright (c) 2025, Unikraft GmbH.
+// Licensed under the BSD-3-Clause License (the "License").
+// You may not use this file except in compliance with the License.
+
+package platform
+
+import (
+	"errors"
+	"fmt"
+	"reflect"
+	"strings"
+)
+
+// APIError implements an error that allows platform SDK clients to check for error codes
+type APIError struct {
+	items []apiError
+}
+
+// NewFromResponse returns APIerror with error codes
+func NewFromResponse[T any](r *Response[T]) error {
+	if r == nil || r.Status == "success" {
+		return nil
+	}
+
+	// Use reflection to determine if the response data type is an array containing
+	// individual sub-errors.  This will be re-worked in the future when
+	// a top-level errors attribute is properly populated.
+	var errs []apiError
+
+	v := reflect.ValueOf(r.Data)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+
+	if v.Kind() == reflect.Struct && v.NumField() == 1 {
+		innerData := v.Field(0)
+		if innerData.IsValid() && innerData.Kind() == reflect.Slice {
+			for i := 0; i < innerData.Len(); i++ {
+				item := innerData.Index(i)
+				if item.Kind() == reflect.Ptr {
+					item = item.Elem()
+				}
+
+				status := item.FieldByName("Status")
+				if status.Kind() == reflect.Ptr {
+					status = status.Elem()
+				}
+				message := item.FieldByName("Message")
+				if message.Kind() == reflect.Ptr {
+					message = message.Elem()
+				}
+				errorCode := item.FieldByName("Error")
+				if errorCode.Kind() == reflect.Ptr {
+					errorCode = errorCode.Elem()
+				}
+
+				if status.IsValid() && message.IsValid() && status.String() == "error" && errorCode.IsValid() {
+					errs = append(errs, apiError{
+						Msg:  message.String(),
+						Code: APIHTTPError(errorCode.Int()),
+						Err:  errors.New(message.String()),
+					})
+				}
+			}
+		}
+	}
+
+	if len(errs) == 0 {
+		return nil
+	}
+
+	return &APIError{
+		items: errs,
+	}
+}
+
+type apiError struct {
+	Code APIHTTPError
+	Msg  string
+	Err  error
+}
+
+func (e *APIError) Error() string {
+	if e == nil || len(e.items) == 0 {
+		return ""
+	}
+
+	errs := make([]string, 0, len(e.items))
+
+	for _, err := range e.items {
+		errs = append(errs, err.Error())
+	}
+
+	return fmt.Sprintf("performing the request: %v", strings.Join(errs, "; "))
+}
+
+func (e *apiError) Error() string {
+	if e.Err == nil {
+		return ""
+	}
+
+	return e.Err.Error()
+}
+
+func (e *apiError) Unwrap() error {
+	return e.Err
+}
+
+// ErrorContains checks if the error is APIError and contains at least one provided APIHTTPError
+func ErrorContains(err error, code APIHTTPError) bool {
+	var apiErr *APIError
+	if ok := errors.As(err, &apiErr); !ok {
+		return false
+	}
+
+	for _, e := range apiErr.items {
+		if e.Code == code {
+			return true
+		}
+	}
+
+	return false
+}
+
+// ErrorContainsOnly checks if the error is APIError and contains only the provided APIHTTPError
+func ErrorContainsOnly(err error, code APIHTTPError) bool {
+	var apiErr *APIError
+	if ok := errors.As(err, &apiErr); !ok {
+		return false
+	}
+
+	for _, e := range apiErr.items {
+		if e.Code != code {
+			return false
+		}
+	}
+
+	return true
+}
