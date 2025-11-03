@@ -6,9 +6,10 @@
 
 package controlplane
 
-// The error response message for an API request.
+// The response status of an API request.
+type ResponseStatus string
 
-type ResponseError struct {
-	// The HTTP status code of the error.
-	Status *uint64 `json:"status,omitempty"`
-}
+const (
+	ResponseStatusSUCCESS ResponseStatus = "success"
+	ResponseStatusERROR   ResponseStatus = "error"
+)
