@@ -237,7 +237,7 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 				return fmt.Errorf("error parsing response: %w", err)
 			}
 
-			return target // implements error
+			return NewFromResponse(target)
 		}
 
 		target.events = make(chan *Response[T])
@@ -299,7 +299,7 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 		}
 
 		if target.Status != "success" {
-			return target // implements error
+			return NewFromResponse(target)
 		}
 	}
 

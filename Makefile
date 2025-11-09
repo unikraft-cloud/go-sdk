@@ -19,7 +19,7 @@ GOIMPORTS           ?= $(GO) run golang.org/x/tools/cmd/goimports@latest
 all: generate
 
 .PHONY: generate
-generate: platform
+generate: platform controlplane
 
 .PHONY: platform
 platform: platform.yaml
