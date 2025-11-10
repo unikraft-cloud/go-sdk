@@ -46,8 +46,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/auth#request-signin
 	RequestSignin(ctx context.Context, request RequestSigninRequest, ropts ...RequestOption) (*Response[RequestSigninResponseData], error)
-	// NodeActivate accepts a certificate signing request.
-	// It returns a signed certificate for initial node activation.
+	// Activates a new node.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -59,8 +58,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node#node-activate
 	NodeActivate(ctx context.Context, request NodeActivateRequest, ropts ...RequestOption) (*Response[NodeActivateResponseData], error)
-	// RenewCertificate accepts a certificate signing request and existing the certificate.
-	// It returns a renewed certificate for the node.
+	// Renews a node's license.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -70,8 +68,8 @@ type Client interface {
 	//
 	// Performs: POST /v1/node/renew
 	//
-	// See: https://unikraft.com/docs/api/platform/v1/node#renew-certificate
-	RenewCertificate(ctx context.Context, request NodeRenewRequest, ropts ...RequestOption) (*Response[NodeRenewResponseData], error)
+	// See: https://unikraft.com/docs/api/platform/v1/node#node-renew
+	NodeRenew(ctx context.Context, request NodeRenewRequest, ropts ...RequestOption) (*Response[NodeRenewResponseData], error)
 	// WithEndpoint sets the endpoint to use when connecting to the API.
 	WithEndpoint(string) Client
 	// WithTimeout sets the timeout when making the request.
@@ -195,7 +193,7 @@ func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest, 
 	return resp, nil
 }
 
-func (c *client) RenewCertificate(ctx context.Context, request NodeRenewRequest, ropts ...RequestOption) (*Response[NodeRenewResponseData], error) {
+func (c *client) NodeRenew(ctx context.Context, request NodeRenewRequest, ropts ...RequestOption) (*Response[NodeRenewResponseData], error) {
 	requestPath := "/v1/node/renew"
 
 	body, err := json.Marshal(request)
