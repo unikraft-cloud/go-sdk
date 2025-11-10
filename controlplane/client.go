@@ -46,6 +46,32 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/auth#request-signin
 	RequestSignin(ctx context.Context, request RequestSigninRequest, ropts ...RequestOption) (*Response[RequestSigninResponseData], error)
+	// NodeActivate accepts a certificate signing request.
+	// It returns a signed certificate for initial node activation.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/node/activate
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/node#node-activate
+	NodeActivate(ctx context.Context, request NodeActivateRequest, ropts ...RequestOption) (*Response[NodeActivateResponseData], error)
+	// RenewCertificate accepts a certificate signing request and existing the certificate.
+	// It returns a renewed certificate for the node.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/node/renew
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/node#renew-certificate
+	RenewCertificate(ctx context.Context, request NodeRenewRequest, ropts ...RequestOption) (*Response[NodeRenewResponseData], error)
 	// WithEndpoint sets the endpoint to use when connecting to the API.
 	WithEndpoint(string) Client
 	// WithTimeout sets the timeout when making the request.
@@ -149,6 +175,36 @@ func (c *client) RequestSignin(ctx context.Context, request RequestSigninRequest
 
 	resp := &Response[RequestSigninResponseData]{}
 	if err := doRequest[RequestSigninResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest, ropts ...RequestOption) (*Response[NodeActivateResponseData], error) {
+	requestPath := "/v1/node/activate"
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[NodeActivateResponseData]{}
+	if err := doRequest[NodeActivateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) RenewCertificate(ctx context.Context, request NodeRenewRequest, ropts ...RequestOption) (*Response[NodeRenewResponseData], error) {
+	requestPath := "/v1/node/renew"
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[NodeRenewResponseData]{}
+	if err := doRequest[NodeRenewResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
