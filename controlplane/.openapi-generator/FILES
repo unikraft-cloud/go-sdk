@@ -3,6 +3,12 @@ client_options.go
 model_check_authorization_request.go
 model_check_authorization_response.go
 model_check_authorization_response_data.go
+model_node_activate_request.go
+model_node_activate_response.go
+model_node_activate_response_data.go
+model_node_renew_request.go
+model_node_renew_response.go
+model_node_renew_response_data.go
 model_request_signin_request.go
 model_request_signin_response.go
 model_request_signin_response_data.go
