@@ -1,0 +1,61 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  # Skip builds since this is a library, not a CLI tool
+  - skip: true
+
+# https://goreleaser.com/customization/changelog/
+changelog:
+  use: github
+  sort: asc
+  abbrev: 0
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: Bug Fixes
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: Refactoring
+      regexp: '^.*?refactor(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: Documentation
+      regexp: '^.*?docs(\([[:word:]]+\))??!?:.+$'
+      order: 3
+    - title: Build & CI
+      regexp: '^.*?(build|ci)(\([[:word:]]+\))??!?:.+$'
+      order: 4
+    - title: Other Changes
+      order: 999
+  filters:
+    exclude:
+      # TODO(kristoffn): Ignoring the "sync: Update Go SDK from OpenAPI spec" commits for now
+      # The "sync" commits can introduce breaking changes so it needs some adaptation to
+      # extract the actual changes for the changelog
+      - '^sync:' 
+      - '^release:' 
+      - typo
+      - Merge pull request
+      - Merge branch
+
+# https://goreleaser.com/customization/release/
+release:
+  github:
+    owner: unikraft-cloud
+    name: go-sdk
+  prerelease: auto # If set to auto, will mark the release as not ready for production
+  mode: append
+  header: |
+    ## Unikraft Cloud Go SDK {{ .Tag }}
+
+    {{ .Date }}
+  footer: |
+    **Full Changelog**: https://github.com/unikraft-cloud/go-sdk/compare/{{ .PreviousTag }}...{{ .Tag }}
+
+# https://goreleaser.com/customization/announce/
+announce:
+  skip: '{{ .Prerelease }}' # Skip announcement for pre-release versions
