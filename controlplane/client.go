@@ -173,7 +173,7 @@ func (c *client) RequestSignin(ctx context.Context, request RequestSigninRequest
 
 	resp := &Response[RequestSigninResponseData]{}
 	if err := doRequest[RequestSigninResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, fmt.Errorf("performing the request: %w", err)
+		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
@@ -188,7 +188,7 @@ func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest, 
 
 	resp := &Response[NodeActivateResponseData]{}
 	if err := doRequest[NodeActivateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, fmt.Errorf("performing the request: %w", err)
+		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
@@ -203,7 +203,7 @@ func (c *client) NodeRenew(ctx context.Context, request NodeRenewRequest, ropts 
 
 	resp := &Response[NodeRenewResponseData]{}
 	if err := doRequest[NodeRenewResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, fmt.Errorf("performing the request: %w", err)
+		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }

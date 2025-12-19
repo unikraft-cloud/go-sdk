@@ -15,7 +15,8 @@ import (
 
 // APIError implements an error that allows platform SDK clients to check for error codes
 type APIError struct {
-	items []apiError
+	status string
+	items  []apiError
 }
 
 // NewFromResponse returns APIerror with error codes
@@ -30,29 +31,29 @@ func NewFromResponse[T any](r *Response[T]) error {
 	var errs []apiError
 
 	v := reflect.ValueOf(r.Data)
-	if v.Kind() == reflect.Ptr {
+	if v.Kind() == reflect.Pointer {
 		v = v.Elem()
 	}
 
 	if v.Kind() == reflect.Struct && v.NumField() == 1 {
 		innerData := v.Field(0)
 		if innerData.IsValid() && innerData.Kind() == reflect.Slice {
-			for i := 0; i < innerData.Len(); i++ {
+			for i := range innerData.Len() {
 				item := innerData.Index(i)
-				if item.Kind() == reflect.Ptr {
+				if item.Kind() == reflect.Pointer {
 					item = item.Elem()
 				}
 
 				status := item.FieldByName("Status")
-				if status.Kind() == reflect.Ptr {
+				if status.Kind() == reflect.Pointer {
 					status = status.Elem()
 				}
 				message := item.FieldByName("Message")
-				if message.Kind() == reflect.Ptr {
+				if message.Kind() == reflect.Pointer {
 					message = message.Elem()
 				}
 				errorCode := item.FieldByName("Error")
-				if errorCode.Kind() == reflect.Ptr {
+				if errorCode.Kind() == reflect.Pointer {
 					errorCode = errorCode.Elem()
 				}
 
@@ -67,12 +68,18 @@ func NewFromResponse[T any](r *Response[T]) error {
 		}
 	}
 
-	if len(errs) == 0 {
-		return nil
+	// Fallback if no sub-errors were found
+	if len(errs) == 0 && r.Message != "" {
+		errs = append(errs, apiError{
+			Msg:  r.Message,
+			Code: APIHTTPError(0),
+			Err:  errors.New(r.Message),
+		})
 	}
 
 	return &APIError{
-		items: errs,
+		status: r.Status,
+		items:  errs,
 	}
 }
 
@@ -83,17 +90,18 @@ type apiError struct {
 }
 
 func (e *APIError) Error() string {
-	if e == nil || len(e.items) == 0 {
+	if e == nil {
 		return ""
+	}
+	if len(e.items) == 0 {
+		return fmt.Sprintf("request %s: unknown error", e.status)
 	}
 
 	errs := make([]string, 0, len(e.items))
-
 	for _, err := range e.items {
 		errs = append(errs, err.Error())
 	}
-
-	return fmt.Sprintf("performing the request: %v", strings.Join(errs, "; "))
+	return fmt.Sprintf("request %s: %s", e.status, strings.Join(errs, "; "))
 }
 
 func (e *apiError) Error() string {
