@@ -1073,7 +1073,7 @@ func (c *client) CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Cont
 
 	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
 	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1089,7 +1089,7 @@ func (c *client) CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid st
 
 	resp := &Response[CreateAutoscaleConfigurationPolicyResponseData]{}
 	if err := doRequest[CreateAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1108,7 +1108,7 @@ func (c *client) CreateAutoscaleConfigurations(ctx context.Context, request []Cr
 
 	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
 	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1124,7 +1124,7 @@ func (c *client) DeleteAutoscaleConfigurationPolicies(ctx context.Context, uuid 
 
 	resp := &Response[DeleteAutoscaleConfigurationPolicyResponseData]{}
 	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1136,7 +1136,7 @@ func (c *client) DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, u
 
 	resp := &Response[DeleteAutoscaleConfigurationPolicyResponseData]{}
 	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1155,7 +1155,7 @@ func (c *client) DeleteAutoscaleConfigurations(ctx context.Context, request []Na
 
 	resp := &Response[DeleteAutoscaleConfigurationsResponseData]{}
 	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1166,7 +1166,7 @@ func (c *client) DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Con
 
 	resp := &Response[DeleteAutoscaleConfigurationsResponseData]{}
 	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1182,7 +1182,7 @@ func (c *client) GetAutoscaleConfigurationPolicies(ctx context.Context, uuid str
 
 	resp := &Response[GetAutoscaleConfigurationPolicyResponseData]{}
 	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1194,7 +1194,7 @@ func (c *client) GetAutoscaleConfigurationPolicyByName(ctx context.Context, uuid
 
 	resp := &Response[GetAutoscaleConfigurationPolicyResponseData]{}
 	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1213,7 +1213,7 @@ func (c *client) GetAutoscaleConfigurations(ctx context.Context, request []NameO
 
 	resp := &Response[GetAutoscaleConfigurationsResponseData]{}
 	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1224,7 +1224,7 @@ func (c *client) GetAutoscaleConfigurationsByServiceGroupUUID(ctx context.Contex
 
 	resp := &Response[GetAutoscaleConfigurationsResponseData]{}
 	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1239,7 +1239,7 @@ func (c *client) CreateCertificate(ctx context.Context, request CreateCertificat
 
 	resp := &Response[CreateCertificateResponseData]{}
 	if err := doRequest[CreateCertificateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1250,7 +1250,7 @@ func (c *client) DeleteCertificateByUUID(ctx context.Context, uuid string, ropts
 
 	resp := &Response[DeleteCertificatesResponseData]{}
 	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1269,7 +1269,7 @@ func (c *client) DeleteCertificates(ctx context.Context, request []NameOrUUID, r
 
 	resp := &Response[DeleteCertificatesResponseData]{}
 	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1280,7 +1280,7 @@ func (c *client) GetCertificateByUUID(ctx context.Context, uuid string, ropts ..
 
 	resp := &Response[GetCertificatesResponseData]{}
 	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1302,7 +1302,7 @@ func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, deta
 
 	resp := &Response[GetCertificatesResponseData]{}
 	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1313,7 +1313,7 @@ func (c *client) GetImageByDigest(ctx context.Context, digest string, ropts ...R
 
 	resp := &Response[GetImageResponseData]{}
 	if err := doRequest[GetImageResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1324,7 +1324,7 @@ func (c *client) GetImageByTag(ctx context.Context, tag string, ropts ...Request
 
 	resp := &Response[GetImageResponseData]{}
 	if err := doRequest[GetImageResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1339,7 +1339,7 @@ func (c *client) CreateInstance(ctx context.Context, request CreateInstanceReque
 
 	resp := &Response[CreateInstanceResponseData]{}
 	if err := doRequest[CreateInstanceResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1354,7 +1354,7 @@ func (c *client) CreateTemplateInstances(ctx context.Context, request CreateTemp
 
 	resp := &Response[CreateTemplateInstancesResponseData]{}
 	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1365,7 +1365,7 @@ func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, ropts ..
 
 	resp := &Response[DeleteInstancesResponseData]{}
 	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1384,7 +1384,7 @@ func (c *client) DeleteInstances(ctx context.Context, request []NameOrUUID, ropt
 
 	resp := &Response[DeleteInstancesResponseData]{}
 	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1395,7 +1395,7 @@ func (c *client) DeleteTemplateInstanceByUUID(ctx context.Context, uuid string, 
 
 	resp := &Response[DeleteTemplateInstancesResponseData]{}
 	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1414,7 +1414,7 @@ func (c *client) DeleteTemplateInstances(ctx context.Context, request []NameOrUU
 
 	resp := &Response[DeleteTemplateInstancesResponseData]{}
 	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1428,7 +1428,7 @@ func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, details boo
 
 	resp := &Response[GetInstancesResponseData]{}
 	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1447,7 +1447,7 @@ func (c *client) GetInstanceLogs(ctx context.Context, request []GetInstancesLogs
 
 	resp := &Response[GetInstancesLogsResponseData]{}
 	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1463,7 +1463,7 @@ func (c *client) GetInstanceLogsByUUID(ctx context.Context, uuid string, request
 
 	resp := &Response[GetInstancesLogsResponseData]{}
 	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1482,7 +1482,7 @@ func (c *client) GetInstanceMetrics(ctx context.Context, request []NameOrUUID, r
 
 	resp := &Response[GetInstancesMetricsResponseData]{}
 	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1493,7 +1493,7 @@ func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropt
 
 	resp := &Response[GetInstancesMetricsResponseData]{}
 	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1515,7 +1515,7 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, details
 
 	resp := &Response[GetInstancesResponseData]{}
 	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1529,7 +1529,7 @@ func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, det
 
 	resp := &Response[GetTemplateInstancesResponseData]{}
 	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1547,7 +1547,7 @@ func (c *client) GetTemplateInstances(ctx context.Context, details bool, fromUui
 
 	resp := &Response[GetTemplateInstancesResponseData]{}
 	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1558,7 +1558,7 @@ func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, ropts ...
 
 	resp := &Response[StartInstancesResponseData]{}
 	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1577,7 +1577,7 @@ func (c *client) StartInstances(ctx context.Context, request []NameOrUUID, ropts
 
 	resp := &Response[StartInstancesResponseData]{}
 	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1592,7 +1592,7 @@ func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, force bool
 
 	resp := &Response[StopInstancesResponseData]{}
 	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, query, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1611,7 +1611,7 @@ func (c *client) StopInstances(ctx context.Context, request []StopInstancesReque
 
 	resp := &Response[StopInstancesResponseData]{}
 	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1627,7 +1627,7 @@ func (c *client) UpdateInstanceByUUID(ctx context.Context, uuid string, request 
 
 	resp := &Response[UpdateInstancesResponseData]{}
 	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1646,7 +1646,7 @@ func (c *client) UpdateInstances(ctx context.Context, request []UpdateInstancesR
 
 	resp := &Response[UpdateInstancesResponseData]{}
 	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1662,7 +1662,7 @@ func (c *client) UpdateTemplateInstanceByUUID(ctx context.Context, uuid string, 
 
 	resp := &Response[UpdateTemplateInstancesResponseData]{}
 	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1681,7 +1681,7 @@ func (c *client) UpdateTemplateInstances(ctx context.Context, request []UpdateTe
 
 	resp := &Response[UpdateTemplateInstancesResponseData]{}
 	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1697,7 +1697,7 @@ func (c *client) WaitInstanceByUUID(ctx context.Context, uuid string, request Wa
 
 	resp := &Response[WaitInstancesResponseData]{}
 	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1716,7 +1716,7 @@ func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesReque
 
 	resp := &Response[WaitInstancesResponseData]{}
 	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1726,7 +1726,7 @@ func (c *client) Healthz(ctx context.Context, ropts ...RequestOption) (*Response
 
 	resp := &Response[HealthzResponseData]{}
 	if err := doRequest[HealthzResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1741,7 +1741,7 @@ func (c *client) CreateServiceGroup(ctx context.Context, request CreateServiceGr
 
 	resp := &Response[CreateServiceGroupResponseData]{}
 	if err := doRequest[CreateServiceGroupResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1752,7 +1752,7 @@ func (c *client) DeleteServiceGroupByUUID(ctx context.Context, uuid string, ropt
 
 	resp := &Response[DeleteServiceGroupsResponseData]{}
 	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1771,7 +1771,7 @@ func (c *client) DeleteServiceGroups(ctx context.Context, request []NameOrUUID, 
 
 	resp := &Response[DeleteServiceGroupsResponseData]{}
 	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1785,7 +1785,7 @@ func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, details
 
 	resp := &Response[GetServiceGroupsResponseData]{}
 	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1807,7 +1807,7 @@ func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, det
 
 	resp := &Response[GetServiceGroupsResponseData]{}
 	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1823,7 +1823,7 @@ func (c *client) UpdateServiceGroupByUUID(ctx context.Context, uuid string, requ
 
 	resp := &Response[UpdateServiceGroupsResponseData]{}
 	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1842,7 +1842,7 @@ func (c *client) UpdateServiceGroups(ctx context.Context, request []UpdateServic
 
 	resp := &Response[UpdateServiceGroupsResponseData]{}
 	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1852,7 +1852,7 @@ func (c *client) AddUsers(ctx context.Context, ropts ...RequestOption) (*Respons
 
 	resp := &Response[AddUsersResponseData]{}
 	if err := doRequest[AddUsersResponseData](ctx, c.request, http.MethodPost, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1862,7 +1862,7 @@ func (c *client) GetUser(ctx context.Context, ropts ...RequestOption) (*Response
 
 	resp := &Response[QuotasResponseData]{}
 	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1873,7 +1873,7 @@ func (c *client) GetUserByUUID(ctx context.Context, uuid string, ropts ...Reques
 
 	resp := &Response[QuotasResponseData]{}
 	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1889,7 +1889,7 @@ func (c *client) AttachVolumeByUUID(ctx context.Context, uuid string, request At
 
 	resp := &Response[AttachVolumesResponseData]{}
 	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1904,7 +1904,7 @@ func (c *client) AttachVolumes(ctx context.Context, request AttachVolumesRequest
 
 	resp := &Response[AttachVolumesResponseData]{}
 	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1919,7 +1919,7 @@ func (c *client) CreateVolume(ctx context.Context, request CreateVolumeRequest, 
 
 	resp := &Response[CreateVolumeResponseData]{}
 	if err := doRequest[CreateVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1930,7 +1930,7 @@ func (c *client) DeleteVolumeByUUID(ctx context.Context, uuid string, ropts ...R
 
 	resp := &Response[DeleteVolumesResponseData]{}
 	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1949,7 +1949,7 @@ func (c *client) DeleteVolumes(ctx context.Context, request []NameOrUUID, ropts 
 
 	resp := &Response[DeleteVolumesResponseData]{}
 	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1965,7 +1965,7 @@ func (c *client) DetachVolumeByUUID(ctx context.Context, uuid string, request De
 
 	resp := &Response[DetachVolumesResponseData]{}
 	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1980,7 +1980,7 @@ func (c *client) DetachVolumes(ctx context.Context, request DetachVolumesRequest
 
 	resp := &Response[DetachVolumesResponseData]{}
 	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -1994,7 +1994,7 @@ func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, details bool,
 
 	resp := &Response[GetVolumesResponseData]{}
 	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -2016,7 +2016,7 @@ func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, details b
 
 	resp := &Response[GetVolumesResponseData]{}
 	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -2032,7 +2032,7 @@ func (c *client) UpdateVolumeByUUID(ctx context.Context, uuid string, request Up
 
 	resp := &Response[UpdateVolumesResponseData]{}
 	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
@@ -2051,7 +2051,7 @@ func (c *client) UpdateVolumes(ctx context.Context, request []UpdateVolumesReque
 
 	resp := &Response[UpdateVolumesResponseData]{}
 	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return nil, err
+		return resp, err
 	}
 	return resp, nil
 }
