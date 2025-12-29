@@ -46,6 +46,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/auth#request-signin
 	RequestSignin(ctx context.Context, request RequestSigninRequest, ropts ...RequestOption) (*Response[RequestSigninResponseData], error)
+	// ListMetros lists all available metros.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/metros
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/metros#list-metros
+	ListMetros(ctx context.Context, ropts ...RequestOption) (*Response[ListMetroResponseData], error)
 	// Activates a new node.
 	//
 	// @param `request`
@@ -173,6 +182,16 @@ func (c *client) RequestSignin(ctx context.Context, request RequestSigninRequest
 
 	resp := &Response[RequestSigninResponseData]{}
 	if err := doRequest[RequestSigninResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) ListMetros(ctx context.Context, ropts ...RequestOption) (*Response[ListMetroResponseData], error) {
+	requestPath := "/v1/metros"
+
+	resp := &Response[ListMetroResponseData]{}
+	if err := doRequest[ListMetroResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
