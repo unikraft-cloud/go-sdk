@@ -6,8 +6,7 @@
 
 package platform
 
-// The response data for this request.
-
-type GetImageResponseData struct {
-	Image *GetImageResponseDataImage `json:"image,omitempty"`
+type TagOrDigest struct {
+	Digest *string `json:"digest,omitempty"`
+	Tag    *string `json:"tag,omitempty"`
 }
