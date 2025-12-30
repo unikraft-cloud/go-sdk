@@ -10,13 +10,13 @@ CHANNEL             ?= prod-stable
 
 # Tools
 GO                  ?= go
-WGET                ?= wget
+CURL                ?= curl
 DOCKER              ?= docker
 OPENAPI_GEN_VERSION ?= v6.4.0
 GOIMPORTS           ?= $(GO) run golang.org/x/tools/cmd/goimports@latest
 
 .PHONY: all
-all: generate
+all: generate fmt
 
 .PHONY: generate
 generate: platform controlplane
@@ -40,7 +40,7 @@ platform: platform.yaml
 				$(OPENAPI_GENERATOR_EXTRA_OPTIONS)
 
 platform.yaml:
-	$(Q)$(WGET) -O $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/platform.yaml
+	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/platform.yaml
 
 .PHONY: controlplane
 controlplane: controlplane.yaml
@@ -61,7 +61,7 @@ controlplane: controlplane.yaml
 				$(OPENAPI_GENERATOR_EXTRA_OPTIONS)
 
 controlplane.yaml:
-	$(Q)$(WGET) -O $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/controlplane.yaml
+	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/controlplane.yaml
 
 .PHONY: fmt
 fmt:
