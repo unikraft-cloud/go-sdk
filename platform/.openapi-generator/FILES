@@ -94,9 +94,8 @@ model_get_autoscale_configurations_response_service_group.go
 model_get_autoscale_configurations_response_service_group_template.go
 model_get_certificates_response.go
 model_get_certificates_response_data.go
-model_get_image_response.go
-model_get_image_response_data.go
-model_get_image_response_data_image.go
+model_get_images_response.go
+model_get_images_response_data.go
 model_get_instance_logs_by_uuid_request_body.go
 model_get_instances_logs_request_item.go
 model_get_instances_logs_response.go
@@ -120,7 +119,6 @@ model_get_volumes_response_data.go
 model_healthz_response.go
 model_healthz_response_data.go
 model_image.go
-model_image_kernel.go
 model_instance.go
 model_instance_create_args_instance_create_request_roms.go
 model_instance_network_interface.go
@@ -131,7 +129,6 @@ model_instance_service_group.go
 model_instance_snapshot.go
 model_instance_volume.go
 model_name_or_uuid.go
-model_object.go
 model_quotas.go
 model_quotas_hard.go
 model_quotas_limits.go
@@ -153,6 +150,7 @@ model_stop_instances_request_item.go
 model_stop_instances_response.go
 model_stop_instances_response_data.go
 model_stop_instances_response_stopped_instance.go
+model_tag_or_digest.go
 model_update_instance_by_uuid_request_body.go
 model_update_instances_request_item.go
 model_update_instances_response.go

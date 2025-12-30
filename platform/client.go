@@ -253,28 +253,21 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#get-certificates
 	GetCertificates(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error)
-	// Retrieve an image by its digest.
+	// Retrieve all images.
 	//
-	// @param `digest`
+	// @param `request`
+	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
-	// Performs: GET /v1/images/digest/{digest}
-	//
-	// See: https://unikraft.com/docs/api/platform/v1/images#get-image-by-digest
-	GetImageByDigest(ctx context.Context, digest string, ropts ...RequestOption) (*Response[GetImageResponseData], error)
-	// Retrieve an image by its tag.
-	//
-	// @param `tag`
+	// @param `namespace`
+	// 	Optional namespace to filter images by.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/images/tag/{tag}
+	// Performs: GET /v1/images/list
 	//
-	// See: https://unikraft.com/docs/api/platform/v1/images#get-image-by-tag
-	GetImageByTag(ctx context.Context, tag string, ropts ...RequestOption) (*Response[GetImageResponseData], error)
+	// See: https://unikraft.com/docs/api/platform/v1/images#get-images
+	GetImages(ctx context.Context, request TagOrDigest, namespace string, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
 	// Create an instance in Unikraft Cloud.
 	//
 	// @param `request`
@@ -1307,23 +1300,19 @@ func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, deta
 	return resp, nil
 }
 
-func (c *client) GetImageByDigest(ctx context.Context, digest string, ropts ...RequestOption) (*Response[GetImageResponseData], error) {
-	requestPath := "/v1/images/digest/{digest}"
-	requestPath = strings.ReplaceAll(requestPath, "{digest}", url.PathEscape(digest))
+func (c *client) GetImages(ctx context.Context, request TagOrDigest, namespace string, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
+	requestPath := "/v1/images/list"
 
-	resp := &Response[GetImageResponseData]{}
-	if err := doRequest[GetImageResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
-		return resp, err
+	query := make(url.Values)
+	query.Add("namespace", namespace)
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
-	return resp, nil
-}
 
-func (c *client) GetImageByTag(ctx context.Context, tag string, ropts ...RequestOption) (*Response[GetImageResponseData], error) {
-	requestPath := "/v1/images/tag/{tag}"
-	requestPath = strings.ReplaceAll(requestPath, "{tag}", url.PathEscape(tag))
-
-	resp := &Response[GetImageResponseData]{}
-	if err := doRequest[GetImageResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	resp := &Response[GetImagesResponseData]{}
+	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil

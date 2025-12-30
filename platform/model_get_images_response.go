@@ -6,14 +6,12 @@
 
 package platform
 
-// The response message for retrieving a single image.
-
-type GetImageResponse struct {
+type GetImagesResponse struct {
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
-	Message *string               `json:"message,omitempty"`
-	Data    *GetImageResponseData `json:"data,omitempty"`
+	Message *string                `json:"message,omitempty"`
+	Data    *GetImagesResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process
