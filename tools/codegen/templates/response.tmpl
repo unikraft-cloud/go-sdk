@@ -1,17 +1,17 @@
-{{>partial_header}}
-package {{packageName}}
+{{template "header"}}
+package {{.PackageName}}
 
 import (
 	"bytes"
 	"errors"
-	{{~#if (eq packageName "controlplane")}}
+{{- if eq .PackageName "controlplane"}}
 	"fmt"
-	{{~/if}}
+{{- end}}
 	"net/http"
-	{{~#if (eq packageName "controlplane")}}
+{{- if eq .PackageName "controlplane"}}
 	"reflect"
 	"strings"
-	{{~/if}}
+{{- end}}
 )
 
 // The response for an invocation to an API on the Unikraft Cloud Platform.
@@ -64,7 +64,8 @@ func (r *Response[T]) Events() (<-chan *Response[T], error) {
 	return r.events, nil
 }
 
-{{#if (eq packageName "controlplane")}}
+{{- if eq .PackageName "controlplane"}}
+
 func (r *Response[T]) Error() string {
 	if r == nil || r.Status == "success" {
 		return ""
@@ -111,4 +112,4 @@ func (r *Response[T]) Error() string {
 
 	return fmt.Sprintf("API error: status code %d: %s", r.raw.StatusCode, r.Message)
 }
-{{~/if}}
+{{- end}}

@@ -11,8 +11,6 @@ CHANNEL             ?= prod-stable
 # Tools
 GO                  ?= go
 CURL                ?= curl
-DOCKER              ?= docker
-OPENAPI_GEN_VERSION ?= v6.4.0
 GOIMPORTS           ?= $(GO) run golang.org/x/tools/cmd/goimports@latest
 
 .PHONY: all
@@ -23,42 +21,18 @@ generate: platform controlplane
 
 .PHONY: platform
 platform: platform.yaml
-	rm -rf $(WORKDIR)/platform/model_*
-	$(DOCKER) run \
-		--rm \
-		--volume "$(WORKDIR):/local" \
-		--user="$(shell id -u):$(shell id -g)" \
-		openapitools/openapi-generator-cli:$(OPENAPI_GEN_VERSION) generate \
-				--generator-name go \
-				--engine         "handlebars" \
-				--input-spec     /local/platform.yaml \
-				--config         /local/platform/config.yaml \
-				--template-dir   /local/templates \
-				--output         /local/platform \
-				--git-repo-id    unikraft-cloud \
-				--git-user-id    go-sdk \
-				$(OPENAPI_GENERATOR_EXTRA_OPTIONS)
+	$(Q)rm -f $(WORKDIR)/platform/*.gen.go
+	$(GO) generate ./platform
+	ls $(WORKDIR)/platform/*.gen.go | xargs $(GOIMPORTS) -l -w
 
 platform.yaml:
 	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/platform.yaml
 
 .PHONY: controlplane
 controlplane: controlplane.yaml
-	rm -rf $(WORKDIR)/controlplane/model_*
-	$(DOCKER) run \
-		--rm \
-		--volume "$(WORKDIR):/local" \
-		--user="$(shell id -u):$(shell id -g)" \
-		openapitools/openapi-generator-cli:$(OPENAPI_GEN_VERSION) generate \
-				--generator-name go \
-				--engine         "handlebars" \
-				--input-spec     /local/controlplane.yaml \
-				--config         /local/controlplane/config.yaml \
-				--template-dir   /local/templates \
-				--output         /local/controlplane \
-				--git-repo-id    unikraft-cloud \
-				--git-user-id    go-sdk \
-				$(OPENAPI_GENERATOR_EXTRA_OPTIONS)
+	$(Q)rm -f $(WORKDIR)/controlplane/*.gen.go
+	$(GO) generate ./controlplane
+	ls $(WORKDIR)/controlplane/*.gen.go | xargs $(GOIMPORTS) -l -w
 
 controlplane.yaml:
 	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/controlplane.yaml
@@ -67,3 +41,9 @@ controlplane.yaml:
 fmt:
 	ls $(WORKDIR)/platform/*.go | xargs $(GOIMPORTS) -l -w
 	ls $(WORKDIR)/controlplane/*.go | xargs $(GOIMPORTS) -l -w
+
+.PHONY: lint
+lint:
+	golangci-lint run ./...
+	golangci-lint run ./tools/codegen/...
+
