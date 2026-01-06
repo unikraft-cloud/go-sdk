@@ -11,7 +11,7 @@ package platform
 
 type GetInstancesLogsResponseLoggedInstanceRange struct {
 	// The first retrieved byte.
-	Start *uint64 `json:"start,omitempty"`
+	Start *int64 `json:"start,omitempty"`
 	// The last retrieved byte.
-	End *uint64 `json:"end,omitempty"`
+	End *int64 `json:"end,omitempty"`
 }
