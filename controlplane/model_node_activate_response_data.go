@@ -9,6 +9,6 @@ package controlplane
 // The response data for this request.
 
 type NodeActivateResponseData struct {
-	// The issued certificate in base64 URL encoded PEM format.
-	Certificate *string `json:"certificate,omitempty"`
+	// The issued license certificate in base64 URL encoded PEM format.
+	License *string `json:"license,omitempty"`
 }

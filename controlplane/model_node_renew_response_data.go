@@ -9,6 +9,6 @@ package controlplane
 // The response data for this request.
 
 type NodeRenewResponseData struct {
-	// The renewed certificate in base64 URL encoded PEM format.
-	Certificate *string `json:"certificate,omitempty"`
+	// The renewed license certificate in base64 URL encoded PEM format.
+	License *string `json:"license,omitempty"`
 }
