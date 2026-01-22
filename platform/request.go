@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"mime"
@@ -219,25 +220,17 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 
 	switch ct {
 	case "text/event-stream":
-		if resp.StatusCode != 200 {
+		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 			defer resp.Body.Close()
 
-			respBody, err := io.ReadAll(resp.Body)
-			if err != nil {
-				return fmt.Errorf("reading response body: %w", err)
+			rerr := fmt.Errorf("request failed: %s", resp.Status)
+			if _, err = io.Copy(&target.body, resp.Body); err != nil {
+				return errors.Join(rerr, fmt.Errorf("reading response: %w", err))
 			}
-
-			if _, err = io.Copy(&target.body, bytes.NewReader(respBody)); err != nil {
-				return fmt.Errorf("storing response body: %w", err)
+			if err := json.Unmarshal(target.body.Bytes(), target); err != nil {
+				return errors.Join(rerr, fmt.Errorf("parsing response: %w", err))
 			}
-
-			bodyReader := bytes.NewReader(respBody)
-
-			if err := json.NewDecoder(bodyReader).Decode(target); err != nil {
-				return fmt.Errorf("error parsing response: %w", err)
-			}
-
-			return NewFromResponse(target)
+			return errors.Join(rerr, NewFromResponse(target))
 		}
 
 		target.events = make(chan *Response[T])
@@ -283,23 +276,22 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 	default: // case "application/json":
 		defer resp.Body.Close()
 
-		respBody, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return fmt.Errorf("reading response body: %w", err)
+		var rerr error
+		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+			rerr = fmt.Errorf("request failed: %s", resp.Status)
 		}
 
-		if _, err = io.Copy(&target.body, bytes.NewReader(respBody)); err != nil {
-			return fmt.Errorf("storing response body: %w", err)
+		if _, err = io.Copy(&target.body, resp.Body); err != nil {
+			return errors.Join(rerr, fmt.Errorf("reading response: %w", err))
 		}
-
-		bodyReader := bytes.NewReader(respBody)
-
-		if err := json.NewDecoder(bodyReader).Decode(target); err != nil {
-			return fmt.Errorf("error parsing response: %w", err)
+		if err := json.Unmarshal(target.body.Bytes(), target); err != nil {
+			return errors.Join(rerr, fmt.Errorf("parsing response: %w", err))
 		}
-
 		if target.Status != "success" {
-			return NewFromResponse(target)
+			return errors.Join(rerr, NewFromResponse(target))
+		}
+		if rerr != nil {
+			return rerr
 		}
 	}
 
