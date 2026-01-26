@@ -221,7 +221,9 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 	switch ct {
 	case "text/event-stream":
 		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-			defer resp.Body.Close()
+			defer func() {
+				_ = resp.Body.Close()
+			}()
 
 			rerr := fmt.Errorf("request failed: %s", resp.Status)
 			if _, err = io.Copy(&target.body, resp.Body); err != nil {
@@ -274,7 +276,9 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 		}()
 
 	default: // case "application/json":
-		defer resp.Body.Close()
+		defer func() {
+			_ = resp.Body.Close()
+		}()
 
 		var rerr error
 		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
