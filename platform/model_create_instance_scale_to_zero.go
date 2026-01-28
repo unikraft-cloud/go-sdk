@@ -6,19 +6,18 @@
 
 package platform
 
-// Scale-to-zero configuration for the instance.
 // The specific policy to use for scaling the instance to zero.
-type CreateInstanceRequestScaleToZeroPolicy string
+type CreateInstanceScaleToZeroPolicy string
 
 const (
-	CreateInstanceRequestScaleToZeroPolicyOn   CreateInstanceRequestScaleToZeroPolicy = "on"
-	CreateInstanceRequestScaleToZeroPolicyOff  CreateInstanceRequestScaleToZeroPolicy = "off"
-	CreateInstanceRequestScaleToZeroPolicyIdle CreateInstanceRequestScaleToZeroPolicy = "idle"
+	CreateInstanceScaleToZeroPolicyOn   CreateInstanceScaleToZeroPolicy = "on"
+	CreateInstanceScaleToZeroPolicyOff  CreateInstanceScaleToZeroPolicy = "off"
+	CreateInstanceScaleToZeroPolicyIdle CreateInstanceScaleToZeroPolicy = "idle"
 )
 
-type CreateInstanceRequestScaleToZero struct {
+type CreateInstanceScaleToZero struct {
 	// The specific policy to use for scaling the instance to zero.
-	Policy *CreateInstanceRequestScaleToZeroPolicy `json:"policy,omitempty"`
+	Policy *CreateInstanceScaleToZeroPolicy `json:"policy,omitempty"`
 	// Whether the instance should be stateful when scaled to zero. If set to
 	// true, the instance will retain its state (e.g., RAM contents) when scaled
 	// to zero.  This is useful for instances that need to maintain their state
