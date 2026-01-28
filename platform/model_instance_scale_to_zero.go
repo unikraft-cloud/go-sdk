@@ -49,4 +49,8 @@ type InstanceScaleToZero struct {
 	// zero again.  This is useful to prevent rapid scaling to zero and back up,
 	// which can lead to performance issues or resource exhaustion.
 	CooldownTimeMs *int32 `json:"cooldown_time_ms,omitempty"`
+	// The notification time in milliseconds before the instance is scaled to
+	// zero. This allows the instance to perform any necessary cleanup or state
+	// saving before being scaled down.
+	NotifyTimeMs *int32 `json:"notify_time_ms,omitempty"`
 }
