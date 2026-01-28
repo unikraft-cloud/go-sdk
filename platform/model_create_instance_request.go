@@ -66,7 +66,7 @@ type CreateInstanceRequest struct {
 	// configurations or capabilities that can be enabled for the instance.
 	Features []CreateInstanceRequestFeatures `json:"features,omitempty"`
 	// Timeout to wait for all new instances to reach running state in
-	// milliseconds.  If you autostart your new instance, you can wait for it to
+	// seconds.  If you autostart your new instance, you can wait for it to
 	// finish starting with a blocking API call if you specify a wait timeout
 	// greater than zero.  No wait performed for a value of 0.
 	TimeoutS *int64 `json:"timeout_s,omitempty"`
