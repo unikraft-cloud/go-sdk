@@ -51,11 +51,18 @@ func (f *GeneratedFile) Generate(templates *template.Template, outputDir string)
 		return fmt.Errorf("formatting code: %w", err)
 	}
 
-	basename := f.Basename
-	if basename == "" {
-		basename = strings.TrimSuffix(f.TemplateName, ".tmpl")
+	filename := f.Basename
+	if filename == "" {
+		filename = strings.TrimSuffix(f.TemplateName, ".tmpl")
 	}
-	filename := basename + ".gen.go"
+	if !strings.Contains(filename, ".gen") {
+		if name, ext, ok := strings.Cut(filename, "."); ok {
+			filename = name + ".gen." + ext
+		} else {
+			filename += ".gen"
+		}
+	}
+
 	if err := os.WriteFile(filepath.Join(outputDir, filename), formatted, 0o644); err != nil {
 		return fmt.Errorf("writing file: %w", err)
 	}
@@ -96,13 +103,13 @@ func (g *Generator) GenerateModels() []GeneratedFile {
 	files := make([]GeneratedFile, 0, len(modelFiles))
 	for _, mf := range modelFiles {
 		files = append(files, GeneratedFile{
-			TemplateName: "model.tmpl",
+			TemplateName: "model.go.tmpl",
 			Data: map[string]any{
 				"PackageName": g.parser.packageName,
 				"SchemaName":  mf.SchemaName,
 				"Schema":      mf.Schema,
 			},
-			Basename: "model_" + strcase.ToSnake(mf.SchemaName),
+			Basename: "model_" + strcase.ToSnake(mf.SchemaName) + ".gen.go",
 		})
 	}
 	return files
@@ -113,23 +120,23 @@ func (g *Generator) GenerateClient() GeneratedFile {
 
 	data := g.packageData()
 	data["Operations"] = operations
-	return GeneratedFile{TemplateName: "client.tmpl", Data: data}
+	return GeneratedFile{TemplateName: "client.go.tmpl", Data: data}
 }
 
 func (g *Generator) GenerateRequest() GeneratedFile {
-	return GeneratedFile{TemplateName: "request.tmpl", Data: g.packageData()}
+	return GeneratedFile{TemplateName: "request.go.tmpl", Data: g.packageData()}
 }
 
 func (g *Generator) GenerateResponse() GeneratedFile {
-	return GeneratedFile{TemplateName: "response.tmpl", Data: g.packageData()}
+	return GeneratedFile{TemplateName: "response.go.tmpl", Data: g.packageData()}
 }
 
 func (g *Generator) GenerateClientOptions() GeneratedFile {
-	return GeneratedFile{TemplateName: "client_options.tmpl", Data: g.packageData()}
+	return GeneratedFile{TemplateName: "client_options.go.tmpl", Data: g.packageData()}
 }
 
 func (g *Generator) GenerateHTTPAPIErrors() GeneratedFile {
-	return GeneratedFile{TemplateName: "http_api_errors.tmpl", Data: g.packageData()}
+	return GeneratedFile{TemplateName: "http_api_errors.go.tmpl", Data: g.packageData()}
 }
 
 func (g *Generator) packageData() map[string]any {

@@ -11,7 +11,7 @@ import "{{.}}"
 {{$schema := .Schema}}
 {{$schemaName := .SchemaName}}
 {{if isEnum $schema}}
-{{template "model_enum.tmpl" .}}
+{{template "model_enum.go.tmpl" .}}
 {{else}}
-{{template "model_simple.tmpl" .}}
+{{template "model_simple.go.tmpl" .}}
 {{end}}
