@@ -278,4 +278,10 @@ type Instance struct {
 	// If set to true, the instance cannot be deleted until the lock is removed.
 	DeleteLock *bool            `json:"delete_lock,omitempty"`
 	Restart    *InstanceRestart `json:"restart,omitempty"`
+	// Read-Only Memory (ROM) blobs to attach to the instance.
+	// Unikraft Cloud supports the ability to attach Read-Only Memory (ROM) blobs
+	// to instances. It allows you to create a general-purpose base image and
+	// then customize individual instances by attaching code or data as separate
+	// ROM blobs.
+	Roms []InstanceRom `json:"roms,omitempty"`
 }
