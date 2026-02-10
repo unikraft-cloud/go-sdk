@@ -33,6 +33,7 @@ model_create_certificate_response.go
 model_create_certificate_response_data.go
 model_create_instance_request.go
 model_create_instance_request_domain.go
+model_create_instance_request_rom.go
 model_create_instance_request_scale_to_zero.go
 model_create_instance_request_service_group.go
 model_create_instance_request_volume.go
@@ -125,6 +126,7 @@ model_instance_create_args_instance_create_request_roms.go
 model_instance_network_interface.go
 model_instance_restart.go
 model_instance_restart_attempt.go
+model_instance_rom.go
 model_instance_scale_to_zero.go
 model_instance_service_group.go
 model_instance_snapshot.go
