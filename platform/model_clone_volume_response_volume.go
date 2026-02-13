@@ -7,23 +7,23 @@
 package platform
 
 // Current state of the volume.
-type CreateVolumeResponseVolumeState string
+type CloneVolumeResponseVolumeState string
 
 const (
-	CreateVolumeResponseVolumeStateUninitialized CreateVolumeResponseVolumeState = "uninitialized"
-	CreateVolumeResponseVolumeStateInitializing  CreateVolumeResponseVolumeState = "initializing"
-	CreateVolumeResponseVolumeStateAvailable     CreateVolumeResponseVolumeState = "available"
-	CreateVolumeResponseVolumeStateIdle          CreateVolumeResponseVolumeState = "idle"
-	CreateVolumeResponseVolumeStateMounted       CreateVolumeResponseVolumeState = "mounted"
-	CreateVolumeResponseVolumeStateBusy          CreateVolumeResponseVolumeState = "busy"
-	CreateVolumeResponseVolumeStateError         CreateVolumeResponseVolumeState = "error"
+	CloneVolumeResponseVolumeStateUninitialized CloneVolumeResponseVolumeState = "uninitialized"
+	CloneVolumeResponseVolumeStateInitializing  CloneVolumeResponseVolumeState = "initializing"
+	CloneVolumeResponseVolumeStateAvailable     CloneVolumeResponseVolumeState = "available"
+	CloneVolumeResponseVolumeStateIdle          CloneVolumeResponseVolumeState = "idle"
+	CloneVolumeResponseVolumeStateMounted       CloneVolumeResponseVolumeState = "mounted"
+	CloneVolumeResponseVolumeStateBusy          CloneVolumeResponseVolumeState = "busy"
+	CloneVolumeResponseVolumeStateError         CloneVolumeResponseVolumeState = "error"
 )
 
-type CreateVolumeResponseVolume struct {
+type CloneVolumeResponseVolume struct {
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
 	// Current state of the volume.
-	State *CreateVolumeResponseVolumeState `json:"state,omitempty"`
+	State *CloneVolumeResponseVolumeState `json:"state,omitempty"`
 	// UUID of the newly created volume.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the newly created volume.
