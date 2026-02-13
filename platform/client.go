@@ -827,6 +827,31 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#attach-volumes
 	AttachVolumes(ctx context.Context, request AttachVolumesRequest, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error)
+	//
+	// @param `uuid`
+	// 	The UUID of the volume to clone.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/volumes/{uuid}/clone
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#clone-volume-by-uuid
+	CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error)
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/volumes/clone
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#clone-volumes
+	CloneVolumes(ctx context.Context, request CloneVolumesRequest, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error)
 	// Create a volume given the specified configuration parameters.
 	// The volume is automatically initialized with an empty file system.
 	// After initialization, the volume is in the `available` state and can be
@@ -1893,6 +1918,37 @@ func (c *client) AttachVolumes(ctx context.Context, request AttachVolumesRequest
 
 	resp := &Response[AttachVolumesResponseData]{}
 	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error) {
+	requestPath := "/v1/volumes/{uuid}/clone"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[CloneVolumeResponseData]{}
+	if err := doRequest[CloneVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) CloneVolumes(ctx context.Context, request CloneVolumesRequest, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error) {
+	requestPath := "/v1/volumes/clone"
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[CloneVolumeResponseData]{}
+	if err := doRequest[CloneVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil

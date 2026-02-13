@@ -50,6 +50,7 @@ type Volume struct {
 	// List of instances that have this volume mounted.
 	MountedBy []VolumeVolumeInstanceMount `json:"mounted_by,omitempty"`
 	// The tags associated with the volume.
+	// Maximum 16 tags are allowed, and each tag may not be longer than 256 characters.
 	Tags []string `json:"tags,omitempty"`
 	// An optional field representing the status of the request.  This field is
 	// only set when this message object is used as a response message.
