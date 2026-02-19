@@ -154,6 +154,7 @@ model_service_group_template.go
 model_start_instances_response.go
 model_start_instances_response_data.go
 model_start_instances_response_started_instance.go
+model_stop_instance_by_uuid_request_body.go
 model_stop_instances_request_item.go
 model_stop_instances_response.go
 model_stop_instances_response_data.go

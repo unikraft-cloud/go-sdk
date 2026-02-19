@@ -515,17 +515,8 @@ type Client interface {
 	// @param `uuid`
 	// 	The UUID of the instance to stop.
 	//
-	// @param `force`
-	// 	Whether to immediately force stop the instance.
-	//
-	// @param `drainTimeoutMs`
-	// 	Timeout for draining connections in milliseconds.  The instance does not
-	// 	receive new connections in the draining phase.  The instance is stopped
-	// 	when the last connection has been closed or the timeout expired.  The
-	// 	maximum timeout may vary.  Use -1 for the largest possible value.
-	//
-	// 	Note: This endpoint does not block.  Use the wait endpoint for the instance
-	// 	to reach the stopped state.
+	// @param `request`
+	// 	The request body for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -533,7 +524,7 @@ type Client interface {
 	// Performs: PUT /v1/instances/{uuid}/stop
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instance-by-uuid
-	StopInstanceByUUID(ctx context.Context, uuid string, force bool, drainTimeoutMs int32, ropts ...RequestOption) (*Response[StopInstancesResponseData], error)
+	StopInstanceByUUID(ctx context.Context, uuid string, request StopInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StopInstancesResponseData], error)
 	// Stop one or more running instance by ID(s) (name or UUID) or do
 	// nothing if the instances are already stopped.
 	//
@@ -1596,16 +1587,17 @@ func (c *client) StartInstances(ctx context.Context, request []NameOrUUID, ropts
 	return resp, nil
 }
 
-func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, force bool, drainTimeoutMs int32, ropts ...RequestOption) (*Response[StopInstancesResponseData], error) {
+func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, request StopInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StopInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/stop"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
-	query := make(url.Values)
-	query.Add("force", fmt.Sprintf("%t", force))
-	query.Add("drain_timeout_ms", fmt.Sprintf("%d", drainTimeoutMs))
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
 
 	resp := &Response[StopInstancesResponseData]{}
-	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
