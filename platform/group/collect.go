@@ -16,12 +16,9 @@ import (
 func CollectMetro[C platform.Client, T any](ctx context.Context, c *Group[C], metro string, fn func(context.Context, C) (T, error)) (T, error) {
 	var result T
 	err := DoMetro(ctx, c, metro, func(ctx context.Context, client C) error {
-		val, err := fn(ctx, client)
-		if err != nil {
-			return err
-		}
-		result = val
-		return nil
+		var err error
+		result, err = fn(ctx, client)
+		return err
 	})
 	return result, err
 }
@@ -31,19 +28,13 @@ func CollectMetro[C platform.Client, T any](ctx context.Context, c *Group[C], me
 func CollectAll[C platform.Client, T any](ctx context.Context, c *Group[C], fn func(context.Context, C) (T, error)) ([]T, error) {
 	results := make([]T, len(c.clients))
 	err := DoAll(ctx, c, func(ctx context.Context, client C) error {
-		vals, err := fn(ctx, client)
-		if err != nil {
-			return err
-		}
 		idx := mustGetIndexCtx(ctx)
-		results[idx] = vals
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
 
-	return results, nil
+		result, err := fn(ctx, client)
+		results[idx] = result
+		return err
+	})
+	return results, err
 }
 
 // CollectAllSlices performs the same operation as CollectAll, but for
@@ -51,10 +42,7 @@ func CollectAll[C platform.Client, T any](ctx context.Context, c *Group[C], fn f
 // concatenated into a single slice and returned.
 func CollectAllSlices[C platform.Client, T any](ctx context.Context, c *Group[C], fn func(context.Context, C) ([]T, error)) ([]T, error) {
 	slices, err := CollectAll(ctx, c, fn)
-	if err != nil {
-		return nil, err
-	}
-	return flatten(slices), nil
+	return flatten(slices), err
 }
 
 // CollectRefs performs the given function fn across all clients in the group
@@ -70,18 +58,12 @@ func CollectRefs[C interface {
 }, T any](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) (T, Refs, error)) ([]T, error) {
 	results := make([]T, len(c.clients))
 	err := DoRefs(ctx, c, refs, func(ctx context.Context, client C, refs Refs) (Refs, error) {
-		vals, foundRefs, err := fn(ctx, client, refs)
-		if err != nil {
-			return nil, err
-		}
 		idx := mustGetIndexCtx(ctx)
-		results[idx] = vals
-		return foundRefs, nil
+		result, foundRefs, err := fn(ctx, client, refs)
+		results[idx] = result
+		return foundRefs, err
 	})
-	if err != nil {
-		return nil, err
-	}
-	return results, nil
+	return results, err
 }
 
 // CollectRefsSlices performs same operation as CollectRefs, but for functions
@@ -92,10 +74,7 @@ func CollectRefsSlices[C interface {
 	comparable
 }, T any](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) ([]T, Refs, error)) ([]T, error) {
 	slices, err := CollectRefs(ctx, c, refs, fn)
-	if err != nil {
-		return nil, err
-	}
-	return flatten(slices), nil
+	return flatten(slices), err
 }
 
 func flatten[T any](slices [][]T) []T {

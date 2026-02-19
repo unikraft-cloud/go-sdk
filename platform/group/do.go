@@ -9,8 +9,8 @@ import (
 	"context"
 	"sync"
 
-	"golang.org/x/sync/errgroup"
 	"unikraft.com/cloud/sdk/platform"
+	"unikraft.com/x/joinerrgroup"
 	"unikraft.com/x/log"
 )
 
@@ -31,7 +31,7 @@ func DoMetro[C platform.Client](ctx context.Context, c *Group[C], name string, f
 
 // DoAll performs the given function fn across all clients in the group.
 func DoAll[C platform.Client](ctx context.Context, c *Group[C], fn func(context.Context, C) error) error {
-	eg, ctx := errgroup.WithContext(ctx)
+	eg := joinerrgroup.Group{}
 	for idx, client := range c.clients {
 		eg.Go(func() error {
 			logger := log.G(ctx).
@@ -71,7 +71,7 @@ func DoRefs[C interface {
 		}
 	}
 
-	eg, ctx := errgroup.WithContext(ctx)
+	eg := joinerrgroup.Group{}
 	refMap := make(map[Ref]struct{})
 	var mu sync.Mutex
 
