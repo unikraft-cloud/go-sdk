@@ -252,7 +252,7 @@ func (instance *Instance) StopReasonCode() string {
 		ret.WriteString("t")
 	}
 
-	ret.WriteString(fmt.Sprintf("%d", instance.StopCodeInitLevel()))
+	fmt.Fprintf(&ret, "%d", instance.StopCodeInitLevel())
 
 	ret.WriteString(" ")
 
@@ -264,7 +264,7 @@ func (instance *Instance) StopReasonCode() string {
 		if ok {
 			ret.WriteString(errno)
 		} else {
-			ret.WriteString(fmt.Sprintf("%d", instance.StopCodeErrno()))
+			fmt.Fprintf(&ret, "%d", instance.StopCodeErrno())
 		}
 	}
 
