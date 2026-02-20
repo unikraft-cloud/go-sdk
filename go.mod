@@ -1,10 +1,10 @@
 module unikraft.com/cloud/sdk
 
-go 1.25.5
+go 1.25.7
 
 require (
 	golang.org/x/net v0.41.0
-	golang.org/x/sync v0.19.0
+	unikraft.com/x/joinerrgroup v0.0.0-20260220150535-dbc51abe4158
 	unikraft.com/x/log v0.0.0-20260126094137-ab6e717e5679
 )
 
