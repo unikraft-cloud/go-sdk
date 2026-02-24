@@ -7,8 +7,9 @@
 package platform
 
 // The request message for creating a new instance.
-// Restart policy for the instance.  This defines how the instance should
-// behave when it stops or crashes.
+// Restart policy for the instance.  This defines how the instance
+// should behave when it stops or crashes.  Cannot be combined with
+// the `delete-on-stop` feature.
 type CreateInstanceRequestRestartPolicy string
 
 const (
@@ -18,7 +19,9 @@ const (
 )
 
 // Features to enable for the instance.  Features are specific
-// configurations or capabilities that can be enabled for the instance.
+// configurations or capabilities that can be enabled for the
+// instance.  The `scale-to-zero` and `delete-on-stop` features are
+// mutually exclusive.
 type CreateInstanceRequestFeatures string
 
 const (
@@ -48,27 +51,35 @@ type CreateInstanceRequest struct {
 	// instance where the volume will be mounted.
 	Volumes []CreateInstanceRequestVolume `json:"volumes,omitempty"`
 	// Whether the instance should start automatically on creation.
+	// Must be set to true when `timeout_s` is specified.
 	Autostart *bool `json:"autostart,omitempty"`
-	// Number of replicas for the instance.
+	// (Optional).  Number of additional replicas to create.  The total
+	// number of instances created is `replicas + 1`.  Defaults to 0.
 	Replicas *int64 `json:"replicas,omitempty"`
-	// Restart policy for the instance.  This defines how the instance should
-	// behave when it stops or crashes.
+	// Restart policy for the instance.  This defines how the instance
+	// should behave when it stops or crashes.  Cannot be combined with
+	// the `delete-on-stop` feature.
 	RestartPolicy *CreateInstanceRequestRestartPolicy `json:"restart_policy,omitempty"`
 	ScaleToZero   *CreateInstanceRequestScaleToZero   `json:"scale_to_zero,omitempty"`
-	// Number of vCPUs to allocate for the instance.
+	// (Optional).  Number of vCPUs to allocate for the instance.
+	// Defaults to 1.
 	Vcpus *int32 `json:"vcpus,omitempty"`
-	// Timeout to wait for all new instances to reach running state in
-	// milliseconds.  If you autostart your new instance, you can wait for it to
-	// finish starting with a blocking API call if you specify a wait timeout
-	// greater than zero.  No wait performed for a value of 0.
+	// Deprecated: Use `timeout_s` instead.  Timeout in milliseconds to
+	// wait for all new instances to reach running state.  Requires
+	// `autostart` to be set.  If `timeout_s` is not set, this value is
+	// converted by rounding up to the next full second.  No wait
+	// performed for a value of 0.
 	WaitTimeoutMs *int64 `json:"wait_timeout_ms,omitempty"`
 	// Features to enable for the instance.  Features are specific
-	// configurations or capabilities that can be enabled for the instance.
+	// configurations or capabilities that can be enabled for the
+	// instance.  The `scale-to-zero` and `delete-on-stop` features are
+	// mutually exclusive.
 	Features []CreateInstanceRequestFeatures `json:"features,omitempty"`
-	// Timeout to wait for all new instances to reach running state in
-	// seconds.  If you autostart your new instance, you can wait for it to
-	// finish starting with a blocking API call if you specify a wait timeout
-	// greater than zero.  No wait performed for a value of 0.
+	// Timeout in seconds to wait for all new instances to reach running
+	// state.  Requires `autostart` to be set.  If you autostart your
+	// new instance, you can wait for it to finish starting with a
+	// blocking API call if you specify a wait timeout greater than
+	// zero.  No wait performed for a value of 0.
 	TimeoutS *int64 `json:"timeout_s,omitempty"`
 	// Read-Only Memory (ROM) blobs to attach to the instance.
 	// Unikraft Cloud supports the ability to attach Read-Only Memory (ROM) blobs
@@ -76,4 +87,10 @@ type CreateInstanceRequest struct {
 	// then customize individual instances by attaching code or data as separate
 	// ROM blobs.
 	Roms []CreateInstanceRequestRom `json:"roms,omitempty"`
+	// (Optional).  Tags to associate with the instance.
+	Tags     []string                       `json:"tags,omitempty"`
+	Template *CreateInstanceRequestTemplate `json:"template,omitempty"`
+	// (Optional).  The scheduling priority for the instance.  Higher values
+	// indicate higher priority.
+	SchedPriority *int32 `json:"sched_priority,omitempty"`
 }
