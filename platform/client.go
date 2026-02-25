@@ -458,6 +458,9 @@ type Client interface {
 	GetTemplateInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
 	// Get one or more template instances by their UUID(s) or name(s).
 	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
 	// @param `details`
 	// 	Whether to include details about the templates in the response.  By default
 	// 	this is set to true, meaning that all information about the templates will
@@ -482,7 +485,7 @@ type Client interface {
 	// Performs: GET /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instances
-	GetTemplateInstances(ctx context.Context, details bool, fromUuid string, count int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
+	GetTemplateInstances(ctx context.Context, request []NameOrUUID, details bool, fromUuid string, count int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
 	// Start a previously stopped instance by its UUID or do nothing if the
 	// instance is already running.
 	//
@@ -1539,7 +1542,7 @@ func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, det
 	return resp, nil
 }
 
-func (c *client) GetTemplateInstances(ctx context.Context, details bool, fromUuid string, count int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
+func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID, details bool, fromUuid string, count int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
 
 	query := make(url.Values)
@@ -1550,8 +1553,17 @@ func (c *client) GetTemplateInstances(ctx context.Context, details bool, fromUui
 		query.Add("tags", v)
 	}
 
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
 	resp := &Response[GetTemplateInstancesResponseData]{}
-	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
