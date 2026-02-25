@@ -458,23 +458,8 @@ type Client interface {
 	GetTemplateInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
 	// Get one or more template instances by their UUID(s) or name(s).
 	//
-	// @param `details`
-	// 	Whether to include details about the templates in the response.  By default
-	// 	this is set to true, meaning that all information about the templates will
-	// 	be included in the response.  If set to false, only the basic information
-	// 	about the templates will be included, such as their name and UUID.
-	//
-	// @param `fromUuid`
-	// 	If set, the listing starts from (but does not include) the template with
-	// 	the given UUID.  This is useful for pagination.
-	//
-	// @param `count`
-	// 	The maximum number of template instances to return.  This is useful for
-	// 	pagination.  If not set, all the template instances matching filters will
-	// 	be returned.  When filtering by IDs, this should not be set.
-	//
-	// @param `tags`
-	// 	A list of tags to filter the template instances by.
+	// @param `request`
+	// 	The request body for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -482,7 +467,7 @@ type Client interface {
 	// Performs: GET /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instances
-	GetTemplateInstances(ctx context.Context, details bool, fromUuid string, count int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
+	GetTemplateInstances(ctx context.Context, request GetTemplateInstancesRequest, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
 	// Start a previously stopped instance by its UUID or do nothing if the
 	// instance is already running.
 	//
@@ -1539,19 +1524,16 @@ func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, det
 	return resp, nil
 }
 
-func (c *client) GetTemplateInstances(ctx context.Context, details bool, fromUuid string, count int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
+func (c *client) GetTemplateInstances(ctx context.Context, request GetTemplateInstancesRequest, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
 
-	query := make(url.Values)
-	query.Add("details", fmt.Sprintf("%t", details))
-	query.Add("from_uuid", fromUuid)
-	query.Add("count", fmt.Sprintf("%d", count))
-	for _, v := range tags {
-		query.Add("tags", v)
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
 	resp := &Response[GetTemplateInstancesResponseData]{}
-	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil

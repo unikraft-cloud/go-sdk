@@ -120,6 +120,7 @@ model_get_instances_response.go
 model_get_instances_response_data.go
 model_get_service_groups_response.go
 model_get_service_groups_response_data.go
+model_get_template_instances_request.go
 model_get_template_instances_response.go
 model_get_template_instances_response_data.go
 model_get_volumes_response.go
