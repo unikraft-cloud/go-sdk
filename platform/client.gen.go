@@ -818,6 +818,7 @@ type Client interface {
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#attach-volumes
 	AttachVolumes(ctx context.Context, request AttachVolumesRequest, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error)
 	//
+	//
 	// @param `uuid`
 	// 	The UUID of the volume to clone.
 	//
@@ -831,6 +832,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#clone-volume-by-uuid
 	CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error)
+	//
 	//
 	// @param `request`
 	// 	The request body for this operation.

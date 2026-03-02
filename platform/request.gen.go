@@ -1,33 +1,33 @@
-{{>partial_header}}
-package {{packageName}}
+// This file is auto-generated. DO NOT EDIT.
+// SPDX-License-Identifier: BSD-3-Clause
+// Copyright (c) 2025, Unikraft GmbH.
+// Licensed under the BSD-3-Clause License (the "License").
+// You may not use this file except in compliance with the License.
+
+package platform
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"mime"
 	"net/http"
 	"net/url"
-{{~#if (eq packageName "platform")}}
 	"strings"
-{{~/if}}
 	"time"
 
-	"unikraft.com/cloud/sdk/pkg/sse"
 	"unikraft.com/cloud/sdk/pkg/httpclient"
+	"unikraft.com/cloud/sdk/pkg/sse"
 )
 
 // Request is the utility structure for performing individual requests to
 // a service location at KraftCloud.
 type Request struct {
 	copts      *ClientOptions
-{{~#if (eq packageName "platform")}}
 	metro      string
-{{~else}}
-	endpoint   string
-{{~/if}}
 	httpClient httpclient.HTTPClient
 	timeout    time.Duration
 }
@@ -40,21 +40,12 @@ func NewRequestFromDefaultOptions(copts *ClientOptions) *Request {
 	}
 }
 
-{{~#if (eq packageName "platform")}}
 // WithMetro returns a Request that uses the given metro in API requests.
 func (r *Request) WithMetro(m string) *Request {
 	rcpy := r.clone()
 	rcpy.metro = m
 	return rcpy
 }
-{{~else}}
-// WithEndpoint returns a Request that uses the given endpoint in API requests.
-func (r *Request) WithEndpoint(e string) *Request {
-	rcpy := r.clone()
-	rcpy.endpoint = e
-	return rcpy
-}
-{{~/if}}
 
 // WithTimeout returns a Request that uses the specified timeout
 // duration in API requests.
@@ -71,19 +62,11 @@ func (r *Request) WithHTTPClient(hc httpclient.HTTPClient) *Request {
 	rcpy.httpClient = hc
 	return rcpy
 }
-{{~#if (eq packageName "platform")}}
 
 // Metro returns the metro that this request will perform against.
 func (r *Request) Metro() string {
 	return r.metro
 }
-{{~else}}
-
-// Endpoint returns the endpoint that this request will perform against.
-func (r *Request) Endpoint() string {
-	return r.endpoint
-}
-{{~/if}}
 
 // GetBearerToken uses the pre-defined token to construct the header used for
 // authenticating requests.
@@ -177,17 +160,15 @@ func WithCustomHeaders(headers http.Header) RequestOption {
 // doRequest performs the request and handles the return media type differently
 // depending on the media type:
 //
-// - application/json: hydrates a target type with response body and closes the
-//   body.
-// - text/event-stream: returns a channel of events which will be closed when
-//   the context is done or the connection is closed.  The channel will contain
-//   pointers to Response items, which are decoded from the event data.
+//   - application/json: hydrates a target type with response body and closes the
+//     body.
+//   - text/event-stream: returns a channel of events which will be closed when
+//     the context is done or the connection is closed.  The channel will contain
+//     pointers to Response items, which are decoded from the event data.
 func doRequest[T any](ctx context.Context, req *Request, method, path string, query url.Values, reqBody io.Reader, target *Response[T], ropts ...RequestOption) error {
 	var m string
 	var u *url.URL
 	var err error
-{{~#if (eq packageName "platform")}}
-
 	if req.metro != "" {
 		m = req.metro
 	} else {
@@ -200,14 +181,6 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 	if !strings.Contains(m, "://") {
 		m = fmt.Sprintf(BaseV1FormatURL, m)
 	}
-{{~else}}
-
-	if req.endpoint != "" {
-		m = req.endpoint
-	} else {
-		m = req.copts.DefaultEndpoint()
-	}
-{{~/if}}
 	u, err = url.Parse(m)
 	if err != nil {
 		return fmt.Errorf("error constructing URL: %w", err)
@@ -258,11 +231,7 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 			if err := json.Unmarshal(target.body.Bytes(), target); err != nil {
 				return errors.Join(rerr, fmt.Errorf("parsing response: %w", err))
 			}
-            {{~#if (eq packageName "platform")}}
 			return errors.Join(rerr, NewFromResponse(target))
-			{{~else}}
-			return errors.Join(rerr, target)
-            {{~/if}}
 		}
 
 		target.events = make(chan *Response[T])
@@ -322,11 +291,7 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 			return errors.Join(rerr, fmt.Errorf("parsing response: %w", err))
 		}
 		if target.Status != "success" {
-		    {{~#if (eq packageName "platform")}}
 			return errors.Join(rerr, NewFromResponse(target))
-			{{~else}}
-			return errors.Join(rerr, target)
-            {{~/if}}
 		}
 		if rerr != nil {
 			return rerr

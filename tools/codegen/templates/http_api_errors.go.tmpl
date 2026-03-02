@@ -1,6 +1,6 @@
-{{~#if (eq packageName "platform")}}
-{{>partial_header}}
-package {{packageName}}
+{{- if eq .PackageName "platform"}}
+{{template "header"}}
+package {{.PackageName}}
 
 import (
 	"errors"
@@ -143,5 +143,4 @@ func ErrorContainsOnly(err error, code APIHTTPError) bool {
 
 	return true
 }
-
-{{~/if}}
+{{- end}}

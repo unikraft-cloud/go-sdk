@@ -1,5 +1,5 @@
-{{>partial_header}}
-package {{packageName}}
+{{template "header"}}
+package {{.PackageName}}
 
 import (
 	"unikraft.com/cloud/sdk/pkg/httpclient"
@@ -9,11 +9,11 @@ import (
 type ClientOption func(*ClientOptions)
 
 type ClientOptions struct {
-{{~#if (eq packageName "platform")}}
+{{- if eq .PackageName "platform"}}
 	defaultMetro  string
-{{~else}}
+{{- else}}
 	defaultEndpoint string
-{{~/if}}
+{{- end}}
 
 	token         string
 	allowInsecure bool
@@ -21,7 +21,7 @@ type ClientOptions struct {
 	httpClient    httpclient.HTTPClient
 }
 
-{{~#if (eq packageName "platform")}}
+{{- if eq .PackageName "platform"}}
 
 // SetDefaultMetro sets the default metro.
 func (opts *ClientOptions) SetDefaultMetro(metro string) {
@@ -32,7 +32,7 @@ func (opts *ClientOptions) SetDefaultMetro(metro string) {
 func (opts *ClientOptions) DefaultMetro() string {
 	return opts.defaultMetro
 }
-{{~else}}
+{{- else}}
 
 // SetDefaultEndpoint sets the default API endpoint.
 func (opts *ClientOptions) SetDefaultEndpoint(endpoint string) {
@@ -43,7 +43,7 @@ func (opts *ClientOptions) SetDefaultEndpoint(endpoint string) {
 func (opts *ClientOptions) DefaultEndpoint() string {
 	return opts.defaultEndpoint
 }
-{{~/if}}
+{{- end}}
 
 // SetToken sets the token to use for authentication with the API.
 func (opts *ClientOptions) SetToken(token string) {
@@ -87,7 +87,7 @@ func (opts *ClientOptions) HTTPClient() httpclient.HTTPClient {
 	return opts.httpClient
 }
 
-{{~#if (eq packageName "platform")}}
+{{- if eq .PackageName "platform"}}
 
 // WithDefaultMetro sets the default metro for the client.
 func WithDefaultMetro(metro string) ClientOption {
@@ -95,7 +95,7 @@ func WithDefaultMetro(metro string) ClientOption {
 		client.SetDefaultMetro(metro)
 	}
 }
-{{~else}}
+{{- else}}
 
 // WithDefaultEndpoint sets the default API endpoint for the client.
 func WithDefaultEndpoint(endpoint string) ClientOption {
@@ -103,7 +103,7 @@ func WithDefaultEndpoint(endpoint string) ClientOption {
 		client.SetDefaultEndpoint(endpoint)
 	}
 }
-{{~/if}}
+{{- end}}
 
 // WithToken sets the access token of the client connecting to KraftCloud.
 func WithToken(token string) ClientOption {

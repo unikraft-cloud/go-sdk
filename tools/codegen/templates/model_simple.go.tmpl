@@ -1,0 +1,58 @@
+{{$schema := .Schema}}
+{{$schemaName := .SchemaName}}
+{{$propNames := propertyNamesOrdered $schemaName $schema}}
+{{if $schema.Description -}}
+// {{$schema.Description | replace "\n" "\n// "}}
+{{end -}}
+{{- /* Inline enum types for fields */ -}}
+{{- range $propName := $propNames -}}
+{{- $prop := getProperty $schema $propName}}
+{{- $enumSchema := ""}}
+{{- $enumDescription := ""}}
+{{- if and $prop (isEnum $prop)}}
+{{- /* Direct enum property */}}
+{{- $enumSchema = $prop}}
+{{- $enumDescription = $prop.Description}}
+{{- else if and $prop (eq (getType $prop) "array") $prop.Items $prop.Items.Value (isEnum $prop.Items.Value)}}
+{{- /* Array of enum items - description is on the property, not items */}}
+{{- $enumSchema = $prop.Items.Value}}
+{{- $enumDescription = $prop.Description}}
+{{- end}}
+{{- if $enumSchema}}
+{{- $enumTypeName := schemaToGoType $enumSchema }}
+{{- if $enumDescription -}}
+// {{$enumDescription | replace "\n" "\n// "}}
+{{end -}}
+type {{$enumTypeName}} string
+
+const (
+{{- range $enumSchema.Enum}}
+	{{$enumTypeName}}{{capitalize (printf "%v" .)}} {{$enumTypeName}} = {{printf "%q" .}}
+{{- end}}
+)
+{{ end }}
+
+{{- end}}
+type {{$schemaName}} struct {
+{{- range $propName := propertyNamesOrdered $schemaName $schema}}
+{{- $prop := getProperty $schema $propName}}
+{{- if $prop}}
+{{- /* Render description for all properties, including array enums */}}
+{{- if $prop.Description}}
+	// {{$prop.Description | replace "\n" "\n	// "}}
+{{- end}}
+{{- $required := isRequired $schema $propName}}
+{{- $propGoName := pascalcase $propName}}
+{{- $openAPIType := getType $prop}}
+{{- /* Determine the Go type */}}
+{{- $propType := schemaToGoType $prop }}
+{{- /* Add pointer for optional fields */}}
+{{- if not $required}}
+	{{- if and (ne $openAPIType "array") (ne $openAPIType "object")}}
+		{{- $propType = printf "*%s" $propType}}
+	{{- end}}
+{{- end}}
+	{{$propGoName}} {{$propType}} `json:"{{$propName}}{{if not $required}},omitempty{{end}}"`
+{{- end}}
+{{- end}}
+}

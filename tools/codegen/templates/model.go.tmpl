@@ -1,0 +1,17 @@
+{{template "header" .}}
+package {{.PackageName}}
+
+{{$imports := collectImports .Schema}}
+{{if $imports}}
+{{range $imports}}
+import "{{.}}"
+{{end}}
+{{end}}
+
+{{$schema := .Schema}}
+{{$schemaName := .SchemaName}}
+{{if isEnum $schema}}
+{{template "model_enum.go.tmpl" .}}
+{{else}}
+{{template "model_simple.go.tmpl" .}}
+{{end}}

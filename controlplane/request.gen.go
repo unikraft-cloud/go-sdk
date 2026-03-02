@@ -168,7 +168,6 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 	var m string
 	var u *url.URL
 	var err error
-
 	if req.endpoint != "" {
 		m = req.endpoint
 	} else {
