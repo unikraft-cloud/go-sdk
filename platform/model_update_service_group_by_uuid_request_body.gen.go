@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // The property to modify.
 type UpdateServiceGroupByUUIDRequestBodyProp string
 
@@ -38,4 +40,56 @@ type UpdateServiceGroupByUUIDRequestBody struct {
 	// - For "soft_limit": integer (1–65535), must be <= "hard_limit"
 	// - For "hard_limit": integer (1–65535), must be >= "soft_limit"
 	Value *interface{} `json:"value,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *UpdateServiceGroupByUUIDRequestBody) UnmarshalJSON(data []byte) error {
+	type Alias UpdateServiceGroupByUUIDRequestBody
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"id":    {},
+		"prop":  {},
+		"op":    {},
+		"value": {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m UpdateServiceGroupByUUIDRequestBody) MarshalJSON() ([]byte, error) {
+	type Alias UpdateServiceGroupByUUIDRequestBody
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

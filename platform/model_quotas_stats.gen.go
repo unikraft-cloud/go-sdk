@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 type QuotasStats struct {
 	// Number of instances
 	Instances *int64 `json:"instances,omitempty"`
@@ -24,4 +26,60 @@ type QuotasStats struct {
 	Volumes *int64 `json:"volumes,omitempty"`
 	// Total size of all volumes in megabytes
 	TotalVolumeMb *int64 `json:"total_volume_mb,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *QuotasStats) UnmarshalJSON(data []byte) error {
+	type Alias QuotasStats
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"instances":       {},
+		"live_instances":  {},
+		"live_vcpus":      {},
+		"live_memory_mb":  {},
+		"service_groups":  {},
+		"services":        {},
+		"volumes":         {},
+		"total_volume_mb": {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m QuotasStats) MarshalJSON() ([]byte, error) {
+	type Alias QuotasStats
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

@@ -6,7 +6,10 @@
 
 package platform
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // An instance is a unikernel virtual machine running an application.
 // The state of the instance.  This indicates the current state of the
@@ -284,4 +287,88 @@ type Instance struct {
 	// then customize individual instances by attaching code or data as separate
 	// ROM blobs.
 	Roms []InstanceRom `json:"roms,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *Instance) UnmarshalJSON(data []byte) error {
+	type Alias Instance
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"uuid":               {},
+		"name":               {},
+		"created_at":         {},
+		"state":              {},
+		"private_fqdn":       {},
+		"image":              {},
+		"memory_mb":          {},
+		"vcpus":              {},
+		"args":               {},
+		"env":                {},
+		"start_count":        {},
+		"restart_count":      {},
+		"started_at":         {},
+		"stopped_at":         {},
+		"uptime_ms":          {},
+		"vmm_start_time_us":  {},
+		"vmm_load_time_us":   {},
+		"vmm_ready_time_us":  {},
+		"boot_time_us":       {},
+		"net_time_us":        {},
+		"stop_reason":        {},
+		"exit_code":          {},
+		"stop_code":          {},
+		"restart_policy":     {},
+		"scale_to_zero":      {},
+		"volumes":            {},
+		"service_group":      {},
+		"network_interfaces": {},
+		"tags":               {},
+		"status":             {},
+		"message":            {},
+		"error":              {},
+		"snapshot":           {},
+		"delete_lock":        {},
+		"restart":            {},
+		"roms":               {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m Instance) MarshalJSON() ([]byte, error) {
+	type Alias Instance
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

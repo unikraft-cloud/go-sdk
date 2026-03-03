@@ -6,7 +6,10 @@
 
 package platform
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // The current state of the certificate.
 //
@@ -88,4 +91,65 @@ type Certificate struct {
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.
 	Error *int32 `json:"error,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *Certificate) UnmarshalJSON(data []byte) error {
+	type Alias Certificate
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"uuid":          {},
+		"name":          {},
+		"created_at":    {},
+		"common_name":   {},
+		"subject":       {},
+		"issuer":        {},
+		"serial_number": {},
+		"not_before":    {},
+		"not_after":     {},
+		"state":         {},
+		"status":        {},
+		"message":       {},
+		"error":         {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m Certificate) MarshalJSON() ([]byte, error) {
+	type Alias Certificate
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 type UpdateServiceGroupsResponseUpdatedServiceGroup struct {
 	// The UUID of the service group that was updated.
 	Uuid *string `json:"uuid,omitempty"`
@@ -23,4 +25,58 @@ type UpdateServiceGroupsResponseUpdatedServiceGroup struct {
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.
 	Error *int32 `json:"error,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *UpdateServiceGroupsResponseUpdatedServiceGroup) UnmarshalJSON(data []byte) error {
+	type Alias UpdateServiceGroupsResponseUpdatedServiceGroup
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"uuid":    {},
+		"name":    {},
+		"status":  {},
+		"id":      {},
+		"message": {},
+		"error":   {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m UpdateServiceGroupsResponseUpdatedServiceGroup) MarshalJSON() ([]byte, error) {
+	type Alias UpdateServiceGroupsResponseUpdatedServiceGroup
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // A service connects a public-facing port to an internal destination port on
 // which an application instance listens on.  Additional handlers can be defined
 // for each published port in order to define how the service will handle
@@ -40,4 +42,55 @@ type Service struct {
 	// for load balancing.  You configure the handlers for every published
 	// service port individually.
 	Handlers []ServiceHandlers `json:"handlers,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *Service) UnmarshalJSON(data []byte) error {
+	type Alias Service
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"port":             {},
+		"destination_port": {},
+		"handlers":         {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m Service) MarshalJSON() ([]byte, error) {
+	type Alias Service
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

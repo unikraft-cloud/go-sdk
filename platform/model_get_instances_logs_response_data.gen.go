@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // The response data for this request.
 
 type GetInstancesLogsResponseData struct {
@@ -14,4 +16,53 @@ type GetInstancesLogsResponseData struct {
 	// Note: only one instance can be specified in the request, so this will
 	// always contain a single entry.
 	Instances []GetInstancesLogsResponseLoggedInstance `json:"instances,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *GetInstancesLogsResponseData) UnmarshalJSON(data []byte) error {
+	type Alias GetInstancesLogsResponseData
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"instances": {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m GetInstancesLogsResponseData) MarshalJSON() ([]byte, error) {
+	type Alias GetInstancesLogsResponseData
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

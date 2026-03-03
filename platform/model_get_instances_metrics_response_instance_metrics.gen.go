@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 type GetInstancesMetricsResponseInstanceMetrics struct {
 	// Resident set size of the VMM in bytes.
 	//
@@ -58,4 +60,66 @@ type GetInstancesMetricsResponseInstanceMetrics struct {
 	// An optional error code providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Error *int32 `json:"error,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *GetInstancesMetricsResponseInstanceMetrics) UnmarshalJSON(data []byte) error {
+	type Alias GetInstancesMetricsResponseInstanceMetrics
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"rss_bytes":    {},
+		"cpu_time_ms":  {},
+		"boot_time_us": {},
+		"net_time_us":  {},
+		"rx_bytes":     {},
+		"rx_packets":   {},
+		"tx_bytes":     {},
+		"tx_packets":   {},
+		"nconns":       {},
+		"nreqs":        {},
+		"nqueued":      {},
+		"ntotal":       {},
+		"message":      {},
+		"error":        {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m GetInstancesMetricsResponseInstanceMetrics) MarshalJSON() ([]byte, error) {
+	type Alias GetInstancesMetricsResponseInstanceMetrics
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

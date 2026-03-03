@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // The scale-to-zero configuration for the instance.
 //
 // With conventional cloud platforms you need to keep at least one instance
@@ -53,4 +55,57 @@ type InstanceScaleToZero struct {
 	// zero. This allows the instance to perform any necessary cleanup or state
 	// saving before being scaled down.
 	NotifyTimeMs *int32 `json:"notify_time_ms,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *InstanceScaleToZero) UnmarshalJSON(data []byte) error {
+	type Alias InstanceScaleToZero
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"enabled":          {},
+		"policy":           {},
+		"stateful":         {},
+		"cooldown_time_ms": {},
+		"notify_time_ms":   {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m InstanceScaleToZero) MarshalJSON() ([]byte, error) {
+	type Alias InstanceScaleToZero
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }
