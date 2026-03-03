@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // A domain name.
 //
 // Domain names are completely specified with all labels in the hierarchy of the
@@ -23,4 +25,54 @@ type Domain struct {
 	// Use an existing certificate for the domain.  If this field is
 	// specified, the domain must be associated with a valid certificate.
 	Certificate *Certificate `json:"certificate,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *Domain) UnmarshalJSON(data []byte) error {
+	type Alias Domain
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"fqdn":        {},
+		"certificate": {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m Domain) MarshalJSON() ([]byte, error) {
+	type Alias Domain
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

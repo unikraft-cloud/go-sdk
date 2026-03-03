@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 type StartInstancesResponseStartedInstance struct {
 	// Indicates whether the start operation was successful or not for this
 	// instance.
@@ -24,4 +26,59 @@ type StartInstancesResponseStartedInstance struct {
 	// An optional error code providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Error *int32 `json:"error,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *StartInstancesResponseStartedInstance) UnmarshalJSON(data []byte) error {
+	type Alias StartInstancesResponseStartedInstance
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"status":         {},
+		"uuid":           {},
+		"name":           {},
+		"state":          {},
+		"previous_state": {},
+		"message":        {},
+		"error":          {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m StartInstancesResponseStartedInstance) MarshalJSON() ([]byte, error) {
+	type Alias StartInstancesResponseStartedInstance
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

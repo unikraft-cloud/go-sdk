@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // The arguments to use when creating the autoscale configuration.
 
 type CreateAutoscaleConfigurationsRequestConfigurationCreateArgs struct {
@@ -13,4 +15,54 @@ type CreateAutoscaleConfigurationsRequestConfigurationCreateArgs struct {
 	Roms *InstanceCreateArgsInstanceCreateRequestRoms `json:"roms,omitempty"`
 	// The template to use for the autoscale configuration.
 	Template *NameOrUUID `json:"template,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *CreateAutoscaleConfigurationsRequestConfigurationCreateArgs) UnmarshalJSON(data []byte) error {
+	type Alias CreateAutoscaleConfigurationsRequestConfigurationCreateArgs
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"roms":     {},
+		"template": {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m CreateAutoscaleConfigurationsRequestConfigurationCreateArgs) MarshalJSON() ([]byte, error) {
+	type Alias CreateAutoscaleConfigurationsRequestConfigurationCreateArgs
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

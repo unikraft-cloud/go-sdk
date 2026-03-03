@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // The request message for attaching one or more volume(s) to instances by
 // their UUID(s) or name(s).
 
@@ -25,4 +27,57 @@ type AttachVolumesRequest struct {
 	At string `json:"at"`
 	// Whether the volume should be mounted read-only.
 	Readonly *bool `json:"readonly,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *AttachVolumesRequest) UnmarshalJSON(data []byte) error {
+	type Alias AttachVolumesRequest
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"uuid":      {},
+		"name":      {},
+		"attach_to": {},
+		"at":        {},
+		"readonly":  {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m AttachVolumesRequest) MarshalJSON() ([]byte, error) {
+	type Alias AttachVolumesRequest
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

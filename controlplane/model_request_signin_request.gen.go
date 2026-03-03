@@ -6,6 +6,8 @@
 
 package controlplane
 
+import "encoding/json"
+
 // The request message for a sign-in request.
 
 type RequestSigninRequest struct {
@@ -39,4 +41,63 @@ type RequestSigninRequest struct {
 	Goos *string `json:"goos,omitempty"`
 	// if available, the Go version binary was built with.
 	GoVersion *string `json:"go_version,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *RequestSigninRequest) UnmarshalJSON(data []byte) error {
+	type Alias RequestSigninRequest
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"hostname":        {},
+		"os":              {},
+		"os_version":      {},
+		"container":       {},
+		"distro":          {},
+		"distro_version":  {},
+		"distro_codename": {},
+		"cli_version":     {},
+		"goarch":          {},
+		"goos":            {},
+		"go_version":      {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m RequestSigninRequest) MarshalJSON() ([]byte, error) {
+	type Alias RequestSigninRequest
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

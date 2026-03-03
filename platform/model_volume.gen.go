@@ -6,7 +6,10 @@
 
 package platform
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // A volume represents a storage device that can be attached to an instance.
 // Current state of the volume.
@@ -63,4 +66,64 @@ type Volume struct {
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.
 	Error *int32 `json:"error,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *Volume) UnmarshalJSON(data []byte) error {
+	type Alias Volume
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"uuid":        {},
+		"name":        {},
+		"created_at":  {},
+		"state":       {},
+		"size_mb":     {},
+		"persistent":  {},
+		"attached_to": {},
+		"mounted_by":  {},
+		"tags":        {},
+		"status":      {},
+		"message":     {},
+		"error":       {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m Volume) MarshalJSON() ([]byte, error) {
+	type Alias Volume
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }
