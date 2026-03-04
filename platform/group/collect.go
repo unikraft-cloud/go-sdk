@@ -52,10 +52,7 @@ func CollectAllSlices[C platform.Client, T any](ctx context.Context, c *Group[C]
 // Each callback must return the list of Refs that were found on that client.
 // After all callbacks have completed, CollectRefs checks that all requested
 // Refs were found across the clients, returning an error if any were not found.
-func CollectRefs[C interface {
-	platform.Client
-	comparable
-}, T any](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) (T, Refs, error)) ([]T, error) {
+func CollectRefs[C comparableClient, T any](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) (T, Refs, error)) ([]T, error) {
 	results := make([]T, len(c.clients))
 	err := DoRefs(ctx, c, refs, func(ctx context.Context, client C, refs Refs) (Refs, error) {
 		idx := mustGetIndexCtx(ctx)
@@ -69,10 +66,7 @@ func CollectRefs[C interface {
 // CollectRefsSlices performs same operation as CollectRefs, but for functions
 // that return slices. The resulting slices from all clients are concatenated
 // into a single slice and returned.
-func CollectRefsSlices[C interface {
-	platform.Client
-	comparable
-}, T any](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) ([]T, Refs, error)) ([]T, error) {
+func CollectRefsSlices[C comparableClient, T any](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) ([]T, Refs, error)) ([]T, error) {
 	slices, err := CollectRefs(ctx, c, refs, fn)
 	return flatten(slices), err
 }

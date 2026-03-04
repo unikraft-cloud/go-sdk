@@ -69,3 +69,8 @@ func (c *Group[C]) getByName(endpoint string) (C, error) {
 	}
 	return client, nil
 }
+
+type comparableClient interface {
+	platform.Client
+	comparable
+}

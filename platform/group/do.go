@@ -52,10 +52,7 @@ func DoAll[C platform.Client](ctx context.Context, c *Group[C], fn func(context.
 // Each callback must return the list of Refs that were found on that client.
 // After all callbacks have completed, DoRefs checks that all requested Refs
 // were found across the clients, returning an error if any were not found.
-func DoRefs[C interface {
-	platform.Client
-	comparable
-}](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) (Refs, error)) error {
+func DoRefs[C comparableClient](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) (Refs, error)) error {
 	targets := make(map[C]Refs)
 	for _, ref := range refs {
 		if ref.Metro != "" {
