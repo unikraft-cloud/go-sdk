@@ -42,17 +42,18 @@ type {{$schemaName}} struct {
 	// {{$prop.Description | replace "\n" "\n	// "}}
 {{- end}}
 {{- $required := isRequired $schema $propName}}
+{{- $inOneOf := isInOneOf $schema $propName}}
 {{- $propGoName := pascalcase $propName}}
 {{- $openAPIType := getType $prop}}
 {{- /* Determine the Go type */}}
 {{- $propType := schemaToGoType $prop }}
-{{- /* Add pointer for optional fields */}}
-{{- if not $required}}
+{{- /* Add pointer for optional fields or fields defined within oneOf */}}
+{{- if or (not $required) $inOneOf}}
 	{{- if and (ne $openAPIType "array") (ne $openAPIType "object")}}
 		{{- $propType = printf "*%s" $propType}}
 	{{- end}}
 {{- end}}
-	{{$propGoName}} {{$propType}} `json:"{{$propName}}{{if not $required}},omitempty{{end}}"`
+	{{$propGoName}} {{$propType}} `json:"{{$propName}}{{if or (not $required) $inOneOf}},omitempty{{end}}"`
 {{- end}}
 {{- end}}
 }
