@@ -34,7 +34,7 @@ type CreateInstanceRequest struct {
 	// If not provided, a random name will be generated.  The name must be unique.
 	Name *string `json:"name,omitempty"`
 	// The image to use for the instance.
-	Image string `json:"image"`
+	Image *string `json:"image,omitempty"`
 	// (Optional).  The arguments to pass to the instance when it starts.
 	Args []string `json:"args,omitempty"`
 	// (Optional).  Environment variables to set for the instance.
