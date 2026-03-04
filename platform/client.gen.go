@@ -252,7 +252,7 @@ type Client interface {
 	// Performs: GET /v1/certificates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#get-certificates
-	GetCertificates(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error)
+	GetCertificates(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error)
 	// Retrieve all images.
 	//
 	// @param `request`
@@ -267,7 +267,7 @@ type Client interface {
 	// Performs: GET /v1/images/list
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-images
-	GetImages(ctx context.Context, request TagOrDigest, namespace string, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
+	GetImages(ctx context.Context, request TagOrDigest, namespace *string, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
 	// Create an instance in Unikraft Cloud.
 	//
 	// @param `request`
@@ -367,7 +367,7 @@ type Client interface {
 	// Performs: GET /v1/instances/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-by-uuid
-	GetInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	GetInstanceByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
 	// Retrieve the logs of one or more instances by ID(s) (name or UUID).
 	//
 	// @param `request`
@@ -437,7 +437,7 @@ type Client interface {
 	// Performs: GET /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instances
-	GetInstances(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	GetInstances(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
 	// Get a single template instance by its UUID.
 	//
 	// @param `uuid`
@@ -455,7 +455,7 @@ type Client interface {
 	// Performs: GET /v1/instances/templates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instance-by-uuid
-	GetTemplateInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
+	GetTemplateInstanceByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
 	// Get one or more template instances by their UUID(s) or name(s).
 	//
 	// @param `request`
@@ -481,7 +481,7 @@ type Client interface {
 	// Performs: GET /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instances
-	GetTemplateInstances(ctx context.Context, request []NameOrUUID, details bool, count int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
+	GetTemplateInstances(ctx context.Context, request []NameOrUUID, details *bool, count *int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
 	// Start a previously stopped instance by its UUID or do nothing if the
 	// instance is already running.
 	//
@@ -705,7 +705,7 @@ type Client interface {
 	// Performs: GET /v1/services/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#get-service-group-by-uuid
-	GetServiceGroupByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
+	GetServiceGroupByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
 	// Get one or many service groups with their current status and configuration.
 	// It's possible to filter this list by name or UUID.
 	//
@@ -725,7 +725,7 @@ type Client interface {
 	// Performs: GET /v1/services
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#get-service-groups
-	GetServiceGroups(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
+	GetServiceGroups(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
 	// Update a service group by its UUID.
 	//
 	// @param `uuid`
@@ -945,7 +945,7 @@ type Client interface {
 	// Performs: GET /v1/volumes/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volume-by-uuid
-	GetVolumeByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
+	GetVolumeByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
 	// Return the current status and the configuration of one or more volumes
 	// specified by either UUID(s) or name(s).  If no identifier is provided,
 	// all volumes are returned.
@@ -966,7 +966,7 @@ type Client interface {
 	// Performs: GET /v1/volumes
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volumes
-	GetVolumes(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
+	GetVolumes(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
 	// Update the specified volume by its UUID.
 	//
 	// @param `uuid`
@@ -1295,11 +1295,13 @@ func (c *client) GetCertificateByUUID(ctx context.Context, uuid string, ropts ..
 	return resp, nil
 }
 
-func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error) {
+func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error) {
 	requestPath := "/v1/certificates"
 
 	query := make(url.Values)
-	query.Add("details", fmt.Sprintf("%t", details))
+	if details != nil {
+		query.Add("details", fmt.Sprintf("%t", *details))
+	}
 
 	var body []byte
 	var err error
@@ -1317,11 +1319,13 @@ func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, deta
 	return resp, nil
 }
 
-func (c *client) GetImages(ctx context.Context, request TagOrDigest, namespace string, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
+func (c *client) GetImages(ctx context.Context, request TagOrDigest, namespace *string, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
 	requestPath := "/v1/images/list"
 
 	query := make(url.Values)
-	query.Add("namespace", namespace)
+	if namespace != nil {
+		query.Add("namespace", *namespace)
+	}
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -1425,12 +1429,14 @@ func (c *client) DeleteTemplateInstances(ctx context.Context, request []NameOrUU
 	return resp, nil
 }
 
-func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
+func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	query := make(url.Values)
-	query.Add("details", fmt.Sprintf("%t", details))
+	if details != nil {
+		query.Add("details", fmt.Sprintf("%t", *details))
+	}
 
 	resp := &Response[GetInstancesResponseData]{}
 	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
@@ -1504,11 +1510,13 @@ func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropt
 	return resp, nil
 }
 
-func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
+func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances"
 
 	query := make(url.Values)
-	query.Add("details", fmt.Sprintf("%t", details))
+	if details != nil {
+		query.Add("details", fmt.Sprintf("%t", *details))
+	}
 
 	var body []byte
 	var err error
@@ -1526,12 +1534,14 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, details
 	return resp, nil
 }
 
-func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
+func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	query := make(url.Values)
-	query.Add("details", fmt.Sprintf("%t", details))
+	if details != nil {
+		query.Add("details", fmt.Sprintf("%t", *details))
+	}
 
 	resp := &Response[GetTemplateInstancesResponseData]{}
 	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
@@ -1540,12 +1550,16 @@ func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, det
 	return resp, nil
 }
 
-func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID, details bool, count int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
+func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID, details *bool, count *int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
 
 	query := make(url.Values)
-	query.Add("details", fmt.Sprintf("%t", details))
-	query.Add("count", fmt.Sprintf("%d", count))
+	if details != nil {
+		query.Add("details", fmt.Sprintf("%t", *details))
+	}
+	if count != nil {
+		query.Add("count", fmt.Sprintf("%d", *count))
+	}
 	for _, v := range tags {
 		query.Add("tags", v)
 	}
@@ -1791,12 +1805,14 @@ func (c *client) DeleteServiceGroups(ctx context.Context, request []NameOrUUID, 
 	return resp, nil
 }
 
-func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
+func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
 	requestPath := "/v1/services/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	query := make(url.Values)
-	query.Add("details", fmt.Sprintf("%t", details))
+	if details != nil {
+		query.Add("details", fmt.Sprintf("%t", *details))
+	}
 
 	resp := &Response[GetServiceGroupsResponseData]{}
 	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
@@ -1805,11 +1821,13 @@ func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, details
 	return resp, nil
 }
 
-func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
+func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
 	requestPath := "/v1/services"
 
 	query := make(url.Values)
-	query.Add("details", fmt.Sprintf("%t", details))
+	if details != nil {
+		query.Add("details", fmt.Sprintf("%t", *details))
+	}
 
 	var body []byte
 	var err error
@@ -2031,12 +2049,14 @@ func (c *client) DetachVolumes(ctx context.Context, request DetachVolumesRequest
 	return resp, nil
 }
 
-func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, details bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
+func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	query := make(url.Values)
-	query.Add("details", fmt.Sprintf("%t", details))
+	if details != nil {
+		query.Add("details", fmt.Sprintf("%t", *details))
+	}
 
 	resp := &Response[GetVolumesResponseData]{}
 	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
@@ -2045,11 +2065,13 @@ func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, details bool,
 	return resp, nil
 }
 
-func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, details bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
+func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
 	requestPath := "/v1/volumes"
 
 	query := make(url.Values)
-	query.Add("details", fmt.Sprintf("%t", details))
+	if details != nil {
+		query.Add("details", fmt.Sprintf("%t", *details))
+	}
 
 	var body []byte
 	var err error

@@ -206,7 +206,7 @@ func (c *client) clone() *client {
 	{{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- range $queryParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error)
+{{- range $queryParams}}, {{camelcase .Name}} {{if and (not .Required) (not (and .Schema .Schema.Value (isType .Schema.Value "array")))}}*{{end}}{{paramToGoType .}}{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error)
 {{- end}}
 
 {{- define "impl_method"}}
@@ -266,7 +266,7 @@ func (c *client) clone() *client {
 func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- range $queryParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error) {
+{{- range $queryParams}}, {{camelcase .Name}} {{if and (not .Required) (not (and .Schema .Schema.Value (isType .Schema.Value "array")))}}*{{end}}{{paramToGoType .}}{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error) {
 	requestPath := "{{$path}}"
 {{- range $pathParams}}
 	requestPath = strings.ReplaceAll(requestPath, "{{"{"}}{{.Name}}{{"}"}}", url.PathEscape({{camelcase .Name}}))
@@ -281,11 +281,37 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 		query.Add("{{.Name}}", v)
 	}
 {{- else if and .Schema .Schema.Value (isType .Schema.Value "boolean")}}
+{{- if not .Required}}
+	if {{camelcase .Name}} != nil {
+		query.Add("{{.Name}}", fmt.Sprintf("%t", *{{camelcase .Name}}))
+	}
+{{- else}}
 	query.Add("{{.Name}}", fmt.Sprintf("%t", {{camelcase .Name}}))
-{{- else if and .Schema .Schema.Value (or (isType .Schema.Value "integer") (isType .Schema.Value "number"))}}
+{{- end}}
+{{- else if and .Schema .Schema.Value (isType .Schema.Value "integer")}}
+{{- if not .Required}}
+	if {{camelcase .Name}} != nil {
+		query.Add("{{.Name}}", fmt.Sprintf("%d", *{{camelcase .Name}}))
+	}
+{{- else}}
 	query.Add("{{.Name}}", fmt.Sprintf("%d", {{camelcase .Name}}))
+{{- end}}
+{{- else if and .Schema .Schema.Value (isType .Schema.Value "number")}}
+{{- if not .Required}}
+	if {{camelcase .Name}} != nil {
+		query.Add("{{.Name}}", fmt.Sprintf("%g", *{{camelcase .Name}}))
+	}
+{{- else}}
+	query.Add("{{.Name}}", fmt.Sprintf("%g", {{camelcase .Name}}))
+{{- end}}
+{{- else}}
+{{- if not .Required}}
+	if {{camelcase .Name}} != nil {
+		query.Add("{{.Name}}", *{{camelcase .Name}})
+	}
 {{- else}}
 	query.Add("{{.Name}}", {{camelcase .Name}})
+{{- end}}
 {{- end}}
 {{- end}}
 {{- end}}
