@@ -82,7 +82,7 @@ func DoRefs[C comparableClient](ctx context.Context, c *Group[C], refs Refs, fn 
 			logger := log.G(ctx).
 				With().
 				Str("metro", client.Name).
-				Strs("refs", refs.NameOrUUIDStrings()).
+				Strs("refs", refs.Strings()).
 				Logger()
 			ctx := log.WithLogger(ctx, &logger)
 
@@ -96,6 +96,7 @@ func DoRefs[C comparableClient](ctx context.Context, c *Group[C], refs Refs, fn 
 				// track all possible ref permutations that could have been used to
 				// fetch this resource
 				ref.Metro = client.Name
+				ref.Display = ""
 				for _, ref := range ref.variants() {
 					refMap[ref] = struct{}{}
 				}
@@ -111,6 +112,7 @@ func DoRefs[C comparableClient](ctx context.Context, c *Group[C], refs Refs, fn 
 
 	notFound := make([]Ref, 0)
 	for _, ref := range refs {
+		ref.Display = ""
 		if _, ok := refMap[ref]; !ok {
 			notFound = append(notFound, ref)
 		}
