@@ -10,7 +10,7 @@ package platform
 
 type CreateInstanceRequestTemplate struct {
 	// Mutually exclusive with name.
-	Uuid string `json:"uuid"`
+	Uuid *string `json:"uuid,omitempty"`
 	// Mutually exclusive with UUID.
-	Name string `json:"name"`
+	Name *string `json:"name,omitempty"`
 }

@@ -60,6 +60,9 @@ func (tf templateFuncs) Funcs() template.FuncMap {
 	// Helper to check if a property is required (checking allOf too)
 	funcs["isRequired"] = tf.isRequired
 
+	// Helper to check if a specific property is defined within a oneOf
+	funcs["isInOneOf"] = tf.isInOneOf
+
 	// Helper to extract type from $ref
 	funcs["refToType"] = tf.refToType
 
@@ -346,6 +349,38 @@ func (tf *templateFuncs) isRequired(schema *openapi3.Schema, propName string) bo
 	return false
 }
 
+// isInOneOf reports whether propName is defined inside a oneOf branch
+func (tf *templateFuncs) isInOneOf(schema *openapi3.Schema, propName string) bool {
+	if schema == nil {
+		return false
+	}
+
+	for _, ref := range schema.OneOf {
+		if s := resolveTypeFromRef(tf.parser, ref); s != nil {
+			if _, ok := s.Properties[propName]; ok {
+				return true
+			}
+		}
+	}
+
+	for _, allOfRef := range schema.AllOf {
+		allOfSchema := resolveTypeFromRef(tf.parser, allOfRef)
+		if allOfSchema == nil {
+			continue
+		}
+
+		for _, ref := range allOfSchema.OneOf {
+			if s := resolveTypeFromRef(tf.parser, ref); s != nil {
+				if _, ok := s.Properties[propName]; ok {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
+}
+
 // refToType extracts type from $ref
 func (tf *templateFuncs) refToType(ref string) string {
 	return extractTypeFromRef(ref)
@@ -495,6 +530,27 @@ func extractTypeFromRef(ref string) string {
 		return parts[len(parts)-1]
 	}
 	return ""
+}
+
+// resolveTypeFromRef returns the Schema for a SchemaRef, preferring the
+// already-resolved Value and falling back to a components/schemas lookup
+// for $ref entries where Value has not been populated by the loader.
+func resolveTypeFromRef(parser *Parser, ref *openapi3.SchemaRef) *openapi3.Schema {
+	if ref == nil {
+		return nil
+	}
+
+	if ref.Value != nil {
+		return ref.Value
+	}
+
+	if ref.Ref != "" {
+		name := extractTypeFromRef(ref.Ref)
+		if s, ok := parser.doc.Components.Schemas[name]; ok {
+			return s.Value
+		}
+	}
+	return nil
 }
 
 // capitalize converts first letter to uppercase (unicode-safe)
