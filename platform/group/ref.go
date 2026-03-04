@@ -14,10 +14,19 @@ import (
 // Ref represents a resource that may be identified by name or UUID,
 // optionally scoped to a metro.
 type Ref struct {
+	// Metro is the metro in which to look for the resource. If empty, the
+	// resource will be looked for in all metros.
+	Metro string
+
+	// Name is the name of the resource, from the platform API. It is not
+	// guaranteed to be unique across metros.
 	Name string
+	// UUID is the UUID of the resource, from the platform API. It should not
+	// be, but is not guaranteed to be unique across metros.
 	UUID string
 
-	Metro string
+	// Display is a human-friendly string to use when displaying this Ref.
+	Display string
 }
 
 func (r Ref) NameOrUUID() platform.NameOrUUID {
@@ -30,7 +39,10 @@ func (r Ref) NameOrUUID() platform.NameOrUUID {
 	return platform.NameOrUUID{}
 }
 
-func (r Ref) NameOrUUIDString() string {
+func (r Ref) String() string {
+	if r.Display != "" {
+		return r.Display
+	}
 	if r.Name != "" {
 		return r.Name
 	}
@@ -72,10 +84,10 @@ func (rs Refs) NameOrUUIDs() []platform.NameOrUUID {
 	return results
 }
 
-func (rs Refs) NameOrUUIDStrings() []string {
+func (rs Refs) Strings() []string {
 	results := make([]string, len(rs))
 	for i, r := range rs {
-		results[i] = r.NameOrUUIDString()
+		results[i] = r.String()
 	}
 	return results
 }
@@ -85,5 +97,5 @@ type ErrRefNotFound struct {
 }
 
 func (e ErrRefNotFound) Error() string {
-	return fmt.Sprintf("references not found: %v", e.Refs.NameOrUUIDStrings())
+	return fmt.Sprintf("references not found: %v", e.Refs.Strings())
 }

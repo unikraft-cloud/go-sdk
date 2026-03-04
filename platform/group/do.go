@@ -52,10 +52,7 @@ func DoAll[C platform.Client](ctx context.Context, c *Group[C], fn func(context.
 // Each callback must return the list of Refs that were found on that client.
 // After all callbacks have completed, DoRefs checks that all requested Refs
 // were found across the clients, returning an error if any were not found.
-func DoRefs[C interface {
-	platform.Client
-	comparable
-}](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) (Refs, error)) error {
+func DoRefs[C comparableClient](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) (Refs, error)) error {
 	targets := make(map[C]Refs)
 	for _, ref := range refs {
 		if ref.Metro != "" {
@@ -85,7 +82,7 @@ func DoRefs[C interface {
 			logger := log.G(ctx).
 				With().
 				Str("metro", client.Name).
-				Strs("refs", refs.NameOrUUIDStrings()).
+				Strs("refs", refs.Strings()).
 				Logger()
 			ctx := log.WithLogger(ctx, &logger)
 
@@ -99,6 +96,7 @@ func DoRefs[C interface {
 				// track all possible ref permutations that could have been used to
 				// fetch this resource
 				ref.Metro = client.Name
+				ref.Display = ""
 				for _, ref := range ref.variants() {
 					refMap[ref] = struct{}{}
 				}
@@ -114,6 +112,7 @@ func DoRefs[C interface {
 
 	notFound := make([]Ref, 0)
 	for _, ref := range refs {
+		ref.Display = ""
 		if _, ok := refMap[ref]; !ok {
 			notFound = append(notFound, ref)
 		}
