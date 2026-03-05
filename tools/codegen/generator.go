@@ -77,18 +77,30 @@ type Generator struct {
 	templates *template.Template
 }
 
+// TypeMapping holds a parsed type override
+type typeMapping struct {
+	From       string
+	To         string
+	ImportPath string
+}
+
 // NewGenerator creates a new code generator
-func NewGenerator(specPath, packageName string) (*Generator, error) {
+func NewGenerator(specPath, packageName string, rawTypeMaps map[string]string) (*Generator, error) {
 	parser, err := NewParser(specPath, packageName)
 	if err != nil {
 		return nil, fmt.Errorf("creating parser: %w", err)
+	}
+
+	typeMaps, err := parseTypeMappings(rawTypeMaps)
+	if err != nil {
+		return nil, fmt.Errorf("parsing type maps: %w", err)
 	}
 
 	Preprocess(parser.doc, parser)
 
 	tmpl, err := template.
 		New("").
-		Funcs(templateFuncs{parser}.Funcs()).
+		Funcs(templateFuncs{parser: parser, typeMaps: typeMaps}.Funcs()).
 		ParseFS(templatesFS, "templates/*.tmpl")
 	if err != nil {
 		return nil, fmt.Errorf("loading templates: %w", err)
@@ -141,4 +153,35 @@ func (g *Generator) GenerateHTTPAPIErrors() GeneratedFile {
 
 func (g *Generator) packageData() map[string]any {
 	return map[string]any{"PackageName": g.parser.packageName}
+}
+
+// parseTypeMappings parses a raw flag map such as
+//
+//	"time.Time" -> "k8s.io/apimachinery/pkg/apis/meta/v1.Time"
+//
+// into TypeMapping values.  The value must be a fully-qualified type of the
+// form "<import/path>.<TypeName>", where the last dot separates the import
+// path from the identifier.  The generated Go expression becomes
+// "<pkg>.<TypeName>" where <pkg> is the last path segment of the import path.
+func parseTypeMappings(raw map[string]string) ([]typeMapping, error) {
+	mappings := make([]typeMapping, 0, len(raw))
+	for from, to := range raw {
+		dot := strings.LastIndex(to, ".")
+		if dot < 0 {
+			return nil, fmt.Errorf("type-map value %q must be in the form 'import/path.TypeName'", to)
+		}
+
+		importPath := to[:dot]
+		typeName := to[dot+1:]
+
+		// Derive the package qualifier from the last segment of the import path.
+		slash := strings.LastIndex(importPath, "/")
+		pkgName := importPath[slash+1:]
+		mappings = append(mappings, typeMapping{
+			From:       from,
+			To:         pkgName + "." + typeName,
+			ImportPath: importPath,
+		})
+	}
+	return mappings, nil
 }

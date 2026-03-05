@@ -20,7 +20,8 @@ import (
 
 // templateFuncs holds the parser and provides template helper functions
 type templateFuncs struct {
-	parser *Parser
+	parser   *Parser
+	typeMaps []typeMapping
 }
 
 // Funcs returns all custom template functions
@@ -80,12 +81,24 @@ func (tf templateFuncs) Funcs() template.FuncMap {
 
 // schemaToGoType converts an OpenAPI schema to a Go type string
 func (tf *templateFuncs) schemaToGoType(schema *openapi3.Schema) string {
-	return schemaToGoTypeWithParser(schema, tf.parser, false)
+	t := schemaToGoTypeWithParser(schema, tf.parser, false)
+	return tf.applyTypeMap(t)
 }
 
 // paramToGoType converts OpenAPI parameter to Go type
 func (tf *templateFuncs) paramToGoType(param *openapi3.Parameter) string {
-	return schemaToGoTypeWithParser(param.Schema.Value, tf.parser, true)
+	t := schemaToGoTypeWithParser(param.Schema.Value, tf.parser, true)
+	return tf.applyTypeMap(t)
+}
+
+// applyTypeMap replaces a generated Go type with a mapped type, if one is configured.
+func (tf *templateFuncs) applyTypeMap(goType string) string {
+	for _, m := range tf.typeMaps {
+		if goType == m.From {
+			return m.To
+		}
+	}
+	return goType
 }
 
 // collectImports determines what imports are needed for a schema
@@ -112,6 +125,11 @@ func (tf *templateFuncs) collectImports(schema *openapi3.Schema) []string {
 		// Check for time.Time - only in properties that are inline (not refs)
 		if s.Type != nil && s.Type.Is("string") && s.Format == "date-time" {
 			imports["time"] = true
+		}
+
+		// Add import path for mapped types
+		for _, typeMap := range tf.typeMaps {
+			imports[typeMap.ImportPath] = true
 		}
 
 		// Check properties - only inline values, not refs

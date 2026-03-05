@@ -14,9 +14,10 @@ import (
 )
 
 type cli struct {
-	Input   string `short:"i" help:"Path to OpenAPI spec file" required:"" type:"existingfile"`
-	Output  string `short:"o" help:"Output directory for generated files" required:""`
-	Package string `short:"p" help:"Package name for generated code" required:""`
+	Input   string            `short:"i" help:"Path to OpenAPI spec file" required:"" type:"existingfile"`
+	Output  string            `short:"o" help:"Output directory for generated files" required:""`
+	Package string            `short:"p" help:"Package name for generated code" required:""`
+	TypeMap map[string]string `short:"t" help:"Override a generated Go type. Format: 'GoType=import/path.TargetType'. The key is the Go type that would normally be generated (e.g. 'time.Time') and the value is the fully-qualified replacement type including its import path (e.g. 'k8s.io/apimachinery/pkg/apis/meta/v1.Time')" mapsep:","`
 }
 
 func main() {
@@ -31,7 +32,7 @@ func main() {
 }
 
 func run(cli *cli) error {
-	generator, err := NewGenerator(cli.Input, cli.Package)
+	generator, err := NewGenerator(cli.Input, cli.Package, cli.TypeMap)
 	if err != nil {
 		return fmt.Errorf("error creating generator: %w", err)
 	}
