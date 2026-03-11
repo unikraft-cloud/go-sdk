@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // The request message for creating a new instance.
 // Restart policy for the instance.  This defines how the instance
 // should behave when it stops or crashes.  Cannot be combined with
@@ -93,4 +95,71 @@ type CreateInstanceRequest struct {
 	// (Optional).  The scheduling priority for the instance.  Higher values
 	// indicate higher priority.
 	SchedPriority *int32 `json:"sched_priority,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *CreateInstanceRequest) UnmarshalJSON(data []byte) error {
+	type Alias CreateInstanceRequest
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"name":            {},
+		"image":           {},
+		"args":            {},
+		"env":             {},
+		"memory_mb":       {},
+		"service_group":   {},
+		"volumes":         {},
+		"autostart":       {},
+		"replicas":        {},
+		"restart_policy":  {},
+		"scale_to_zero":   {},
+		"vcpus":           {},
+		"wait_timeout_ms": {},
+		"features":        {},
+		"timeout_s":       {},
+		"roms":            {},
+		"tags":            {},
+		"template":        {},
+		"sched_priority":  {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m CreateInstanceRequest) MarshalJSON() ([]byte, error) {
+	type Alias CreateInstanceRequest
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }
