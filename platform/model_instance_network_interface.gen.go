@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // An instance network interface.
 
 type InstanceNetworkInterface struct {
@@ -26,4 +28,59 @@ type InstanceNetworkInterface struct {
 	TxBytes *uint64 `json:"tx_bytes,omitempty"`
 	// Count of packets sent to interface
 	TxPackets *uint64 `json:"tx_packets,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *InstanceNetworkInterface) UnmarshalJSON(data []byte) error {
+	type Alias InstanceNetworkInterface
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"uuid":       {},
+		"private_ip": {},
+		"mac":        {},
+		"rx_bytes":   {},
+		"rx_packets": {},
+		"tx_bytes":   {},
+		"tx_packets": {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m InstanceNetworkInterface) MarshalJSON() ([]byte, error) {
+	type Alias InstanceNetworkInterface
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 type CreateAutoscaleConfigurationsRequestConfiguration struct {
 	// The UUID of the service to create a configuration for.
 	// Mutually exclusive with name.
@@ -24,4 +26,60 @@ type CreateAutoscaleConfigurationsRequestConfiguration struct {
 	CreateArgs     *CreateAutoscaleConfigurationsRequestConfigurationCreateArgs `json:"create_args,omitempty"`
 	// The policies to apply to the autoscale configuration.
 	Policies []AutoscalePolicy `json:"policies,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *CreateAutoscaleConfigurationsRequestConfiguration) UnmarshalJSON(data []byte) error {
+	type Alias CreateAutoscaleConfigurationsRequestConfiguration
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"uuid":             {},
+		"name":             {},
+		"min_size":         {},
+		"max_size":         {},
+		"warmup_time_ms":   {},
+		"cooldown_time_ms": {},
+		"create_args":      {},
+		"policies":         {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m CreateAutoscaleConfigurationsRequestConfiguration) MarshalJSON() ([]byte, error) {
+	type Alias CreateAutoscaleConfigurationsRequestConfiguration
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

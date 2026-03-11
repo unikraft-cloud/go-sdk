@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 type VolumeVolumeInstanceMount struct {
 	// The UUID of the instance that the volume is mounted in.
 	Uuid *string `json:"uuid,omitempty"`
@@ -13,4 +15,55 @@ type VolumeVolumeInstanceMount struct {
 	ReadOnly *bool `json:"read_only,omitempty"`
 	// The name of the instance that the volume is mounted in.
 	Name *string `json:"name,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *VolumeVolumeInstanceMount) UnmarshalJSON(data []byte) error {
+	type Alias VolumeVolumeInstanceMount
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"uuid":      {},
+		"read_only": {},
+		"name":      {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m VolumeVolumeInstanceMount) MarshalJSON() ([]byte, error) {
+	type Alias VolumeVolumeInstanceMount
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // A single update operation to be applied to a service group
 // The property to modify.
 type UpdateServiceGroupsRequestItemProp string
@@ -43,4 +45,58 @@ type UpdateServiceGroupsRequestItem struct {
 	// - For "soft_limit": integer (1–65535), must be <= "hard_limit"
 	// - For "hard_limit": integer (1–65535), must be >= "soft_limit"
 	Value *interface{} `json:"value,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *UpdateServiceGroupsRequestItem) UnmarshalJSON(data []byte) error {
+	type Alias UpdateServiceGroupsRequestItem
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"id":    {},
+		"uuid":  {},
+		"name":  {},
+		"prop":  {},
+		"op":    {},
+		"value": {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m UpdateServiceGroupsRequestItem) MarshalJSON() ([]byte, error) {
+	type Alias UpdateServiceGroupsRequestItem
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

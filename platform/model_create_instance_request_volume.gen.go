@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // A volume defines a storage volume that can be attached to the instance.
 
 type CreateInstanceRequestVolume struct {
@@ -34,4 +36,57 @@ type CreateInstanceRequestVolume struct {
 	// the instance.  This field is optional and defaults to false and is only
 	// applicable when using an existing volume.
 	Readonly *bool `json:"readonly,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *CreateInstanceRequestVolume) UnmarshalJSON(data []byte) error {
+	type Alias CreateInstanceRequestVolume
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"uuid":     {},
+		"name":     {},
+		"size_mb":  {},
+		"at":       {},
+		"readonly": {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m CreateInstanceRequestVolume) MarshalJSON() ([]byte, error) {
+	type Alias CreateInstanceRequestVolume
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

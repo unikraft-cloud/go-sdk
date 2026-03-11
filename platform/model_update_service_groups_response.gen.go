@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // The response message for updating one or more service groups.
 
 type UpdateServiceGroupsResponse struct {
@@ -20,4 +22,57 @@ type UpdateServiceGroupsResponse struct {
 	// The operation time in microseconds.  This is the time it took to process
 	// the request and generate the response.
 	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *UpdateServiceGroupsResponse) UnmarshalJSON(data []byte) error {
+	type Alias UpdateServiceGroupsResponse
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"status":     {},
+		"message":    {},
+		"data":       {},
+		"errors":     {},
+		"op_time_us": {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m UpdateServiceGroupsResponse) MarshalJSON() ([]byte, error) {
+	type Alias UpdateServiceGroupsResponse
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }

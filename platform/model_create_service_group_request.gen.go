@@ -6,6 +6,8 @@
 
 package platform
 
+import "encoding/json"
+
 // The request message for creating a new service group.
 
 type CreateServiceGroupRequest struct {
@@ -36,4 +38,57 @@ type CreateServiceGroupRequest struct {
 	// case there are no other instances available, excess requests fail (i.e.,
 	// they are blocked and not queued).
 	HardLimit *uint64 `json:"hard_limit,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *CreateServiceGroupRequest) UnmarshalJSON(data []byte) error {
+	type Alias CreateServiceGroupRequest
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"name":       {},
+		"services":   {},
+		"domains":    {},
+		"soft_limit": {},
+		"hard_limit": {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m CreateServiceGroupRequest) MarshalJSON() ([]byte, error) {
+	type Alias CreateServiceGroupRequest
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
 }
