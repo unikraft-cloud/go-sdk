@@ -35,8 +35,8 @@ type UpdateServiceGroupByUUIDRequestBody struct {
 	// The operation to perform.
 	Op UpdateServiceGroupByUUIDRequestBodyOp `json:"op"`
 	// The value for the update operation:
-	// - For "services": array of Service objects
-	// - For "domains": array of Domain objects
+	// - For "services": array of Service objects (same as for creation)
+	// - For "domains": array of Domain objects (same as for creation)
 	// - For "soft_limit": integer (1–65535), must be <= "hard_limit"
 	// - For "hard_limit": integer (1–65535), must be >= "soft_limit"
 	Value *interface{} `json:"value,omitempty"`
