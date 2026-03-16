@@ -10,10 +10,34 @@ import (
 	"syscall"
 )
 
-// StopCode is the kernel stop code.
+// FlatStopCode is a simple stop code that is created by the platform.
+type FlatStopCode uint32
+
+const (
+	// FlatStopCodeUnknown is the default stop code when the platform does not
+	// have a more specific code to provide.
+	FlatStopCodeUnknown FlatStopCode = 0
+
+	// FlatStopCodeImagePullFailed indicates that the platform failed to pull the
+	// image for the instance.
+	FlatStopCodeImagePullFailed FlatStopCode = 1
+)
+
+func (f FlatStopCode) String() string {
+	switch f {
+	case FlatStopCodeUnknown:
+		return "unknown"
+	case FlatStopCodeImagePullFailed:
+		return "image pull failed"
+	default:
+		return fmt.Sprintf("code(%d)", uint32(f))
+	}
+}
+
+// KernelStopCode is the kernel stop code.
 //
-// It is a packed bitfield described by the StopCodeMask* constants.
-type StopCode uint32
+// It is a packed bitfield described by the KernelStopCodeMask* constants.
+type KernelStopCode uint32
 
 // Stop code of the kernel. This value encodes multiple details about the stop
 // irrespective of the application.
@@ -29,49 +53,54 @@ type StopCode uint32
 // errno:     The application errno (Linux errno.h value; optional, may be 0).
 // shutdown:  Whether the stop originated from the inittable (0) or termtable (1).
 // initlevel: The initlevel at the time of the stop.
-// reason:    The reason for the stop (see StopCodeReason).
+// reason:    The reason for the stop (see KernelStopCodeReason).
 const (
-	StopCodeMaskErrno     StopCode = 0xFF0000
-	StopCodeMaskShutdown  StopCode = 0x008000
-	StopCodeMaskInitLevel StopCode = 0x007F00
-	StopCodeMaskReason    StopCode = 0x0000FF
+	KernelStopCodeMaskErrno     KernelStopCode = 0xFF0000
+	KernelStopCodeMaskShutdown  KernelStopCode = 0x008000
+	KernelStopCodeMaskInitLevel KernelStopCode = 0x007F00
+	KernelStopCodeMaskReason    KernelStopCode = 0x0000FF
 )
 
-func (sc StopCode) Errno() syscall.Errno {
-	return syscall.Errno((sc & StopCodeMaskErrno) >> 16)
+func (sc KernelStopCode) String() string {
+	result := sc.Description()
+	if errnoStr := sc.ErrnoString(); errnoStr != "" {
+		result += fmt.Sprintf(" (%s)", errnoStr)
+	}
+	return result
 }
 
-func (sc StopCode) ErrnoString() string {
+func (sc KernelStopCode) Errno() syscall.Errno {
+	return syscall.Errno((sc & KernelStopCodeMaskErrno) >> 16)
+}
+
+func (sc KernelStopCode) ErrnoString() string {
 	errno := sc.Errno()
 	if errno == 0 {
 		return ""
 	}
-	if name, ok := errnoNames[errno]; ok {
-		return name
-	}
-	return fmt.Sprintf("errno(%d)", uint32(errno))
+	return Errno(errno).String()
 }
 
 // ShutdownTable returns whether the stop originated from the inittable (0) or
 // from the termtable (1).
-func (sc StopCode) ShutdownTable() uint8 {
-	return uint8((sc & StopCodeMaskShutdown) >> 15)
+func (sc KernelStopCode) ShutdownTable() uint8 {
+	return uint8((sc & KernelStopCodeMaskShutdown) >> 15)
 }
 
 // InitLevel returns the initlevel at the time of the stop.
-func (sc StopCode) InitLevel() uint8 {
-	return uint8((sc & StopCodeMaskInitLevel) >> 8)
+func (sc KernelStopCode) InitLevel() uint8 {
+	return uint8((sc & KernelStopCodeMaskInitLevel) >> 8)
 }
 
 // Reason returns the stop code reason.
-func (sc StopCode) Reason() StopCodeReason {
-	return StopCodeReason(sc & StopCodeMaskReason)
+func (sc KernelStopCode) Reason() KernelStopCodeReason {
+	return KernelStopCodeReason(sc & KernelStopCodeMaskReason)
 }
 
-func (sc StopCode) Description() string {
+func (sc KernelStopCode) Description() string {
 	switch sc.Reason() {
 	case StopCodeReasonOK:
-		return "shutdown"
+		return ""
 	case StopCodeReasonEXP:
 		return "assertion error"
 	case StopCodeReasonPGFAULT:
@@ -97,12 +126,12 @@ func (sc StopCode) Description() string {
 	}
 }
 
-// StopCodeReason is the reason component of StopCode.
-type StopCodeReason uint8
+// KernelStopCodeReason is the reason component of KernelStopCode.
+type KernelStopCodeReason uint8
 
 const (
 	// 0 - Success
-	StopCodeReasonOK StopCodeReason = iota
+	StopCodeReasonOK KernelStopCodeReason = iota
 
 	// 1 - Explicit crash (bugon/assert/crash/unhandled breakpoint)
 	StopCodeReasonEXP
@@ -126,8 +155,8 @@ const (
 	StopCodeReasonSECERR
 )
 
-// stopCodeReasons is the list of stop code reason string representations.
-var stopCodeReasons = []string{
+// kernelStopCodeReasons is the list of stop code reason string representations.
+var kernelStopCodeReasons = []string{
 	"OK",
 	"EXP",
 	"MATH",
@@ -138,9 +167,9 @@ var stopCodeReasons = []string{
 	"SECERR",
 }
 
-func (r StopCodeReason) String() string {
-	if int(r) < len(stopCodeReasons) {
-		return stopCodeReasons[r]
+func (r KernelStopCodeReason) String() string {
+	if int(r) < len(kernelStopCodeReasons) {
+		return kernelStopCodeReasons[r]
 	}
 	return fmt.Sprintf("reason(%d)", uint8(r))
 }

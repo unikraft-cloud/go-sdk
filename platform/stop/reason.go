@@ -59,7 +59,7 @@ func (sr StopReason) OriginCode() string {
 func (sr StopReason) String() string {
 	switch StopReason(sr) {
 	case StopReasonUnknown:
-		return "unknown"
+		return "unknown stop"
 	case StopReasonKernelCrash:
 		return "kernel crash"
 	case StopReasonAppExit:
@@ -75,7 +75,7 @@ func (sr StopReason) String() string {
 	default:
 		origin := sr.Origin()
 		if origin == "unknown" {
-			return "unknown"
+			return "unknown stop"
 		}
 		if sr.Forced() {
 			return "forced " + origin + " stop"
