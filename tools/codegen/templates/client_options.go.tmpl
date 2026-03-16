@@ -9,11 +9,7 @@ import (
 type ClientOption func(*ClientOptions)
 
 type ClientOptions struct {
-{{- if eq .PackageName "platform"}}
-	defaultMetro  string
-{{- else}}
 	defaultEndpoint string
-{{- end}}
 
 	token         string
 	allowInsecure bool
@@ -21,27 +17,20 @@ type ClientOptions struct {
 	httpClient    httpclient.HTTPClient
 }
 
-{{- if eq .PackageName "platform"}}
-
-// SetDefaultMetro sets the default metro.
-func (opts *ClientOptions) SetDefaultMetro(metro string) {
-	opts.defaultMetro = metro
+// DefaultEndpoint retrieves the default API endpoint.
+func (opts *ClientOptions) DefaultEndpoint() string {
+	return opts.defaultEndpoint
 }
-
-// DefaultMetro retrieves the default metro.
-func (opts *ClientOptions) DefaultMetro() string {
-	return opts.defaultMetro
-}
-{{- else}}
 
 // SetDefaultEndpoint sets the default API endpoint.
 func (opts *ClientOptions) SetDefaultEndpoint(endpoint string) {
 	opts.defaultEndpoint = endpoint
 }
 
-// DefaultEndpoint retrieves the default API endpoint.
-func (opts *ClientOptions) DefaultEndpoint() string {
-	return opts.defaultEndpoint
+{{- if eq .PackageName "platform"}}
+// SetDefaultMetro sets the default metro.
+func (opts *ClientOptions) SetDefaultMetro(metro string) {
+	opts.defaultEndpoint = EndpointForMetro(metro)
 }
 {{- end}}
 
@@ -87,20 +76,18 @@ func (opts *ClientOptions) HTTPClient() httpclient.HTTPClient {
 	return opts.httpClient
 }
 
-{{- if eq .PackageName "platform"}}
-
-// WithDefaultMetro sets the default metro for the client.
-func WithDefaultMetro(metro string) ClientOption {
-	return func(client *ClientOptions) {
-		client.SetDefaultMetro(metro)
-	}
-}
-{{- else}}
-
 // WithDefaultEndpoint sets the default API endpoint for the client.
 func WithDefaultEndpoint(endpoint string) ClientOption {
 	return func(client *ClientOptions) {
 		client.SetDefaultEndpoint(endpoint)
+	}
+}
+
+{{- if eq .PackageName "platform"}}
+// WithDefaultMetro sets the default metro for the client.
+func WithDefaultMetro(metro string) ClientOption {
+	return func(client *ClientOptions) {
+		client.SetDefaultMetro(metro)
 	}
 }
 {{- end}}

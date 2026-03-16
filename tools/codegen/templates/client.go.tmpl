@@ -51,13 +51,15 @@ func NewClient(copts ...ClientOption) Client {
 	if options.Token() == "" {
 		options.SetToken(os.Getenv("KRAFTCLOUD_TOKEN"))
 	}
-{{- if eq $.PackageName "platform"}}
 
-	if options.DefaultMetro() == "" {
+{{if eq $.PackageName "platform"}}
+	if options.DefaultEndpoint() == "" {
+		options.SetDefaultMetro(os.Getenv("UKC_METRO"))
+	}
+	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(DefaultMetro)
 	}
 {{- else}}
-
 	if options.DefaultEndpoint() == "" {
 		options.SetDefaultEndpoint(DefaultEndpoint)
 	}

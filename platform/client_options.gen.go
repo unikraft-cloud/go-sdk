@@ -14,7 +14,7 @@ import (
 type ClientOption func(*ClientOptions)
 
 type ClientOptions struct {
-	defaultMetro string
+	defaultEndpoint string
 
 	token         string
 	allowInsecure bool
@@ -22,14 +22,19 @@ type ClientOptions struct {
 	httpClient    httpclient.HTTPClient
 }
 
-// SetDefaultMetro sets the default metro.
-func (opts *ClientOptions) SetDefaultMetro(metro string) {
-	opts.defaultMetro = metro
+// DefaultEndpoint retrieves the default API endpoint.
+func (opts *ClientOptions) DefaultEndpoint() string {
+	return opts.defaultEndpoint
 }
 
-// DefaultMetro retrieves the default metro.
-func (opts *ClientOptions) DefaultMetro() string {
-	return opts.defaultMetro
+// SetDefaultEndpoint sets the default API endpoint.
+func (opts *ClientOptions) SetDefaultEndpoint(endpoint string) {
+	opts.defaultEndpoint = endpoint
+}
+
+// SetDefaultMetro sets the default metro.
+func (opts *ClientOptions) SetDefaultMetro(metro string) {
+	opts.defaultEndpoint = EndpointForMetro(metro)
 }
 
 // SetToken sets the token to use for authentication with the API.
@@ -72,6 +77,13 @@ func (opts *ClientOptions) SetHTTPClient(client httpclient.HTTPClient) {
 // HTTPClient returns the HTTP client used for making API requests.
 func (opts *ClientOptions) HTTPClient() httpclient.HTTPClient {
 	return opts.httpClient
+}
+
+// WithDefaultEndpoint sets the default API endpoint for the client.
+func WithDefaultEndpoint(endpoint string) ClientOption {
+	return func(client *ClientOptions) {
+		client.SetDefaultEndpoint(endpoint)
+	}
 }
 
 // WithDefaultMetro sets the default metro for the client.

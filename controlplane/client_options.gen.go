@@ -22,14 +22,14 @@ type ClientOptions struct {
 	httpClient    httpclient.HTTPClient
 }
 
-// SetDefaultEndpoint sets the default API endpoint.
-func (opts *ClientOptions) SetDefaultEndpoint(endpoint string) {
-	opts.defaultEndpoint = endpoint
-}
-
 // DefaultEndpoint retrieves the default API endpoint.
 func (opts *ClientOptions) DefaultEndpoint() string {
 	return opts.defaultEndpoint
+}
+
+// SetDefaultEndpoint sets the default API endpoint.
+func (opts *ClientOptions) SetDefaultEndpoint(endpoint string) {
+	opts.defaultEndpoint = endpoint
 }
 
 // SetToken sets the token to use for authentication with the API.

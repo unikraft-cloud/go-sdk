@@ -16,7 +16,6 @@ import (
 	"mime"
 	"net/http"
 	"net/url"
-	"strings"
 	"time"
 
 	"unikraft.com/cloud/sdk/pkg/httpclient"
@@ -27,7 +26,7 @@ import (
 // a service location at KraftCloud.
 type Request struct {
 	copts      *ClientOptions
-	metro      string
+	endpoint   string
 	httpClient httpclient.HTTPClient
 	timeout    time.Duration
 }
@@ -40,11 +39,16 @@ func NewRequestFromDefaultOptions(copts *ClientOptions) *Request {
 	}
 }
 
+// WithEndpoint returns a Request that uses the given endpoint in API requests.
+func (r *Request) WithEndpoint(e string) *Request {
+	rcpy := r.clone()
+	rcpy.endpoint = e
+	return rcpy
+}
+
 // WithMetro returns a Request that uses the given metro in API requests.
 func (r *Request) WithMetro(m string) *Request {
-	rcpy := r.clone()
-	rcpy.metro = m
-	return rcpy
+	return r.WithEndpoint(EndpointForMetro(m))
 }
 
 // WithTimeout returns a Request that uses the specified timeout
@@ -63,9 +67,9 @@ func (r *Request) WithHTTPClient(hc httpclient.HTTPClient) *Request {
 	return rcpy
 }
 
-// Metro returns the metro that this request will perform against.
-func (r *Request) Metro() string {
-	return r.metro
+// Endpoint returns the endpoint that this request will perform against.
+func (r *Request) Endpoint() string {
+	return r.endpoint
 }
 
 // GetBearerToken uses the pre-defined token to construct the header used for
@@ -169,17 +173,11 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 	var m string
 	var u *url.URL
 	var err error
-	if req.metro != "" {
-		m = req.metro
-	} else {
-		m = req.copts.DefaultMetro()
-	}
 
-	// If the metro contains a full URL, quantified by the presence of a scheme,
-	// we assume it is a full URL to a metro, otherwise place it within the
-	// well-defined format URL.
-	if !strings.Contains(m, "://") {
-		m = fmt.Sprintf(BaseV1FormatURL, m)
+	if req.endpoint != "" {
+		m = req.endpoint
+	} else {
+		m = req.copts.DefaultEndpoint()
 	}
 	u, err = url.Parse(m)
 	if err != nil {
