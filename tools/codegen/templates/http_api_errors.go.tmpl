@@ -31,34 +31,45 @@ func NewFromResponse[T any](r *Response[T]) error {
 		v = v.Elem()
 	}
 
-	if v.Kind() == reflect.Struct && v.NumField() == 1 {
-		innerData := v.Field(0)
-		if innerData.IsValid() && innerData.Kind() == reflect.Slice {
-			for i := range innerData.Len() {
-				item := innerData.Index(i)
-				if item.Kind() == reflect.Pointer {
-					item = item.Elem()
-				}
+	if v.Kind() == reflect.Struct {
+		fields := 0
+		for i := 0; i < v.NumField(); i++ {
+			fieldType := v.Type().Field(i)
+			if fieldType.Tag.Get("json") == "-" {
+				continue
+			}
+			fields++
+		}
+		// only handle one json field
+		if fields == 1 {
+			innerData := v.Field(0)
+			if innerData.IsValid() && innerData.Kind() == reflect.Slice {
+				for i := range innerData.Len() {
+					item := innerData.Index(i)
+					if item.Kind() == reflect.Pointer {
+						item = item.Elem()
+					}
 
-				status := item.FieldByName("Status")
-				if status.Kind() == reflect.Pointer {
-					status = status.Elem()
-				}
-				message := item.FieldByName("Message")
-				if message.Kind() == reflect.Pointer {
-					message = message.Elem()
-				}
-				errorCode := item.FieldByName("Error")
-				if errorCode.Kind() == reflect.Pointer {
-					errorCode = errorCode.Elem()
-				}
+					status := item.FieldByName("Status")
+					if status.Kind() == reflect.Pointer {
+						status = status.Elem()
+					}
+					message := item.FieldByName("Message")
+					if message.Kind() == reflect.Pointer {
+						message = message.Elem()
+					}
+					errorCode := item.FieldByName("Error")
+					if errorCode.Kind() == reflect.Pointer {
+						errorCode = errorCode.Elem()
+					}
 
-				if status.IsValid() && message.IsValid() && status.String() == "error" && errorCode.IsValid() {
-					errs = append(errs, apiError{
-						Msg:  message.String(),
-						Code: APIHTTPError(errorCode.Int()),
-						Err:  errors.New(message.String()),
-					})
+					if status.IsValid() && message.IsValid() && status.String() == "error" && errorCode.IsValid() {
+						errs = append(errs, apiError{
+							Msg:  message.String(),
+							Code: APIHTTPError(errorCode.Int()),
+							Err:  errors.New(message.String()),
+						})
+					}
 				}
 			}
 		}
