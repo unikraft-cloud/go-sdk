@@ -1022,7 +1022,10 @@ func NewClient(copts ...ClientOption) Client {
 		options.SetToken(os.Getenv("KRAFTCLOUD_TOKEN"))
 	}
 
-	if options.DefaultMetro() == "" {
+	if options.DefaultEndpoint() == "" {
+		options.SetDefaultMetro(os.Getenv("UKC_METRO"))
+	}
+	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(DefaultMetro)
 	}
 
