@@ -5,7 +5,22 @@
 
 package stop
 
-import "syscall"
+import (
+	"fmt"
+	"syscall"
+)
+
+type Errno syscall.Errno
+
+func (errno Errno) String() string {
+	if errno == 0 {
+		return ""
+	}
+	if name, ok := errnoNames[syscall.Errno(errno)]; ok {
+		return name
+	}
+	return fmt.Sprintf("errno(%d)", uint32(errno))
+}
 
 // errnoNames converts Linux errno values to their string representation.
 var errnoNames = map[syscall.Errno]string{

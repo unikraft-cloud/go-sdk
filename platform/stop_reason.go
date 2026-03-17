@@ -14,94 +14,26 @@ import (
 	"unikraft.com/cloud/sdk/platform/stop"
 )
 
-func (instance *Instance) stopReasonValue() stop.StopReason {
+// Stop returns a structured representation of the stop reason for the
+// instance, if it is stopped.
+func (instance *Instance) Stop() *stop.Stop {
 	if instance.StopReason == nil {
-		return 0
-	}
-	return stop.StopReason(*instance.StopReason)
-}
-
-func (instance *Instance) stopCodeValue() stop.StopCode {
-	if instance.StopCode == nil {
-		return 0
-	}
-	return stop.StopCode(*instance.StopCode)
-}
-
-// StopCodeErrno returns the application errno, using Linux's errno.h values.
-func (instance *Instance) StopCodeErrno() uint8 {
-	return uint8(instance.stopCodeValue().Errno())
-}
-
-// StopCodeShutdownTable returns whether the stop originated from the inittable
-// (0) or from the termtable (1).
-func (instance *Instance) StopCodeShutdownTable() uint8 {
-	return instance.stopCodeValue().ShutdownTable()
-}
-
-// StopCodeInitLevel returns the initlevel at the time of the stop.
-func (instance *Instance) StopCodeInitLevel() uint8 {
-	return instance.stopCodeValue().InitLevel()
-}
-
-// StopCodeReason provides the identity value for the reason for the stop.
-func (instance *Instance) StopCodeReason() uint8 {
-	return uint8(instance.stopCodeValue().Reason())
-}
-
-// DescribeStopOrigin provides a human-readable interpretation of the stop
-// reason.
-func (instance *Instance) DescribeStopOrigin() string {
-	sr := instance.stopReasonValue()
-	if sr == 0 {
-		return "unknown"
+		return nil
 	}
 
-	var ret strings.Builder
-	if sr.Forced() {
-		ret.WriteString("force ")
+	return &stop.Stop{
+		StopReason: stop.StopReason(*instance.StopReason),
+		StopCode:   instance.StopCode,
 	}
-	ret.WriteString("initiated by ")
-	ret.WriteString(sr.Origin())
-	return ret.String()
 }
 
-// StopOriginCode provides a human-readable interpretation of the stop reason in
-// the form of a short-code.
-func (instance *Instance) StopOriginCode() string {
-	return instance.stopReasonValue().OriginCode()
-}
-
-// DescribeStopReason provides a human-readable description of the stop reason.
-func (instance *Instance) DescribeStopReason() string {
-	return instance.stopCodeValue().Description()
-}
-
-// StopReasonCode returns a human-readable short-code representation of the stop
-// reason.
-func (instance *Instance) StopReasonCode() string {
-	sc := instance.stopCodeValue()
-	if sc == 0 {
+// DescribeStop provides a human-readable description of the stop reason.
+func (instance *Instance) DescribeStop() string {
+	stop := instance.Stop()
+	if stop == nil {
 		return ""
 	}
-
-	var ret strings.Builder
-	if sc.ShutdownTable() == 0 {
-		ret.WriteString("i")
-	} else {
-		ret.WriteString("t")
-	}
-
-	fmt.Fprintf(&ret, "%d", sc.InitLevel())
-	ret.WriteString(" ")
-	ret.WriteString(sc.Reason().String())
-
-	if sc.Errno() != 0 {
-		ret.WriteString(" ")
-		ret.WriteString(sc.ErrnoString())
-	}
-
-	return ret.String()
+	return stop.String()
 }
 
 // DescribeStatus returns a human-readable description of the instance's status.
@@ -146,11 +78,7 @@ func (instance *Instance) DescribeStatus() string {
 
 		return fmt.Sprintf("since %s", strings.Join(parts, " "))
 	case InstanceStateStopped:
-		reason := instance.DescribeStopReason()
-		if reason == "shutdown" {
-			return ""
-		}
-		return reason
+		return instance.DescribeStop()
 	default:
 		return string(*instance.State)
 	}
