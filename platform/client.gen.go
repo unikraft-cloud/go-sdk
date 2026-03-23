@@ -488,13 +488,16 @@ type Client interface {
 	// @param `uuid`
 	// 	The UUID of the instance to start.
 	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: PUT /v1/instances/{uuid}/start
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instance-by-uuid
-	StartInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
+	StartInstanceByUUID(ctx context.Context, uuid string, request StartInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
 	// Start previously stopped instances by ID(s) (name or UUID) or do
 	// nothing if the instances are already running.
 	//
@@ -507,7 +510,7 @@ type Client interface {
 	// Performs: PUT /v1/instances/start
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instances
-	StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
+	StartInstances(ctx context.Context, request []StartInstancesRequestItem, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
 	// Stop a running instance by its UUID or do nothing if the instance is
 	// already stopped.
 	//
@@ -1583,18 +1586,23 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 	return resp, nil
 }
 
-func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
+func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, request StartInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/start"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
 	resp := &Response[StartInstancesResponseData]{}
-	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
+func (c *client) StartInstances(ctx context.Context, request []StartInstancesRequestItem, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
 	requestPath := "/v1/instances/start"
 
 	var body []byte
