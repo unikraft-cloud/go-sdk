@@ -4,23 +4,28 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-// UUID or name of the instance to attach the volume to.
+// Response message for getting nodes.
 
-type AttachVolumesRequestAttachTo struct {
-	// The UUID of the instance that the volume is attached to.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the instance that the volume is attached to.
-	Name *string `json:"name,omitempty"`
+type ListNodesResponse struct {
+	// The status of the response.
+	Status *ResponseStatus `json:"status,omitempty"`
+	// An optional message providing additional information about the response.
+	Message *string                `json:"message,omitempty"`
+	Data    *ListNodesResponseData `json:"data,omitempty"`
+	// A list of errors which may have occurred during the request.
+	Errors []ResponseError `json:"errors,omitempty"`
+	// The operation time in microseconds.
+	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *AttachVolumesRequestAttachTo) UnmarshalJSON(data []byte) error {
-	type Alias AttachVolumesRequestAttachTo
+func (m *ListNodesResponse) UnmarshalJSON(data []byte) error {
+	type Alias ListNodesResponse
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -31,8 +36,11 @@ func (m *AttachVolumesRequestAttachTo) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid": {},
-		"name": {},
+		"status":     {},
+		"message":    {},
+		"data":       {},
+		"errors":     {},
+		"op_time_us": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -45,8 +53,8 @@ func (m *AttachVolumesRequestAttachTo) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m AttachVolumesRequestAttachTo) MarshalJSON() ([]byte, error) {
-	type Alias AttachVolumesRequestAttachTo
+func (m ListNodesResponse) MarshalJSON() ([]byte, error) {
+	type Alias ListNodesResponse
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

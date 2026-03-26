@@ -287,6 +287,11 @@ type Instance struct {
 	// then customize individual instances by attaching code or data as separate
 	// ROM blobs.
 	Roms []InstanceRom `json:"roms,omitempty"`
+	// Scheduled operations for this instance.
+	//
+	// Each schedule defines a calendar expression and an action (`start`,
+	// `stop`, or `delete`) to perform at matching times.
+	Schedules []Schedule `json:"schedules,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -339,6 +344,7 @@ func (m *Instance) UnmarshalJSON(data []byte) error {
 		"delete_lock":        {},
 		"restart":            {},
 		"roms":               {},
+		"schedules":          {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

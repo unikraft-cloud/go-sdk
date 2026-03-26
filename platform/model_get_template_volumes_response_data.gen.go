@@ -8,27 +8,15 @@ package platform
 
 import "encoding/json"
 
-type UpdateVolumesResponseUpdatedVolume struct {
-	// The UUID of the volume that was updated.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume that was updated.
-	Name *string `json:"name,omitempty"`
-	// The status of this particular volume update operation.
-	Status *string `json:"status,omitempty"`
-	// (Optional).  The client-provided ID from the request.
-	Id *string `json:"id,omitempty"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
-	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+type GetTemplateVolumesResponseData struct {
+	// The template volume(s) which were retrieved by the request.
+	Volumes []Volume `json:"volumes,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
-	type Alias UpdateVolumesResponseUpdatedVolume
+func (m *GetTemplateVolumesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias GetTemplateVolumesResponseData
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -39,12 +27,7 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":    {},
-		"name":    {},
-		"status":  {},
-		"id":      {},
-		"message": {},
-		"error":   {},
+		"volumes": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -57,8 +40,8 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m UpdateVolumesResponseUpdatedVolume) MarshalJSON() ([]byte, error) {
-	type Alias UpdateVolumesResponseUpdatedVolume
+func (m GetTemplateVolumesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias GetTemplateVolumesResponseData
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

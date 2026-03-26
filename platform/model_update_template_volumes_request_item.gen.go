@@ -8,40 +8,39 @@ package platform
 
 import "encoding/json"
 
-// A single request item for updating a volume.
+// A single update operation to be applied to a template volume.
 // The property to modify.
-type UpdateVolumesRequestItemProp string
+type UpdateTemplateVolumesRequestItemProp string
 
 const (
-	UpdateVolumesRequestItemPropSize_mb      UpdateVolumesRequestItemProp = "size_mb"
-	UpdateVolumesRequestItemPropTags         UpdateVolumesRequestItemProp = "tags"
-	UpdateVolumesRequestItemPropQuota_policy UpdateVolumesRequestItemProp = "quota_policy"
-	UpdateVolumesRequestItemPropDelete_lock  UpdateVolumesRequestItemProp = "delete_lock"
+	UpdateTemplateVolumesRequestItemPropTags        UpdateTemplateVolumesRequestItemProp = "tags"
+	UpdateTemplateVolumesRequestItemPropDelete_lock UpdateTemplateVolumesRequestItemProp = "delete_lock"
 )
 
 // The operation to perform.
-type UpdateVolumesRequestItemOp string
+type UpdateTemplateVolumesRequestItemOp string
 
 const (
-	UpdateVolumesRequestItemOpSet UpdateVolumesRequestItemOp = "set"
-	UpdateVolumesRequestItemOpAdd UpdateVolumesRequestItemOp = "add"
-	UpdateVolumesRequestItemOpDel UpdateVolumesRequestItemOp = "del"
+	UpdateTemplateVolumesRequestItemOpSet UpdateTemplateVolumesRequestItemOp = "set"
+	UpdateTemplateVolumesRequestItemOpAdd UpdateTemplateVolumesRequestItemOp = "add"
+	UpdateTemplateVolumesRequestItemOpDel UpdateTemplateVolumesRequestItemOp = "del"
 )
 
-type UpdateVolumesRequestItem struct {
-	// (Optional).  A client-provided identifier for tracking this operation in the response.
+type UpdateTemplateVolumesRequestItem struct {
+	// (Optional).  A client-provided identifier for tracking this operation in
+	// the response.
 	Id *string `json:"id,omitempty"`
-	// The UUID of the volume to update.  Mutually exclusive with name.
+	// The UUID of the template volume to update.  Mutually exclusive with
+	// name.
 	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume to update.  Mutually exclusive with UUID.
+	// The name of the template volume to update.  Mutually exclusive with
+	// UUID.
 	Name *string `json:"name,omitempty"`
 	// The property to modify.
-	Prop UpdateVolumesRequestItemProp `json:"prop"`
+	Prop UpdateTemplateVolumesRequestItemProp `json:"prop"`
 	// The operation to perform.
-	Op UpdateVolumesRequestItemOp `json:"op"`
+	Op UpdateTemplateVolumesRequestItemOp `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
-	// - For "size_mb": unsigned integer
-	// - For "quota_policy": 1 - static reservation, 2 - dynamic reservation
 	// - For "tags": array of Strings
 	// - For "delete_lock": boolean
 	Value *interface{} `json:"value,omitempty"`
@@ -49,8 +48,8 @@ type UpdateVolumesRequestItem struct {
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *UpdateVolumesRequestItem) UnmarshalJSON(data []byte) error {
-	type Alias UpdateVolumesRequestItem
+func (m *UpdateTemplateVolumesRequestItem) UnmarshalJSON(data []byte) error {
+	type Alias UpdateTemplateVolumesRequestItem
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -79,8 +78,8 @@ func (m *UpdateVolumesRequestItem) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m UpdateVolumesRequestItem) MarshalJSON() ([]byte, error) {
-	type Alias UpdateVolumesRequestItem
+func (m UpdateTemplateVolumesRequestItem) MarshalJSON() ([]byte, error) {
+	type Alias UpdateTemplateVolumesRequestItem
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

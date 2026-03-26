@@ -4,27 +4,21 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-// The request message for detaching one or more volume(s) from instances by
-// their UUID(s) or name(s).
+// The response data for this request.
 
-type DetachVolumesRequest struct {
-	// The UUID of the volume to detach. Mutually exclusive with name.
-	// Exactly one of uuid or name must be provided.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume to detach. Mutually exclusive with UUID.
-	// Exactly one of uuid or name must be provided.
-	Name *string                   `json:"name,omitempty"`
-	From *DetachVolumesRequestFrom `json:"from,omitempty"`
+type UpdateNodesResponseData struct {
+	// The updated nodes.
+	Nodes []Node `json:"nodes,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *DetachVolumesRequest) UnmarshalJSON(data []byte) error {
-	type Alias DetachVolumesRequest
+func (m *UpdateNodesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias UpdateNodesResponseData
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -35,9 +29,7 @@ func (m *DetachVolumesRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid": {},
-		"name": {},
-		"from": {},
+		"nodes": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -50,8 +42,8 @@ func (m *DetachVolumesRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m DetachVolumesRequest) MarshalJSON() ([]byte, error) {
-	type Alias DetachVolumesRequest
+func (m UpdateNodesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias UpdateNodesResponseData
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

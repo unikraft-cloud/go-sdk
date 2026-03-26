@@ -4,28 +4,23 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-type CloneVolumesRequest struct {
-	// The UUID of the volume to clone. Mutually exclusive with name.
-	// Exactly one of uuid or name must be provided.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume to clone. Mutually exclusive with UUID.
-	// Exactly one of uuid or name must be provided.
-	Name *string `json:"name,omitempty"`
-	// The name of the new cloned volume.
-	VolName *string `json:"vol_name,omitempty"`
-	// The tags associated with the volume.
-	// Maximum 16 tags are allowed, and each tag may not be longer than 256 characters.
-	Tags []string `json:"tags,omitempty"`
+// The response data for this request.
+
+type ListNodesResponseData struct {
+	// The list of nodes matching the request.
+	Nodes []Node `json:"nodes,omitempty"`
+	// Total count of nodes matching the filters (for pagination).
+	TotalCount *uint32 `json:"total_count,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CloneVolumesRequest) UnmarshalJSON(data []byte) error {
-	type Alias CloneVolumesRequest
+func (m *ListNodesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias ListNodesResponseData
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -36,10 +31,8 @@ func (m *CloneVolumesRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":     {},
-		"name":     {},
-		"vol_name": {},
-		"tags":     {},
+		"nodes":       {},
+		"total_count": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -52,8 +45,8 @@ func (m *CloneVolumesRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CloneVolumesRequest) MarshalJSON() ([]byte, error) {
-	type Alias CloneVolumesRequest
+func (m ListNodesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias ListNodesResponseData
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

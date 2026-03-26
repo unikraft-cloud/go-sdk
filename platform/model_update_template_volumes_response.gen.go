@@ -8,19 +8,27 @@ package platform
 
 import "encoding/json"
 
-// Reference to the instance to attach the volume to.
+// The response message for updating one or more template volumes.
 
-type AttachVolumesRequestInstanceID struct {
-	// The UUID of the instance that the volume is attached to.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the instance that the volume is attached to.
-	Name *string `json:"name,omitempty"`
+type UpdateTemplateVolumesResponse struct {
+	// The status of the response.
+	Status *ResponseStatus `json:"status,omitempty"`
+	// The response data for this request.
+	Data *UpdateTemplateVolumesResponseData `json:"data,omitempty"`
+	// A list of errors which may have occurred during the request.
+	Errors []ResponseError `json:"errors,omitempty"`
+	// The operation time in microseconds.  This is the time it took to process
+	// the request and generate the response.
+	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
+	// An optional message providing additional information about the status.
+	// This field is useful when the status is not `success`.
+	Message *string `json:"message,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *AttachVolumesRequestInstanceID) UnmarshalJSON(data []byte) error {
-	type Alias AttachVolumesRequestInstanceID
+func (m *UpdateTemplateVolumesResponse) UnmarshalJSON(data []byte) error {
+	type Alias UpdateTemplateVolumesResponse
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -31,8 +39,11 @@ func (m *AttachVolumesRequestInstanceID) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid": {},
-		"name": {},
+		"status":     {},
+		"data":       {},
+		"errors":     {},
+		"op_time_us": {},
+		"message":    {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -45,8 +56,8 @@ func (m *AttachVolumesRequestInstanceID) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m AttachVolumesRequestInstanceID) MarshalJSON() ([]byte, error) {
-	type Alias AttachVolumesRequestInstanceID
+func (m UpdateTemplateVolumesResponse) MarshalJSON() ([]byte, error) {
+	type Alias UpdateTemplateVolumesResponse
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err
