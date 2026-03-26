@@ -4,28 +4,21 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-type CloneVolumesRequest struct {
-	// The UUID of the volume to clone. Mutually exclusive with name.
-	// Exactly one of uuid or name must be provided.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume to clone. Mutually exclusive with UUID.
-	// Exactly one of uuid or name must be provided.
-	Name *string `json:"name,omitempty"`
-	// The name of the new cloned volume.
-	VolName *string `json:"vol_name,omitempty"`
-	// The tags associated with the volume.
-	// Maximum 16 tags are allowed, and each tag may not be longer than 256 characters.
-	Tags []string `json:"tags,omitempty"`
+// The response data for this request.
+
+type ListMachineTypesResponseData struct {
+	// The list of available machine types.
+	MachineTypes []MachineType `json:"machine_types,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CloneVolumesRequest) UnmarshalJSON(data []byte) error {
-	type Alias CloneVolumesRequest
+func (m *ListMachineTypesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias ListMachineTypesResponseData
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -36,10 +29,7 @@ func (m *CloneVolumesRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":     {},
-		"name":     {},
-		"vol_name": {},
-		"tags":     {},
+		"machine_types": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -52,8 +42,8 @@ func (m *CloneVolumesRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CloneVolumesRequest) MarshalJSON() ([]byte, error) {
-	type Alias CloneVolumesRequest
+func (m ListMachineTypesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias ListMachineTypesResponseData
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

@@ -8,26 +8,18 @@ package platform
 
 import "encoding/json"
 
-// The response message for cloning a volume.
+// The request message for creating one or more template volumes.
 
-type CloneVolumeResponse struct {
-	// The status of the response.
-	Status *ResponseStatus          `json:"status,omitempty"`
-	Data   *CloneVolumeResponseData `json:"data,omitempty"`
-	// A list of errors which may have occurred during the request.
-	Errors []ResponseError `json:"errors,omitempty"`
-	// The operation time in microseconds.  This is the time it took to process
-	// the request and generate the response.
-	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
+type CreateTemplateVolumesRequest struct {
+	// The list of IDs of the volumes that will be converted into templates.
+	// Each ID can be either a UUID or a name.
+	Ids []NameOrUUID `json:"ids"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CloneVolumeResponse) UnmarshalJSON(data []byte) error {
-	type Alias CloneVolumeResponse
+func (m *CreateTemplateVolumesRequest) UnmarshalJSON(data []byte) error {
+	type Alias CreateTemplateVolumesRequest
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -38,11 +30,7 @@ func (m *CloneVolumeResponse) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"status":     {},
-		"data":       {},
-		"errors":     {},
-		"op_time_us": {},
-		"message":    {},
+		"ids": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -55,8 +43,8 @@ func (m *CloneVolumeResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CloneVolumeResponse) MarshalJSON() ([]byte, error) {
-	type Alias CloneVolumeResponse
+func (m CreateTemplateVolumesRequest) MarshalJSON() ([]byte, error) {
+	type Alias CreateTemplateVolumesRequest
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

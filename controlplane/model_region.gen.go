@@ -4,31 +4,32 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-type UpdateVolumesResponseUpdatedVolume struct {
-	// The UUID of the volume that was updated.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume that was updated.
+// Information about an available region.
+
+type Region struct {
+	// The region identifier (e.g., "us-east-1", "us-central1").
 	Name *string `json:"name,omitempty"`
-	// The status of this particular volume update operation.
-	Status *string `json:"status,omitempty"`
-	// (Optional).  The client-provided ID from the request.
-	Id *string `json:"id,omitempty"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
-	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	// Human-readable display name.
+	DisplayName *string `json:"display_name,omitempty"`
+	// The country code where this region is located.
+	Country *string `json:"country,omitempty"`
+	// Geographic coordinates of the region.
+	Latitude  *float64 `json:"latitude,omitempty"`
+	Longitude *float64 `json:"longitude,omitempty"`
+	// Availability zones within this region.
+	AvailabilityZones []string `json:"availability_zones,omitempty"`
+	// Whether this region is currently available for provisioning.
+	Available *bool `json:"available,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
-	type Alias UpdateVolumesResponseUpdatedVolume
+func (m *Region) UnmarshalJSON(data []byte) error {
+	type Alias Region
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -39,12 +40,13 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":    {},
-		"name":    {},
-		"status":  {},
-		"id":      {},
-		"message": {},
-		"error":   {},
+		"name":               {},
+		"display_name":       {},
+		"country":            {},
+		"latitude":           {},
+		"longitude":          {},
+		"availability_zones": {},
+		"available":          {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -57,8 +59,8 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m UpdateVolumesResponseUpdatedVolume) MarshalJSON() ([]byte, error) {
-	type Alias UpdateVolumesResponseUpdatedVolume
+func (m Region) MarshalJSON() ([]byte, error) {
+	type Alias Region
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err
