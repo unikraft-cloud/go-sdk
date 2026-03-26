@@ -8,27 +8,25 @@ package platform
 
 import "encoding/json"
 
-type UpdateVolumesResponseUpdatedVolume struct {
-	// The UUID of the volume that was updated.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume that was updated.
-	Name *string `json:"name,omitempty"`
-	// The status of this particular volume update operation.
-	Status *string `json:"status,omitempty"`
-	// (Optional).  The client-provided ID from the request.
-	Id *string `json:"id,omitempty"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
-	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+// Parameters for starting the instance.
+
+type StartInstanceByUUIDRequestBody struct {
+	// Deprecated: Use `timeout_s` instead.  Timeout in milliseconds to
+	// wait for the instance to reach running state.  If `timeout_s` is
+	// not set, this value is converted by rounding up to the next full
+	// second.  No wait performed for a value of 0.
+	WaitTimeoutMs *int64 `json:"wait_timeout_ms,omitempty"`
+	// Timeout in seconds to wait for the instance to reach running
+	// state.  If you start your instance, you can wait for it to
+	// finish starting with a blocking API call if you specify a wait
+	// timeout greater than zero.  No wait performed for a value of 0.
+	TimeoutS *int64 `json:"timeout_s,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
-	type Alias UpdateVolumesResponseUpdatedVolume
+func (m *StartInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) error {
+	type Alias StartInstanceByUUIDRequestBody
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -39,12 +37,8 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":    {},
-		"name":    {},
-		"status":  {},
-		"id":      {},
-		"message": {},
-		"error":   {},
+		"wait_timeout_ms": {},
+		"timeout_s":       {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -57,8 +51,8 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m UpdateVolumesResponseUpdatedVolume) MarshalJSON() ([]byte, error) {
-	type Alias UpdateVolumesResponseUpdatedVolume
+func (m StartInstanceByUUIDRequestBody) MarshalJSON() ([]byte, error) {
+	type Alias StartInstanceByUUIDRequestBody
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

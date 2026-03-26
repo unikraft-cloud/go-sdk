@@ -8,27 +8,19 @@ package platform
 
 import "encoding/json"
 
-type UpdateVolumesResponseUpdatedVolume struct {
-	// The UUID of the volume that was updated.
+type VolumeInstanceMount struct {
+	// The UUID of the instance that the volume is mounted in.
 	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume that was updated.
+	// The name of the instance that the volume is mounted in.
 	Name *string `json:"name,omitempty"`
-	// The status of this particular volume update operation.
-	Status *string `json:"status,omitempty"`
-	// (Optional).  The client-provided ID from the request.
-	Id *string `json:"id,omitempty"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
-	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	// Whether the volume is mounted read-only or read-write.
+	Readonly *bool `json:"readonly,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
-	type Alias UpdateVolumesResponseUpdatedVolume
+func (m *VolumeInstanceMount) UnmarshalJSON(data []byte) error {
+	type Alias VolumeInstanceMount
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -39,12 +31,9 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":    {},
-		"name":    {},
-		"status":  {},
-		"id":      {},
-		"message": {},
-		"error":   {},
+		"uuid":     {},
+		"name":     {},
+		"readonly": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -57,8 +46,8 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m UpdateVolumesResponseUpdatedVolume) MarshalJSON() ([]byte, error) {
-	type Alias UpdateVolumesResponseUpdatedVolume
+func (m VolumeInstanceMount) MarshalJSON() ([]byte, error) {
+	type Alias VolumeInstanceMount
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

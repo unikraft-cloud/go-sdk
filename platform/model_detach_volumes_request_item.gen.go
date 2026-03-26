@@ -8,27 +8,23 @@ package platform
 
 import "encoding/json"
 
-type UpdateVolumesResponseUpdatedVolume struct {
-	// The UUID of the volume that was updated.
+// A single request of detaching a volume.
+
+type DetachVolumesRequestItem struct {
+	// UUID or name of the instance to detach the volume from.
+	From *NameOrUUID `json:"from,omitempty"`
+	// The UUID of the volume to detach. Mutually exclusive with name.
+	// Exactly one of uuid or name must be provided.
 	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume that was updated.
+	// The name of the volume to detach. Mutually exclusive with UUID.
+	// Exactly one of uuid or name must be provided.
 	Name *string `json:"name,omitempty"`
-	// The status of this particular volume update operation.
-	Status *string `json:"status,omitempty"`
-	// (Optional).  The client-provided ID from the request.
-	Id *string `json:"id,omitempty"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
-	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
-	type Alias UpdateVolumesResponseUpdatedVolume
+func (m *DetachVolumesRequestItem) UnmarshalJSON(data []byte) error {
+	type Alias DetachVolumesRequestItem
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -39,12 +35,9 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":    {},
-		"name":    {},
-		"status":  {},
-		"id":      {},
-		"message": {},
-		"error":   {},
+		"from": {},
+		"uuid": {},
+		"name": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -57,8 +50,8 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m UpdateVolumesResponseUpdatedVolume) MarshalJSON() ([]byte, error) {
-	type Alias UpdateVolumesResponseUpdatedVolume
+func (m DetachVolumesRequestItem) MarshalJSON() ([]byte, error) {
+	type Alias DetachVolumesRequestItem
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

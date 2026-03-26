@@ -95,7 +95,8 @@ type ServiceGroup struct {
 	// An optional error code providing additional information about the status.
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	Error    *int32                `json:"error,omitempty"`
+	Autokill *ServiceGroupAutokill `json:"autokill,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -125,6 +126,7 @@ func (m *ServiceGroup) UnmarshalJSON(data []byte) error {
 		"status":     {},
 		"message":    {},
 		"error":      {},
+		"autokill":   {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
