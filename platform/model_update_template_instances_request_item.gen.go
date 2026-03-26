@@ -15,6 +15,7 @@ type UpdateTemplateInstancesRequestItemProp string
 const (
 	UpdateTemplateInstancesRequestItemPropTags        UpdateTemplateInstancesRequestItemProp = "tags"
 	UpdateTemplateInstancesRequestItemPropDelete_lock UpdateTemplateInstancesRequestItemProp = "delete_lock"
+	UpdateTemplateInstancesRequestItemPropAutokill    UpdateTemplateInstancesRequestItemProp = "autokill"
 )
 
 // The operation to perform on the property.
@@ -41,6 +42,7 @@ type UpdateTemplateInstancesRequestItem struct {
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean
+	// - For "autokill": object with time_ms field
 	Value *interface{} `json:"value,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`

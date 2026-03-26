@@ -8,32 +8,18 @@ package platform
 
 import "encoding/json"
 
-// The response message for creating of a volume.
-// Current state of the volume.
-type CreateVolumeResponseState string
+// The response message for deleting one or more template volumes.
 
-const (
-	CreateVolumeResponseStateUninitialized CreateVolumeResponseState = "uninitialized"
-	CreateVolumeResponseStateInitializing  CreateVolumeResponseState = "initializing"
-	CreateVolumeResponseStateAvailable     CreateVolumeResponseState = "available"
-	CreateVolumeResponseStateIdle          CreateVolumeResponseState = "idle"
-	CreateVolumeResponseStateMounted       CreateVolumeResponseState = "mounted"
-	CreateVolumeResponseStateBusy          CreateVolumeResponseState = "busy"
-	CreateVolumeResponseStateError         CreateVolumeResponseState = "error"
-	CreateVolumeResponseStateTemplate      CreateVolumeResponseState = "template"
-)
-
-type CreateVolumeResponse struct {
+type DeleteTemplateVolumesResponse struct {
 	// The status of the response.
-	Status *ResponseStatus           `json:"status,omitempty"`
-	Data   *CreateVolumeResponseData `json:"data,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
+	// The response data for this request.
+	Data *DeleteTemplateVolumesResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process
 	// the request and generate the response.
 	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
-	// Current state of the volume.
-	State *CreateVolumeResponseState `json:"state,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`
@@ -41,8 +27,8 @@ type CreateVolumeResponse struct {
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateVolumeResponse) UnmarshalJSON(data []byte) error {
-	type Alias CreateVolumeResponse
+func (m *DeleteTemplateVolumesResponse) UnmarshalJSON(data []byte) error {
+	type Alias DeleteTemplateVolumesResponse
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -57,7 +43,6 @@ func (m *CreateVolumeResponse) UnmarshalJSON(data []byte) error {
 		"data":       {},
 		"errors":     {},
 		"op_time_us": {},
-		"state":      {},
 		"message":    {},
 	}
 	for key := range knownKeys {
@@ -71,8 +56,8 @@ func (m *CreateVolumeResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateVolumeResponse) MarshalJSON() ([]byte, error) {
-	type Alias CreateVolumeResponse
+func (m DeleteTemplateVolumesResponse) MarshalJSON() ([]byte, error) {
+	type Alias DeleteTemplateVolumesResponse
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

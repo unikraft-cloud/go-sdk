@@ -488,13 +488,16 @@ type Client interface {
 	// @param `uuid`
 	// 	The UUID of the instance to start.
 	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: PUT /v1/instances/{uuid}/start
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instance-by-uuid
-	StartInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
+	StartInstanceByUUID(ctx context.Context, uuid string, request StartInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
 	// Start previously stopped instances by ID(s) (name or UUID) or do
 	// nothing if the instances are already running.
 	//
@@ -507,7 +510,7 @@ type Client interface {
 	// Performs: PUT /v1/instances/start
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instances
-	StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
+	StartInstances(ctx context.Context, request []StartInstancesRequestItem, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
 	// Stop a running instance by its UUID or do nothing if the instance is
 	// already stopped.
 	//
@@ -816,8 +819,11 @@ type Client interface {
 	// Performs: PUT /v1/volumes/attach
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#attach-volumes
-	AttachVolumes(ctx context.Context, request AttachVolumesRequest, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error)
-	//
+	AttachVolumes(ctx context.Context, request []AttachVolumesRequestItem, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error)
+	// Clone a volume given by its UUID.  The volume to be cloned must not be
+	// mounted to any instance or only mounted as read-only.  It also needs to not
+	// be busy or in an error state.  This operation is most useful when cloning
+	// template volumes.
 	//
 	// @param `uuid`
 	// 	The UUID of the volume to clone.
@@ -831,8 +837,11 @@ type Client interface {
 	// Performs: POST /v1/volumes/{uuid}/clone
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#clone-volume-by-uuid
-	CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error)
-	//
+	CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error)
+	// Clone one or more volumes given by their ID(s) (name or UUID).  The
+	// volumes to be cloned must not be mounted to any instance or only mounted
+	// as read-only.  They also need to not be busy or in an error state.  This
+	// operation is most useful when cloning template volumes.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -843,7 +852,24 @@ type Client interface {
 	// Performs: POST /v1/volumes/clone
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#clone-volumes
-	CloneVolumes(ctx context.Context, request CloneVolumesRequest, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error)
+	CloneVolumes(ctx context.Context, request []CloneVolumesRequestItem, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error)
+	// Converts one or more existing volumes given by their ID(s) (name or UUID)
+	// into template volumes.  This operation is irreversible in the sense that a
+	// template volume cannot be converted back into a regular volume.
+	//
+	// The existing volume(s) must not be attached to any instance and must be in
+	// the `available` state.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/volumes/templates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#create-template-volume
+	CreateTemplateVolume(ctx context.Context, request CreateTemplateVolumesRequest, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error)
 	// Create a volume given the specified configuration parameters.
 	// The volume is automatically initialized with an empty file system.
 	// After initialization, the volume is in the `available` state and can be
@@ -860,6 +886,32 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#create-volume
 	CreateVolume(ctx context.Context, request CreateVolumeRequest, ropts ...RequestOption) (*Response[CreateVolumeResponseData], error)
+	// Delete the specified template volume by its UUID.  After this call, the IDs
+	// associated with the template volume are no longer valid.
+	//
+	// @param `uuid`
+	// 	The UUID of the template volume to delete.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: DELETE /v1/volumes/templates/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-template-volume-by-uuid
+	DeleteTemplateVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error)
+	// Delete one or more template volumes by their UUID(s) or name(s).  After this
+	// call, the IDs associated with the template volumes are no longer valid.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: DELETE /v1/volumes/templates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-template-volumes
+	DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error)
 	// Delete the specified volume by its UUID.  If the volume is still attached
 	// to an instance, the operation fails.  After this call, the IDs associated
 	// with the volume are no longer valid.
@@ -888,7 +940,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-volumes
 	DeleteVolumes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error)
-	// Detaches a volume by UUID from instances.  If no particular instance is
+	// Detach a volume by UUID from instances.  If no particular instance is
 	// specified the volume is detached from all instances.  The instances from
 	// which to detach must not have the volume mounted.  The API returns an error
 	// for each instance from which it was unable to detach the volume.  If the
@@ -925,7 +977,61 @@ type Client interface {
 	// Performs: PUT /v1/volumes/detach
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#detach-volumes
-	DetachVolumes(ctx context.Context, request DetachVolumesRequest, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error)
+	DetachVolumes(ctx context.Context, request []DetachVolumesRequestItem, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error)
+	// Return the current status and the configuration of a particular template
+	// volume by its UUID.
+	//
+	// @param `uuid`
+	// 	The UUID of the template volume to retrieve.
+	//
+	// @param `details`
+	// 	Whether to include details about the template volume in the response.  By
+	// 	default this is set to true, meaning that all information about the
+	// 	template will be included in the response.  If set to false, only the
+	// 	basic information about the template will be included, such as its name
+	// 	and UUID.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/volumes/templates/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-template-volume-by-uuid
+	GetTemplateVolumeByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error)
+	// Return the current status and the configuration of one or more template
+	// volumes specified by either UUID(s) or name(s).  If no identifier is
+	// provided, all template volumes are returned.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `details`
+	// 	Whether to include details about the template volumes in the response.  By
+	// 	default this is set to true, meaning that all information about the
+	// 	templates will be included in the response.  If set to false, only the
+	// 	basic information about the templates will be included, such as their name
+	// 	and UUID.
+	//
+	// @param `count`
+	// 	The maximum number of template volumes to return.  If set to 0 or not set,
+	// 	all volumes matching filters will be returned.  When filtering by IDs, this
+	// 	should not be set.
+	//
+	// @param `uuid`
+	// 	If set, the listing starts from (but does not include) the template volume
+	// 	with the given UUID.  When count is 0 or not set, this parameter may be
+	// 	used to match by UUID.
+	//
+	// @param `tags`
+	// 	A list of tags to filter the template volumes by.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/volumes/templates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-template-volumes
+	GetTemplateVolumes(ctx context.Context, request []NameOrUUID, details *bool, count *int32, uuid *string, tags []string, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error)
 	// Return the current status and the configuration of a particular volume by
 	// its UUID.
 	//
@@ -967,10 +1073,37 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volumes
 	GetVolumes(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
+	// Update the specified template volume by its UUID.
+	//
+	// @param `uuid`
+	// 	The UUID of the template volume to update.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/volumes/templates/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-template-volume-by-uuid
+	UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, request UpdateTemplateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error)
+	// Update one or more template volumes specified by either UUID(s) or name(s).
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/volumes/templates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-template-volumes
+	UpdateTemplateVolumes(ctx context.Context, request []UpdateTemplateVolumesRequestItem, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error)
 	// Update the specified volume by its UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the service group to update.
+	// 	The UUID of the volume to update.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -1583,18 +1716,23 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 	return resp, nil
 }
 
-func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
+func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, request StartInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/start"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
 	resp := &Response[StartInstancesResponseData]{}
-	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
+func (c *client) StartInstances(ctx context.Context, request []StartInstancesRequestItem, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
 	requestPath := "/v1/instances/start"
 
 	var body []byte
@@ -1930,12 +2068,16 @@ func (c *client) AttachVolumeByUUID(ctx context.Context, uuid string, request At
 	return resp, nil
 }
 
-func (c *client) AttachVolumes(ctx context.Context, request AttachVolumesRequest, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error) {
+func (c *client) AttachVolumes(ctx context.Context, request []AttachVolumesRequestItem, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error) {
 	requestPath := "/v1/volumes/attach"
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[AttachVolumesResponseData]{}
@@ -1945,7 +2087,7 @@ func (c *client) AttachVolumes(ctx context.Context, request AttachVolumesRequest
 	return resp, nil
 }
 
-func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error) {
+func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}/clone"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
@@ -1954,23 +2096,42 @@ func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request Clo
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CloneVolumeResponseData]{}
-	if err := doRequest[CloneVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	resp := &Response[CloneVolumesResponseData]{}
+	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CloneVolumes(ctx context.Context, request CloneVolumesRequest, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error) {
+func (c *client) CloneVolumes(ctx context.Context, request []CloneVolumesRequestItem, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error) {
 	requestPath := "/v1/volumes/clone"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[CloneVolumesResponseData]{}
+	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) CreateTemplateVolume(ctx context.Context, request CreateTemplateVolumesRequest, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates"
 
 	body, err := json.Marshal(request)
 	if err != nil {
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CloneVolumeResponseData]{}
-	if err := doRequest[CloneVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	resp := &Response[CreateTemplateVolumesResponseData]{}
+	if err := doRequest[CreateTemplateVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1986,6 +2147,36 @@ func (c *client) CreateVolume(ctx context.Context, request CreateVolumeRequest, 
 
 	resp := &Response[CreateVolumeResponseData]{}
 	if err := doRequest[CreateVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) DeleteTemplateVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	resp := &Response[DeleteTemplateVolumesResponseData]{}
+	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[DeleteTemplateVolumesResponseData]{}
+	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2037,16 +2228,69 @@ func (c *client) DetachVolumeByUUID(ctx context.Context, uuid string, request De
 	return resp, nil
 }
 
-func (c *client) DetachVolumes(ctx context.Context, request DetachVolumesRequest, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error) {
+func (c *client) DetachVolumes(ctx context.Context, request []DetachVolumesRequestItem, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error) {
 	requestPath := "/v1/volumes/detach"
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[DetachVolumesResponseData]{}
 	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) GetTemplateVolumeByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	query := make(url.Values)
+	if details != nil {
+		query.Add("details", fmt.Sprintf("%t", *details))
+	}
+
+	resp := &Response[GetTemplateVolumesResponseData]{}
+	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, details *bool, count *int32, uuid *string, tags []string, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates"
+
+	query := make(url.Values)
+	if details != nil {
+		query.Add("details", fmt.Sprintf("%t", *details))
+	}
+	if count != nil {
+		query.Add("count", fmt.Sprintf("%d", *count))
+	}
+	if uuid != nil {
+		query.Add("uuid", *uuid)
+	}
+	for _, v := range tags {
+		query.Add("tags", v)
+	}
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[GetTemplateVolumesResponseData]{}
+	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2087,6 +2331,41 @@ func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, details *
 
 	resp := &Response[GetVolumesResponseData]{}
 	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, request UpdateTemplateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[UpdateTemplateVolumesResponseData]{}
+	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateTemplateVolumes(ctx context.Context, request []UpdateTemplateVolumesRequestItem, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[UpdateTemplateVolumesResponseData]{}
+	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
