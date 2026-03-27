@@ -7,6 +7,7 @@ package group
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"unikraft.com/cloud/sdk/platform"
@@ -26,7 +27,11 @@ func DoMetro[C platform.Client](ctx context.Context, c *Group[C], name string, f
 		Str("metro", name).
 		Logger()
 	ctx = log.WithLogger(ctx, &logger)
-	return fn(ctx, metroClient)
+	err = fn(ctx, metroClient)
+	if err != nil {
+		return fmt.Errorf("failed on %q client: %w", name, err)
+	}
+	return nil
 }
 
 // DoAll performs the given function fn across all clients in the group.
@@ -39,7 +44,11 @@ func DoAll[C platform.Client](ctx context.Context, c *Group[C], fn func(context.
 				Str("metro", client.Name).
 				Logger()
 			ctx := log.WithLogger(ctx, &logger)
-			return fn(withIndexCtx(ctx, idx), client.Client)
+			err := fn(withIndexCtx(ctx, idx), client.Client)
+			if err != nil {
+				return fmt.Errorf("failed on %q client: %w", client.Name, err)
+			}
+			return nil
 		})
 	}
 	return eg.Wait()
@@ -88,7 +97,7 @@ func DoRefs[C comparableClient](ctx context.Context, c *Group[C], refs Refs, fn 
 
 			refs, err := fn(withIndexCtx(ctx, idx), client.Client, refs)
 			if err != nil {
-				return err
+				return fmt.Errorf("failed on %q client: %w", client.Name, err)
 			}
 
 			mu.Lock()

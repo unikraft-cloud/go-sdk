@@ -65,7 +65,7 @@ func (c *Group[C]) getByName(endpoint string) (C, error) {
 	var zero C
 	client, ok := c.clientsMap[endpoint]
 	if !ok {
-		return zero, fmt.Errorf("unknown client %q", endpoint)
+		return zero, fmt.Errorf("failed to find client %q", endpoint)
 	}
 	return client, nil
 }
