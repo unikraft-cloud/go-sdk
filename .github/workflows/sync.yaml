@@ -49,8 +49,8 @@ jobs:
       with:
         token: ${{ secrets.GH_PAT }}
         base: ${{ inputs.channel }}
-        commit-message: "sync: Update Go SDK from OpenAPI spec"
-        title: "sync: Update Go SDK from OpenAPI spec"
+        commit-message: "chore: Update Go SDK from OpenAPI spec"
+        title: "chore: Update Go SDK from OpenAPI spec"
         branch: ${{ steps.id.outputs.name }}
         committer: Unikraft Bot <monkey@unikraft.io>
         author: Unikraft Bot <monkey@unikraft.io>
