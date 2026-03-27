@@ -4,26 +4,28 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-// Template instances.
-// An existing instance can be saved as a template. This template is then
-// used to create new instances that inherit the exact configuration and
-// state the original instance had when the template was created.
+// Response message for listing machine types.
 
-type CreateInstanceRequestTemplate struct {
-	// (Optional).  Whether the instance needs to run in order to reach template state
-	Prepare    *bool                                    `json:"prepare,omitempty"`
-	NameOrUuid *CreateInstanceRequestTemplateNameOrUuid `json:"nameOrUUID,omitempty"`
-	CreateArgs *CreateInstanceRequestTemplateCreateArgs `json:"create_args,omitempty"`
+type ListMachineTypesResponse struct {
+	// The status of the response.
+	Status *ResponseStatus `json:"status,omitempty"`
+	// An optional message providing additional information about the response.
+	Message *string                       `json:"message,omitempty"`
+	Data    *ListMachineTypesResponseData `json:"data,omitempty"`
+	// A list of errors which may have occurred during the request.
+	Errors []ResponseError `json:"errors,omitempty"`
+	// The operation time in microseconds.
+	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
-	type Alias CreateInstanceRequestTemplate
+func (m *ListMachineTypesResponse) UnmarshalJSON(data []byte) error {
+	type Alias ListMachineTypesResponse
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -34,9 +36,11 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"prepare":     {},
-		"nameOrUUID":  {},
-		"create_args": {},
+		"status":     {},
+		"message":    {},
+		"data":       {},
+		"errors":     {},
+		"op_time_us": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -49,8 +53,8 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateInstanceRequestTemplate) MarshalJSON() ([]byte, error) {
-	type Alias CreateInstanceRequestTemplate
+func (m ListMachineTypesResponse) MarshalJSON() ([]byte, error) {
+	type Alias ListMachineTypesResponse
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err
