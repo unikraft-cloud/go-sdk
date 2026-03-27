@@ -8,6 +8,7 @@ package platform
 
 import "encoding/json"
 
+// A single request item for updating a volume.
 // The property to modify.
 type UpdateVolumesRequestItemProp string
 

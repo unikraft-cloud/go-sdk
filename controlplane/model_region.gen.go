@@ -4,26 +4,32 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-// Template instances.
-// An existing instance can be saved as a template. This template is then
-// used to create new instances that inherit the exact configuration and
-// state the original instance had when the template was created.
+// Information about an available region.
 
-type CreateInstanceRequestTemplate struct {
-	// (Optional).  Whether the instance needs to run in order to reach template state
-	Prepare    *bool                                    `json:"prepare,omitempty"`
-	NameOrUuid *CreateInstanceRequestTemplateNameOrUuid `json:"nameOrUUID,omitempty"`
-	CreateArgs *CreateInstanceRequestTemplateCreateArgs `json:"create_args,omitempty"`
+type Region struct {
+	// The region identifier (e.g., "us-east-1", "us-central1").
+	Name *string `json:"name,omitempty"`
+	// Human-readable display name.
+	DisplayName *string `json:"display_name,omitempty"`
+	// The country code where this region is located.
+	Country *string `json:"country,omitempty"`
+	// Geographic coordinates of the region.
+	Latitude  *float64 `json:"latitude,omitempty"`
+	Longitude *float64 `json:"longitude,omitempty"`
+	// Availability zones within this region.
+	AvailabilityZones []string `json:"availability_zones,omitempty"`
+	// Whether this region is currently available for provisioning.
+	Available *bool `json:"available,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
-	type Alias CreateInstanceRequestTemplate
+func (m *Region) UnmarshalJSON(data []byte) error {
+	type Alias Region
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -34,9 +40,13 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"prepare":     {},
-		"nameOrUUID":  {},
-		"create_args": {},
+		"name":               {},
+		"display_name":       {},
+		"country":            {},
+		"latitude":           {},
+		"longitude":          {},
+		"availability_zones": {},
+		"available":          {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -49,8 +59,8 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateInstanceRequestTemplate) MarshalJSON() ([]byte, error) {
-	type Alias CreateInstanceRequestTemplate
+func (m Region) MarshalJSON() ([]byte, error) {
+	type Alias Region
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

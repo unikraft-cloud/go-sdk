@@ -8,22 +8,15 @@ package platform
 
 import "encoding/json"
 
-// Template instances.
-// An existing instance can be saved as a template. This template is then
-// used to create new instances that inherit the exact configuration and
-// state the original instance had when the template was created.
-
-type CreateInstanceRequestTemplate struct {
-	// (Optional).  Whether the instance needs to run in order to reach template state
-	Prepare    *bool                                    `json:"prepare,omitempty"`
-	NameOrUuid *CreateInstanceRequestTemplateNameOrUuid `json:"nameOrUUID,omitempty"`
-	CreateArgs *CreateInstanceRequestTemplateCreateArgs `json:"create_args,omitempty"`
+type CreateTemplateVolumesResponseData struct {
+	// The template volume(s) which were created by the request.
+	Volumes []CreateTemplateVolumesResponseTemplateVolume `json:"volumes,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
-	type Alias CreateInstanceRequestTemplate
+func (m *CreateTemplateVolumesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias CreateTemplateVolumesResponseData
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -34,9 +27,7 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"prepare":     {},
-		"nameOrUUID":  {},
-		"create_args": {},
+		"volumes": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -49,8 +40,8 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateInstanceRequestTemplate) MarshalJSON() ([]byte, error) {
-	type Alias CreateInstanceRequestTemplate
+func (m CreateTemplateVolumesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias CreateTemplateVolumesResponseData
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

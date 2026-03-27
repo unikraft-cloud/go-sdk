@@ -9,42 +9,40 @@ package platform
 import "encoding/json"
 
 // The property to modify.
-type UpdateTemplateInstanceByUUIDRequestBodyProp string
+type UpdateTemplateVolumeByUUIDRequestBodyProp string
 
 const (
-	UpdateTemplateInstanceByUUIDRequestBodyPropTags        UpdateTemplateInstanceByUUIDRequestBodyProp = "tags"
-	UpdateTemplateInstanceByUUIDRequestBodyPropDelete_lock UpdateTemplateInstanceByUUIDRequestBodyProp = "delete_lock"
-	UpdateTemplateInstanceByUUIDRequestBodyPropAutokill    UpdateTemplateInstanceByUUIDRequestBodyProp = "autokill"
+	UpdateTemplateVolumeByUUIDRequestBodyPropTags        UpdateTemplateVolumeByUUIDRequestBodyProp = "tags"
+	UpdateTemplateVolumeByUUIDRequestBodyPropDelete_lock UpdateTemplateVolumeByUUIDRequestBodyProp = "delete_lock"
 )
 
-// The operation to perform on the property.
-type UpdateTemplateInstanceByUUIDRequestBodyOp string
+// The operation to perform.
+type UpdateTemplateVolumeByUUIDRequestBodyOp string
 
 const (
-	UpdateTemplateInstanceByUUIDRequestBodyOpSet UpdateTemplateInstanceByUUIDRequestBodyOp = "set"
-	UpdateTemplateInstanceByUUIDRequestBodyOpAdd UpdateTemplateInstanceByUUIDRequestBodyOp = "add"
-	UpdateTemplateInstanceByUUIDRequestBodyOpDel UpdateTemplateInstanceByUUIDRequestBodyOp = "del"
+	UpdateTemplateVolumeByUUIDRequestBodyOpSet UpdateTemplateVolumeByUUIDRequestBodyOp = "set"
+	UpdateTemplateVolumeByUUIDRequestBodyOpAdd UpdateTemplateVolumeByUUIDRequestBodyOp = "add"
+	UpdateTemplateVolumeByUUIDRequestBodyOpDel UpdateTemplateVolumeByUUIDRequestBodyOp = "del"
 )
 
-type UpdateTemplateInstanceByUUIDRequestBody struct {
+type UpdateTemplateVolumeByUUIDRequestBody struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.
 	Id *string `json:"id,omitempty"`
 	// The property to modify.
-	Prop UpdateTemplateInstanceByUUIDRequestBodyProp `json:"prop"`
-	// The operation to perform on the property.
-	Op UpdateTemplateInstanceByUUIDRequestBodyOp `json:"op"`
+	Prop UpdateTemplateVolumeByUUIDRequestBodyProp `json:"prop"`
+	// The operation to perform.
+	Op UpdateTemplateVolumeByUUIDRequestBodyOp `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
-	// - For "tags": array of strings
+	// - For "tags": array of Strings
 	// - For "delete_lock": boolean
-	// - For "autokill": object with time_ms field
 	Value *interface{} `json:"value,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *UpdateTemplateInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) error {
-	type Alias UpdateTemplateInstanceByUUIDRequestBody
+func (m *UpdateTemplateVolumeByUUIDRequestBody) UnmarshalJSON(data []byte) error {
+	type Alias UpdateTemplateVolumeByUUIDRequestBody
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -71,8 +69,8 @@ func (m *UpdateTemplateInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) err
 	return nil
 }
 
-func (m UpdateTemplateInstanceByUUIDRequestBody) MarshalJSON() ([]byte, error) {
-	type Alias UpdateTemplateInstanceByUUIDRequestBody
+func (m UpdateTemplateVolumeByUUIDRequestBody) MarshalJSON() ([]byte, error) {
+	type Alias UpdateTemplateVolumeByUUIDRequestBody
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err
