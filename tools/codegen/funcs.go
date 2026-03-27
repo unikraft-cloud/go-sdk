@@ -197,7 +197,12 @@ func (tf *templateFuncs) propertyNamesOrdered(schemaName string, schema *openapi
 		for _, allOfRef := range schema.AllOf {
 			allOfSchema := allOfRef.Value
 			if allOfSchema != nil && len(allOfSchema.Properties) > 0 {
+				var allOfNames []string
 				for name := range allOfSchema.Properties {
+					allOfNames = append(allOfNames, name)
+				}
+				slices.Sort(allOfNames)
+				for _, name := range allOfNames {
 					if !seen[name] {
 						names = append(names, name)
 						seen[name] = true
@@ -208,7 +213,12 @@ func (tf *templateFuncs) propertyNamesOrdered(schemaName string, schema *openapi
 				for _, oneOfRef := range allOfSchema.OneOf {
 					oneOfSchema := oneOfRef.Value
 					if oneOfSchema != nil && len(oneOfSchema.Properties) > 0 {
+						var oneOfNames []string
 						for name := range oneOfSchema.Properties {
+							oneOfNames = append(oneOfNames, name)
+						}
+						slices.Sort(oneOfNames)
+						for _, name := range oneOfNames {
 							if !seen[name] {
 								names = append(names, name)
 								seen[name] = true
@@ -222,7 +232,12 @@ func (tf *templateFuncs) propertyNamesOrdered(schemaName string, schema *openapi
 
 	// Collect from direct properties
 	if len(schema.Properties) > 0 {
+		var directNames []string
 		for name := range schema.Properties {
+			directNames = append(directNames, name)
+		}
+		slices.Sort(directNames)
+		for _, name := range directNames {
 			if !seen[name] {
 				names = append(names, name)
 				seen[name] = true

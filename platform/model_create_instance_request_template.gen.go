@@ -15,8 +15,10 @@ import "encoding/json"
 
 type CreateInstanceRequestTemplate struct {
 	// (Optional).  Whether the instance needs to run in order to reach template state
-	Prepare    *bool                                    `json:"prepare,omitempty"`
+	Prepare *bool `json:"prepare,omitempty"`
+	// (Optional).  The UUID of a template instance to create the instance from.
 	NameOrUuid *CreateInstanceRequestTemplateNameOrUuid `json:"nameOrUUID,omitempty"`
+	// (Optional). Configuration parameters to apply when building the new instance from the source template.
 	CreateArgs *CreateInstanceRequestTemplateCreateArgs `json:"create_args,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`

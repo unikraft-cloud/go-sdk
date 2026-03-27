@@ -9,6 +9,7 @@ package platform
 import "encoding/json"
 
 type DetachVolumeByUUIDRequestBody struct {
+	// UUID or name of the instance to detach the volume from.
 	From *DetachVolumeByUUIDRequestBodyFrom `json:"from,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`

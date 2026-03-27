@@ -68,9 +68,16 @@ func (p *Parser) SetPropertyOrder(schemaName string, order []string) {
 func (p *Parser) ParseModels() []Model {
 	var models []Model
 
-	// Iterate through schemas in the order they appear
+	schemaNames := make([]string, 0, len(p.doc.Components.Schemas))
+	for name := range p.doc.Components.Schemas {
+		schemaNames = append(schemaNames, name)
+	}
+	sort.Strings(schemaNames)
+
+	// Iterate through schemas in stable alphabetical order
 	// After preprocessing, all inline schemas are now top-level schemas
-	for name, schemaRef := range p.doc.Components.Schemas {
+	for _, name := range schemaNames {
+		schemaRef := p.doc.Components.Schemas[name]
 		schema := schemaRef.Value
 		if schemaIsEmpty(schema) {
 			continue
@@ -238,12 +245,17 @@ type PathOperation struct {
 func (p *Parser) ParseOperations() []PathOperation {
 	var operations []PathOperation
 
-	// HACK: we need to ensure operations are processed in a consistent order
-	// it just so turns out our input schemas are already sorted alphabetically
-	// by path, so we can leverage that to get a consistent order of operations
-	// see https://github.com/getkin/kin-openapi/pull/695
+	// We need to ensure operations are processed in a consistent order
+	// Iterate over paths in sorted order to ensure deterministic output
+	paths := p.doc.Paths.Map()
+	var sortedPaths []string
+	for path := range paths {
+		sortedPaths = append(sortedPaths, path)
+	}
+	sort.Strings(sortedPaths)
 
-	for path, pathItem := range p.doc.Paths.Map() {
+	for _, path := range sortedPaths {
+		pathItem := paths[path]
 		ops := []struct {
 			method string
 			op     *openapi3.Operation

@@ -6,6 +6,8 @@
 package main
 
 import (
+	"sort"
+
 	"github.com/ettle/strcase"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/mitchellh/copystructure"
@@ -34,6 +36,7 @@ func Preprocess(doc *openapi3.T, parser *Parser) {
 	for name := range p.doc.Components.Schemas {
 		originalSchemas = append(originalSchemas, name)
 	}
+	sort.Strings(originalSchemas)
 
 	// Process each original schema
 	for _, name := range originalSchemas {
@@ -77,8 +80,14 @@ func (p *preprocessor) processProperties(schema *openapi3.Schema, modelPrefix st
 	}
 	var propsToProcess []propToProcess
 
-	// Collect direct properties
-	for propName, propRef := range schema.Properties {
+	// Collect direct properties in sorted order
+	var directPropNames []string
+	for propName := range schema.Properties {
+		directPropNames = append(directPropNames, propName)
+	}
+	sort.Strings(directPropNames)
+	for _, propName := range directPropNames {
+		propRef := schema.Properties[propName]
 		propsToProcess = append(propsToProcess, propToProcess{
 			parentSchema: schema,
 			name:         propName,
@@ -92,7 +101,13 @@ func (p *preprocessor) processProperties(schema *openapi3.Schema, modelPrefix st
 		if allOfRef.Value == nil {
 			continue
 		}
-		for propName, propRef := range allOfRef.Value.Properties {
+		var allOfPropNames []string
+		for propName := range allOfRef.Value.Properties {
+			allOfPropNames = append(allOfPropNames, propName)
+		}
+		sort.Strings(allOfPropNames)
+		for _, propName := range allOfPropNames {
+			propRef := allOfRef.Value.Properties[propName]
 			propsToProcess = append(propsToProcess, propToProcess{
 				parentSchema: allOfRef.Value,
 				name:         propName,
@@ -142,7 +157,13 @@ func (p *preprocessor) setInlineSchemaTypeNames(schema *openapi3.Schema, modelPr
 	if schema == nil {
 		return
 	}
-	for propName, propRef := range schema.Properties {
+	var propNames []string
+	for propName := range schema.Properties {
+		propNames = append(propNames, propName)
+	}
+	sort.Strings(propNames)
+	for _, propName := range propNames {
+		propRef := schema.Properties[propName]
 		inlineName := p.inlineTypeName(modelPrefix, propName)
 		p.setInlineTypeName(propRef, inlineName)
 	}
@@ -235,10 +256,11 @@ func (p *preprocessor) processProperty(parentSchema *openapi3.Schema, propName s
 			p.parser.SetPropertyOrder(schemaName, refOrder)
 		}
 
-		// Replace the property with a ref to the new schema
-		parentSchema.Properties[propName] = &openapi3.SchemaRef{
-			Ref: "#/components/schemas/" + schemaName,
-		}
+		// Replace the property with a wrapped ref and preserve field description
+		parentSchema.Properties[propName] = wrapRefWithDescription(
+			"#/components/schemas/"+schemaName,
+			prop.Description,
+		)
 
 		// Don't recurse into the referenced schema - it will be processed independently
 		// if it's a top-level schema in components/schemas. This ensures each top-level

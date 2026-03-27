@@ -257,9 +257,28 @@ type Instance struct {
 	// A manual start or stop of the instance aborts the restart sequence and
 	// resets the back-off delay.
 	RestartPolicy *InstanceRestartPolicy `json:"restart_policy,omitempty"`
-	ScaleToZero   *InstanceScaleToZero   `json:"scale_to_zero,omitempty"`
+	// The scale-to-zero configuration for the instance.
+	//
+	// With conventional cloud platforms you need to keep at least one instance
+	// running at all times to be able to respond to incoming requests. Performing
+	// a just-in-time cold boot is simply too time-consuming and would create a
+	// response latency of multiple seconds.  This is not the case with Unikraft
+	// Cloud.  Instances on Unikraft Cloud are able to cold boot within
+	// milliseconds, which allows us to perform low-latency scale-to-zero.
+	//
+	// To enable scale-to-zero for an instance it is sufficient to add a
+	// `scale_to_zero` configuration block.  Unikraft Cloud will then put the
+	// instance into standby if there is no traffic to your service within the
+	// window of a cooldown period.  When there is new traffic coming in, it is
+	// automatically started again.
+	//
+	// If you have a heavyweight application that takes long to cold boot or has
+	// bad first request latency (e.g., with JIT compilation) consider to enable
+	// stateful scale-to-zero.
+	ScaleToZero *InstanceScaleToZero `json:"scale_to_zero,omitempty"`
 	// The list of volumes attached to the instance.
-	Volumes      []InstanceVolume      `json:"volumes,omitempty"`
+	Volumes []InstanceVolume `json:"volumes,omitempty"`
+	// The service group configuration for the instance.
 	ServiceGroup *InstanceServiceGroup `json:"service_group,omitempty"`
 	// The network interfaces of the instance.
 	// Not used for template instances.
@@ -276,11 +295,14 @@ type Instance struct {
 	// An optional error code providing additional information about the status.
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.
-	Error    *int32            `json:"error,omitempty"`
+	Error *int32 `json:"error,omitempty"`
+	// The snapshot of the instance, if exists.
 	Snapshot *InstanceSnapshot `json:"snapshot,omitempty"`
 	// If set to true, the instance cannot be deleted until the lock is removed.
-	DeleteLock *bool            `json:"delete_lock,omitempty"`
-	Restart    *InstanceRestart `json:"restart,omitempty"`
+	DeleteLock *bool `json:"delete_lock,omitempty"`
+	// The current restart attempt for the instance.
+	// Not used for template instances.
+	Restart *InstanceRestart `json:"restart,omitempty"`
 	// Read-Only Memory (ROM) blobs to attach to the instance.
 	// Unikraft Cloud supports the ability to attach Read-Only Memory (ROM) blobs
 	// to instances. It allows you to create a general-purpose base image and
@@ -291,8 +313,12 @@ type Instance struct {
 	//
 	// Each schedule defines a calendar expression and an action (`start`,
 	// `stop`, or `delete`) to perform at matching times.
-	Schedules        []Schedule                `json:"schedules,omitempty"`
-	Autokill         *InstanceAutokill         `json:"autokill,omitempty"`
+	Schedules []Schedule `json:"schedules,omitempty"`
+	// Automatic delete-on-idle/request-limit configuration.
+	// Not used for template instances.
+	Autokill *InstanceAutokill `json:"autokill,omitempty"`
+	// Template-specific automatic delete-on-idle configuration.
+	// Not used for non-template instances.
 	TemplateAutokill *InstanceTemplateAutokill `json:"template_autokill,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`

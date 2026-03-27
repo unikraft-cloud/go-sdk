@@ -10,7 +10,8 @@ import "encoding/json"
 
 type GetAutoscaleConfigurationPolicyResponsePolicyResponse struct {
 	// The status of the response.
-	Status *ResponseStatus                                              `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
+	// The policy which was retrieved by the request.
 	Policy *GetAutoscaleConfigurationPolicyResponsePolicyResponsePolicy `json:"policy,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.

@@ -16,7 +16,8 @@ type AttachVolumesRequestItem struct {
 	Uuid string `json:"uuid"`
 	// The name of the volume to attach. Mutually exclusive with UUID.
 	// Exactly one of uuid or name must be provided.
-	Name     string                           `json:"name"`
+	Name string `json:"name"`
+	// UUID or name of the instance to attach the volume to.
 	AttachTo AttachVolumesRequestItemAttachTo `json:"attach_to"`
 	// Path of the mountpoint.
 	//

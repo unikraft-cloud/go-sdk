@@ -22,8 +22,9 @@ type CreateAutoscaleConfigurationsRequestConfiguration struct {
 	// The warmup time in milliseconds for new instances.
 	WarmupTimeMs *int64 `json:"warmup_time_ms,omitempty"`
 	// The cooldown time in milliseconds for the autoscale configuration.
-	CooldownTimeMs *int64                                                       `json:"cooldown_time_ms,omitempty"`
-	CreateArgs     *CreateAutoscaleConfigurationsRequestConfigurationCreateArgs `json:"create_args,omitempty"`
+	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitempty"`
+	// The arguments to use when creating the autoscale configuration.
+	CreateArgs *CreateAutoscaleConfigurationsRequestConfigurationCreateArgs `json:"create_args,omitempty"`
 	// The policies to apply to the autoscale configuration.
 	Policies []AutoscalePolicy `json:"policies,omitempty"`
 

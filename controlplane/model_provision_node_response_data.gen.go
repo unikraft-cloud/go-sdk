@@ -11,6 +11,7 @@ import "encoding/json"
 // The response data for this request.
 
 type ProvisionNodeResponseData struct {
+	// The created node.
 	Node *ProvisionNodeResponseDataNode `json:"node,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
