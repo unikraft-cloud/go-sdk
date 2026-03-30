@@ -8,28 +8,13 @@ package platform
 
 import "encoding/json"
 
-// Current state of the volume.
-type CloneVolumeResponseVolumeState string
-
-const (
-	CloneVolumeResponseVolumeStateUninitialized CloneVolumeResponseVolumeState = "uninitialized"
-	CloneVolumeResponseVolumeStateInitializing  CloneVolumeResponseVolumeState = "initializing"
-	CloneVolumeResponseVolumeStateAvailable     CloneVolumeResponseVolumeState = "available"
-	CloneVolumeResponseVolumeStateIdle          CloneVolumeResponseVolumeState = "idle"
-	CloneVolumeResponseVolumeStateMounted       CloneVolumeResponseVolumeState = "mounted"
-	CloneVolumeResponseVolumeStateBusy          CloneVolumeResponseVolumeState = "busy"
-	CloneVolumeResponseVolumeStateError         CloneVolumeResponseVolumeState = "error"
-)
-
-type CloneVolumeResponseVolume struct {
-	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
-	// Current state of the volume.
-	State *CloneVolumeResponseVolumeState `json:"state,omitempty"`
-	// UUID of the newly created volume.
+type DeleteTemplateVolumesResponseTemplateVolume struct {
+	// The UUID of the template volume that was deleted.
 	Uuid *string `json:"uuid,omitempty"`
-	// The name of the newly created volume.
+	// The name of the template volume that was deleted.
 	Name *string `json:"name,omitempty"`
+	// The status of this particular template volume deletion operation.
+	Status *string `json:"status,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`
@@ -40,8 +25,8 @@ type CloneVolumeResponseVolume struct {
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CloneVolumeResponseVolume) UnmarshalJSON(data []byte) error {
-	type Alias CloneVolumeResponseVolume
+func (m *DeleteTemplateVolumesResponseTemplateVolume) UnmarshalJSON(data []byte) error {
+	type Alias DeleteTemplateVolumesResponseTemplateVolume
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -52,10 +37,9 @@ func (m *CloneVolumeResponseVolume) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"status":  {},
-		"state":   {},
 		"uuid":    {},
 		"name":    {},
+		"status":  {},
 		"message": {},
 		"error":   {},
 	}
@@ -70,8 +54,8 @@ func (m *CloneVolumeResponseVolume) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CloneVolumeResponseVolume) MarshalJSON() ([]byte, error) {
-	type Alias CloneVolumeResponseVolume
+func (m DeleteTemplateVolumesResponseTemplateVolume) MarshalJSON() ([]byte, error) {
+	type Alias DeleteTemplateVolumesResponseTemplateVolume
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

@@ -8,31 +8,36 @@ package platform
 
 import "encoding/json"
 
+// A single request item describing the volume to clone.
 // The quota policy for the new cloned volume.  If not provided, the quota
 // policy of the source volume is used.
-type CloneVolumeByUUIDRequestBodyQuotaPolicy string
+type CloneVolumesRequestItemQuotaPolicy string
 
 const (
-	CloneVolumeByUUIDRequestBodyQuotaPolicyStatic  CloneVolumeByUUIDRequestBodyQuotaPolicy = "static"
-	CloneVolumeByUUIDRequestBodyQuotaPolicyDynamic CloneVolumeByUUIDRequestBodyQuotaPolicy = "dynamic"
+	CloneVolumesRequestItemQuotaPolicyStatic  CloneVolumesRequestItemQuotaPolicy = "static"
+	CloneVolumesRequestItemQuotaPolicyDynamic CloneVolumesRequestItemQuotaPolicy = "dynamic"
 )
 
-type CloneVolumeByUUIDRequestBody struct {
+type CloneVolumesRequestItem struct {
+	// The UUID of the volume to clone.  Mutually exclusive with name.
+	Uuid *string `json:"uuid,omitempty"`
+	// The name of the volume to clone.  Mutually exclusive with UUID.
+	Name *string `json:"name,omitempty"`
 	// The name of the new cloned volume.  If not provided, a random name
 	// of the form `vol-X` is generated for you, where `X` is a 5 character
 	// long random alphanumeric suffix.
 	VolName *string `json:"vol_name,omitempty"`
 	// The quota policy for the new cloned volume.  If not provided, the quota
 	// policy of the source volume is used.
-	QuotaPolicy *CloneVolumeByUUIDRequestBodyQuotaPolicy `json:"quota_policy,omitempty"`
+	QuotaPolicy *CloneVolumesRequestItemQuotaPolicy `json:"quota_policy,omitempty"`
 	// A list of tags to assign to the new cloned volume.
 	Tags []string `json:"tags,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CloneVolumeByUUIDRequestBody) UnmarshalJSON(data []byte) error {
-	type Alias CloneVolumeByUUIDRequestBody
+func (m *CloneVolumesRequestItem) UnmarshalJSON(data []byte) error {
+	type Alias CloneVolumesRequestItem
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -43,6 +48,8 @@ func (m *CloneVolumeByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
+		"uuid":         {},
+		"name":         {},
 		"vol_name":     {},
 		"quota_policy": {},
 		"tags":         {},
@@ -58,8 +65,8 @@ func (m *CloneVolumeByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CloneVolumeByUUIDRequestBody) MarshalJSON() ([]byte, error) {
-	type Alias CloneVolumeByUUIDRequestBody
+func (m CloneVolumesRequestItem) MarshalJSON() ([]byte, error) {
+	type Alias CloneVolumesRequestItem
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err
