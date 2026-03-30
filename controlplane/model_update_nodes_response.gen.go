@@ -4,19 +4,28 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-type CloneVolumeResponseData struct {
-	// The volume(s) which were created by the request.
-	Volumes []CloneVolumeResponseVolume `json:"volumes,omitempty"`
+// Response message for updating nodes.
+
+type UpdateNodesResponse struct {
+	// The status of the response.
+	Status *ResponseStatus `json:"status,omitempty"`
+	// An optional message providing additional information about the response.
+	Message *string                  `json:"message,omitempty"`
+	Data    *UpdateNodesResponseData `json:"data,omitempty"`
+	// A list of errors which may have occurred during the request.
+	Errors []ResponseError `json:"errors,omitempty"`
+	// The operation time in microseconds.
+	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CloneVolumeResponseData) UnmarshalJSON(data []byte) error {
-	type Alias CloneVolumeResponseData
+func (m *UpdateNodesResponse) UnmarshalJSON(data []byte) error {
+	type Alias UpdateNodesResponse
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -27,7 +36,11 @@ func (m *CloneVolumeResponseData) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"volumes": {},
+		"status":     {},
+		"message":    {},
+		"data":       {},
+		"errors":     {},
+		"op_time_us": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -40,8 +53,8 @@ func (m *CloneVolumeResponseData) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CloneVolumeResponseData) MarshalJSON() ([]byte, error) {
-	type Alias CloneVolumeResponseData
+func (m UpdateNodesResponse) MarshalJSON() ([]byte, error) {
+	type Alias UpdateNodesResponse
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

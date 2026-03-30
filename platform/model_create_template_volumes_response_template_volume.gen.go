@@ -9,28 +9,28 @@ package platform
 import "encoding/json"
 
 // The state of the volume.
-type CreateVolumeResponseVolumeState string
+type CreateTemplateVolumesResponseTemplateVolumeState string
 
 const (
-	CreateVolumeResponseVolumeStateUninitialized CreateVolumeResponseVolumeState = "uninitialized"
-	CreateVolumeResponseVolumeStateInitializing  CreateVolumeResponseVolumeState = "initializing"
-	CreateVolumeResponseVolumeStateAvailable     CreateVolumeResponseVolumeState = "available"
-	CreateVolumeResponseVolumeStateIdle          CreateVolumeResponseVolumeState = "idle"
-	CreateVolumeResponseVolumeStateMounted       CreateVolumeResponseVolumeState = "mounted"
-	CreateVolumeResponseVolumeStateBusy          CreateVolumeResponseVolumeState = "busy"
-	CreateVolumeResponseVolumeStateError         CreateVolumeResponseVolumeState = "error"
-	CreateVolumeResponseVolumeStateTemplate      CreateVolumeResponseVolumeState = "template"
+	CreateTemplateVolumesResponseTemplateVolumeStateUninitialized CreateTemplateVolumesResponseTemplateVolumeState = "uninitialized"
+	CreateTemplateVolumesResponseTemplateVolumeStateInitializing  CreateTemplateVolumesResponseTemplateVolumeState = "initializing"
+	CreateTemplateVolumesResponseTemplateVolumeStateAvailable     CreateTemplateVolumesResponseTemplateVolumeState = "available"
+	CreateTemplateVolumesResponseTemplateVolumeStateIdle          CreateTemplateVolumesResponseTemplateVolumeState = "idle"
+	CreateTemplateVolumesResponseTemplateVolumeStateMounted       CreateTemplateVolumesResponseTemplateVolumeState = "mounted"
+	CreateTemplateVolumesResponseTemplateVolumeStateBusy          CreateTemplateVolumesResponseTemplateVolumeState = "busy"
+	CreateTemplateVolumesResponseTemplateVolumeStateError         CreateTemplateVolumesResponseTemplateVolumeState = "error"
+	CreateTemplateVolumesResponseTemplateVolumeStateTemplate      CreateTemplateVolumesResponseTemplateVolumeState = "template"
 )
 
-type CreateVolumeResponseVolume struct {
+type CreateTemplateVolumesResponseTemplateVolume struct {
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
-	// UUID of the newly created volume.
+	// The UUID of the volume converted into a template.
 	Uuid *string `json:"uuid,omitempty"`
-	// The name of the newly created volume.
+	// The name of the volume converted into a template.
 	Name *string `json:"name,omitempty"`
 	// The state of the volume.
-	State *CreateVolumeResponseVolumeState `json:"state,omitempty"`
+	State *CreateTemplateVolumesResponseTemplateVolumeState `json:"state,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`
@@ -41,8 +41,8 @@ type CreateVolumeResponseVolume struct {
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateVolumeResponseVolume) UnmarshalJSON(data []byte) error {
-	type Alias CreateVolumeResponseVolume
+func (m *CreateTemplateVolumesResponseTemplateVolume) UnmarshalJSON(data []byte) error {
+	type Alias CreateTemplateVolumesResponseTemplateVolume
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -71,8 +71,8 @@ func (m *CreateVolumeResponseVolume) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateVolumeResponseVolume) MarshalJSON() ([]byte, error) {
-	type Alias CreateVolumeResponseVolume
+func (m CreateTemplateVolumesResponseTemplateVolume) MarshalJSON() ([]byte, error) {
+	type Alias CreateTemplateVolumesResponseTemplateVolume
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

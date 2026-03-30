@@ -4,31 +4,34 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-type UpdateVolumesResponseUpdatedVolume struct {
-	// The UUID of the volume that was updated.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume that was updated.
+// Information about an available machine type.
+
+type MachineType struct {
+	// The machine type identifier (e.g., "m5.xlarge", "n2-standard-4").
 	Name *string `json:"name,omitempty"`
-	// The status of this particular volume update operation.
-	Status *string `json:"status,omitempty"`
-	// (Optional).  The client-provided ID from the request.
-	Id *string `json:"id,omitempty"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
-	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	// Human-readable description.
+	Description *string `json:"description,omitempty"`
+	// Number of vCPUs.
+	Vcpus *uint32 `json:"vcpus,omitempty"`
+	// Memory in MiB.
+	MemoryMib *uint64 `json:"memory_mib,omitempty"`
+	// Machine category (e.g., "general-purpose", "compute-optimized",
+	// "memory-optimized").
+	Category *string `json:"category,omitempty"`
+	// Regions where this machine type is available.
+	AvailableRegions []string `json:"available_regions,omitempty"`
+	// Whether this machine type supports nested virtualization.
+	NestedVirtualization *bool `json:"nested_virtualization,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
-	type Alias UpdateVolumesResponseUpdatedVolume
+func (m *MachineType) UnmarshalJSON(data []byte) error {
+	type Alias MachineType
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -39,12 +42,13 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":    {},
-		"name":    {},
-		"status":  {},
-		"id":      {},
-		"message": {},
-		"error":   {},
+		"name":                  {},
+		"description":           {},
+		"vcpus":                 {},
+		"memory_mib":            {},
+		"category":              {},
+		"available_regions":     {},
+		"nested_virtualization": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -57,8 +61,8 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m UpdateVolumesResponseUpdatedVolume) MarshalJSON() ([]byte, error) {
-	type Alias UpdateVolumesResponseUpdatedVolume
+func (m MachineType) MarshalJSON() ([]byte, error) {
+	type Alias MachineType
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

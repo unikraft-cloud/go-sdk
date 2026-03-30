@@ -8,29 +8,15 @@ package platform
 
 import "encoding/json"
 
-// The state of the volume.
-type CreateVolumeResponseVolumeState string
-
-const (
-	CreateVolumeResponseVolumeStateUninitialized CreateVolumeResponseVolumeState = "uninitialized"
-	CreateVolumeResponseVolumeStateInitializing  CreateVolumeResponseVolumeState = "initializing"
-	CreateVolumeResponseVolumeStateAvailable     CreateVolumeResponseVolumeState = "available"
-	CreateVolumeResponseVolumeStateIdle          CreateVolumeResponseVolumeState = "idle"
-	CreateVolumeResponseVolumeStateMounted       CreateVolumeResponseVolumeState = "mounted"
-	CreateVolumeResponseVolumeStateBusy          CreateVolumeResponseVolumeState = "busy"
-	CreateVolumeResponseVolumeStateError         CreateVolumeResponseVolumeState = "error"
-	CreateVolumeResponseVolumeStateTemplate      CreateVolumeResponseVolumeState = "template"
-)
-
-type CreateVolumeResponseVolume struct {
-	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
-	// UUID of the newly created volume.
+type UpdateTemplateVolumesResponseTemplateVolume struct {
+	// The UUID of the template volume that was updated.
 	Uuid *string `json:"uuid,omitempty"`
-	// The name of the newly created volume.
+	// The name of the template volume that was updated.
 	Name *string `json:"name,omitempty"`
-	// The state of the volume.
-	State *CreateVolumeResponseVolumeState `json:"state,omitempty"`
+	// The status of this particular volume update operation.
+	Status *string `json:"status,omitempty"`
+	// (Optional).  The client-provided ID from the request.
+	Id *string `json:"id,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`
@@ -41,8 +27,8 @@ type CreateVolumeResponseVolume struct {
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateVolumeResponseVolume) UnmarshalJSON(data []byte) error {
-	type Alias CreateVolumeResponseVolume
+func (m *UpdateTemplateVolumesResponseTemplateVolume) UnmarshalJSON(data []byte) error {
+	type Alias UpdateTemplateVolumesResponseTemplateVolume
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -53,10 +39,10 @@ func (m *CreateVolumeResponseVolume) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"status":  {},
 		"uuid":    {},
 		"name":    {},
-		"state":   {},
+		"status":  {},
+		"id":      {},
 		"message": {},
 		"error":   {},
 	}
@@ -71,8 +57,8 @@ func (m *CreateVolumeResponseVolume) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateVolumeResponseVolume) MarshalJSON() ([]byte, error) {
-	type Alias CreateVolumeResponseVolume
+func (m UpdateTemplateVolumesResponseTemplateVolume) MarshalJSON() ([]byte, error) {
+	type Alias UpdateTemplateVolumesResponseTemplateVolume
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err
