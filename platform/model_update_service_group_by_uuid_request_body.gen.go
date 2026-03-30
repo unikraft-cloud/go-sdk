@@ -16,6 +16,7 @@ const (
 	UpdateServiceGroupByUUIDRequestBodyPropDomains    UpdateServiceGroupByUUIDRequestBodyProp = "domains"
 	UpdateServiceGroupByUUIDRequestBodyPropSoft_limit UpdateServiceGroupByUUIDRequestBodyProp = "soft_limit"
 	UpdateServiceGroupByUUIDRequestBodyPropHard_limit UpdateServiceGroupByUUIDRequestBodyProp = "hard_limit"
+	UpdateServiceGroupByUUIDRequestBodyPropAutokill   UpdateServiceGroupByUUIDRequestBodyProp = "autokill"
 )
 
 // The operation to perform.
@@ -39,6 +40,7 @@ type UpdateServiceGroupByUUIDRequestBody struct {
 	// - For "domains": array of Domain objects (same as for creation)
 	// - For "soft_limit": integer (1–65535), must be <= "hard_limit"
 	// - For "hard_limit": integer (1–65535), must be >= "soft_limit"
+	// - For "autokill": object with time_ms field
 	Value *interface{} `json:"value,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`

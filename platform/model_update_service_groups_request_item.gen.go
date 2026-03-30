@@ -17,6 +17,7 @@ const (
 	UpdateServiceGroupsRequestItemPropDomains    UpdateServiceGroupsRequestItemProp = "domains"
 	UpdateServiceGroupsRequestItemPropSoft_limit UpdateServiceGroupsRequestItemProp = "soft_limit"
 	UpdateServiceGroupsRequestItemPropHard_limit UpdateServiceGroupsRequestItemProp = "hard_limit"
+	UpdateServiceGroupsRequestItemPropAutokill   UpdateServiceGroupsRequestItemProp = "autokill"
 )
 
 // The operation to perform.
@@ -44,6 +45,7 @@ type UpdateServiceGroupsRequestItem struct {
 	// - For "domains": array of Domain objects (same as for creation)
 	// - For "soft_limit": integer (1–65535), must be <= "hard_limit"
 	// - For "hard_limit": integer (1–65535), must be >= "soft_limit"
+	// - For "autokill": object with time_ms field
 	Value *interface{} `json:"value,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`

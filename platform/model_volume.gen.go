@@ -23,6 +23,7 @@ const (
 	VolumeStateMounted       VolumeState = "mounted"
 	VolumeStateBusy          VolumeState = "busy"
 	VolumeStateError         VolumeState = "error"
+	VolumeStateTemplate      VolumeState = "template"
 )
 
 type Volume struct {
@@ -51,7 +52,8 @@ type Volume struct {
 	// List of instances that this volume is attached to.
 	AttachedTo []VolumeInstanceID `json:"attached_to,omitempty"`
 	// List of instances that have this volume mounted.
-	MountedBy []VolumeVolumeInstanceMount `json:"mounted_by,omitempty"`
+	// This does not apply to template volumes.
+	MountedBy []VolumeInstanceMount `json:"mounted_by,omitempty"`
 	// The tags associated with the volume.
 	// Maximum 16 tags are allowed, and each tag may not be longer than 256 characters.
 	Tags []string `json:"tags,omitempty"`
@@ -66,6 +68,12 @@ type Volume struct {
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.
 	Error *int32 `json:"error,omitempty"`
+	// Either static or dynamic reservation.
+	QuotaPolicy *string `json:"quota_policy,omitempty"`
+	// If set to true, the volume cannot be deleted.
+	DeleteLock *bool `json:"delete_lock,omitempty"`
+	// The amount of free space in the volume in megabytes.
+	FreeMb *uint32 `json:"free_mb,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -82,18 +90,21 @@ func (m *Volume) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":        {},
-		"name":        {},
-		"created_at":  {},
-		"state":       {},
-		"size_mb":     {},
-		"persistent":  {},
-		"attached_to": {},
-		"mounted_by":  {},
-		"tags":        {},
-		"status":      {},
-		"message":     {},
-		"error":       {},
+		"uuid":         {},
+		"name":         {},
+		"created_at":   {},
+		"state":        {},
+		"size_mb":      {},
+		"persistent":   {},
+		"attached_to":  {},
+		"mounted_by":   {},
+		"tags":         {},
+		"status":       {},
+		"message":      {},
+		"error":        {},
+		"quota_policy": {},
+		"delete_lock":  {},
+		"free_mb":      {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

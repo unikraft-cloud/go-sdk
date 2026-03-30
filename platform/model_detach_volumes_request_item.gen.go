@@ -8,22 +8,23 @@ package platform
 
 import "encoding/json"
 
-// Template instances.
-// An existing instance can be saved as a template. This template is then
-// used to create new instances that inherit the exact configuration and
-// state the original instance had when the template was created.
+// A single request of detaching a volume.
 
-type CreateInstanceRequestTemplate struct {
-	// (Optional).  Whether the instance needs to run in order to reach template state
-	Prepare    *bool                                    `json:"prepare,omitempty"`
-	NameOrUuid *CreateInstanceRequestTemplateNameOrUuid `json:"nameOrUUID,omitempty"`
-	CreateArgs *CreateInstanceRequestTemplateCreateArgs `json:"create_args,omitempty"`
+type DetachVolumesRequestItem struct {
+	// UUID or name of the instance to detach the volume from.
+	From *NameOrUUID `json:"from,omitempty"`
+	// The UUID of the volume to detach. Mutually exclusive with name.
+	// Exactly one of uuid or name must be provided.
+	Uuid *string `json:"uuid,omitempty"`
+	// The name of the volume to detach. Mutually exclusive with UUID.
+	// Exactly one of uuid or name must be provided.
+	Name *string `json:"name,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
-	type Alias CreateInstanceRequestTemplate
+func (m *DetachVolumesRequestItem) UnmarshalJSON(data []byte) error {
+	type Alias DetachVolumesRequestItem
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -34,9 +35,9 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"prepare":     {},
-		"nameOrUUID":  {},
-		"create_args": {},
+		"from": {},
+		"uuid": {},
+		"name": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -49,8 +50,8 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateInstanceRequestTemplate) MarshalJSON() ([]byte, error) {
-	type Alias CreateInstanceRequestTemplate
+func (m DetachVolumesRequestItem) MarshalJSON() ([]byte, error) {
+	type Alias DetachVolumesRequestItem
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

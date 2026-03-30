@@ -38,6 +38,8 @@ type CreateServiceGroupRequest struct {
 	// case there are no other instances available, excess requests fail (i.e.,
 	// they are blocked and not queued).
 	HardLimit *uint64 `json:"hard_limit,omitempty"`
+	// Automatic delete-on-idle configuration.
+	Autokill *CreateServiceGroupRequestAutokill `json:"autokill,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -59,6 +61,7 @@ func (m *CreateServiceGroupRequest) UnmarshalJSON(data []byte) error {
 		"domains":    {},
 		"soft_limit": {},
 		"hard_limit": {},
+		"autokill":   {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

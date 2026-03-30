@@ -8,22 +8,27 @@ package platform
 
 import "encoding/json"
 
-// Template instances.
-// An existing instance can be saved as a template. This template is then
-// used to create new instances that inherit the exact configuration and
-// state the original instance had when the template was created.
+// The response message for creating one or more template volumes.
 
-type CreateInstanceRequestTemplate struct {
-	// (Optional).  Whether the instance needs to run in order to reach template state
-	Prepare    *bool                                    `json:"prepare,omitempty"`
-	NameOrUuid *CreateInstanceRequestTemplateNameOrUuid `json:"nameOrUUID,omitempty"`
-	CreateArgs *CreateInstanceRequestTemplateCreateArgs `json:"create_args,omitempty"`
+type CreateTemplateVolumesResponse struct {
+	// The status of the response.
+	Status *ResponseStatus `json:"status,omitempty"`
+	// The response data for this request
+	Data *CreateTemplateVolumesResponseData `json:"data,omitempty"`
+	// A list of errors which may have occurred during the request.
+	Errors []ResponseError `json:"errors,omitempty"`
+	// The operation time in microseconds.  This is the time it took to process
+	// the request and generate the response.
+	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
+	// An optional message providing additional information about the status.
+	// This field is useful when the status is not `success`.
+	Message *string `json:"message,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
-	type Alias CreateInstanceRequestTemplate
+func (m *CreateTemplateVolumesResponse) UnmarshalJSON(data []byte) error {
+	type Alias CreateTemplateVolumesResponse
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -34,9 +39,11 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"prepare":     {},
-		"nameOrUUID":  {},
-		"create_args": {},
+		"status":     {},
+		"data":       {},
+		"errors":     {},
+		"op_time_us": {},
+		"message":    {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -49,8 +56,8 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateInstanceRequestTemplate) MarshalJSON() ([]byte, error) {
-	type Alias CreateInstanceRequestTemplate
+func (m CreateTemplateVolumesResponse) MarshalJSON() ([]byte, error) {
+	type Alias CreateTemplateVolumesResponse
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err
