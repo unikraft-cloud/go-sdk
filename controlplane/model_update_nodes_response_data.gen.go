@@ -4,23 +4,21 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-// UUID or name of the instance to attach the volume to.
+// The response data for this request.
 
-type AttachVolumesRequestAttachTo struct {
-	// The UUID of the instance that the volume is attached to.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the instance that the volume is attached to.
-	Name *string `json:"name,omitempty"`
+type UpdateNodesResponseData struct {
+	// The updated nodes.
+	Nodes []Node `json:"nodes,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *AttachVolumesRequestAttachTo) UnmarshalJSON(data []byte) error {
-	type Alias AttachVolumesRequestAttachTo
+func (m *UpdateNodesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias UpdateNodesResponseData
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -31,8 +29,7 @@ func (m *AttachVolumesRequestAttachTo) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid": {},
-		"name": {},
+		"nodes": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -45,8 +42,8 @@ func (m *AttachVolumesRequestAttachTo) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m AttachVolumesRequestAttachTo) MarshalJSON() ([]byte, error) {
-	type Alias AttachVolumesRequestAttachTo
+func (m UpdateNodesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias UpdateNodesResponseData
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

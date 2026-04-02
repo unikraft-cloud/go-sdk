@@ -8,17 +8,16 @@ package platform
 
 import "encoding/json"
 
-// The request message for attaching one or more volume(s) to instances by
-// their UUID(s) or name(s).
+// A single request item for attaching a volume to an instance.
 
-type AttachVolumesRequest struct {
+type AttachVolumesRequestItem struct {
 	// The UUID of the volume to attach. Mutually exclusive with name.
 	// Exactly one of uuid or name must be provided.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the volume to attach. Mutually exclusive with UUID.
 	// Exactly one of uuid or name must be provided.
-	Name     *string                      `json:"name,omitempty"`
-	AttachTo AttachVolumesRequestAttachTo `json:"attach_to"`
+	Name     string                           `json:"name"`
+	AttachTo AttachVolumesRequestItemAttachTo `json:"attach_to"`
 	// Path of the mountpoint.
 	//
 	// The path must be absolute, not contain `.` and `..` components, and not
@@ -31,8 +30,8 @@ type AttachVolumesRequest struct {
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *AttachVolumesRequest) UnmarshalJSON(data []byte) error {
-	type Alias AttachVolumesRequest
+func (m *AttachVolumesRequestItem) UnmarshalJSON(data []byte) error {
+	type Alias AttachVolumesRequestItem
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -60,8 +59,8 @@ func (m *AttachVolumesRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m AttachVolumesRequest) MarshalJSON() ([]byte, error) {
-	type Alias AttachVolumesRequest
+func (m AttachVolumesRequestItem) MarshalJSON() ([]byte, error) {
+	type Alias AttachVolumesRequestItem
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

@@ -8,7 +8,7 @@ package platform
 
 import "encoding/json"
 
-// Current state of the volume.
+// The state of the volume.
 type CreateVolumeResponseVolumeState string
 
 const (
@@ -19,17 +19,18 @@ const (
 	CreateVolumeResponseVolumeStateMounted       CreateVolumeResponseVolumeState = "mounted"
 	CreateVolumeResponseVolumeStateBusy          CreateVolumeResponseVolumeState = "busy"
 	CreateVolumeResponseVolumeStateError         CreateVolumeResponseVolumeState = "error"
+	CreateVolumeResponseVolumeStateTemplate      CreateVolumeResponseVolumeState = "template"
 )
 
 type CreateVolumeResponseVolume struct {
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
-	// Current state of the volume.
-	State *CreateVolumeResponseVolumeState `json:"state,omitempty"`
 	// UUID of the newly created volume.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the newly created volume.
 	Name *string `json:"name,omitempty"`
+	// The state of the volume.
+	State *CreateVolumeResponseVolumeState `json:"state,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`
@@ -53,9 +54,9 @@ func (m *CreateVolumeResponseVolume) UnmarshalJSON(data []byte) error {
 
 	knownKeys := map[string]struct{}{
 		"status":  {},
-		"state":   {},
 		"uuid":    {},
 		"name":    {},
+		"state":   {},
 		"message": {},
 		"error":   {},
 	}
