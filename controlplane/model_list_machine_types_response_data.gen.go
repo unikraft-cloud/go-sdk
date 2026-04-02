@@ -4,23 +4,21 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-// UUID or name of the instance to detach the volume from.
+// The response data for this request.
 
-type DetachVolumesRequestFrom struct {
-	// The UUID of the instance that the volume is detached from.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the instance that the volume is detached from.
-	Name *string `json:"name,omitempty"`
+type ListMachineTypesResponseData struct {
+	// The list of available machine types.
+	MachineTypes []MachineType `json:"machine_types,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *DetachVolumesRequestFrom) UnmarshalJSON(data []byte) error {
-	type Alias DetachVolumesRequestFrom
+func (m *ListMachineTypesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias ListMachineTypesResponseData
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -31,8 +29,7 @@ func (m *DetachVolumesRequestFrom) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid": {},
-		"name": {},
+		"machine_types": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -45,8 +42,8 @@ func (m *DetachVolumesRequestFrom) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m DetachVolumesRequestFrom) MarshalJSON() ([]byte, error) {
-	type Alias DetachVolumesRequestFrom
+func (m ListMachineTypesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias ListMachineTypesResponseData
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

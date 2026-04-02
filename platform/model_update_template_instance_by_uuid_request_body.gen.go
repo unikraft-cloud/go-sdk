@@ -14,6 +14,7 @@ type UpdateTemplateInstanceByUUIDRequestBodyProp string
 const (
 	UpdateTemplateInstanceByUUIDRequestBodyPropTags        UpdateTemplateInstanceByUUIDRequestBodyProp = "tags"
 	UpdateTemplateInstanceByUUIDRequestBodyPropDelete_lock UpdateTemplateInstanceByUUIDRequestBodyProp = "delete_lock"
+	UpdateTemplateInstanceByUUIDRequestBodyPropAutokill    UpdateTemplateInstanceByUUIDRequestBodyProp = "autokill"
 )
 
 // The operation to perform on the property.
@@ -36,6 +37,7 @@ type UpdateTemplateInstanceByUUIDRequestBody struct {
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean
+	// - For "autokill": object with time_ms field
 	Value *interface{} `json:"value,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
