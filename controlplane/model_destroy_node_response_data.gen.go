@@ -4,26 +4,21 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-// Template instances.
-// An existing instance can be saved as a template. This template is then
-// used to create new instances that inherit the exact configuration and
-// state the original instance had when the template was created.
+// The response data for this request.
 
-type CreateInstanceRequestTemplate struct {
-	// (Optional).  Whether the instance needs to run in order to reach template state
-	Prepare    *bool                                    `json:"prepare,omitempty"`
-	NameOrUuid *CreateInstanceRequestTemplateNameOrUuid `json:"nameOrUUID,omitempty"`
-	CreateArgs *CreateInstanceRequestTemplateCreateArgs `json:"create_args,omitempty"`
+type DestroyNodeResponseData struct {
+	// The deleted nodes (with their final state before deletion).
+	Nodes []Node `json:"nodes,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
-	type Alias CreateInstanceRequestTemplate
+func (m *DestroyNodeResponseData) UnmarshalJSON(data []byte) error {
+	type Alias DestroyNodeResponseData
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -34,9 +29,7 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"prepare":     {},
-		"nameOrUUID":  {},
-		"create_args": {},
+		"nodes": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -49,8 +42,8 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateInstanceRequestTemplate) MarshalJSON() ([]byte, error) {
-	type Alias CreateInstanceRequestTemplate
+func (m DestroyNodeResponseData) MarshalJSON() ([]byte, error) {
+	type Alias DestroyNodeResponseData
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

@@ -8,22 +8,18 @@ package platform
 
 import "encoding/json"
 
-// Template instances.
-// An existing instance can be saved as a template. This template is then
-// used to create new instances that inherit the exact configuration and
-// state the original instance had when the template was created.
+// Automatic delete-on-idle configuration for service groups.
 
-type CreateInstanceRequestTemplate struct {
-	// (Optional).  Whether the instance needs to run in order to reach template state
-	Prepare    *bool                                    `json:"prepare,omitempty"`
-	NameOrUuid *CreateInstanceRequestTemplateNameOrUuid `json:"nameOrUUID,omitempty"`
-	CreateArgs *CreateInstanceRequestTemplateCreateArgs `json:"create_args,omitempty"`
+type CreateServiceGroupRequestAutokill struct {
+	// Time in milliseconds after the service group becomes empty before it is
+	// deleted. A value of 0 disables autokill.
+	TimeMs *uint64 `json:"time_ms,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
-	type Alias CreateInstanceRequestTemplate
+func (m *CreateServiceGroupRequestAutokill) UnmarshalJSON(data []byte) error {
+	type Alias CreateServiceGroupRequestAutokill
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -34,9 +30,7 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"prepare":     {},
-		"nameOrUUID":  {},
-		"create_args": {},
+		"time_ms": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -49,8 +43,8 @@ func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateInstanceRequestTemplate) MarshalJSON() ([]byte, error) {
-	type Alias CreateInstanceRequestTemplate
+func (m CreateServiceGroupRequestAutokill) MarshalJSON() ([]byte, error) {
+	type Alias CreateServiceGroupRequestAutokill
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

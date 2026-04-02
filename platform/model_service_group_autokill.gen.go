@@ -8,23 +8,18 @@ package platform
 
 import "encoding/json"
 
-// The request message for detaching one or more volume(s) from instances by
-// their UUID(s) or name(s).
+// Automatic delete-on-idle configuration.
 
-type DetachVolumesRequest struct {
-	// The UUID of the volume to detach. Mutually exclusive with name.
-	// Exactly one of uuid or name must be provided.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume to detach. Mutually exclusive with UUID.
-	// Exactly one of uuid or name must be provided.
-	Name *string                   `json:"name,omitempty"`
-	From *DetachVolumesRequestFrom `json:"from,omitempty"`
+type ServiceGroupAutokill struct {
+	// Time in milliseconds after the service group becomes empty before it is
+	// deleted. A value of 0 disables autokill.
+	TimeMs *uint64 `json:"time_ms,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *DetachVolumesRequest) UnmarshalJSON(data []byte) error {
-	type Alias DetachVolumesRequest
+func (m *ServiceGroupAutokill) UnmarshalJSON(data []byte) error {
+	type Alias ServiceGroupAutokill
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -35,9 +30,7 @@ func (m *DetachVolumesRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid": {},
-		"name": {},
-		"from": {},
+		"time_ms": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -50,8 +43,8 @@ func (m *DetachVolumesRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m DetachVolumesRequest) MarshalJSON() ([]byte, error) {
-	type Alias DetachVolumesRequest
+func (m ServiceGroupAutokill) MarshalJSON() ([]byte, error) {
+	type Alias ServiceGroupAutokill
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err
