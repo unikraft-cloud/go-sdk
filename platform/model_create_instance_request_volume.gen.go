@@ -21,13 +21,16 @@ type CreateInstanceRequestVolume struct {
 	// If this is the only specified field, then it will look up an existing
 	// volume by this name.  If the volume does not exist, the request will
 	// fail.  If a new volume is intended to be created, then this field must be
-	// specified along with the size in MiB and the mount point in the instance.
+	// specified along with the mount point in the instance and a provisioning
+	// source (size_mb or host_path).
 	Name *string `json:"name,omitempty"`
 	// The size of the volume when creating a new volume.
 	//
 	// When creating a new volume as part of the instance create request,
 	// specify the size of the volume in MiB.
-	SizeMb *int64 `json:"size_mb,omitempty"`
+	SizeMb *uint64 `json:"size_mb,omitempty"`
+	// A host path to create a managed volume from.
+	HostPath *string `json:"host_path,omitempty"`
 	// The mount point for the volume in the instance.
 	At string `json:"at"`
 	// Whether the volume is read-only.
@@ -36,6 +39,19 @@ type CreateInstanceRequestVolume struct {
 	// the instance.  This field is optional and defaults to false and is only
 	// applicable when using an existing volume.
 	Readonly *bool `json:"readonly,omitempty"`
+	// Quota policy for the volume.
+	QuotaPolicy *string `json:"quota_policy,omitempty"`
+	// Filesystem type to format or configure.
+	// Without custom configuration, this is either `ext4` or `virtiofs`.
+	Filesystem *string `json:"filesystem,omitempty"`
+	// Tags to assign to the new volume.
+	Tags []string `json:"tags,omitempty"`
+	// Guest UID for managed volumes (host_path mode only).
+	Uid *uint32 `json:"uid,omitempty"`
+	// Guest GID for managed volumes (host_path mode only).
+	Gid *uint32 `json:"gid,omitempty"`
+	// Script arguments passed to volume initialization scripts.
+	Args map[string]string `json:"args,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -52,11 +68,18 @@ func (m *CreateInstanceRequestVolume) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":     {},
-		"name":     {},
-		"size_mb":  {},
-		"at":       {},
-		"readonly": {},
+		"uuid":         {},
+		"name":         {},
+		"size_mb":      {},
+		"host_path":    {},
+		"at":           {},
+		"readonly":     {},
+		"quota_policy": {},
+		"filesystem":   {},
+		"tags":         {},
+		"uid":          {},
+		"gid":          {},
+		"args":         {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

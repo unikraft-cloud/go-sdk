@@ -4,23 +4,21 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import "encoding/json"
 
-type VolumeVolumeInstanceMount struct {
-	// The UUID of the instance that the volume is mounted in.
-	Uuid *string `json:"uuid,omitempty"`
-	// Whether the volume is mounted read-only or read-write.
-	ReadOnly *bool `json:"read_only,omitempty"`
-	// The name of the instance that the volume is mounted in.
-	Name *string `json:"name,omitempty"`
+// The response data for this request.
+
+type WaitNodesResponseData struct {
+	// The nodes after reaching the desired state.
+	Nodes []Node `json:"nodes,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *VolumeVolumeInstanceMount) UnmarshalJSON(data []byte) error {
-	type Alias VolumeVolumeInstanceMount
+func (m *WaitNodesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias WaitNodesResponseData
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -31,9 +29,7 @@ func (m *VolumeVolumeInstanceMount) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":      {},
-		"read_only": {},
-		"name":      {},
+		"nodes": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -46,8 +42,8 @@ func (m *VolumeVolumeInstanceMount) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m VolumeVolumeInstanceMount) MarshalJSON() ([]byte, error) {
-	type Alias VolumeVolumeInstanceMount
+func (m WaitNodesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias WaitNodesResponseData
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

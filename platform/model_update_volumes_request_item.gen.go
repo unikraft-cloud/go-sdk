@@ -8,6 +8,7 @@ package platform
 
 import "encoding/json"
 
+// A single request item for updating a volume.
 // The property to modify.
 type UpdateVolumesRequestItemProp string
 
@@ -40,7 +41,7 @@ type UpdateVolumesRequestItem struct {
 	Op UpdateVolumesRequestItemOp `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "size_mb": unsigned integer
-	// - For "quota_policy": 1 - static reservation, 2 - dynamic reservation
+	// - For "quota_policy": "static" or "dynamic"
 	// - For "tags": array of Strings
 	// - For "delete_lock": boolean
 	Value *interface{} `json:"value,omitempty"`

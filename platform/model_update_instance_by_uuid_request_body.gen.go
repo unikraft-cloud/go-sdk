@@ -20,6 +20,8 @@ const (
 	UpdateInstanceByUUIDRequestBodyPropScale_to_zero UpdateInstanceByUUIDRequestBodyProp = "scale_to_zero"
 	UpdateInstanceByUUIDRequestBodyPropTags          UpdateInstanceByUUIDRequestBodyProp = "tags"
 	UpdateInstanceByUUIDRequestBodyPropDelete_lock   UpdateInstanceByUUIDRequestBodyProp = "delete_lock"
+	UpdateInstanceByUUIDRequestBodyPropSchedules     UpdateInstanceByUUIDRequestBodyProp = "schedules"
+	UpdateInstanceByUUIDRequestBodyPropAutokill      UpdateInstanceByUUIDRequestBodyProp = "autokill"
 )
 
 // The operation to perform on the property.
@@ -48,6 +50,8 @@ type UpdateInstanceByUUIDRequestBody struct {
 	// - For "scale_to_zero": object with cooldown_time_ms, policy, and stateful fields
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean
+	// - For "schedules": array of schedule objects (with name, when, and action fields)
+	// - For "autokill": object with time_ms and num_requests fields
 	Value *interface{} `json:"value,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`

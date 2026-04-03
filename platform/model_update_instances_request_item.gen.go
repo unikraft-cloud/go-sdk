@@ -21,6 +21,8 @@ const (
 	UpdateInstancesRequestItemPropScale_to_zero UpdateInstancesRequestItemProp = "scale_to_zero"
 	UpdateInstancesRequestItemPropTags          UpdateInstancesRequestItemProp = "tags"
 	UpdateInstancesRequestItemPropDelete_lock   UpdateInstancesRequestItemProp = "delete_lock"
+	UpdateInstancesRequestItemPropSchedules     UpdateInstancesRequestItemProp = "schedules"
+	UpdateInstancesRequestItemPropAutokill      UpdateInstancesRequestItemProp = "autokill"
 )
 
 // The operation to perform on the property.
@@ -53,6 +55,8 @@ type UpdateInstancesRequestItem struct {
 	// - For "scale_to_zero": object with cooldown_time_ms, policy, and stateful fields
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean
+	// - For "schedules": array of schedule objects (with name, when, and action fields)
+	// - For "autokill": object with time_ms and num_requests fields
 	Value *interface{} `json:"value,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
