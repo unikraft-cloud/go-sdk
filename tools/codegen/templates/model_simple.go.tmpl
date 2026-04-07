@@ -27,7 +27,7 @@ type {{$enumTypeName}} string
 
 const (
 {{- range $enumSchema.Enum}}
-	{{$enumTypeName}}{{capitalize (printf "%v" .)}} {{$enumTypeName}} = {{printf "%q" .}}
+	{{$enumTypeName}}{{capitalize (replace "-" "_" (printf "%v" .))}} {{$enumTypeName}} = {{printf "%q" .}}
 {{- end}}
 )
 {{ end }}
