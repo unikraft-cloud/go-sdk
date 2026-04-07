@@ -42,7 +42,13 @@ func NewFromResponse[T any](r *Response[T]) error {
 		}
 		// only handle one json field
 		if fields == 1 {
-			innerData := v.Field(0)
+			var innerData reflect.Value
+			for fi := 0; fi < v.NumField(); fi++ {
+				if v.Type().Field(fi).Tag.Get("json") != "-" {
+					innerData = v.Field(fi)
+					break
+				}
+			}
 			if innerData.IsValid() && innerData.Kind() == reflect.Slice {
 				for i := range innerData.Len() {
 					item := innerData.Index(i)
@@ -63,7 +69,10 @@ func NewFromResponse[T any](r *Response[T]) error {
 						errorCode = errorCode.Elem()
 					}
 
-					if status.IsValid() && message.IsValid() && status.String() == "error" && errorCode.IsValid() {
+					isErrorItem := (status.IsValid() && status.String() == "error") ||
+						(!status.IsValid() && errorCode.IsValid() && errorCode.Int() != 0)
+
+					if isErrorItem && message.IsValid() && errorCode.IsValid() {
 						errs = append(errs, apiError{
 							Msg:  message.String(),
 							Code: APIHTTPError(errorCode.Int()),
