@@ -35,6 +35,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/auth#check-authorization
 	CheckAuthorization(ctx context.Context, request CheckAuthorizationRequest, ropts ...RequestOption) (<-chan *Response[CheckAuthorizationResponseData], error)
+	// Get authorization details for a token.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/auth
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/auth#get-authorization
+	GetAuthorization(ctx context.Context, ropts ...RequestOption) (*Response[GetAuthorizationResponseData], error)
 	// Initiate the sign-in process and return an authorization URL.  The user
 	// should be redirected to this URL to complete the sign-in.
 	//
@@ -349,6 +358,16 @@ func (c *client) CheckAuthorization(ctx context.Context, request CheckAuthorizat
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp.Events()
+}
+
+func (c *client) GetAuthorization(ctx context.Context, ropts ...RequestOption) (*Response[GetAuthorizationResponseData], error) {
+	requestPath := "/v1/auth"
+
+	resp := &Response[GetAuthorizationResponseData]{}
+	if err := doRequest[GetAuthorizationResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+		return resp, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
 }
 
 func (c *client) RequestSignin(ctx context.Context, request RequestSigninRequest, ropts ...RequestOption) (*Response[RequestSigninResponseData], error) {
