@@ -123,6 +123,14 @@ func (g *Generator) GenerateClient() GeneratedFile {
 	return GeneratedFile{TemplateName: "client.go.tmpl", Data: data}
 }
 
+func (g *Generator) GenerateClientMethodOpts() GeneratedFile {
+	operations := g.parser.ParseOperations()
+
+	data := g.packageData()
+	data["Operations"] = operations
+	return GeneratedFile{TemplateName: "client_method_opts.go.tmpl", Data: data}
+}
+
 func (g *Generator) GenerateRequest() GeneratedFile {
 	return GeneratedFile{TemplateName: "request.go.tmpl", Data: g.packageData()}
 }
