@@ -6,6 +6,8 @@
 package main
 
 import (
+	"sort"
+
 	"github.com/ettle/strcase"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/mitchellh/copystructure"
@@ -34,6 +36,7 @@ func Preprocess(doc *openapi3.T, parser *Parser) {
 	for name := range p.doc.Components.Schemas {
 		originalSchemas = append(originalSchemas, name)
 	}
+	sort.Strings(originalSchemas)
 
 	// Process each original schema
 	for _, name := range originalSchemas {
