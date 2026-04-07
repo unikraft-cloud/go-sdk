@@ -27,7 +27,7 @@ const (
 type CreateInstanceRequestFeatures string
 
 const (
-	CreateInstanceRequestFeaturesDelete_on_stop CreateInstanceRequestFeatures = "delete_on_stop"
+	CreateInstanceRequestFeaturesDelete_on_stop CreateInstanceRequestFeatures = "delete-on-stop"
 )
 
 type CreateInstanceRequest struct {
@@ -95,6 +95,13 @@ type CreateInstanceRequest struct {
 	// (Optional).  The scheduling priority for the instance.  Higher values
 	// indicate higher priority.
 	SchedPriority *int32 `json:"sched_priority,omitempty"`
+	// (Optional).  Schedules for the instance.  Scheduled operations let you
+	// automatically start, stop, delete, or exec a command in the instance on
+	// a calendar-based schedule.  For `exec` schedules, set the `args` field
+	// to the command and its arguments.  Each instance stores its own
+	// schedules, and cloning preserves them.
+	Schedules []Schedule                     `json:"schedules,omitempty"`
+	Autokill  *CreateInstanceRequestAutokill `json:"autokill,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -130,6 +137,8 @@ func (m *CreateInstanceRequest) UnmarshalJSON(data []byte) error {
 		"tags":            {},
 		"template":        {},
 		"sched_priority":  {},
+		"schedules":       {},
+		"autokill":        {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

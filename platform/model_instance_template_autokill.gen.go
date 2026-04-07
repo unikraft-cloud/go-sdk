@@ -8,19 +8,19 @@ package platform
 
 import "encoding/json"
 
-// Reference to the instance to attach the volume to.
+// Template-specific automatic delete-on-idle configuration.
+// Not used for non-template instances.
 
-type AttachVolumesRequestInstanceID struct {
-	// The UUID of the instance that the volume is attached to.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the instance that the volume is attached to.
-	Name *string `json:"name,omitempty"`
+type InstanceTemplateAutokill struct {
+	// Time in milliseconds after the template was last used for cloning before
+	// it is deleted. A value of 0 disables template autokill.
+	TimeMs *uint64 `json:"time_ms,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *AttachVolumesRequestInstanceID) UnmarshalJSON(data []byte) error {
-	type Alias AttachVolumesRequestInstanceID
+func (m *InstanceTemplateAutokill) UnmarshalJSON(data []byte) error {
+	type Alias InstanceTemplateAutokill
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -31,8 +31,7 @@ func (m *AttachVolumesRequestInstanceID) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid": {},
-		"name": {},
+		"time_ms": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -45,8 +44,8 @@ func (m *AttachVolumesRequestInstanceID) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m AttachVolumesRequestInstanceID) MarshalJSON() ([]byte, error) {
-	type Alias AttachVolumesRequestInstanceID
+func (m InstanceTemplateAutokill) MarshalJSON() ([]byte, error) {
+	type Alias InstanceTemplateAutokill
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

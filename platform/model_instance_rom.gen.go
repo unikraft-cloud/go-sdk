@@ -15,6 +15,12 @@ type InstanceRom struct {
 	Name *string `json:"name,omitempty"`
 	// The image of the ROM to use for the instance configuration.
 	Image string `json:"image"`
+	// (Optional).  The path at which the ROM should be automatically mounted
+	// inside the instance.  When set, the platform mounts the ROM device at
+	// the specified path so the guest does not need to mount it manually.
+	// When omitted, the ROM is exposed as a raw block device and the guest is
+	// responsible for mounting it.
+	At *string `json:"at,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -33,6 +39,7 @@ func (m *InstanceRom) UnmarshalJSON(data []byte) error {
 	knownKeys := map[string]struct{}{
 		"name":  {},
 		"image": {},
+		"at":    {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
