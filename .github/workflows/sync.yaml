@@ -38,12 +38,6 @@ jobs:
       run: |
         git diff
 
-    - name: Generate branch ID
-      id: id
-      run: |
-        BRANCH="sync/$(date +'%Y%m%d%H%M%S')"
-        echo "name=${BRANCH}" >>"${GITHUB_OUTPUT}"
-
     - name: Create pull request
       uses: peter-evans/create-pull-request@v6
       with:
@@ -51,7 +45,7 @@ jobs:
         base: ${{ inputs.channel }}
         commit-message: "chore: Update Go SDK from OpenAPI spec"
         title: "chore: Update Go SDK from OpenAPI spec"
-        branch: ${{ steps.id.outputs.name }}
+        branch: sync/${{ inputs.channel }}
         committer: Unikraft Bot <monkey@unikraft.io>
         author: Unikraft Bot <monkey@unikraft.io>
         add-paths: controlplane,platform
