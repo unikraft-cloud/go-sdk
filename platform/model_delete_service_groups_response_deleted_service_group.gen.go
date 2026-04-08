@@ -18,6 +18,9 @@ type DeleteServiceGroupsResponseDeletedServiceGroup struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the service group which was deleted.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro of the service group.
+	Metro *string `json:"metro,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.
@@ -45,6 +48,7 @@ func (m *DeleteServiceGroupsResponseDeletedServiceGroup) UnmarshalJSON(data []by
 		"status":  {},
 		"uuid":    {},
 		"name":    {},
+		"metro":   {},
 		"message": {},
 		"error":   {},
 	}

@@ -38,6 +38,9 @@ type Certificate struct {
 	// The name must be unique within the context of your account.  The name can
 	// also be used to identify the certificate in API calls.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// Where the certificate is located.
+	Metro *string `json:"metro,omitempty"`
 	// The time the certificate was created.
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	// The common name (CN) field from the certificate's subject.
@@ -109,6 +112,7 @@ func (m *Certificate) UnmarshalJSON(data []byte) error {
 	knownKeys := map[string]struct{}{
 		"uuid":          {},
 		"name":          {},
+		"metro":         {},
 		"created_at":    {},
 		"common_name":   {},
 		"subject":       {},

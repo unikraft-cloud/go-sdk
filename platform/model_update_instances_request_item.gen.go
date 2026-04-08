@@ -42,6 +42,9 @@ type UpdateInstancesRequestItem struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance to update. Mutually exclusive with UUID.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
 	// The property to modify.
 	Prop UpdateInstancesRequestItemProp `json:"prop"`
 	// The operation to perform on the property.
@@ -78,6 +81,7 @@ func (m *UpdateInstancesRequestItem) UnmarshalJSON(data []byte) error {
 		"id":    {},
 		"uuid":  {},
 		"name":  {},
+		"metro": {},
 		"prop":  {},
 		"op":    {},
 		"value": {},

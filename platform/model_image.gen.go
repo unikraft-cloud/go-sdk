@@ -13,6 +13,9 @@ type Image struct {
 	// is a string representation including the hashing algorithm and the hash
 	// value separated by a colon.
 	Digest *string `json:"digest,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro of the image.
+	Metro *string `json:"metro,omitempty"`
 	// The canonical name of the image is known as the "tag".
 	Tags        []string          `json:"tags,omitempty"`
 	Initrd      *bool             `json:"initrd,omitempty"`
@@ -38,6 +41,7 @@ func (m *Image) UnmarshalJSON(data []byte) error {
 
 	knownKeys := map[string]struct{}{
 		"digest":        {},
+		"metro":         {},
 		"tags":          {},
 		"initrd":        {},
 		"size_in_bytes": {},

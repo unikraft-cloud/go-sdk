@@ -32,6 +32,9 @@ type InstanceVolume struct {
 	At *string `json:"at,omitempty"`
 	// Whether the volume is read-only or not.
 	Readonly *bool `json:"readonly,omitempty"`
+	// (Only applies when using global control plane).
+	// Where the volume is located.
+	Metro *string `json:"metro,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -52,6 +55,7 @@ func (m *InstanceVolume) UnmarshalJSON(data []byte) error {
 		"name":     {},
 		"at":       {},
 		"readonly": {},
+		"metro":    {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

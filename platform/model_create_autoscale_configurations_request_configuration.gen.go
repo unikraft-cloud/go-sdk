@@ -15,6 +15,9 @@ type CreateAutoscaleConfigurationsRequestConfiguration struct {
 	// The name of the service to create a configuration for.
 	// Mutually exclusive with UUID.
 	Name *string `json:"name,omitempty"`
+	// (Optional, only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
 	// The minimum number of instances to keep running.
 	MinSize *int64 `json:"min_size,omitempty"`
 	// The maximum number of instances to keep running.
@@ -44,6 +47,7 @@ func (m *CreateAutoscaleConfigurationsRequestConfiguration) UnmarshalJSON(data [
 	knownKeys := map[string]struct{}{
 		"uuid":             {},
 		"name":             {},
+		"metro":            {},
 		"min_size":         {},
 		"max_size":         {},
 		"warmup_time_ms":   {},

@@ -12,9 +12,12 @@ import "encoding/json"
 
 type NameOrUUID struct {
 	// Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
+	// (Only applies when using global control plane).
+	// The metro of the resource.
+	Metro *string `json:"metro,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -31,8 +34,9 @@ func (m *NameOrUUID) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid": {},
-		"name": {},
+		"uuid":  {},
+		"name":  {},
+		"metro": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

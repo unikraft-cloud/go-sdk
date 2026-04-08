@@ -26,6 +26,9 @@ type InstanceServiceGroup struct {
 	Name *string `json:"name,omitempty"`
 	// The domain configuration for the service group.
 	Domains []ServiceGroupInstanceDomain `json:"domains,omitempty"`
+	// (Only applies when using global control plane).
+	// Where the service group is located.
+	Metro *string `json:"metro,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -45,6 +48,7 @@ func (m *InstanceServiceGroup) UnmarshalJSON(data []byte) error {
 		"uuid":    {},
 		"name":    {},
 		"domains": {},
+		"metro":   {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

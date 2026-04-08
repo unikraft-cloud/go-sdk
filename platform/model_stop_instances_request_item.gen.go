@@ -15,6 +15,9 @@ type StopInstancesRequestItem struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance to stop.  Mutually exclusive with UUID.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
 	// Whether to immediately force stop the instance.
 	Force *bool `json:"force,omitempty"`
 	// Timeout for draining connections in milliseconds.  The instance does not
@@ -48,6 +51,7 @@ func (m *StopInstancesRequestItem) UnmarshalJSON(data []byte) error {
 	knownKeys := map[string]struct{}{
 		"uuid":             {},
 		"name":             {},
+		"metro":            {},
 		"force":            {},
 		"drain_timeout_ms": {},
 		"quick":            {},

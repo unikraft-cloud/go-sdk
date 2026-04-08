@@ -35,6 +35,9 @@ type UpdateTemplateInstancesRequestItem struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the template instance to update. Mutually exclusive with UUID.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro of the template instance.
+	Metro *string `json:"metro,omitempty"`
 	// The property to modify.
 	Prop UpdateTemplateInstancesRequestItemProp `json:"prop"`
 	// The operation to perform on the property.
@@ -63,6 +66,7 @@ func (m *UpdateTemplateInstancesRequestItem) UnmarshalJSON(data []byte) error {
 		"id":    {},
 		"uuid":  {},
 		"name":  {},
+		"metro": {},
 		"prop":  {},
 		"op":    {},
 		"value": {},

@@ -75,6 +75,9 @@ type Instance struct {
 	// The name must be unique within the context of your account.  The name can
 	// also be used to identify the instance in API calls.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// Where the instance is located.
+	Metro *string `json:"metro,omitempty"`
 	// The time the instance was created.
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	// The state of the instance.  This indicates the current state of the
@@ -314,6 +317,7 @@ func (m *Instance) UnmarshalJSON(data []byte) error {
 	knownKeys := map[string]struct{}{
 		"uuid":               {},
 		"name":               {},
+		"metro":              {},
 		"created_at":         {},
 		"state":              {},
 		"private_fqdn":       {},

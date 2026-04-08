@@ -26,6 +26,9 @@ type CreateVolumeRequest struct {
 	// `X` is a 5 character long random alphanumeric suffix..  The name can also
 	// be used to identify the volume in API calls.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
 	// The size of the volume in megabytes.
 	SizeMb *uint64 `json:"size_mb,omitempty"`
 	// A host path to create a managed volume from.
@@ -61,6 +64,7 @@ func (m *CreateVolumeRequest) UnmarshalJSON(data []byte) error {
 
 	knownKeys := map[string]struct{}{
 		"name":         {},
+		"metro":        {},
 		"size_mb":      {},
 		"host_path":    {},
 		"template":     {},

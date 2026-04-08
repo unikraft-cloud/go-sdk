@@ -13,6 +13,9 @@ type UpdateVolumesResponseUpdatedVolume struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the volume that was updated.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro of the volume.
+	Metro *string `json:"metro,omitempty"`
 	// The status of this particular volume update operation.
 	Status *string `json:"status,omitempty"`
 	// (Optional).  The client-provided ID from the request.
@@ -41,6 +44,7 @@ func (m *UpdateVolumesResponseUpdatedVolume) UnmarshalJSON(data []byte) error {
 	knownKeys := map[string]struct{}{
 		"uuid":    {},
 		"name":    {},
+		"metro":   {},
 		"status":  {},
 		"id":      {},
 		"message": {},

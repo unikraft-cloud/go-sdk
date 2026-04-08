@@ -15,6 +15,9 @@ type StartInstancesRequestItem struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance to start.  Mutually exclusive with UUID.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
 	// Deprecated: Use `timeout_s` instead.  Timeout in milliseconds to
 	// wait for the instance to reach running state.  If `timeout_s` is
 	// not set, this value is converted by rounding up to the next full
@@ -43,6 +46,7 @@ func (m *StartInstancesRequestItem) UnmarshalJSON(data []byte) error {
 	knownKeys := map[string]struct{}{
 		"uuid":            {},
 		"name":            {},
+		"metro":           {},
 		"wait_timeout_ms": {},
 		"timeout_s":       {},
 	}
