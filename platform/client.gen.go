@@ -239,12 +239,8 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `details`
-	// 	Whether to include details about the certificate in the response.  By
-	// 	default this is set to true, meaning that all information about the
-	// 	certificate will be included in the response.  If set to false, only the
-	// 	basic information about the certificate will be included, such as its name
-	// 	and UUID.
+	// @param `opts`
+	// 	Optional query parameters for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -252,14 +248,45 @@ type Client interface {
 	// Performs: GET /v1/certificates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#get-certificates
-	GetCertificates(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error)
+	GetCertificates(ctx context.Context, request []NameOrUUID, opts GetCertificatesOpts, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error)
+	// Update the specified certificate with a new certificate chain and private
+	// key. Only user-uploaded certificates can be updated; system-managed
+	// certificates cannot be modified. The new certificate must have the same
+	// common name (CN) as the existing certificate.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/certificates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/certificates#update-certificate
+	UpdateCertificate(ctx context.Context, request UpdateCertificateRequest, ropts ...RequestOption) (*Response[UpdateCertificateResponseData], error)
+	// Update a specified certificate by its UUID with a new certificate chain
+	// and private key.
+	//
+	// @param `uuid`
+	// 	The UUID of the certificate to update.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/certificates/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/certificates#update-certificate-by-uuid
+	UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequest, ropts ...RequestOption) (*Response[UpdateCertificateResponseData], error)
 	// Retrieve all images.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `namespace`
-	// 	Optional namespace to filter images by.
+	// @param `opts`
+	// 	Optional query parameters for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -267,7 +294,7 @@ type Client interface {
 	// Performs: GET /v1/images/list
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-images
-	GetImages(ctx context.Context, request TagOrDigest, namespace *string, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
+	GetImages(ctx context.Context, request TagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
 	// Create an instance in Unikraft Cloud.
 	//
 	// @param `request`
@@ -303,13 +330,16 @@ type Client interface {
 	// @param `uuid`
 	// 	The UUID of the instance to delete.
 	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: DELETE /v1/instances/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instance-by-uuid
-	DeleteInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
+	DeleteInstanceByUUID(ctx context.Context, uuid string, opts DeleteInstanceByUUIDOpts, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
 	// Delete the specified instance(s) by ID(s) (name or UUID).  After this call
 	// the IDs of the instances are no longer valid.  If the instances are
 	// currently running, they are force-stopped.
@@ -317,13 +347,16 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: DELETE /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instances
-	DeleteInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
+	DeleteInstances(ctx context.Context, request []NameOrUUID, opts DeleteInstancesOpts, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
 	// Delete a specified template instance by its UUID.  After this call the UUID
 	// of the template instance is no longer valid.
 	//
@@ -355,11 +388,8 @@ type Client interface {
 	// @param `uuid`
 	// 	The UUID of the instance to get.
 	//
-	// @param `details`
-	// 	Whether to include details about the instance in the response.  By default
-	// 	this is set to true, meaning that all information about the instance will
-	// 	be included in the response.  If set to false, only the basic information
-	// 	about the instance will be included, such as its name and UUID.
+	// @param `opts`
+	// 	Optional query parameters for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -367,7 +397,7 @@ type Client interface {
 	// Performs: GET /v1/instances/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-by-uuid
-	GetInstanceByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	GetInstanceByUUID(ctx context.Context, uuid string, opts GetInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
 	// Retrieve the logs of one or more instances by ID(s) (name or UUID).
 	//
 	// @param `request`
@@ -425,11 +455,8 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `details`
-	// 	Whether to include details about the instance in the response.  By default
-	// 	this is set to true, meaning that all information about the instance will
-	// 	be included in the response.  If set to false, only the basic information
-	// 	about the instance will be included, such as its name and UUID.
+	// @param `opts`
+	// 	Optional query parameters for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -437,17 +464,14 @@ type Client interface {
 	// Performs: GET /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instances
-	GetInstances(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	GetInstances(ctx context.Context, request []NameOrUUID, opts GetInstancesOpts, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
 	// Get a single template instance by its UUID.
 	//
 	// @param `uuid`
 	// 	The UUID of the template instance to retrieve.
 	//
-	// @param `details`
-	// 	Whether to include details about the templates in the response.  By default
-	// 	this is set to true, meaning that all information about the templates will
-	// 	be included in the response.  If set to false, only the basic information
-	// 	about the templates will be included, such as their name and UUID.
+	// @param `opts`
+	// 	Optional query parameters for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -455,25 +479,14 @@ type Client interface {
 	// Performs: GET /v1/instances/templates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instance-by-uuid
-	GetTemplateInstanceByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
+	GetTemplateInstanceByUUID(ctx context.Context, uuid string, opts GetTemplateInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
 	// Get one or more template instances by their UUID(s) or name(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `details`
-	// 	Whether to include details about the templates in the response.  By default
-	// 	this is set to true, meaning that all information about the templates will
-	// 	be included in the response.  If set to false, only the basic information
-	// 	about the templates will be included, such as their name and UUID.
-	//
-	// @param `count`
-	// 	The maximum number of template instances to return.  This is useful for
-	// 	pagination.  If not set, all the template instances matching filters will
-	// 	be returned.  When filtering by IDs, this should not be set.
-	//
-	// @param `tags`
-	// 	A list of tags to filter the template instances by.
+	// @param `opts`
+	// 	Optional query parameters for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -481,12 +494,15 @@ type Client interface {
 	// Performs: GET /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instances
-	GetTemplateInstances(ctx context.Context, request []NameOrUUID, details *bool, count *int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
+	GetTemplateInstances(ctx context.Context, request []NameOrUUID, opts GetTemplateInstancesOpts, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
 	// Start a previously stopped instance by its UUID or do nothing if the
 	// instance is already running.
 	//
 	// @param `uuid`
 	// 	The UUID of the instance to start.
+	//
+	// @param `request`
+	// 	The request body for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -494,7 +510,7 @@ type Client interface {
 	// Performs: PUT /v1/instances/{uuid}/start
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instance-by-uuid
-	StartInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
+	StartInstanceByUUID(ctx context.Context, uuid string, request StartInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
 	// Start previously stopped instances by ID(s) (name or UUID) or do
 	// nothing if the instances are already running.
 	//
@@ -507,7 +523,7 @@ type Client interface {
 	// Performs: PUT /v1/instances/start
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instances
-	StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
+	StartInstances(ctx context.Context, request []StartInstancesRequestItem, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
 	// Stop a running instance by its UUID or do nothing if the instance is
 	// already stopped.
 	//
@@ -692,12 +708,8 @@ type Client interface {
 	// @param `uuid`
 	// 	The UUID of the service group to retrieve.
 	//
-	// @param `details`
-	// 	Whether to include details about the service group in the response.  By
-	// 	default this is set to true, meaning that all information about the service
-	// 	group will be included in the response.  If set to false, only the basic
-	// 	information about the service group will be included, such as its name and
-	// 	UUID.
+	// @param `opts`
+	// 	Optional query parameters for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -705,19 +717,15 @@ type Client interface {
 	// Performs: GET /v1/services/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#get-service-group-by-uuid
-	GetServiceGroupByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
+	GetServiceGroupByUUID(ctx context.Context, uuid string, opts GetServiceGroupByUUIDOpts, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
 	// Get one or many service groups with their current status and configuration.
 	// It's possible to filter this list by name or UUID.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `details`
-	// 	Whether to include details about the service group in the response.  By
-	// 	default this is set to true, meaning that all information about the service
-	// 	group will be included in the response.  If set to false, only the basic
-	// 	information about the service group will be included, such as its name and
-	// 	UUID.
+	// @param `opts`
+	// 	Optional query parameters for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -725,7 +733,7 @@ type Client interface {
 	// Performs: GET /v1/services
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#get-service-groups
-	GetServiceGroups(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
+	GetServiceGroups(ctx context.Context, request []NameOrUUID, opts GetServiceGroupsOpts, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
 	// Update a service group by its UUID.
 	//
 	// @param `uuid`
@@ -816,8 +824,11 @@ type Client interface {
 	// Performs: PUT /v1/volumes/attach
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#attach-volumes
-	AttachVolumes(ctx context.Context, request AttachVolumesRequest, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error)
-	//
+	AttachVolumes(ctx context.Context, request []AttachVolumesRequestItem, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error)
+	// Clone a volume given by its UUID.  The volume to be cloned must not be
+	// mounted to any instance or only mounted as read-only.  It also needs to not
+	// be busy or in an error state.  This operation is most useful when cloning
+	// template volumes.
 	//
 	// @param `uuid`
 	// 	The UUID of the volume to clone.
@@ -831,8 +842,11 @@ type Client interface {
 	// Performs: POST /v1/volumes/{uuid}/clone
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#clone-volume-by-uuid
-	CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error)
-	//
+	CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error)
+	// Clone one or more volumes given by their ID(s) (name or UUID).  The
+	// volumes to be cloned must not be mounted to any instance or only mounted
+	// as read-only.  They also need to not be busy or in an error state.  This
+	// operation is most useful when cloning template volumes.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -843,7 +857,24 @@ type Client interface {
 	// Performs: POST /v1/volumes/clone
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#clone-volumes
-	CloneVolumes(ctx context.Context, request CloneVolumesRequest, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error)
+	CloneVolumes(ctx context.Context, request []CloneVolumesRequestItem, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error)
+	// Converts one or more existing volumes given by their ID(s) (name or UUID)
+	// into template volumes.  This operation is irreversible in the sense that a
+	// template volume cannot be converted back into a regular volume.
+	//
+	// The existing volume(s) must not be attached to any instance and must be in
+	// the `available` state.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/volumes/templates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#create-template-volume
+	CreateTemplateVolume(ctx context.Context, request CreateTemplateVolumesRequest, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error)
 	// Create a volume given the specified configuration parameters.
 	// The volume is automatically initialized with an empty file system.
 	// After initialization, the volume is in the `available` state and can be
@@ -860,6 +891,32 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#create-volume
 	CreateVolume(ctx context.Context, request CreateVolumeRequest, ropts ...RequestOption) (*Response[CreateVolumeResponseData], error)
+	// Delete the specified template volume by its UUID.  After this call, the IDs
+	// associated with the template volume are no longer valid.
+	//
+	// @param `uuid`
+	// 	The UUID of the template volume to delete.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: DELETE /v1/volumes/templates/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-template-volume-by-uuid
+	DeleteTemplateVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error)
+	// Delete one or more template volumes by their UUID(s) or name(s).  After this
+	// call, the IDs associated with the template volumes are no longer valid.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: DELETE /v1/volumes/templates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-template-volumes
+	DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error)
 	// Delete the specified volume by its UUID.  If the volume is still attached
 	// to an instance, the operation fails.  After this call, the IDs associated
 	// with the volume are no longer valid.
@@ -888,7 +945,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-volumes
 	DeleteVolumes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error)
-	// Detaches a volume by UUID from instances.  If no particular instance is
+	// Detach a volume by UUID from instances.  If no particular instance is
 	// specified the volume is detached from all instances.  The instances from
 	// which to detach must not have the volume mounted.  The API returns an error
 	// for each instance from which it was unable to detach the volume.  If the
@@ -925,19 +982,48 @@ type Client interface {
 	// Performs: PUT /v1/volumes/detach
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#detach-volumes
-	DetachVolumes(ctx context.Context, request DetachVolumesRequest, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error)
+	DetachVolumes(ctx context.Context, request []DetachVolumesRequestItem, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error)
+	// Return the current status and the configuration of a particular template
+	// volume by its UUID.
+	//
+	// @param `uuid`
+	// 	The UUID of the template volume to retrieve.
+	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/volumes/templates/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-template-volume-by-uuid
+	GetTemplateVolumeByUUID(ctx context.Context, uuid string, opts GetTemplateVolumeByUUIDOpts, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error)
+	// Return the current status and the configuration of one or more template
+	// volumes specified by either UUID(s) or name(s).  If no identifier is
+	// provided, all template volumes are returned.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/volumes/templates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-template-volumes
+	GetTemplateVolumes(ctx context.Context, request []NameOrUUID, opts GetTemplateVolumesOpts, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error)
 	// Return the current status and the configuration of a particular volume by
 	// its UUID.
 	//
 	// @param `uuid`
 	// 	The UUID of the volume to retrieve.
 	//
-	// @param `details`
-	// 	Whether to include details about the volume in the response.  By
-	// 	default this is set to true, meaning that all information about the
-	// 	volume will be included in the response.  If set to false, only the
-	// 	basic information about the volume will be included, such as its name
-	// 	and UUID.
+	// @param `opts`
+	// 	Optional query parameters for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -945,7 +1031,7 @@ type Client interface {
 	// Performs: GET /v1/volumes/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volume-by-uuid
-	GetVolumeByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
+	GetVolumeByUUID(ctx context.Context, uuid string, opts GetVolumeByUUIDOpts, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
 	// Return the current status and the configuration of one or more volumes
 	// specified by either UUID(s) or name(s).  If no identifier is provided,
 	// all volumes are returned.
@@ -953,12 +1039,8 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `details`
-	// 	Whether to include details about the volume in the response.  By
-	// 	default this is set to true, meaning that all information about the
-	// 	volume will be included in the response.  If set to false, only the
-	// 	basic information about the volume will be included, such as its name
-	// 	and UUID.
+	// @param `opts`
+	// 	Optional query parameters for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -966,11 +1048,38 @@ type Client interface {
 	// Performs: GET /v1/volumes
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volumes
-	GetVolumes(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
+	GetVolumes(ctx context.Context, request []NameOrUUID, opts GetVolumesOpts, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
+	// Update the specified template volume by its UUID.
+	//
+	// @param `uuid`
+	// 	The UUID of the template volume to update.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/volumes/templates/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-template-volume-by-uuid
+	UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, request UpdateTemplateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error)
+	// Update one or more template volumes specified by either UUID(s) or name(s).
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/volumes/templates
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-template-volumes
+	UpdateTemplateVolumes(ctx context.Context, request []UpdateTemplateVolumesRequestItem, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error)
 	// Update the specified volume by its UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the service group to update.
+	// 	The UUID of the volume to update.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -1298,12 +1407,24 @@ func (c *client) GetCertificateByUUID(ctx context.Context, uuid string, ropts ..
 	return resp, nil
 }
 
-func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error) {
+func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, opts GetCertificatesOpts, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error) {
 	requestPath := "/v1/certificates"
 
 	query := make(url.Values)
-	if details != nil {
-		query.Add("details", fmt.Sprintf("%t", *details))
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
+	}
+	if opts.Count != nil {
+		query.Add("count", fmt.Sprintf("%d", *opts.Count))
+	}
+	if opts.From != nil {
+		query.Add("from", *opts.From)
+	}
+	if opts.Order != nil {
+		query.Add("order", *opts.Order)
+	}
+	if opts.Sortby != nil {
+		query.Add("sortby", *opts.Sortby)
 	}
 
 	var body []byte
@@ -1322,12 +1443,43 @@ func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, deta
 	return resp, nil
 }
 
-func (c *client) GetImages(ctx context.Context, request TagOrDigest, namespace *string, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
+func (c *client) UpdateCertificate(ctx context.Context, request UpdateCertificateRequest, ropts ...RequestOption) (*Response[UpdateCertificateResponseData], error) {
+	requestPath := "/v1/certificates"
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[UpdateCertificateResponseData]{}
+	if err := doRequest[UpdateCertificateResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequest, ropts ...RequestOption) (*Response[UpdateCertificateResponseData], error) {
+	requestPath := "/v1/certificates/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[UpdateCertificateResponseData]{}
+	if err := doRequest[UpdateCertificateResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) GetImages(ctx context.Context, request TagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
 	requestPath := "/v1/images/list"
 
 	query := make(url.Values)
-	if namespace != nil {
-		query.Add("namespace", *namespace)
+	if opts.Namespace != nil {
+		query.Add("namespace", *opts.Namespace)
 	}
 
 	body, err := json.Marshal(request)
@@ -1372,19 +1524,29 @@ func (c *client) CreateTemplateInstances(ctx context.Context, request CreateTemp
 	return resp, nil
 }
 
-func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
+func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, opts DeleteInstanceByUUIDOpts, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
+	query := make(url.Values)
+	if opts.TimeoutS != nil {
+		query.Add("timeout_s", fmt.Sprintf("%d", *opts.TimeoutS))
+	}
+
 	resp := &Response[DeleteInstancesResponseData]{}
-	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, query, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
+func (c *client) DeleteInstances(ctx context.Context, request []NameOrUUID, opts DeleteInstancesOpts, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
 	requestPath := "/v1/instances"
+
+	query := make(url.Values)
+	if opts.TimeoutS != nil {
+		query.Add("timeout_s", fmt.Sprintf("%d", *opts.TimeoutS))
+	}
 
 	var body []byte
 	var err error
@@ -1396,7 +1558,7 @@ func (c *client) DeleteInstances(ctx context.Context, request []NameOrUUID, ropt
 	}
 
 	resp := &Response[DeleteInstancesResponseData]{}
-	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1432,13 +1594,13 @@ func (c *client) DeleteTemplateInstances(ctx context.Context, request []NameOrUU
 	return resp, nil
 }
 
-func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
+func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, opts GetInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	query := make(url.Values)
-	if details != nil {
-		query.Add("details", fmt.Sprintf("%t", *details))
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
 
 	resp := &Response[GetInstancesResponseData]{}
@@ -1513,12 +1675,27 @@ func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropt
 	return resp, nil
 }
 
-func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
+func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, opts GetInstancesOpts, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances"
 
 	query := make(url.Values)
-	if details != nil {
-		query.Add("details", fmt.Sprintf("%t", *details))
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
+	}
+	if opts.Count != nil {
+		query.Add("count", fmt.Sprintf("%d", *opts.Count))
+	}
+	if opts.From != nil {
+		query.Add("from", *opts.From)
+	}
+	for _, v := range opts.Tags {
+		query.Add("tags", v)
+	}
+	if opts.Order != nil {
+		query.Add("order", *opts.Order)
+	}
+	if opts.Sortby != nil {
+		query.Add("sortby", *opts.Sortby)
 	}
 
 	var body []byte
@@ -1537,13 +1714,13 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, details
 	return resp, nil
 }
 
-func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
+func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, opts GetTemplateInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	query := make(url.Values)
-	if details != nil {
-		query.Add("details", fmt.Sprintf("%t", *details))
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
 
 	resp := &Response[GetTemplateInstancesResponseData]{}
@@ -1553,18 +1730,27 @@ func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, det
 	return resp, nil
 }
 
-func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID, details *bool, count *int32, tags []string, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
+func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID, opts GetTemplateInstancesOpts, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
 
 	query := make(url.Values)
-	if details != nil {
-		query.Add("details", fmt.Sprintf("%t", *details))
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
-	if count != nil {
-		query.Add("count", fmt.Sprintf("%d", *count))
+	if opts.Count != nil {
+		query.Add("count", fmt.Sprintf("%d", *opts.Count))
 	}
-	for _, v := range tags {
+	for _, v := range opts.Tags {
 		query.Add("tags", v)
+	}
+	if opts.From != nil {
+		query.Add("from", *opts.From)
+	}
+	if opts.Order != nil {
+		query.Add("order", *opts.Order)
+	}
+	if opts.Sortby != nil {
+		query.Add("sortby", *opts.Sortby)
 	}
 
 	var body []byte
@@ -1583,18 +1769,23 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 	return resp, nil
 }
 
-func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
+func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, request StartInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/start"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
 	resp := &Response[StartInstancesResponseData]{}
-	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) StartInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
+func (c *client) StartInstances(ctx context.Context, request []StartInstancesRequestItem, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
 	requestPath := "/v1/instances/start"
 
 	var body []byte
@@ -1808,13 +1999,13 @@ func (c *client) DeleteServiceGroups(ctx context.Context, request []NameOrUUID, 
 	return resp, nil
 }
 
-func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
+func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, opts GetServiceGroupByUUIDOpts, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
 	requestPath := "/v1/services/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	query := make(url.Values)
-	if details != nil {
-		query.Add("details", fmt.Sprintf("%t", *details))
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
 
 	resp := &Response[GetServiceGroupsResponseData]{}
@@ -1824,12 +2015,24 @@ func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, details
 	return resp, nil
 }
 
-func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
+func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, opts GetServiceGroupsOpts, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
 	requestPath := "/v1/services"
 
 	query := make(url.Values)
-	if details != nil {
-		query.Add("details", fmt.Sprintf("%t", *details))
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
+	}
+	if opts.Count != nil {
+		query.Add("count", fmt.Sprintf("%d", *opts.Count))
+	}
+	if opts.From != nil {
+		query.Add("from", *opts.From)
+	}
+	if opts.Order != nil {
+		query.Add("order", *opts.Order)
+	}
+	if opts.Sortby != nil {
+		query.Add("sortby", *opts.Sortby)
 	}
 
 	var body []byte
@@ -1930,12 +2133,16 @@ func (c *client) AttachVolumeByUUID(ctx context.Context, uuid string, request At
 	return resp, nil
 }
 
-func (c *client) AttachVolumes(ctx context.Context, request AttachVolumesRequest, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error) {
+func (c *client) AttachVolumes(ctx context.Context, request []AttachVolumesRequestItem, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error) {
 	requestPath := "/v1/volumes/attach"
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[AttachVolumesResponseData]{}
@@ -1945,7 +2152,7 @@ func (c *client) AttachVolumes(ctx context.Context, request AttachVolumesRequest
 	return resp, nil
 }
 
-func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error) {
+func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}/clone"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
@@ -1954,23 +2161,42 @@ func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request Clo
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CloneVolumeResponseData]{}
-	if err := doRequest[CloneVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	resp := &Response[CloneVolumesResponseData]{}
+	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CloneVolumes(ctx context.Context, request CloneVolumesRequest, ropts ...RequestOption) (*Response[CloneVolumeResponseData], error) {
+func (c *client) CloneVolumes(ctx context.Context, request []CloneVolumesRequestItem, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error) {
 	requestPath := "/v1/volumes/clone"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[CloneVolumesResponseData]{}
+	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) CreateTemplateVolume(ctx context.Context, request CreateTemplateVolumesRequest, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates"
 
 	body, err := json.Marshal(request)
 	if err != nil {
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CloneVolumeResponseData]{}
-	if err := doRequest[CloneVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	resp := &Response[CreateTemplateVolumesResponseData]{}
+	if err := doRequest[CreateTemplateVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1986,6 +2212,36 @@ func (c *client) CreateVolume(ctx context.Context, request CreateVolumeRequest, 
 
 	resp := &Response[CreateVolumeResponseData]{}
 	if err := doRequest[CreateVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) DeleteTemplateVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	resp := &Response[DeleteTemplateVolumesResponseData]{}
+	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[DeleteTemplateVolumesResponseData]{}
+	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2037,12 +2293,16 @@ func (c *client) DetachVolumeByUUID(ctx context.Context, uuid string, request De
 	return resp, nil
 }
 
-func (c *client) DetachVolumes(ctx context.Context, request DetachVolumesRequest, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error) {
+func (c *client) DetachVolumes(ctx context.Context, request []DetachVolumesRequestItem, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error) {
 	requestPath := "/v1/volumes/detach"
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[DetachVolumesResponseData]{}
@@ -2052,13 +2312,68 @@ func (c *client) DetachVolumes(ctx context.Context, request DetachVolumesRequest
 	return resp, nil
 }
 
-func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, details *bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
+func (c *client) GetTemplateVolumeByUUID(ctx context.Context, uuid string, opts GetTemplateVolumeByUUIDOpts, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	query := make(url.Values)
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
+	}
+
+	resp := &Response[GetTemplateVolumesResponseData]{}
+	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, opts GetTemplateVolumesOpts, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates"
+
+	query := make(url.Values)
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
+	}
+	if opts.Count != nil {
+		query.Add("count", fmt.Sprintf("%d", *opts.Count))
+	}
+	if opts.From != nil {
+		query.Add("from", *opts.From)
+	}
+	for _, v := range opts.Tags {
+		query.Add("tags", v)
+	}
+	if opts.Order != nil {
+		query.Add("order", *opts.Order)
+	}
+	if opts.Sortby != nil {
+		query.Add("sortby", *opts.Sortby)
+	}
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[GetTemplateVolumesResponseData]{}
+	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, opts GetVolumeByUUIDOpts, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	query := make(url.Values)
-	if details != nil {
-		query.Add("details", fmt.Sprintf("%t", *details))
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
 
 	resp := &Response[GetVolumesResponseData]{}
@@ -2068,12 +2383,27 @@ func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, details *bool
 	return resp, nil
 }
 
-func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, details *bool, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
+func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, opts GetVolumesOpts, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
 	requestPath := "/v1/volumes"
 
 	query := make(url.Values)
-	if details != nil {
-		query.Add("details", fmt.Sprintf("%t", *details))
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
+	}
+	if opts.Count != nil {
+		query.Add("count", fmt.Sprintf("%d", *opts.Count))
+	}
+	if opts.From != nil {
+		query.Add("from", *opts.From)
+	}
+	for _, v := range opts.Tags {
+		query.Add("tags", v)
+	}
+	if opts.Order != nil {
+		query.Add("order", *opts.Order)
+	}
+	if opts.Sortby != nil {
+		query.Add("sortby", *opts.Sortby)
 	}
 
 	var body []byte
@@ -2087,6 +2417,41 @@ func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, details *
 
 	resp := &Response[GetVolumesResponseData]{}
 	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, request UpdateTemplateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[UpdateTemplateVolumesResponseData]{}
+	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateTemplateVolumes(ctx context.Context, request []UpdateTemplateVolumesRequestItem, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error) {
+	requestPath := "/v1/volumes/templates"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[UpdateTemplateVolumesResponseData]{}
+	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil

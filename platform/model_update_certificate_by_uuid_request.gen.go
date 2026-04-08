@@ -8,31 +8,27 @@ package platform
 
 import "encoding/json"
 
-// The request message for attaching one or more volume(s) to instances by
-// their UUID(s) or name(s).
+// The request message for updating a certificate by its UUID.
 
-type AttachVolumesRequest struct {
-	// The UUID of the volume to attach. Mutually exclusive with name.
-	// Exactly one of uuid or name must be provided.
+type UpdateCertificateByUUIDRequest struct {
+	// The UUID of the certificate to update.
 	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume to attach. Mutually exclusive with UUID.
-	// Exactly one of uuid or name must be provided.
-	Name     *string                      `json:"name,omitempty"`
-	AttachTo AttachVolumesRequestAttachTo `json:"attach_to"`
-	// Path of the mountpoint.
+	// The new certificate chain.
 	//
-	// The path must be absolute, not contain `.` and `..` components, and not
-	// contain colons (`:`). The path must point to an empty directory. If the
-	// directory does not exist, it is created.
-	At string `json:"at"`
-	// Whether the volume should be mounted read-only.
-	Readonly *bool `json:"readonly,omitempty"`
+	// This is the public chain of the certificate in PEM format. The chain
+	// should include the certificate and any intermediate certificates.
+	Chain string `json:"chain"`
+	// The new private key.
+	//
+	// This is the private key of the certificate in PEM format. The private
+	// key must match the public key in the certificate chain.
+	Pkey string `json:"pkey"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *AttachVolumesRequest) UnmarshalJSON(data []byte) error {
-	type Alias AttachVolumesRequest
+func (m *UpdateCertificateByUUIDRequest) UnmarshalJSON(data []byte) error {
+	type Alias UpdateCertificateByUUIDRequest
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -43,11 +39,9 @@ func (m *AttachVolumesRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":      {},
-		"name":      {},
-		"attach_to": {},
-		"at":        {},
-		"readonly":  {},
+		"uuid":  {},
+		"chain": {},
+		"pkey":  {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -60,8 +54,8 @@ func (m *AttachVolumesRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m AttachVolumesRequest) MarshalJSON() ([]byte, error) {
-	type Alias AttachVolumesRequest
+func (m UpdateCertificateByUUIDRequest) MarshalJSON() ([]byte, error) {
+	type Alias UpdateCertificateByUUIDRequest
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

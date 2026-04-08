@@ -44,6 +44,7 @@ func run(cli *cli) error {
 
 	files = append(files, generator.GenerateModels()...)
 	files = append(files, generator.GenerateClient())
+	files = append(files, generator.GenerateClientMethodOpts())
 
 	files = append(files,
 		generator.GenerateRequest(),

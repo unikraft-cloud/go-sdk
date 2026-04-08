@@ -191,12 +191,10 @@ func (c *client) clone() *client {
 	// @param `request`
 	// 	The request body for this operation.
 {{- end}}
-{{- range $queryParams}}
+{{- if $queryParams}}
 	//
-	// @param `{{camelcase .Name}}`
-{{- if .Description}}
-	// 	{{wrapComment .Description 75 "\t// \t"}}
-{{- end}}
+	// @param `opts`
+	// 	Optional query parameters for this operation.
 {{- end}}
 	//
 	// @param `ropts`
@@ -208,7 +206,7 @@ func (c *client) clone() *client {
 	{{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- range $queryParams}}, {{camelcase .Name}} {{if and (not .Required) (not (and .Schema .Schema.Value (isType .Schema.Value "array")))}}*{{end}}{{paramToGoType .}}{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error)
+{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error)
 {{- end}}
 
 {{- define "impl_method"}}
@@ -268,7 +266,7 @@ func (c *client) clone() *client {
 func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- range $queryParams}}, {{camelcase .Name}} {{if and (not .Required) (not (and .Schema .Schema.Value (isType .Schema.Value "array")))}}*{{end}}{{paramToGoType .}}{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error) {
+{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error) {
 	requestPath := "{{$path}}"
 {{- range $pathParams}}
 	requestPath = strings.ReplaceAll(requestPath, "{{"{"}}{{.Name}}{{"}"}}", url.PathEscape({{camelcase .Name}}))
@@ -279,40 +277,40 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 	query := make(url.Values)
 {{- range $queryParams}}
 {{- if and .Schema .Schema.Value (isType .Schema.Value "array")}}
-	for _, v := range {{camelcase .Name}} {
+	for _, v := range opts.{{pascalcase .Name}} {
 		query.Add("{{.Name}}", v)
 	}
 {{- else if and .Schema .Schema.Value (isType .Schema.Value "boolean")}}
 {{- if not .Required}}
-	if {{camelcase .Name}} != nil {
-		query.Add("{{.Name}}", fmt.Sprintf("%t", *{{camelcase .Name}}))
+	if opts.{{pascalcase .Name}} != nil {
+		query.Add("{{.Name}}", fmt.Sprintf("%t", *opts.{{pascalcase .Name}}))
 	}
 {{- else}}
-	query.Add("{{.Name}}", fmt.Sprintf("%t", {{camelcase .Name}}))
+	query.Add("{{.Name}}", fmt.Sprintf("%t", opts.{{pascalcase .Name}}))
 {{- end}}
 {{- else if and .Schema .Schema.Value (isType .Schema.Value "integer")}}
 {{- if not .Required}}
-	if {{camelcase .Name}} != nil {
-		query.Add("{{.Name}}", fmt.Sprintf("%d", *{{camelcase .Name}}))
+	if opts.{{pascalcase .Name}} != nil {
+		query.Add("{{.Name}}", fmt.Sprintf("%d", *opts.{{pascalcase .Name}}))
 	}
 {{- else}}
-	query.Add("{{.Name}}", fmt.Sprintf("%d", {{camelcase .Name}}))
+	query.Add("{{.Name}}", fmt.Sprintf("%d", opts.{{pascalcase .Name}}))
 {{- end}}
 {{- else if and .Schema .Schema.Value (isType .Schema.Value "number")}}
 {{- if not .Required}}
-	if {{camelcase .Name}} != nil {
-		query.Add("{{.Name}}", fmt.Sprintf("%g", *{{camelcase .Name}}))
+	if opts.{{pascalcase .Name}} != nil {
+		query.Add("{{.Name}}", fmt.Sprintf("%g", *opts.{{pascalcase .Name}}))
 	}
 {{- else}}
-	query.Add("{{.Name}}", fmt.Sprintf("%g", {{camelcase .Name}}))
+	query.Add("{{.Name}}", fmt.Sprintf("%g", opts.{{pascalcase .Name}}))
 {{- end}}
 {{- else}}
 {{- if not .Required}}
-	if {{camelcase .Name}} != nil {
-		query.Add("{{.Name}}", *{{camelcase .Name}})
+	if opts.{{pascalcase .Name}} != nil {
+		query.Add("{{.Name}}", *opts.{{pascalcase .Name}})
 	}
 {{- else}}
-	query.Add("{{.Name}}", {{camelcase .Name}})
+	query.Add("{{.Name}}", opts.{{pascalcase .Name}})
 {{- end}}
 {{- end}}
 {{- end}}
