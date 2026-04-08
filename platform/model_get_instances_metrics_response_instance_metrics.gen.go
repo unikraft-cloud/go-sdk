@@ -60,6 +60,8 @@ type GetInstancesMetricsResponseInstanceMetrics struct {
 	// An optional error code providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Error *int32 `json:"error,omitempty"`
+	// The status of the response.
+	Status *ResponseStatus `json:"status,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -90,6 +92,7 @@ func (m *GetInstancesMetricsResponseInstanceMetrics) UnmarshalJSON(data []byte) 
 		"ntotal":       {},
 		"message":      {},
 		"error":        {},
+		"status":       {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

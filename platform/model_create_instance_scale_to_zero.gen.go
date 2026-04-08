@@ -12,8 +12,8 @@ import "encoding/json"
 type CreateInstanceScaleToZeroPolicy string
 
 const (
-	CreateInstanceScaleToZeroPolicyOn   CreateInstanceScaleToZeroPolicy = "on"
 	CreateInstanceScaleToZeroPolicyOff  CreateInstanceScaleToZeroPolicy = "off"
+	CreateInstanceScaleToZeroPolicyOn   CreateInstanceScaleToZeroPolicy = "on"
 	CreateInstanceScaleToZeroPolicyIdle CreateInstanceScaleToZeroPolicy = "idle"
 )
 

@@ -6,6 +6,12 @@
 
 package controlplane
 
+// ListImagesOpts holds query-parameter options for [Client.ListImages].
+type ListImagesOpts struct {
+	Details   *bool
+	Namespace []string
+}
+
 // DestroyNodeOpts holds query-parameter options for [Client.DestroyNode].
 type DestroyNodeOpts struct {
 	Force *bool
