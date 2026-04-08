@@ -58,7 +58,7 @@ type InstanceRestartPolicy string
 const (
 	InstanceRestartPolicyNever      InstanceRestartPolicy = "never"
 	InstanceRestartPolicyAlways     InstanceRestartPolicy = "always"
-	InstanceRestartPolicyOn_failure InstanceRestartPolicy = "on_failure"
+	InstanceRestartPolicyOn_failure InstanceRestartPolicy = "on-failure"
 )
 
 type Instance struct {
