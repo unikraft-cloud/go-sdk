@@ -58,7 +58,7 @@ type CreateInstanceRequestTemplateCreateArgsRestartPolicy string
 const (
 	CreateInstanceRequestTemplateCreateArgsRestartPolicyNever      CreateInstanceRequestTemplateCreateArgsRestartPolicy = "never"
 	CreateInstanceRequestTemplateCreateArgsRestartPolicyAlways     CreateInstanceRequestTemplateCreateArgsRestartPolicy = "always"
-	CreateInstanceRequestTemplateCreateArgsRestartPolicyOn_failure CreateInstanceRequestTemplateCreateArgsRestartPolicy = "on_failure"
+	CreateInstanceRequestTemplateCreateArgsRestartPolicyOn_failure CreateInstanceRequestTemplateCreateArgsRestartPolicy = "on-failure"
 )
 
 type CreateInstanceRequestTemplateCreateArgs struct {

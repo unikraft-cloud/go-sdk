@@ -30,8 +30,8 @@ import "encoding/json"
 type InstanceScaleToZeroPolicy string
 
 const (
-	InstanceScaleToZeroPolicyOn   InstanceScaleToZeroPolicy = "on"
 	InstanceScaleToZeroPolicyOff  InstanceScaleToZeroPolicy = "off"
+	InstanceScaleToZeroPolicyOn   InstanceScaleToZeroPolicy = "on"
 	InstanceScaleToZeroPolicyIdle InstanceScaleToZeroPolicy = "idle"
 )
 
