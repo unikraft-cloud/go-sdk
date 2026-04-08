@@ -17,7 +17,7 @@ type CreateInstanceRequestRestartPolicy string
 const (
 	CreateInstanceRequestRestartPolicyNever      CreateInstanceRequestRestartPolicy = "never"
 	CreateInstanceRequestRestartPolicyAlways     CreateInstanceRequestRestartPolicy = "always"
-	CreateInstanceRequestRestartPolicyOn_failure CreateInstanceRequestRestartPolicy = "on_failure"
+	CreateInstanceRequestRestartPolicyOn_failure CreateInstanceRequestRestartPolicy = "on-failure"
 )
 
 // Features to enable for the instance.  Features are specific

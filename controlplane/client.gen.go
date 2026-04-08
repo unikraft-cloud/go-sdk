@@ -74,7 +74,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: POST /v1/node/activate
+	// Performs: POST /v1/nodes/activate
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-activation-service#node-activate
 	NodeActivate(ctx context.Context, request NodeActivateRequest, ropts ...RequestOption) (*Response[NodeActivateResponseData], error)
@@ -86,7 +86,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: POST /v1/node/renew
+	// Performs: POST /v1/nodes/renew
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-activation-service#node-renew
 	NodeRenew(ctx context.Context, request NodeRenewRequest, ropts ...RequestOption) (*Response[NodeRenewResponseData], error)
@@ -103,7 +103,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: DELETE /v1/node
+	// Performs: DELETE /v1/nodes
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#destroy-node
 	DestroyNode(ctx context.Context, request []NameOrUUID, opts DestroyNodeOpts, ropts ...RequestOption) (*Response[DestroyNodeResponseData], error)
@@ -122,7 +122,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: DELETE /v1/node/{uuid}
+	// Performs: DELETE /v1/nodes/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#destroy-node-by-uuid
 	DestroyNodeByUUID(ctx context.Context, uuid string, opts DestroyNodeByUUIDOpts, ropts ...RequestOption) (*Response[DestroyNodeResponseData], error)
@@ -134,7 +134,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/node/{uuid}
+	// Performs: GET /v1/nodes/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#get-node-by-uuid
 	GetNodeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[ListNodesResponseData], error)
@@ -152,7 +152,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/node/provider/{provider}/types
+	// Performs: GET /v1/nodes/provider/{provider}/types
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#list-machine-types
 	ListMachineTypes(ctx context.Context, provider string, opts ListMachineTypesOpts, ropts ...RequestOption) (*Response[ListMachineTypesResponseData], error)
@@ -170,7 +170,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/node
+	// Performs: GET /v1/nodes
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#list-nodes
 	ListNodes(ctx context.Context, request []NameOrUUID, opts ListNodesOpts, ropts ...RequestOption) (*Response[ListNodesResponseData], error)
@@ -185,7 +185,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/node/provider/{provider}/regions
+	// Performs: GET /v1/nodes/provider/{provider}/regions
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#list-regions
 	ListRegions(ctx context.Context, provider string, ropts ...RequestOption) (*Response[ListRegionsResponseData], error)
@@ -201,7 +201,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: POST /v1/node
+	// Performs: POST /v1/nodes
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#provision-node
 	ProvisionNode(ctx context.Context, request ProvisionNodeRequest, ropts ...RequestOption) (*Response[ProvisionNodeResponseData], error)
@@ -219,7 +219,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: PATCH /v1/node/{uuid}
+	// Performs: PATCH /v1/nodes/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#update-node-by-uuid
 	UpdateNodeByUUID(ctx context.Context, uuid string, request []UpdateNodePayload, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error)
@@ -233,7 +233,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: PATCH /v1/node
+	// Performs: PATCH /v1/nodes
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#update-nodes
 	UpdateNodes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error)
@@ -251,7 +251,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/node/{uuid}/wait
+	// Performs: GET /v1/nodes/{uuid}/wait
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#wait-node-by-uuid
 	WaitNodeByUUID(ctx context.Context, uuid string, opts WaitNodeByUUIDOpts, ropts ...RequestOption) (*Response[WaitNodesResponseData], error)
@@ -263,7 +263,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/node/wait
+	// Performs: GET /v1/nodes/wait
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#wait-nodes
 	WaitNodes(ctx context.Context, opts WaitNodesOpts, ropts ...RequestOption) (*Response[WaitNodesResponseData], error)
@@ -396,7 +396,7 @@ func (c *client) ListMetros(ctx context.Context, ropts ...RequestOption) (*Respo
 }
 
 func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest, ropts ...RequestOption) (*Response[NodeActivateResponseData], error) {
-	requestPath := "/v1/node/activate"
+	requestPath := "/v1/nodes/activate"
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -411,7 +411,7 @@ func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest, 
 }
 
 func (c *client) NodeRenew(ctx context.Context, request NodeRenewRequest, ropts ...RequestOption) (*Response[NodeRenewResponseData], error) {
-	requestPath := "/v1/node/renew"
+	requestPath := "/v1/nodes/renew"
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -426,7 +426,7 @@ func (c *client) NodeRenew(ctx context.Context, request NodeRenewRequest, ropts 
 }
 
 func (c *client) DestroyNode(ctx context.Context, request []NameOrUUID, opts DestroyNodeOpts, ropts ...RequestOption) (*Response[DestroyNodeResponseData], error) {
-	requestPath := "/v1/node"
+	requestPath := "/v1/nodes"
 
 	query := make(url.Values)
 	if opts.Force != nil {
@@ -450,7 +450,7 @@ func (c *client) DestroyNode(ctx context.Context, request []NameOrUUID, opts Des
 }
 
 func (c *client) DestroyNodeByUUID(ctx context.Context, uuid string, opts DestroyNodeByUUIDOpts, ropts ...RequestOption) (*Response[DestroyNodeResponseData], error) {
-	requestPath := "/v1/node/{uuid}"
+	requestPath := "/v1/nodes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	query := make(url.Values)
@@ -466,7 +466,7 @@ func (c *client) DestroyNodeByUUID(ctx context.Context, uuid string, opts Destro
 }
 
 func (c *client) GetNodeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[ListNodesResponseData], error) {
-	requestPath := "/v1/node/{uuid}"
+	requestPath := "/v1/nodes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	resp := &Response[ListNodesResponseData]{}
@@ -477,7 +477,7 @@ func (c *client) GetNodeByUUID(ctx context.Context, uuid string, ropts ...Reques
 }
 
 func (c *client) ListMachineTypes(ctx context.Context, provider string, opts ListMachineTypesOpts, ropts ...RequestOption) (*Response[ListMachineTypesResponseData], error) {
-	requestPath := "/v1/node/provider/{provider}/types"
+	requestPath := "/v1/nodes/provider/{provider}/types"
 	requestPath = strings.ReplaceAll(requestPath, "{provider}", url.PathEscape(provider))
 
 	query := make(url.Values)
@@ -493,7 +493,7 @@ func (c *client) ListMachineTypes(ctx context.Context, provider string, opts Lis
 }
 
 func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListNodesOpts, ropts ...RequestOption) (*Response[ListNodesResponseData], error) {
-	requestPath := "/v1/node"
+	requestPath := "/v1/nodes"
 
 	query := make(url.Values)
 	if opts.Provider != nil {
@@ -532,7 +532,7 @@ func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListN
 }
 
 func (c *client) ListRegions(ctx context.Context, provider string, ropts ...RequestOption) (*Response[ListRegionsResponseData], error) {
-	requestPath := "/v1/node/provider/{provider}/regions"
+	requestPath := "/v1/nodes/provider/{provider}/regions"
 	requestPath = strings.ReplaceAll(requestPath, "{provider}", url.PathEscape(provider))
 
 	resp := &Response[ListRegionsResponseData]{}
@@ -543,7 +543,7 @@ func (c *client) ListRegions(ctx context.Context, provider string, ropts ...Requ
 }
 
 func (c *client) ProvisionNode(ctx context.Context, request ProvisionNodeRequest, ropts ...RequestOption) (*Response[ProvisionNodeResponseData], error) {
-	requestPath := "/v1/node"
+	requestPath := "/v1/nodes"
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -558,7 +558,7 @@ func (c *client) ProvisionNode(ctx context.Context, request ProvisionNodeRequest
 }
 
 func (c *client) UpdateNodeByUUID(ctx context.Context, uuid string, request []UpdateNodePayload, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error) {
-	requestPath := "/v1/node/{uuid}"
+	requestPath := "/v1/nodes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	var body []byte
@@ -578,7 +578,7 @@ func (c *client) UpdateNodeByUUID(ctx context.Context, uuid string, request []Up
 }
 
 func (c *client) UpdateNodes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error) {
-	requestPath := "/v1/node"
+	requestPath := "/v1/nodes"
 
 	var body []byte
 	var err error
@@ -597,7 +597,7 @@ func (c *client) UpdateNodes(ctx context.Context, request []NameOrUUID, ropts ..
 }
 
 func (c *client) WaitNodeByUUID(ctx context.Context, uuid string, opts WaitNodeByUUIDOpts, ropts ...RequestOption) (*Response[WaitNodesResponseData], error) {
-	requestPath := "/v1/node/{uuid}/wait"
+	requestPath := "/v1/nodes/{uuid}/wait"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
 	query := make(url.Values)
@@ -616,7 +616,7 @@ func (c *client) WaitNodeByUUID(ctx context.Context, uuid string, opts WaitNodeB
 }
 
 func (c *client) WaitNodes(ctx context.Context, opts WaitNodesOpts, ropts ...RequestOption) (*Response[WaitNodesResponseData], error) {
-	requestPath := "/v1/node/wait"
+	requestPath := "/v1/nodes/wait"
 
 	query := make(url.Values)
 	for _, v := range opts.States {
