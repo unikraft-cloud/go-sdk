@@ -15,6 +15,9 @@ type DeleteVolumesResponseDeletedVolume struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the volume that was deleted.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro of the volume.
+	Metro *string `json:"metro,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`
@@ -40,6 +43,7 @@ func (m *DeleteVolumesResponseDeletedVolume) UnmarshalJSON(data []byte) error {
 		"status":  {},
 		"uuid":    {},
 		"name":    {},
+		"metro":   {},
 		"message": {},
 		"error":   {},
 	}

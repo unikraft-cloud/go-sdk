@@ -37,6 +37,9 @@ type CreateInstanceRequest struct {
 	Name *string `json:"name,omitempty"`
 	// The image to use for the instance.
 	Image *string `json:"image,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
 	// (Optional).  The arguments to pass to the instance when it starts.
 	Args []string `json:"args,omitempty"`
 	// (Optional).  Environment variables to set for the instance.
@@ -120,6 +123,7 @@ func (m *CreateInstanceRequest) UnmarshalJSON(data []byte) error {
 	knownKeys := map[string]struct{}{
 		"name":            {},
 		"image":           {},
+		"metro":           {},
 		"args":            {},
 		"env":             {},
 		"memory_mb":       {},

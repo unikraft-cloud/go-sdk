@@ -23,10 +23,6 @@ const (
 )
 
 type WaitInstancesRequestItem struct {
-	// The UUID of the instance to wait for.  Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the instance to wait for.  Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
 	// The desired state to wait for.  Default is `running`.
 	State *WaitInstancesRequestItemState `json:"state,omitempty"`
 	// Timeout in milliseconds to wait for the instance to reach the desired
@@ -34,6 +30,10 @@ type WaitInstancesRequestItem struct {
 	// A value of -1 means to wait indefinitely until the instance reaches the
 	// desired state.
 	TimeoutMs *int64 `json:"timeout_ms,omitempty"`
+	// The UUID of the instance to wait for.  Mutually exclusive with name.
+	Uuid *string `json:"uuid,omitempty"`
+	// The name of the instance to wait for.  Mutually exclusive with UUID.
+	Name *string `json:"name,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -50,10 +50,10 @@ func (m *WaitInstancesRequestItem) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":       {},
-		"name":       {},
 		"state":      {},
 		"timeout_ms": {},
+		"uuid":       {},
+		"name":       {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

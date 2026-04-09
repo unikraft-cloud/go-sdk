@@ -9,12 +9,9 @@ package platform
 import "encoding/json"
 
 type CreateAutoscaleConfigurationsRequestConfiguration struct {
-	// The UUID of the service to create a configuration for.
-	// Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the service to create a configuration for.
-	// Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	// (Optional, only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
 	// The minimum number of instances to keep running.
 	MinSize *int64 `json:"min_size,omitempty"`
 	// The maximum number of instances to keep running.
@@ -22,10 +19,17 @@ type CreateAutoscaleConfigurationsRequestConfiguration struct {
 	// The warmup time in milliseconds for new instances.
 	WarmupTimeMs *int64 `json:"warmup_time_ms,omitempty"`
 	// The cooldown time in milliseconds for the autoscale configuration.
-	CooldownTimeMs *int64                                                       `json:"cooldown_time_ms,omitempty"`
-	CreateArgs     *CreateAutoscaleConfigurationsRequestConfigurationCreateArgs `json:"create_args,omitempty"`
+	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitempty"`
+	// The arguments to use when creating the autoscale configuration.
+	CreateArgs *ConfigurationInstanceCreateArgs `json:"create_args,omitempty"`
 	// The policies to apply to the autoscale configuration.
 	Policies []AutoscalePolicy `json:"policies,omitempty"`
+	// The UUID of the service to create a configuration for.
+	// Mutually exclusive with name.
+	Uuid *string `json:"uuid,omitempty"`
+	// The name of the service to create a configuration for.
+	// Mutually exclusive with UUID.
+	Name *string `json:"name,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -42,14 +46,15 @@ func (m *CreateAutoscaleConfigurationsRequestConfiguration) UnmarshalJSON(data [
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":             {},
-		"name":             {},
+		"metro":            {},
 		"min_size":         {},
 		"max_size":         {},
 		"warmup_time_ms":   {},
 		"cooldown_time_ms": {},
 		"create_args":      {},
 		"policies":         {},
+		"uuid":             {},
+		"name":             {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

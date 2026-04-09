@@ -8,6 +8,8 @@ package platform
 
 import "encoding/json"
 
+// The response data for this request.
+
 type CloneVolumesResponseData struct {
 	// The volume(s) which were cloned by the request.
 	Volumes []CloneVolumesResponseVolume `json:"volumes,omitempty"`

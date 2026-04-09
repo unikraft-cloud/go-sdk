@@ -11,13 +11,8 @@ import "encoding/json"
 // A single request item for attaching a volume to an instance.
 
 type AttachVolumesRequestItem struct {
-	// The UUID of the volume to attach. Mutually exclusive with name.
-	// Exactly one of uuid or name must be provided.
-	Uuid string `json:"uuid"`
-	// The name of the volume to attach. Mutually exclusive with UUID.
-	// Exactly one of uuid or name must be provided.
-	Name     string                           `json:"name"`
-	AttachTo AttachVolumesRequestItemAttachTo `json:"attach_to"`
+	// UUID or name of the instance to attach the volume to.
+	AttachTo NameOrUUID `json:"attach_to"`
 	// Path of the mountpoint.
 	//
 	// The path must be absolute, not contain `.` and `..` components, and not
@@ -26,6 +21,12 @@ type AttachVolumesRequestItem struct {
 	At string `json:"at"`
 	// Whether the volume should be mounted read-only.
 	Readonly *bool `json:"readonly,omitempty"`
+	// The UUID of the volume to attach. Mutually exclusive with name.
+	// Exactly one of uuid or name must be provided.
+	Uuid *string `json:"uuid,omitempty"`
+	// The name of the volume to attach. Mutually exclusive with UUID.
+	// Exactly one of uuid or name must be provided.
+	Name *string `json:"name,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -42,11 +43,11 @@ func (m *AttachVolumesRequestItem) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":      {},
-		"name":      {},
 		"attach_to": {},
 		"at":        {},
 		"readonly":  {},
+		"uuid":      {},
+		"name":      {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

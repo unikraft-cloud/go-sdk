@@ -11,16 +11,15 @@ import "encoding/json"
 type AddUsersResponse struct {
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
-	// A list of errors which may have occurred during the request.
-	Errors []ResponseError `json:"errors,omitempty"`
-	// The response data for this request.
-	Data *AddUsersResponseData `json:"data,omitempty"`
-	// The operation time in microseconds.  This is the time it took to process
-	// the request and generate the response.
-	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`
+	// A list of errors which may have occurred during the request.
+	Errors []ResponseError       `json:"errors,omitempty"`
+	Data   *AddUsersResponseData `json:"data,omitempty"`
+	// The operation time in microseconds.  This is the time it took to process
+	// the request and generate the response.
+	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -38,10 +37,10 @@ func (m *AddUsersResponse) UnmarshalJSON(data []byte) error {
 
 	knownKeys := map[string]struct{}{
 		"status":     {},
+		"message":    {},
 		"errors":     {},
 		"data":       {},
 		"op_time_us": {},
-		"message":    {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

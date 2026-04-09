@@ -12,16 +12,16 @@ import "encoding/json"
 
 type CreateVolumeResponse struct {
 	// The status of the response.
-	Status *ResponseStatus           `json:"status,omitempty"`
-	Data   *CreateVolumeResponseData `json:"data,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
+	// An optional message providing additional information about the status.
+	// This field is useful when the status is not `success`.
+	Message *string                   `json:"message,omitempty"`
+	Data    *CreateVolumeResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process
 	// the request and generate the response.
 	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -39,10 +39,10 @@ func (m *CreateVolumeResponse) UnmarshalJSON(data []byte) error {
 
 	knownKeys := map[string]struct{}{
 		"status":     {},
+		"message":    {},
 		"data":       {},
 		"errors":     {},
 		"op_time_us": {},
-		"message":    {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

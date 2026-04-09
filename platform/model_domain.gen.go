@@ -21,10 +21,8 @@ type Domain struct {
 	// Publicly accessible domain name.  If this name ends in a period `.` it must
 	// be a valid Full Qualified Domain Name (FQDN), otherwise it will become a
 	// subdomain of the target metro.
-	Fqdn *string `json:"fqdn,omitempty"`
-	// Use an existing certificate for the domain.  If this field is
-	// specified, the domain must be associated with a valid certificate.
-	Certificate *Certificate `json:"certificate,omitempty"`
+	Fqdn        *string            `json:"fqdn,omitempty"`
+	Certificate *DomainCertificate `json:"certificate,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

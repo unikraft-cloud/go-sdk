@@ -31,10 +31,9 @@ type UpdateTemplateInstancesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.
 	Id *string `json:"id,omitempty"`
-	// The UUID of the template instance to update. Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the template instance to update. Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro of the template instance.
+	Metro *string `json:"metro,omitempty"`
 	// The property to modify.
 	Prop UpdateTemplateInstancesRequestItemProp `json:"prop"`
 	// The operation to perform on the property.
@@ -44,6 +43,10 @@ type UpdateTemplateInstancesRequestItem struct {
 	// - For "delete_lock": boolean
 	// - For "autokill": object with time_ms field
 	Value *interface{} `json:"value,omitempty"`
+	// The UUID of the template instance to update. Mutually exclusive with name.
+	Uuid *string `json:"uuid,omitempty"`
+	// The name of the template instance to update. Mutually exclusive with UUID.
+	Name *string `json:"name,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -61,11 +64,12 @@ func (m *UpdateTemplateInstancesRequestItem) UnmarshalJSON(data []byte) error {
 
 	knownKeys := map[string]struct{}{
 		"id":    {},
-		"uuid":  {},
-		"name":  {},
+		"metro": {},
 		"prop":  {},
 		"op":    {},
 		"value": {},
+		"uuid":  {},
+		"name":  {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

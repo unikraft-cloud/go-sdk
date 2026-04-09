@@ -24,6 +24,9 @@ type InstanceServiceGroup struct {
 	// group.  The name is unique within the context of your account.  The name
 	// can also be used to identify the service group in API calls.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// Where the service group is located.
+	Metro *string `json:"metro,omitempty"`
 	// The domain configuration for the service group.
 	Domains []ServiceGroupInstanceDomain `json:"domains,omitempty"`
 
@@ -44,6 +47,7 @@ func (m *InstanceServiceGroup) UnmarshalJSON(data []byte) error {
 	knownKeys := map[string]struct{}{
 		"uuid":    {},
 		"name":    {},
+		"metro":   {},
 		"domains": {},
 	}
 	for key := range knownKeys {

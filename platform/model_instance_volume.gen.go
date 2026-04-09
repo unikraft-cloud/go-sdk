@@ -27,6 +27,9 @@ type InstanceVolume struct {
 	// The name must be unique within the context of your account.  The name can
 	// also be used to identify the volume in API calls.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// Where the volume is located.
+	Metro *string `json:"metro,omitempty"`
 	// The mount point of the volume in the instance.  This is the directory in
 	// the instance where the volume will be mounted.
 	At *string `json:"at,omitempty"`
@@ -50,6 +53,7 @@ func (m *InstanceVolume) UnmarshalJSON(data []byte) error {
 	knownKeys := map[string]struct{}{
 		"uuid":     {},
 		"name":     {},
+		"metro":    {},
 		"at":       {},
 		"readonly": {},
 	}

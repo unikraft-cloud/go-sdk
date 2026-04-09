@@ -8,6 +8,8 @@ package platform
 
 import "encoding/json"
 
+// The response data for this request.
+
 type GetAutoscaleConfigurationsResponseData struct {
 	// The configuration(s) which were retrieved by the request.
 	ServiceGroups []GetAutoscaleConfigurationsResponseServiceGroup `json:"service_groups,omitempty"`
