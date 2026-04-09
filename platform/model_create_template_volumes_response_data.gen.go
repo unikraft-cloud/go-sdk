@@ -8,6 +8,8 @@ package platform
 
 import "encoding/json"
 
+// The response data for this request
+
 type CreateTemplateVolumesResponseData struct {
 	// The template volume(s) which were created by the request.
 	Volumes []CreateTemplateVolumesResponseTemplateVolume `json:"volumes,omitempty"`

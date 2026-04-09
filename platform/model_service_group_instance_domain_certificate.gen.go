@@ -8,9 +8,17 @@ package platform
 
 import "encoding/json"
 
-// UUID or name of the instance to attach the volume to.
+// The certificate associated with the domain.
+//
+// The certificate is used to secure the domain with TLS/SSL.  If no
+// certificate is specified, Unikraft Cloud will automatically generate a
+// new certificate for the domain based on Let's Encrypt and seek to
+// accomplish a DNS-01 challenge.
 
-type AttachVolumesRequestItemAttachTo struct {
+type ServiceGroupInstanceDomainCertificate struct {
+	// (Only applies when using global control plane).
+	// The metro of the resource.
+	Metro *string `json:"metro,omitempty"`
 	// Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitempty"`
 	// Mutually exclusive with UUID.
@@ -19,8 +27,8 @@ type AttachVolumesRequestItemAttachTo struct {
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *AttachVolumesRequestItemAttachTo) UnmarshalJSON(data []byte) error {
-	type Alias AttachVolumesRequestItemAttachTo
+func (m *ServiceGroupInstanceDomainCertificate) UnmarshalJSON(data []byte) error {
+	type Alias ServiceGroupInstanceDomainCertificate
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -31,8 +39,9 @@ func (m *AttachVolumesRequestItemAttachTo) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid": {},
-		"name": {},
+		"metro": {},
+		"uuid":  {},
+		"name":  {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -45,8 +54,8 @@ func (m *AttachVolumesRequestItemAttachTo) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m AttachVolumesRequestItemAttachTo) MarshalJSON() ([]byte, error) {
-	type Alias AttachVolumesRequestItemAttachTo
+func (m ServiceGroupInstanceDomainCertificate) MarshalJSON() ([]byte, error) {
+	type Alias ServiceGroupInstanceDomainCertificate
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

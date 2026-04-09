@@ -38,10 +38,9 @@ type UpdateInstancesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.
 	Id *string `json:"id,omitempty"`
-	// The UUID of the instance to update. Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the instance to update. Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
 	// The property to modify.
 	Prop UpdateInstancesRequestItemProp `json:"prop"`
 	// The operation to perform on the property.
@@ -59,6 +58,10 @@ type UpdateInstancesRequestItem struct {
 	//   Use action "exec" together with args to execute a command at the scheduled time.
 	// - For "autokill": object with time_ms and num_requests fields
 	Value *interface{} `json:"value,omitempty"`
+	// The UUID of the instance to update. Mutually exclusive with name.
+	Uuid *string `json:"uuid,omitempty"`
+	// The name of the instance to update. Mutually exclusive with UUID.
+	Name *string `json:"name,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -76,11 +79,12 @@ func (m *UpdateInstancesRequestItem) UnmarshalJSON(data []byte) error {
 
 	knownKeys := map[string]struct{}{
 		"id":    {},
-		"uuid":  {},
-		"name":  {},
+		"metro": {},
 		"prop":  {},
 		"op":    {},
 		"value": {},
+		"uuid":  {},
+		"name":  {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

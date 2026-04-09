@@ -28,6 +28,9 @@ type CreateTemplateInstancesResponseTemplateInstance struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the template instance that was created.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro of the template instance.
+	Metro *string `json:"metro,omitempty"`
 	// The current state of the instance.
 	State *CreateTemplateInstancesResponseTemplateInstanceState `json:"state,omitempty"`
 	// An optional message providing additional information about the status.
@@ -55,6 +58,7 @@ func (m *CreateTemplateInstancesResponseTemplateInstance) UnmarshalJSON(data []b
 		"status":  {},
 		"uuid":    {},
 		"name":    {},
+		"metro":   {},
 		"state":   {},
 		"message": {},
 		"error":   {},

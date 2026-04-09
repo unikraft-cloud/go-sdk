@@ -18,6 +18,9 @@ type CreateCertificateRequest struct {
 	// specified, a random name is generated for you.  The name can also be used
 	// to identify the certificate in API calls.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
 	// The common name (CN) of the certificate.
 	//
 	// Deprecated: Use `common_name` instead.
@@ -48,6 +51,7 @@ func (m *CreateCertificateRequest) UnmarshalJSON(data []byte) error {
 
 	knownKeys := map[string]struct{}{
 		"name":        {},
+		"metro":       {},
 		"cn":          {},
 		"common_name": {},
 		"chain":       {},

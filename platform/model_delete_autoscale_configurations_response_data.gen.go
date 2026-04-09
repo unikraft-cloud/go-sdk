@@ -8,6 +8,8 @@ package platform
 
 import "encoding/json"
 
+// The response data for this request.
+
 type DeleteAutoscaleConfigurationsResponseData struct {
 	// The configuration(s) which were deleted by the request.
 	ServiceGroups []DeleteAutoscaleConfigurationsResponseServiceGroup `json:"service_groups,omitempty"`

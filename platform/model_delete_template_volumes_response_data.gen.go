@@ -8,6 +8,8 @@ package platform
 
 import "encoding/json"
 
+// The response data for this request.
+
 type DeleteTemplateVolumesResponseData struct {
 	// The template volume(s) which were deleted by the request.
 	Volumes []DeleteTemplateVolumesResponseTemplateVolume `json:"volumes,omitempty"`

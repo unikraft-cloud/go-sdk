@@ -16,6 +16,9 @@ type CreateServiceGroupRequest struct {
 	// of your account.  If no name is specified, a random name is generated for
 	// you.  The name can also be used to identify the service group in API calls.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
 	// Description of exposed services.
 	Services []Service `json:"services,omitempty"`
 	// Description of domains associated with the service group.
@@ -37,9 +40,8 @@ type CreateServiceGroupRequest struct {
 	// The load balancer will never assign more requests to a single instance.  In
 	// case there are no other instances available, excess requests fail (i.e.,
 	// they are blocked and not queued).
-	HardLimit *uint64 `json:"hard_limit,omitempty"`
-	// Automatic delete-on-idle configuration.
-	Autokill *CreateServiceGroupRequestAutokill `json:"autokill,omitempty"`
+	HardLimit *uint64                            `json:"hard_limit,omitempty"`
+	Autokill  *CreateServiceGroupRequestAutokill `json:"autokill,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -57,6 +59,7 @@ func (m *CreateServiceGroupRequest) UnmarshalJSON(data []byte) error {
 
 	knownKeys := map[string]struct{}{
 		"name":       {},
+		"metro":      {},
 		"services":   {},
 		"domains":    {},
 		"soft_limit": {},

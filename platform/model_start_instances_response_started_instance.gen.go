@@ -16,6 +16,9 @@ type StartInstancesResponseStartedInstance struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance which was deleted.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro of the instance.
+	Metro *string `json:"metro,omitempty"`
 	// The current state of the instance after this request.
 	State *string `json:"state,omitempty"`
 	// The previous state of the instance before it was deleted.
@@ -45,6 +48,7 @@ func (m *StartInstancesResponseStartedInstance) UnmarshalJSON(data []byte) error
 		"status":         {},
 		"uuid":           {},
 		"name":           {},
+		"metro":          {},
 		"state":          {},
 		"previous_state": {},
 		"message":        {},

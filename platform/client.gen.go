@@ -1478,6 +1478,9 @@ func (c *client) GetImages(ctx context.Context, request TagOrDigest, opts GetIma
 	requestPath := "/v1/images/list"
 
 	query := make(url.Values)
+	if opts.Metro != nil {
+		query.Add("metro", *opts.Metro)
+	}
 	if opts.Namespace != nil {
 		query.Add("namespace", *opts.Namespace)
 	}

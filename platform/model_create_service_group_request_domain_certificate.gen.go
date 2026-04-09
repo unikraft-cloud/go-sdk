@@ -12,6 +12,9 @@ import "encoding/json"
 // specified, the domain must be associated with a valid certificate.
 
 type CreateServiceGroupRequestDomainCertificate struct {
+	// (Only applies when using global control plane).
+	// The metro of the resource.
+	Metro *string `json:"metro,omitempty"`
 	// Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitempty"`
 	// Mutually exclusive with UUID.
@@ -32,8 +35,9 @@ func (m *CreateServiceGroupRequestDomainCertificate) UnmarshalJSON(data []byte) 
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid": {},
-		"name": {},
+		"metro": {},
+		"uuid":  {},
+		"name":  {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
