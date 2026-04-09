@@ -28,6 +28,9 @@ const (
 type GetAutoscaleConfigurationPolicyResponsePolicyResponsePolicy struct {
 	// The name of the policy.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro of the service group the policy applies to.
+	Metro *string `json:"metro,omitempty"`
 	// If the policy is enabled.
 	Enabled *bool `json:"enabled,omitempty"`
 	// Metric to use for the step policy.
@@ -54,6 +57,7 @@ func (m *GetAutoscaleConfigurationPolicyResponsePolicyResponsePolicy) UnmarshalJ
 
 	knownKeys := map[string]struct{}{
 		"name":            {},
+		"metro":           {},
 		"enabled":         {},
 		"metric":          {},
 		"adjustment_type": {},

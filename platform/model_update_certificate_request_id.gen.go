@@ -11,6 +11,9 @@ import "encoding/json"
 // The ID of the certificate to update.
 
 type UpdateCertificateRequestId struct {
+	// (Only applies when using global control plane).
+	// The metro of the resource.
+	Metro *string `json:"metro,omitempty"`
 	// Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitempty"`
 	// Mutually exclusive with UUID.
@@ -31,8 +34,9 @@ func (m *UpdateCertificateRequestId) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid": {},
-		"name": {},
+		"metro": {},
+		"uuid":  {},
+		"name":  {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

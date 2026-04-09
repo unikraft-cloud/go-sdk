@@ -11,17 +11,17 @@ import "encoding/json"
 // A single item in the request.
 
 type GetInstancesLogsRequestItem struct {
+	// The byte offset of the log output to receive.  A negative sign makes the
+	// offset relative to the end of the log.
+	Offset *int64 `json:"offset,omitempty"`
+	// The amount of bytes to return at most.
+	Limit *int64 `json:"limit,omitempty"`
 	// The UUID of the instance to retrieve logs for.  Mutually exclusive with
 	// name.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance to retrieve logs for.  Mutually exclusive with
 	// UUID.
 	Name *string `json:"name,omitempty"`
-	// The byte offset of the log output to receive.  A negative sign makes the
-	// offset relative to the end of the log.
-	Offset *int64 `json:"offset,omitempty"`
-	// The amount of bytes to return at most.
-	Limit *int64 `json:"limit,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -38,10 +38,10 @@ func (m *GetInstancesLogsRequestItem) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid":   {},
-		"name":   {},
 		"offset": {},
 		"limit":  {},
+		"uuid":   {},
+		"name":   {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

@@ -31,10 +31,6 @@ const (
 type UpdateVolumesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitempty"`
-	// The UUID of the volume to update.  Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the volume to update.  Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
 	// The property to modify.
 	Prop UpdateVolumesRequestItemProp `json:"prop"`
 	// The operation to perform.
@@ -45,6 +41,10 @@ type UpdateVolumesRequestItem struct {
 	// - For "tags": array of Strings
 	// - For "delete_lock": boolean
 	Value *interface{} `json:"value,omitempty"`
+	// The UUID of the volume to update.  Mutually exclusive with name.
+	Uuid *string `json:"uuid,omitempty"`
+	// The name of the volume to update.  Mutually exclusive with UUID.
+	Name *string `json:"name,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -62,11 +62,11 @@ func (m *UpdateVolumesRequestItem) UnmarshalJSON(data []byte) error {
 
 	knownKeys := map[string]struct{}{
 		"id":    {},
-		"uuid":  {},
-		"name":  {},
 		"prop":  {},
 		"op":    {},
 		"value": {},
+		"uuid":  {},
+		"name":  {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

@@ -8,19 +8,25 @@ package platform
 
 import "encoding/json"
 
-// The arguments to use when creating the autoscale configuration.
+// A reference to an existing certificate which can be used for the
+// specified domain.  If unspecified, Unikraft Cloud will
+// automatically generate a new certificate for the domain based on Let's
+// Encrypt and seek to accomplish a DNS-01 challenge.
 
-type CreateAutoscaleConfigurationsRequestConfigurationCreateArgs struct {
-	// The ROM to use for the autoscale configuration.
-	Roms *InstanceCreateArgsInstanceCreateRequestRoms `json:"roms,omitempty"`
-	// The template to use for the autoscale configuration.
-	Template *NameOrUUID `json:"template,omitempty"`
+type CreateInstanceRequestDomainCertificate struct {
+	// (Only applies when using global control plane).
+	// The metro of the resource.
+	Metro *string `json:"metro,omitempty"`
+	// Mutually exclusive with name.
+	Uuid *string `json:"uuid,omitempty"`
+	// Mutually exclusive with UUID.
+	Name *string `json:"name,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateAutoscaleConfigurationsRequestConfigurationCreateArgs) UnmarshalJSON(data []byte) error {
-	type Alias CreateAutoscaleConfigurationsRequestConfigurationCreateArgs
+func (m *CreateInstanceRequestDomainCertificate) UnmarshalJSON(data []byte) error {
+	type Alias CreateInstanceRequestDomainCertificate
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -31,8 +37,9 @@ func (m *CreateAutoscaleConfigurationsRequestConfigurationCreateArgs) UnmarshalJ
 	}
 
 	knownKeys := map[string]struct{}{
-		"roms":     {},
-		"template": {},
+		"metro": {},
+		"uuid":  {},
+		"name":  {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -45,8 +52,8 @@ func (m *CreateAutoscaleConfigurationsRequestConfigurationCreateArgs) UnmarshalJ
 	return nil
 }
 
-func (m CreateAutoscaleConfigurationsRequestConfigurationCreateArgs) MarshalJSON() ([]byte, error) {
-	type Alias CreateAutoscaleConfigurationsRequestConfigurationCreateArgs
+func (m CreateInstanceRequestDomainCertificate) MarshalJSON() ([]byte, error) {
+	type Alias CreateInstanceRequestDomainCertificate
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

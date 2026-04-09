@@ -15,6 +15,9 @@ type GetAutoscaleConfigurationsResponseServiceGroup struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the service where the configuration was created.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro of the service group.
+	Metro *string `json:"metro,omitempty"`
 	// If the autoscale configuration is enabled.
 	Enabled *bool `json:"enabled,omitempty"`
 	// The minimum number of instances to keep running.
@@ -57,6 +60,7 @@ func (m *GetAutoscaleConfigurationsResponseServiceGroup) UnmarshalJSON(data []by
 		"status":           {},
 		"uuid":             {},
 		"name":             {},
+		"metro":            {},
 		"enabled":          {},
 		"min_size":         {},
 		"max_size":         {},

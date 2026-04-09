@@ -6,13 +6,20 @@
 
 package controlplane
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"time"
+)
 
 type ImageTag struct {
 	// The tag name.
 	Name *string `json:"name,omitempty"`
 	// The digest for the tag.
 	Digest *string `json:"digest,omitempty"`
+	// The size of the image in bytes.
+	Size *uint64 `json:"size,omitempty"`
+	// The push time of the image.
+	PushTime *time.Time `json:"push_time,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -29,8 +36,10 @@ func (m *ImageTag) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"name":   {},
-		"digest": {},
+		"name":      {},
+		"digest":    {},
+		"size":      {},
+		"push_time": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

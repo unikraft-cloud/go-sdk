@@ -8,6 +8,8 @@ package platform
 
 import "encoding/json"
 
+// The response data for this request.
+
 type DeleteAutoscaleConfigurationPolicyResponseData struct {
 	// The policies which were deleted by the request.
 	Policies []DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse `json:"policies,omitempty"`

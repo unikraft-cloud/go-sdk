@@ -11,20 +11,22 @@ import (
 	"time"
 )
 
+// Use an existing certificate for the domain.  If this field is
+// specified, the domain must be associated with a valid certificate.
 // The current state of the certificate.
 //
 // This indicates whether the certificate is pending issuance, valid and
 // ready for use, or in an error state. See CertificateState enum for
 // detailed state descriptions.
-type CertificateState string
+type DomainCertificateState string
 
 const (
-	CertificateStatePending CertificateState = "pending"
-	CertificateStateValid   CertificateState = "valid"
-	CertificateStateError   CertificateState = "error"
+	DomainCertificateStatePending DomainCertificateState = "pending"
+	DomainCertificateStateValid   DomainCertificateState = "valid"
+	DomainCertificateStateError   DomainCertificateState = "error"
 )
 
-type Certificate struct {
+type DomainCertificate struct {
 	// The UUID of the certificate.
 	//
 	// This is a unique identifier for the certificate that is generated when the
@@ -82,7 +84,7 @@ type Certificate struct {
 	// This indicates whether the certificate is pending issuance, valid and
 	// ready for use, or in an error state. See CertificateState enum for
 	// detailed state descriptions.
-	State *CertificateState `json:"state,omitempty"`
+	State *DomainCertificateState `json:"state,omitempty"`
 	// An optional field representing the status of the request.  This field is
 	// only set when this message object is used as a response message.
 	Status *ResponseStatus `json:"status,omitempty"`
@@ -98,8 +100,8 @@ type Certificate struct {
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *Certificate) UnmarshalJSON(data []byte) error {
-	type Alias Certificate
+func (m *DomainCertificate) UnmarshalJSON(data []byte) error {
+	type Alias DomainCertificate
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -136,8 +138,8 @@ func (m *Certificate) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m Certificate) MarshalJSON() ([]byte, error) {
-	type Alias Certificate
+func (m DomainCertificate) MarshalJSON() ([]byte, error) {
+	type Alias DomainCertificate
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

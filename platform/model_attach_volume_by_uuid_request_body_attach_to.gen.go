@@ -8,19 +8,19 @@ package platform
 
 import "encoding/json"
 
-// Source template volume to clone from.
+// UUID or name of the instance to attach the volume to.
 
-type CreateVolumeRequestTemplate struct {
-	// Mutually exclusive with name.
+type AttachVolumeByUUIDRequestBodyAttachTo struct {
+	// The UUID of the instance that the volume is detached from.
 	Uuid *string `json:"uuid,omitempty"`
-	// Mutually exclusive with UUID.
+	// The name of the instance that the volume is detached from.
 	Name *string `json:"name,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateVolumeRequestTemplate) UnmarshalJSON(data []byte) error {
-	type Alias CreateVolumeRequestTemplate
+func (m *AttachVolumeByUUIDRequestBodyAttachTo) UnmarshalJSON(data []byte) error {
+	type Alias AttachVolumeByUUIDRequestBodyAttachTo
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -45,8 +45,8 @@ func (m *CreateVolumeRequestTemplate) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateVolumeRequestTemplate) MarshalJSON() ([]byte, error) {
-	type Alias CreateVolumeRequestTemplate
+func (m AttachVolumeByUUIDRequestBodyAttachTo) MarshalJSON() ([]byte, error) {
+	type Alias AttachVolumeByUUIDRequestBodyAttachTo
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

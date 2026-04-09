@@ -39,6 +39,9 @@ type StopInstancesResponseStoppedInstance struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance.
 	Name *string `json:"name,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro of the instance.
+	Metro *string `json:"metro,omitempty"`
 	// The current state of the instance.
 	State *StopInstancesResponseStoppedInstanceState `json:"state,omitempty"`
 	// The previous state of the instance before the stop operation was invoked.
@@ -69,6 +72,7 @@ func (m *StopInstancesResponseStoppedInstance) UnmarshalJSON(data []byte) error 
 	knownKeys := map[string]struct{}{
 		"uuid":           {},
 		"name":           {},
+		"metro":          {},
 		"state":          {},
 		"previous_state": {},
 		"status":         {},
