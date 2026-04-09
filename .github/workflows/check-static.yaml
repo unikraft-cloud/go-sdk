@@ -31,8 +31,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: 1.24.0
-          cache: true
+          go-version-file: go.mod
 
       - name: Set Go variables
         id: goenv
@@ -58,17 +57,9 @@ jobs:
           go mod tidy
           git diff --exit-code -- go.sum go.mod
 
-      - name: gofumpt
-        if: success() || failure()  # run this step even if the previous one failed
-        uses: golangci/golangci-lint-action@v6
+      - name: Golang CI Lint
+        uses: golangci/golangci-lint-action@v9
         with:
           version: latest
-          args: --no-config --timeout=5m --disable-all --enable=gofumpt --out-format=colored-line-number
-          skip-cache: true
-
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: latest
-          args: --out-format=colored-line-number
+          args: --timeout=5m
           skip-cache: true

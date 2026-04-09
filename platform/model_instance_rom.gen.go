@@ -1,0 +1,75 @@
+// This file is auto-generated. DO NOT EDIT.
+// SPDX-License-Identifier: BSD-3-Clause
+// Copyright (c) 2025, Unikraft GmbH.
+// Licensed under the BSD-3-Clause License (the "License").
+// You may not use this file except in compliance with the License.
+
+package platform
+
+import "encoding/json"
+
+// Read-Only Memory (ROM) blob to attach to the instance.
+
+type InstanceRom struct {
+	// The name of the ROM to use for the instance configuration.
+	Name *string `json:"name,omitempty"`
+	// The image of the ROM to use for the instance configuration.
+	Image string `json:"image"`
+	// (Optional).  The path at which the ROM should be automatically mounted
+	// inside the instance.  When set, the platform mounts the ROM device at
+	// the specified path so the guest does not need to mount it manually.
+	// When omitted, the ROM is exposed as a raw block device and the guest is
+	// responsible for mounting it.
+	At *string `json:"at,omitempty"`
+
+	AdditionalProperties map[string]json.RawMessage `json:"-"`
+}
+
+func (m *InstanceRom) UnmarshalJSON(data []byte) error {
+	type Alias InstanceRom
+	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
+		return err
+	}
+
+	var extra map[string]json.RawMessage
+	if err := json.Unmarshal(data, &extra); err != nil {
+		return err
+	}
+
+	knownKeys := map[string]struct{}{
+		"name":  {},
+		"image": {},
+		"at":    {},
+	}
+	for key := range knownKeys {
+		delete(extra, key)
+	}
+	if len(extra) == 0 {
+		m.AdditionalProperties = nil
+		return nil
+	}
+	m.AdditionalProperties = extra
+	return nil
+}
+
+func (m InstanceRom) MarshalJSON() ([]byte, error) {
+	type Alias InstanceRom
+	base, err := json.Marshal((*Alias)(&m))
+	if err != nil {
+		return nil, err
+	}
+	if len(m.AdditionalProperties) == 0 {
+		return base, nil
+	}
+
+	var out map[string]json.RawMessage
+	if err := json.Unmarshal(base, &out); err != nil {
+		return nil, err
+	}
+	for key, value := range m.AdditionalProperties {
+		if _, exists := out[key]; !exists {
+			out[key] = value
+		}
+	}
+	return json.Marshal(out)
+}

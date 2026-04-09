@@ -1,0 +1,357 @@
+{{template "header"}}
+package {{.PackageName}}
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/url"
+	"os"
+	"strings"
+	"time"
+
+	"unikraft.com/cloud/sdk/pkg/httpclient"
+)
+
+type Client interface {
+{{- range .Operations}}
+{{- template "interface_method" .}}
+{{- end}}
+{{- if eq $.PackageName "platform"}}
+	// WithMetro sets the metro to use when connecting to the API.
+	WithMetro(string) Client
+{{- else}}
+	// WithEndpoint sets the endpoint to use when connecting to the API.
+	WithEndpoint(string) Client
+{{- end}}
+	// WithTimeout sets the timeout when making the request.
+	WithTimeout(time.Duration) Client
+	// WithHTTPClient overwrites the base HTTP client.
+	WithHTTPClient(httpclient.HTTPClient) Client
+}
+
+// NewClient creates a new client for the API.
+func NewClient(copts ...ClientOption) Client {
+	options := ClientOptions{}
+
+	for _, opt := range copts {
+		opt(&options)
+	}
+
+	if options.Token() == "" {
+		options.SetToken(os.Getenv("UKC_TOKEN"))
+	}
+
+	if options.Token() == "" {
+		options.SetToken(os.Getenv("UNIKRAFT_CLOUD_TOKEN"))
+	}
+
+	if options.Token() == "" {
+		options.SetToken(os.Getenv("KRAFTCLOUD_TOKEN"))
+	}
+
+{{if eq $.PackageName "platform"}}
+	if options.DefaultEndpoint() == "" {
+		options.SetDefaultMetro(os.Getenv("UKC_METRO"))
+	}
+	if options.DefaultEndpoint() == "" {
+		options.SetDefaultMetro(DefaultMetro)
+	}
+{{- else}}
+	if options.DefaultEndpoint() == "" {
+		options.SetDefaultEndpoint(DefaultEndpoint)
+	}
+{{- end}}
+
+	if options.AllowInsecure() && options.HTTPClient() == nil {
+		options.SetHTTPClient(httpclient.NewInsecureHTTPClient())
+	}
+
+	if options.HTTPClient() == nil {
+		options.SetHTTPClient(httpclient.NewHTTPClient())
+	}
+
+	return &client{
+		request: &Request{
+			copts: &options,
+		},
+	}
+}
+
+type client struct {
+	request *Request
+}
+{{- if eq $.PackageName "platform"}}
+
+// WithMetro sets the metro to use when connecting to the API.
+func (c *client) WithMetro(m string) Client {
+	ccpy := c.clone()
+	ccpy.request = c.request.WithMetro(m)
+	return ccpy
+}
+{{- else}}
+
+// WithEndpoint sets the endpoint to use when connecting to the API.
+func (c *client) WithEndpoint(m string) Client {
+	ccpy := c.clone()
+	ccpy.request = c.request.WithEndpoint(m)
+	return ccpy
+}
+{{- end}}
+
+// WithHTTPClient overwrites the base HTTP client.
+func (c *client) WithHTTPClient(hc httpclient.HTTPClient) Client {
+	ccpy := c.clone()
+	ccpy.request = c.request.WithHTTPClient(hc)
+	return ccpy
+}
+
+// WithTimeout sets the timeout when making a request.
+func (c *client) WithTimeout(to time.Duration) Client {
+	ccpy := c.clone()
+	ccpy.request = c.request.WithTimeout(to)
+	return ccpy
+}
+
+// clone returns a shallow copy of c.
+func (c *client) clone() *client {
+	ccpy := *c
+	return &ccpy
+}
+
+{{range .Operations}}
+{{template "impl_method" .}}
+{{end}}
+{{- define "interface_method"}}
+{{- $op := .Operation}}
+{{- $path := .Path}}
+{{- $method := .Method}}
+{{- $pkg := .PackageName}}
+{{- $pathParams := list}}
+{{- $queryParams := list}}
+{{- range $op.Parameters}}
+{{- if eq .Value.In "path"}}
+{{- $pathParams = append $pathParams .Value}}
+{{- else if eq .Value.In "query"}}
+{{- $queryParams = append $queryParams .Value}}
+{{- end}}
+{{- end}}
+{{- $hasRequestBody := and $op.RequestBody $op.RequestBody.Value}}
+{{- $requestBodyType := ""}}
+{{- $requestBodyIsArray := false}}
+{{- if $hasRequestBody}}
+{{- $content := index $op.RequestBody.Value.Content "application/json"}}
+{{- if $content}}
+{{- if $content.Schema.Ref}}
+{{- $requestBodyType = refToType $content.Schema.Ref}}
+{{- else if $content.Schema.Value}}
+{{- if and $content.Schema.Value.Type (isType $content.Schema.Value "array")}}
+{{- $requestBodyIsArray = true}}
+{{- if $content.Schema.Value.Items.Ref}}
+{{- $requestBodyType = refToType $content.Schema.Value.Items.Ref}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- $responseType := ""}}
+{{- $isSSE := false}}
+{{- if $op.Responses}}
+{{- $defaultResp := $op.Responses.Default}}
+{{- if $defaultResp}}
+{{- if $defaultResp.Value}}
+{{- $respContent := index $defaultResp.Value.Content "application/json"}}
+{{- if $respContent}}
+{{- if $respContent.Schema.Ref}}
+{{- $responseType = refToType $respContent.Schema.Ref}}
+{{- end}}
+{{- end}}
+{{- $sseContent := index $defaultResp.Value.Content "text/event-stream"}}
+{{- if $sseContent}}
+{{- $isSSE = true}}
+{{- if $sseContent.Schema.Ref}}
+{{- $responseType = refToType $sseContent.Schema.Ref}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+	// {{wrapComment $op.Description 77 "\t// "}}
+{{- range $pathParams}}
+	//
+	// @param `{{camelcase .Name}}`
+{{- if .Description}}
+	// 	{{wrapComment .Description 75 "\t// \t"}}
+{{- end}}
+{{- end}}
+{{- if $hasRequestBody}}
+	//
+	// @param `request`
+	// 	The request body for this operation.
+{{- end}}
+{{- if $queryParams}}
+	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+{{- end}}
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: {{$method}} {{$path}}
+	//
+	// See: {{docsURL $op}}
+	{{$op.OperationID}}(ctx context.Context
+{{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
+{{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
+{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error)
+{{- end}}
+
+{{- define "impl_method"}}
+{{- $op := .Operation}}
+{{- $path := .Path}}
+{{- $method := .Method}}
+{{- $pkg := .PackageName}}
+{{- $pathParams := list}}
+{{- $queryParams := list}}
+{{- range $op.Parameters}}
+{{- if eq .Value.In "path"}}
+{{- $pathParams = append $pathParams .Value}}
+{{- else if eq .Value.In "query"}}
+{{- $queryParams = append $queryParams .Value}}
+{{- end}}
+{{- end}}
+{{- $hasRequestBody := and $op.RequestBody $op.RequestBody.Value}}
+{{- $requestBodyType := ""}}
+{{- $requestBodyIsArray := false}}
+{{- if $hasRequestBody}}
+{{- $content := index $op.RequestBody.Value.Content "application/json"}}
+{{- if $content}}
+{{- if $content.Schema.Ref}}
+{{- $requestBodyType = refToType $content.Schema.Ref}}
+{{- else if $content.Schema.Value}}
+{{- if and $content.Schema.Value.Type (isType $content.Schema.Value "array")}}
+{{- $requestBodyIsArray = true}}
+{{- if $content.Schema.Value.Items.Ref}}
+{{- $requestBodyType = refToType $content.Schema.Value.Items.Ref}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- $responseType := ""}}
+{{- $isSSE := false}}
+{{- if $op.Responses}}
+{{- $defaultResp := $op.Responses.Default}}
+{{- if $defaultResp}}
+{{- if $defaultResp.Value}}
+{{- $respContent := index $defaultResp.Value.Content "application/json"}}
+{{- if $respContent}}
+{{- if $respContent.Schema.Ref}}
+{{- $responseType = refToType $respContent.Schema.Ref}}
+{{- end}}
+{{- end}}
+{{- $sseContent := index $defaultResp.Value.Content "text/event-stream"}}
+{{- if $sseContent}}
+{{- $isSSE = true}}
+{{- if $sseContent.Schema.Ref}}
+{{- $responseType = refToType $sseContent.Schema.Ref}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+func (c *client) {{$op.OperationID}}(ctx context.Context
+{{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
+{{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
+{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error) {
+	requestPath := "{{$path}}"
+{{- range $pathParams}}
+	requestPath = strings.ReplaceAll(requestPath, "{{"{"}}{{.Name}}{{"}"}}", url.PathEscape({{camelcase .Name}}))
+{{- end}}
+
+{{- if $queryParams}}
+
+	query := make(url.Values)
+{{- range $queryParams}}
+{{- if and .Schema .Schema.Value (isType .Schema.Value "array")}}
+	for _, v := range opts.{{pascalcase .Name}} {
+		query.Add("{{.Name}}", v)
+	}
+{{- else if and .Schema .Schema.Value (isType .Schema.Value "boolean")}}
+{{- if not .Required}}
+	if opts.{{pascalcase .Name}} != nil {
+		query.Add("{{.Name}}", fmt.Sprintf("%t", *opts.{{pascalcase .Name}}))
+	}
+{{- else}}
+	query.Add("{{.Name}}", fmt.Sprintf("%t", opts.{{pascalcase .Name}}))
+{{- end}}
+{{- else if and .Schema .Schema.Value (isType .Schema.Value "integer")}}
+{{- if not .Required}}
+	if opts.{{pascalcase .Name}} != nil {
+		query.Add("{{.Name}}", fmt.Sprintf("%d", *opts.{{pascalcase .Name}}))
+	}
+{{- else}}
+	query.Add("{{.Name}}", fmt.Sprintf("%d", opts.{{pascalcase .Name}}))
+{{- end}}
+{{- else if and .Schema .Schema.Value (isType .Schema.Value "number")}}
+{{- if not .Required}}
+	if opts.{{pascalcase .Name}} != nil {
+		query.Add("{{.Name}}", fmt.Sprintf("%g", *opts.{{pascalcase .Name}}))
+	}
+{{- else}}
+	query.Add("{{.Name}}", fmt.Sprintf("%g", opts.{{pascalcase .Name}}))
+{{- end}}
+{{- else}}
+{{- if not .Required}}
+	if opts.{{pascalcase .Name}} != nil {
+		query.Add("{{.Name}}", *opts.{{pascalcase .Name}})
+	}
+{{- else}}
+	query.Add("{{.Name}}", opts.{{pascalcase .Name}})
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+
+{{- if $hasRequestBody}}
+{{- if $requestBodyIsArray}}
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+{{- else}}
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+{{- end}}
+{{- end}}
+
+	resp := &Response[{{$responseType}}Data]{}
+	if err := doRequest[{{$responseType}}Data](ctx, c.request, http.Method{{title (lower $method)}}, requestPath, {{if $queryParams}}query{{else}}nil{{end}}, {{if $hasRequestBody}}bytes.NewReader(body){{else}}nil{{end}}, resp, ropts...); err != nil {
+{{- if $isSSE}}
+		return nil, fmt.Errorf("performing the request: %w", err)
+{{- else}}
+{{- if eq $pkg "platform"}}
+		return resp, err
+{{- else}}
+		return resp, fmt.Errorf("performing the request: %w", err)
+{{- end}}
+{{- end}}
+	}
+{{- if $isSSE}}
+	return resp.Events()
+{{- else}}
+	return resp, nil
+{{- end}}
+}
+{{end}}

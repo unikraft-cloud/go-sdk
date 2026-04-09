@@ -1,0 +1,21 @@
+{{template "header"}}
+package {{.PackageName}}
+
+{{range .Operations -}}
+{{- $op := .Operation -}}
+{{- $queryParams := list -}}
+{{- range $op.Parameters -}}
+{{- if eq .Value.In "query" -}}
+{{- $queryParams = append $queryParams .Value -}}
+{{- end -}}
+{{- end -}}
+{{- if $queryParams}}
+// {{$op.OperationID}}Opts holds query-parameter options for [Client.{{$op.OperationID}}].
+type {{$op.OperationID}}Opts struct {
+{{- range $queryParams}}
+	{{pascalcase .Name}} {{if and (not .Required) (not (and .Schema .Schema.Value (isType .Schema.Value "array")))}}*{{end}}{{paramToGoType .}}
+{{- end}}
+}
+
+{{end -}}
+{{end -}}

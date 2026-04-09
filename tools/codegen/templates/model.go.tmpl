@@ -1,0 +1,21 @@
+{{template "header" .}}
+package {{.PackageName}}
+
+{{$imports := collectImports .Schema}}
+{{- if not (isEnum .Schema)}}
+{{- $imports = append $imports "encoding/json"}}
+{{- end}}
+{{- $imports = uniq $imports}}
+{{if $imports}}
+{{range $imports}}
+import "{{.}}"
+{{end}}
+{{end}}
+
+{{$schema := .Schema}}
+{{$schemaName := .SchemaName}}
+{{if isEnum $schema}}
+{{template "model_enum.go.tmpl" .}}
+{{else}}
+{{template "model_simple.go.tmpl" .}}
+{{end}}
