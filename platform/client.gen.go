@@ -322,7 +322,7 @@ type Client interface {
 	// Performs: POST /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#create-template-instances
-	CreateTemplateInstances(ctx context.Context, request CreateTemplateInstancesRequest, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error)
+	CreateTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error)
 	// Delete a specified instance by its UUID.  After this call the UUID of the
 	// instance is no longer valid.  If the instance is currently running,
 	// it is force-stopped.
@@ -1509,12 +1509,16 @@ func (c *client) CreateInstance(ctx context.Context, request CreateInstanceReque
 	return resp, nil
 }
 
-func (c *client) CreateTemplateInstances(ctx context.Context, request CreateTemplateInstancesRequest, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error) {
+func (c *client) CreateTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[CreateTemplateInstancesResponseData]{}
