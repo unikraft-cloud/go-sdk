@@ -330,8 +330,8 @@ type Client interface {
 	// @param `uuid`
 	// 	The UUID of the instance to delete.
 	//
-	// @param `opts`
-	// 	Optional query parameters for this operation.
+	// @param `request`
+	// 	The request body for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -339,7 +339,7 @@ type Client interface {
 	// Performs: DELETE /v1/instances/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instance-by-uuid
-	DeleteInstanceByUUID(ctx context.Context, uuid string, opts DeleteInstanceByUUIDOpts, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
+	DeleteInstanceByUUID(ctx context.Context, uuid string, request DeleteInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
 	// Delete the specified instance(s) by ID(s) (name or UUID).  After this call
 	// the IDs of the instances are no longer valid.  If the instances are
 	// currently running, they are force-stopped.
@@ -347,16 +347,13 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `opts`
-	// 	Optional query parameters for this operation.
-	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: DELETE /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instances
-	DeleteInstances(ctx context.Context, request []NameOrUUID, opts DeleteInstancesOpts, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
+	DeleteInstances(ctx context.Context, request []DeleteInstanceRequestItem, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
 	// Delete a specified template instance by its UUID.  After this call the UUID
 	// of the template instance is no longer valid.
 	//
@@ -1527,29 +1524,24 @@ func (c *client) CreateTemplateInstances(ctx context.Context, request CreateTemp
 	return resp, nil
 }
 
-func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, opts DeleteInstanceByUUIDOpts, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
+func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, request DeleteInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
-	query := make(url.Values)
-	if opts.TimeoutS != nil {
-		query.Add("timeout_s", fmt.Sprintf("%d", *opts.TimeoutS))
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
 	resp := &Response[DeleteInstancesResponseData]{}
-	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteInstances(ctx context.Context, request []NameOrUUID, opts DeleteInstancesOpts, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
+func (c *client) DeleteInstances(ctx context.Context, request []DeleteInstanceRequestItem, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
 	requestPath := "/v1/instances"
-
-	query := make(url.Values)
-	if opts.TimeoutS != nil {
-		query.Add("timeout_s", fmt.Sprintf("%d", *opts.TimeoutS))
-	}
 
 	var body []byte
 	var err error
@@ -1561,7 +1553,7 @@ func (c *client) DeleteInstances(ctx context.Context, request []NameOrUUID, opts
 	}
 
 	resp := &Response[DeleteInstancesResponseData]{}
-	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil

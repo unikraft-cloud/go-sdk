@@ -21,16 +21,6 @@ type GetImagesOpts struct {
 	Namespace *string
 }
 
-// DeleteInstanceByUUIDOpts holds query-parameter options for [Client.DeleteInstanceByUUID].
-type DeleteInstanceByUUIDOpts struct {
-	TimeoutS *int32
-}
-
-// DeleteInstancesOpts holds query-parameter options for [Client.DeleteInstances].
-type DeleteInstancesOpts struct {
-	TimeoutS *int32
-}
-
 // GetInstanceByUUIDOpts holds query-parameter options for [Client.GetInstanceByUUID].
 type GetInstanceByUUIDOpts struct {
 	Details *bool
