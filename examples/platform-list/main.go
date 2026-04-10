@@ -12,7 +12,6 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"unikraft.com/cloud/sdk/pkg/ptr"
 	"unikraft.com/cloud/sdk/platform"
 )
 
@@ -25,7 +24,7 @@ func main() {
 
 	// List all instances with full details
 	resp, err := client.GetInstances(ctx, nil, platform.GetInstancesOpts{
-		Details: ptr.Ptr(true),
+		Details: new(true),
 	})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
