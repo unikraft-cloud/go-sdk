@@ -8,22 +8,18 @@ package platform
 
 import "encoding/json"
 
-// (Optional).  The UUID of a template instance to create the instance from.
+// Template-specific automatic delete-on-idle configuration.
 
-type CreateInstanceRequestTemplateNameOrUuid struct {
-	// (Only applies when using global control plane).
-	// The metro of the resource.
-	Metro *string `json:"metro,omitempty"`
-	// Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
-	// Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+type InstanceTemplateTemplateAutokill struct {
+	// Time in milliseconds after the template was last used for cloning before
+	// it is deleted. A value of 0 disables template autokill.
+	TimeMs *uint64 `json:"time_ms,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateInstanceRequestTemplateNameOrUuid) UnmarshalJSON(data []byte) error {
-	type Alias CreateInstanceRequestTemplateNameOrUuid
+func (m *InstanceTemplateTemplateAutokill) UnmarshalJSON(data []byte) error {
+	type Alias InstanceTemplateTemplateAutokill
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -34,9 +30,7 @@ func (m *CreateInstanceRequestTemplateNameOrUuid) UnmarshalJSON(data []byte) err
 	}
 
 	knownKeys := map[string]struct{}{
-		"metro": {},
-		"uuid":  {},
-		"name":  {},
+		"time_ms": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -49,8 +43,8 @@ func (m *CreateInstanceRequestTemplateNameOrUuid) UnmarshalJSON(data []byte) err
 	return nil
 }
 
-func (m CreateInstanceRequestTemplateNameOrUuid) MarshalJSON() ([]byte, error) {
-	type Alias CreateInstanceRequestTemplateNameOrUuid
+func (m InstanceTemplateTemplateAutokill) MarshalJSON() ([]byte, error) {
+	type Alias InstanceTemplateTemplateAutokill
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err
