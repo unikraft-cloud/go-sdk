@@ -550,6 +550,35 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instances
 	StopInstances(ctx context.Context, request []StopInstancesRequestItem, ropts ...RequestOption) (*Response[StopInstancesResponseData], error)
+	// Suspend a running instance by its UUID or do nothing if the instance is
+	// already suspended.
+	//
+	// @param `uuid`
+	// 	The UUID of the instance to suspend.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PUT /v1/instances/{uuid}/suspend
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#suspend-instance-by-uuid
+	SuspendInstanceByUUID(ctx context.Context, uuid string, request SuspendInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error)
+	// Suspend one or more running instances by ID(s) (name or UUID) or do
+	// nothing if the instances are already suspended.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PUT /v1/instances/suspend
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#suspend-instances
+	SuspendInstances(ctx context.Context, request []SuspendInstancesRequestItem, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error)
 	// Update (modify) an instance by its UUID.  The instance must be in a stopped
 	// state for most update operations.
 	//
@@ -1833,6 +1862,41 @@ func (c *client) StopInstances(ctx context.Context, request []StopInstancesReque
 
 	resp := &Response[StopInstancesResponseData]{}
 	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) SuspendInstanceByUUID(ctx context.Context, uuid string, request SuspendInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error) {
+	requestPath := "/v1/instances/{uuid}/suspend"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[SuspendInstancesResponseData]{}
+	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) SuspendInstances(ctx context.Context, request []SuspendInstancesRequestItem, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error) {
+	requestPath := "/v1/instances/suspend"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[SuspendInstancesResponseData]{}
+	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
