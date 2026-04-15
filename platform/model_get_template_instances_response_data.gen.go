@@ -12,7 +12,7 @@ import "encoding/json"
 
 type GetTemplateInstancesResponseData struct {
 	// List of template instances that were retrieved during the operation.
-	Instances []InstanceTemplate `json:"instances,omitempty"`
+	Instances []Instance `json:"instances,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
