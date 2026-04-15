@@ -900,7 +900,7 @@ type Client interface {
 	// Performs: POST /v1/volumes/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#create-template-volume
-	CreateTemplateVolume(ctx context.Context, request CreateTemplateVolumesRequest, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error)
+	CreateTemplateVolume(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error)
 	// Create a volume given the specified configuration parameters.
 	// The volume is automatically initialized with an empty file system.
 	// After initialization, the volume is in the `available` state and can be
@@ -2250,12 +2250,16 @@ func (c *client) CloneVolumes(ctx context.Context, request []CloneVolumesRequest
 	return resp, nil
 }
 
-func (c *client) CreateTemplateVolume(ctx context.Context, request CreateTemplateVolumesRequest, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error) {
+func (c *client) CreateTemplateVolume(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/templates"
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[CreateTemplateVolumesResponseData]{}
