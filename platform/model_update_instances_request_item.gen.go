@@ -23,6 +23,7 @@ const (
 	UpdateInstancesRequestItemPropDelete_lock   UpdateInstancesRequestItemProp = "delete_lock"
 	UpdateInstancesRequestItemPropSchedules     UpdateInstancesRequestItemProp = "schedules"
 	UpdateInstancesRequestItemPropAutokill      UpdateInstancesRequestItemProp = "autokill"
+	UpdateInstancesRequestItemPropHostname      UpdateInstancesRequestItemProp = "hostname"
 )
 
 // The operation to perform on the property.
@@ -57,6 +58,7 @@ type UpdateInstancesRequestItem struct {
 	// - For "schedules": array of schedule objects (with name, when, action, and optional args fields).
 	//   Use action "exec" together with args to execute a command at the scheduled time.
 	// - For "autokill": object with time_ms and num_requests fields
+	// - For "hostname": string (valid DNS label)
 	Value *interface{} `json:"value,omitempty"`
 	// The UUID of the instance to update. Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitempty"`

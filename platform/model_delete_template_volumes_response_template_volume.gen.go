@@ -14,7 +14,7 @@ type DeleteTemplateVolumesResponseTemplateVolume struct {
 	// The name of the template volume that was deleted.
 	Name *string `json:"name,omitempty"`
 	// The status of this particular template volume deletion operation.
-	Status *string `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`

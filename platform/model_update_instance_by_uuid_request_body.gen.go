@@ -22,6 +22,7 @@ const (
 	UpdateInstanceByUUIDRequestBodyPropDelete_lock   UpdateInstanceByUUIDRequestBodyProp = "delete_lock"
 	UpdateInstanceByUUIDRequestBodyPropSchedules     UpdateInstanceByUUIDRequestBodyProp = "schedules"
 	UpdateInstanceByUUIDRequestBodyPropAutokill      UpdateInstanceByUUIDRequestBodyProp = "autokill"
+	UpdateInstanceByUUIDRequestBodyPropHostname      UpdateInstanceByUUIDRequestBodyProp = "hostname"
 )
 
 // The operation to perform on the property.
@@ -53,6 +54,7 @@ type UpdateInstanceByUUIDRequestBody struct {
 	// - For "schedules": array of schedule objects (with name, when, action, and optional args fields).
 	//   Use action "exec" together with args to execute a command at the scheduled time.
 	// - For "autokill": object with time_ms and num_requests fields
+	// - For "hostname": string (valid DNS label)
 	Value *interface{} `json:"value,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
