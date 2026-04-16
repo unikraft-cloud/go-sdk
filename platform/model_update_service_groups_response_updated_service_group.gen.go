@@ -17,7 +17,7 @@ type UpdateServiceGroupsResponseUpdatedServiceGroup struct {
 	// The metro of the service group.
 	Metro *string `json:"metro,omitempty"`
 	// The status of this particular service group update operation.
-	Status *string `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// (Optional).  The client-provided ID from the request.
 	Id *string `json:"id,omitempty"`
 	// An optional message providing additional information about the status.

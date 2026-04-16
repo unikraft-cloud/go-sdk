@@ -23,7 +23,7 @@ const (
 
 type CreateTemplateInstancesResponseTemplateInstance struct {
 	// The status of this particular template instance creation operation.
-	Status *string `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// The UUID of the template instance that was created.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the template instance that was created.

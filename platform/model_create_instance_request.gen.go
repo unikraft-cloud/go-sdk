@@ -105,6 +105,12 @@ type CreateInstanceRequest struct {
 	// schedules, and cloning preserves them.
 	Schedules []Schedule                     `json:"schedules,omitempty"`
 	Autokill  *CreateInstanceRequestAutokill `json:"autokill,omitempty"`
+	// (Optional).  The hostname of the instance.
+	//
+	// If not provided, the hostname will be set to the instance name.  The
+	// hostname must be a valid DNS label (e.g., "my-instance") and is used for
+	// internal DNS resolution within the Unikraft Cloud network.
+	Hostname *string `json:"hostname,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -143,6 +149,7 @@ func (m *CreateInstanceRequest) UnmarshalJSON(data []byte) error {
 		"sched_priority":  {},
 		"schedules":       {},
 		"autokill":        {},
+		"hostname":        {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

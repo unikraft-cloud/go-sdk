@@ -14,7 +14,7 @@ type UpdateTemplateVolumesResponseTemplateVolume struct {
 	// The name of the template volume that was updated.
 	Name *string `json:"name,omitempty"`
 	// The status of this particular volume update operation.
-	Status *string `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// (Optional).  The client-provided ID from the request.
 	Id *string `json:"id,omitempty"`
 	// An optional message providing additional information about the status.

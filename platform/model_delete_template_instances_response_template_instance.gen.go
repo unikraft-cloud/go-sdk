@@ -14,7 +14,7 @@ type DeleteTemplateInstancesResponseTemplateInstance struct {
 	// The name of the template instance that was deleted.
 	Name *string `json:"name,omitempty"`
 	// The status of this particular template instance deletion operation.
-	Status *string `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`
