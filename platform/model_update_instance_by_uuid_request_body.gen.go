@@ -12,17 +12,20 @@ import "encoding/json"
 type UpdateInstanceByUUIDRequestBodyProp string
 
 const (
-	UpdateInstanceByUUIDRequestBodyPropImage         UpdateInstanceByUUIDRequestBodyProp = "image"
-	UpdateInstanceByUUIDRequestBodyPropArgs          UpdateInstanceByUUIDRequestBodyProp = "args"
-	UpdateInstanceByUUIDRequestBodyPropEnv           UpdateInstanceByUUIDRequestBodyProp = "env"
-	UpdateInstanceByUUIDRequestBodyPropMemory_mb     UpdateInstanceByUUIDRequestBodyProp = "memory_mb"
-	UpdateInstanceByUUIDRequestBodyPropVcpus         UpdateInstanceByUUIDRequestBodyProp = "vcpus"
-	UpdateInstanceByUUIDRequestBodyPropScale_to_zero UpdateInstanceByUUIDRequestBodyProp = "scale_to_zero"
-	UpdateInstanceByUUIDRequestBodyPropTags          UpdateInstanceByUUIDRequestBodyProp = "tags"
-	UpdateInstanceByUUIDRequestBodyPropDelete_lock   UpdateInstanceByUUIDRequestBodyProp = "delete_lock"
-	UpdateInstanceByUUIDRequestBodyPropSchedules     UpdateInstanceByUUIDRequestBodyProp = "schedules"
-	UpdateInstanceByUUIDRequestBodyPropAutokill      UpdateInstanceByUUIDRequestBodyProp = "autokill"
-	UpdateInstanceByUUIDRequestBodyPropHostname      UpdateInstanceByUUIDRequestBodyProp = "hostname"
+	UpdateInstanceByUUIDRequestBodyPropImage          UpdateInstanceByUUIDRequestBodyProp = "image"
+	UpdateInstanceByUUIDRequestBodyPropArgs           UpdateInstanceByUUIDRequestBodyProp = "args"
+	UpdateInstanceByUUIDRequestBodyPropEnv            UpdateInstanceByUUIDRequestBodyProp = "env"
+	UpdateInstanceByUUIDRequestBodyPropMemory_mb      UpdateInstanceByUUIDRequestBodyProp = "memory_mb"
+	UpdateInstanceByUUIDRequestBodyPropVcpus          UpdateInstanceByUUIDRequestBodyProp = "vcpus"
+	UpdateInstanceByUUIDRequestBodyPropScale_to_zero  UpdateInstanceByUUIDRequestBodyProp = "scale_to_zero"
+	UpdateInstanceByUUIDRequestBodyPropTags           UpdateInstanceByUUIDRequestBodyProp = "tags"
+	UpdateInstanceByUUIDRequestBodyPropDelete_lock    UpdateInstanceByUUIDRequestBodyProp = "delete_lock"
+	UpdateInstanceByUUIDRequestBodyPropSchedules      UpdateInstanceByUUIDRequestBodyProp = "schedules"
+	UpdateInstanceByUUIDRequestBodyPropAutokill       UpdateInstanceByUUIDRequestBodyProp = "autokill"
+	UpdateInstanceByUUIDRequestBodyPropHostname       UpdateInstanceByUUIDRequestBodyProp = "hostname"
+	UpdateInstanceByUUIDRequestBodyPropRoms           UpdateInstanceByUUIDRequestBodyProp = "roms"
+	UpdateInstanceByUUIDRequestBodyPropDependencies   UpdateInstanceByUUIDRequestBodyProp = "dependencies"
+	UpdateInstanceByUUIDRequestBodyPropSched_priority UpdateInstanceByUUIDRequestBodyProp = "sched_priority"
 )
 
 // The operation to perform on the property.
@@ -55,6 +58,9 @@ type UpdateInstanceByUUIDRequestBody struct {
 	//   Use action "exec" together with args to execute a command at the scheduled time.
 	// - For "autokill": object with time_ms and num_requests fields
 	// - For "hostname": string (valid DNS label)
+	// - For "roms": array of ROM objects (with name and image fields) for SET/ADD, or array of ROM names for DEL
+	// - For "dependencies": array of instance identifiers (name or UUID)
+	// - For "sched_priority": integer (scheduling priority value)
 	Value *interface{} `json:"value,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`

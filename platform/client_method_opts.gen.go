@@ -17,8 +17,9 @@ type GetCertificatesOpts struct {
 
 // GetImagesOpts holds query-parameter options for [Client.GetImages].
 type GetImagesOpts struct {
-	Metro     *string
-	Namespace *string
+	Metro  *string
+	Digest *string
+	Tag    *string
 }
 
 // GetInstanceByUUIDOpts holds query-parameter options for [Client.GetInstanceByUUID].

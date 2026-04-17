@@ -291,10 +291,10 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/images/list
+	// Performs: GET /v1/images
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-images
-	GetImages(ctx context.Context, request TagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
+	GetImages(ctx context.Context, request GetImagesRequestTagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
 	// Create an instance in Unikraft Cloud.
 	//
 	// @param `request`
@@ -1500,15 +1500,18 @@ func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, reque
 	return resp, nil
 }
 
-func (c *client) GetImages(ctx context.Context, request TagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
-	requestPath := "/v1/images/list"
+func (c *client) GetImages(ctx context.Context, request GetImagesRequestTagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
+	requestPath := "/v1/images"
 
 	query := make(url.Values)
 	if opts.Metro != nil {
 		query.Add("metro", *opts.Metro)
 	}
-	if opts.Namespace != nil {
-		query.Add("namespace", *opts.Namespace)
+	if opts.Digest != nil {
+		query.Add("digest", *opts.Digest)
+	}
+	if opts.Tag != nil {
+		query.Add("tag", *opts.Tag)
 	}
 
 	body, err := json.Marshal(request)
