@@ -8,15 +8,15 @@ package platform
 
 import "encoding/json"
 
-type TagOrDigest struct {
+type GetImagesRequestTagOrDigest struct {
 	Digest *string `json:"digest,omitempty"`
 	Tag    *string `json:"tag,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *TagOrDigest) UnmarshalJSON(data []byte) error {
-	type Alias TagOrDigest
+func (m *GetImagesRequestTagOrDigest) UnmarshalJSON(data []byte) error {
+	type Alias GetImagesRequestTagOrDigest
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -41,8 +41,8 @@ func (m *TagOrDigest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m TagOrDigest) MarshalJSON() ([]byte, error) {
-	type Alias TagOrDigest
+func (m GetImagesRequestTagOrDigest) MarshalJSON() ([]byte, error) {
+	type Alias GetImagesRequestTagOrDigest
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

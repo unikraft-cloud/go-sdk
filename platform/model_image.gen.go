@@ -6,24 +6,24 @@
 
 package platform
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"time"
+)
 
 type Image struct {
-	// The digest of the image is a unique identifier of the image manifest which
-	// is a string representation including the hashing algorithm and the hash
-	// value separated by a colon.
-	Digest *string `json:"digest,omitempty"`
+	Url *string `json:"url,omitempty"`
 	// (Only applies when using global control plane).
 	// The metro of the image.
 	Metro *string `json:"metro,omitempty"`
-	// The canonical name of the image is known as the "tag".
-	Tags        []string          `json:"tags,omitempty"`
-	Initrd      *bool             `json:"initrd,omitempty"`
+	// The time the volume was created.
+	CreatedAt   *time.Time        `json:"created_at,omitempty"`
+	InitrdOrRom *bool             `json:"initrd_or_rom,omitempty"`
 	SizeInBytes *int64            `json:"size_in_bytes,omitempty"`
-	Args        *string           `json:"args,omitempty"`
-	KernelArgs  *string           `json:"kernel_args,omitempty"`
+	Args        []string          `json:"args,omitempty"`
+	Env         map[string]string `json:"env,omitempty"`
+	Tags        []string          `json:"tags,omitempty"`
 	Users       []string          `json:"users,omitempty"`
-	Labels      map[string]string `json:"labels,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -40,15 +40,15 @@ func (m *Image) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"digest":        {},
+		"url":           {},
 		"metro":         {},
-		"tags":          {},
-		"initrd":        {},
+		"created_at":    {},
+		"initrd_or_rom": {},
 		"size_in_bytes": {},
 		"args":          {},
-		"kernel_args":   {},
+		"env":           {},
+		"tags":          {},
 		"users":         {},
-		"labels":        {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
