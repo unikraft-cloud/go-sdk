@@ -294,7 +294,7 @@ type Client interface {
 	// Performs: GET /v1/images
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-images
-	GetImages(ctx context.Context, request GetImagesRequestTagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
+	GetImages(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
 	// Create an instance in Unikraft Cloud.
 	//
 	// @param `request`
@@ -1500,7 +1500,7 @@ func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, reque
 	return resp, nil
 }
 
-func (c *client) GetImages(ctx context.Context, request GetImagesRequestTagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
+func (c *client) GetImages(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
 	requestPath := "/v1/images"
 
 	query := make(url.Values)
@@ -1514,9 +1514,13 @@ func (c *client) GetImages(ctx context.Context, request GetImagesRequestTagOrDig
 		query.Add("tag", *opts.Tag)
 	}
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[GetImagesResponseData]{}
