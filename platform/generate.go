@@ -5,4 +5,4 @@
 
 package platform
 
-//go:generate go run -C ../tools/codegen . --input ../../platform.yaml --output ../../platform --package platform
+//go:generate go run -C ../tools/openapi-gen unikraft.com/x/tools/openapi-gen -i ../../platform.yaml -o ../../platform -v package=platform -t ./templates

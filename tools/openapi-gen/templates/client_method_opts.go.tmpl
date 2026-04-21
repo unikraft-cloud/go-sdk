@@ -1,5 +1,5 @@
 {{template "header"}}
-package {{.PackageName}}
+package {{.Var "package" ""}}
 
 {{range .Operations -}}
 {{- $op := .Operation -}}

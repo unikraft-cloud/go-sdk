@@ -1,5 +1,7 @@
+{{- range .Models}}
+--- {{snakecase .SchemaName}}
 {{template "header" .}}
-package {{.PackageName}}
+package {{$.Var "package" ""}}
 
 {{$imports := collectImports .Schema}}
 {{- if not (isEnum .Schema)}}
@@ -15,7 +17,8 @@ import "{{.}}"
 {{$schema := .Schema}}
 {{$schemaName := .SchemaName}}
 {{if isEnum $schema}}
-{{template "model_enum.go.tmpl" .}}
+{{template "model_enum" .}}
 {{else}}
-{{template "model_simple.go.tmpl" .}}
+{{template "model_simple" .}}
 {{end}}
+{{- end}}

@@ -234,7 +234,7 @@ type Client interface {
 	// Performs: PATCH /v1/nodes/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#update-node-by-uuid
-	UpdateNodeByUUID(ctx context.Context, uuid string, request []UpdateNodePayload, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error)
+	UpdateNodeByUUID(ctx context.Context, uuid string, request []UpdateNodeByUUIDRequestItem, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error)
 	// Update one or more nodes.
 	//
 	// Batch update of mutable properties for multiple nodes.
@@ -587,7 +587,7 @@ func (c *client) ProvisionNode(ctx context.Context, request ProvisionNodeRequest
 	return resp, nil
 }
 
-func (c *client) UpdateNodeByUUID(ctx context.Context, uuid string, request []UpdateNodePayload, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error) {
+func (c *client) UpdateNodeByUUID(ctx context.Context, uuid string, request []UpdateNodeByUUIDRequestItem, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error) {
 	requestPath := "/v1/nodes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
