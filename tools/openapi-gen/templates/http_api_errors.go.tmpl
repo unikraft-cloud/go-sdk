@@ -1,6 +1,6 @@
-{{- if eq .PackageName "platform"}}
+{{- if eq (.Var "package" "") "platform"}}
 {{template "header"}}
-package {{.PackageName}}
+package {{.Var "package" ""}}
 
 import (
 	"errors"

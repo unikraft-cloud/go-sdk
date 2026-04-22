@@ -1,14 +1,14 @@
 {{template "header"}}
-package {{.PackageName}}
+package {{.Var "package" ""}}
 
 import (
 	"bytes"
 	"errors"
-{{- if eq .PackageName "controlplane"}}
+{{- if eq (.Var "package" "") "controlplane"}}
 	"fmt"
 {{- end}}
 	"net/http"
-{{- if eq .PackageName "controlplane"}}
+{{- if eq (.Var "package" "") "controlplane"}}
 	"reflect"
 	"strings"
 {{- end}}
@@ -64,7 +64,7 @@ func (r *Response[T]) Events() (<-chan *Response[T], error) {
 	return r.events, nil
 }
 
-{{- if eq .PackageName "controlplane"}}
+{{- if eq (.Var "package" "") "controlplane"}}
 
 func (r *Response[T]) Error() string {
 	if r == nil || r.Status == "success" {

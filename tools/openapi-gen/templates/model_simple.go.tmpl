@@ -1,3 +1,4 @@
+{{define "model_simple" -}}
 {{$schema := .Schema}}
 {{$schemaName := .SchemaName}}
 {{$propNames := propertyNamesOrdered $schemaName $schema}}
@@ -108,3 +109,4 @@ func (m {{$schemaName}}) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(out)
 }
+{{- end}}

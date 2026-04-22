@@ -5,4 +5,4 @@
 
 package controlplane
 
-//go:generate go run -C ../tools/codegen . --input ../../controlplane.yaml --output ../../controlplane --package controlplane
+//go:generate go run -C ../tools/openapi-gen unikraft.com/x/tools/openapi-gen -i ../../controlplane.yaml -o ../../controlplane -v package=controlplane -t ./templates
