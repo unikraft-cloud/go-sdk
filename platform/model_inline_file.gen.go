@@ -8,30 +8,28 @@ package platform
 
 import "encoding/json"
 
-// Read-Only Memory (ROM) blob to attach to the instance.
+// An inline file entry represents a single file within an image.
+// (Optional).  The encoding of the data field.  Defaults to "text".
+type InlineFileEncoding string
 
-type InstanceRom struct {
-	// The name of the ROM to use for the instance configuration.
-	Name *string `json:"name,omitempty"`
-	// (Optional).  The image of the ROM to use for the instance configuration.
-	// Mutually exclusive with `files`.
-	Image *string `json:"image,omitempty"`
-	// (Optional).  The path at which the ROM should be automatically mounted
-	// inside the instance.  When set, the platform mounts the ROM device at
-	// the specified path so the guest does not need to mount it manually.
-	// When omitted, the ROM is exposed as a raw block device and the guest is
-	// responsible for mounting it.
-	At *string `json:"at,omitempty"`
-	// (Optional).  Inline files to use as the ROM content.  When specified,
-	// the platform creates an EROFS image from the provided files.
-	// Mutually exclusive with `image`.
-	Files []InlineFile `json:"files,omitempty"`
+const (
+	InlineFileEncodingText   InlineFileEncoding = "text"
+	InlineFileEncodingBase64 InlineFileEncoding = "base64"
+)
+
+type InlineFile struct {
+	// The file path within the image.
+	Path string `json:"path"`
+	// (Optional).  The encoding of the data field.  Defaults to "text".
+	Encoding *InlineFileEncoding `json:"encoding,omitempty"`
+	// The file data, encoded according to the encoding field.
+	Data string `json:"data"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *InstanceRom) UnmarshalJSON(data []byte) error {
-	type Alias InstanceRom
+func (m *InlineFile) UnmarshalJSON(data []byte) error {
+	type Alias InlineFile
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -42,10 +40,9 @@ func (m *InstanceRom) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"name":  {},
-		"image": {},
-		"at":    {},
-		"files": {},
+		"path":     {},
+		"encoding": {},
+		"data":     {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -58,8 +55,8 @@ func (m *InstanceRom) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m InstanceRom) MarshalJSON() ([]byte, error) {
-	type Alias InstanceRom
+func (m InlineFile) MarshalJSON() ([]byte, error) {
+	type Alias InlineFile
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

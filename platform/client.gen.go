@@ -291,6 +291,21 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
+	// Performs: GET /v1/image-store
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/images#get-image-store
+	GetImageStore(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImageStoreOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
+	// Retrieve all images.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
 	// Performs: GET /v1/images
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-images
@@ -1495,6 +1510,36 @@ func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, reque
 
 	resp := &Response[UpdateCertificateResponseData]{}
 	if err := doRequest[UpdateCertificateResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImageStoreOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
+	requestPath := "/v1/image-store"
+
+	query := make(url.Values)
+	if opts.Metro != nil {
+		query.Add("metro", *opts.Metro)
+	}
+	if opts.Digest != nil {
+		query.Add("digest", *opts.Digest)
+	}
+	if opts.Tag != nil {
+		query.Add("tag", *opts.Tag)
+	}
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[GetImagesResponseData]{}
+	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil

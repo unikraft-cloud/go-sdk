@@ -13,8 +13,13 @@ import "encoding/json"
 type CreateInstanceRequestRom struct {
 	// The name of the ROM to use for the instance configuration.
 	Name *string `json:"name,omitempty"`
-	// The image of the ROM to use for the instance configuration.
-	Image string `json:"image"`
+	// (Optional).  The image of the ROM to use for the instance configuration.
+	// Mutually exclusive with `files`.
+	Image *string `json:"image,omitempty"`
+	// (Optional).  Inline files to use as the ROM content.  When specified,
+	// the platform creates an EROFS image from the provided files.
+	// Mutually exclusive with `image`.
+	Files []InlineFile `json:"files,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -33,6 +38,7 @@ func (m *CreateInstanceRequestRom) UnmarshalJSON(data []byte) error {
 	knownKeys := map[string]struct{}{
 		"name":  {},
 		"image": {},
+		"files": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
