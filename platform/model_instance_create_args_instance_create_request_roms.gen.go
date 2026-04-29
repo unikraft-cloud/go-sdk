@@ -11,8 +11,13 @@ import "encoding/json"
 type InstanceCreateArgsInstanceCreateRequestRoms struct {
 	// The name of the ROM to use for the autoscale configuration.
 	Name *string `json:"name,omitempty"`
-	// The image of the ROM to use for the autoscale configuration.
-	Image string `json:"image"`
+	// (Optional).  The image of the ROM to use for the autoscale configuration.
+	// Mutually exclusive with `files`.
+	Image *string `json:"image,omitempty"`
+	// (Optional).  Inline files to use as the ROM content.  When specified,
+	// the platform creates an EROFS image from the provided files.
+	// Mutually exclusive with `image`.
+	Files []InlineFile `json:"files,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -31,6 +36,7 @@ func (m *InstanceCreateArgsInstanceCreateRequestRoms) UnmarshalJSON(data []byte)
 	knownKeys := map[string]struct{}{
 		"name":  {},
 		"image": {},
+		"files": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
