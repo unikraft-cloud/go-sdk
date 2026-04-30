@@ -8,17 +8,17 @@ package platform
 
 import "encoding/json"
 
-// The request message for converting one or more instances to templates.
+// The response data for this request.
 
-type CreateTemplateInstancesRequest struct {
-	// The list of IDs of the instances to convert to templates.
-	Ids []NameOrUUID `json:"ids"`
+type SuspendInstancesResponseData struct {
+	// The instance(s) which were suspended by the request.
+	Instances []SuspendInstancesResponseSuspendedInstance `json:"instances,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateTemplateInstancesRequest) UnmarshalJSON(data []byte) error {
-	type Alias CreateTemplateInstancesRequest
+func (m *SuspendInstancesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias SuspendInstancesResponseData
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -29,7 +29,7 @@ func (m *CreateTemplateInstancesRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"ids": {},
+		"instances": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -42,8 +42,8 @@ func (m *CreateTemplateInstancesRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateTemplateInstancesRequest) MarshalJSON() ([]byte, error) {
-	type Alias CreateTemplateInstancesRequest
+func (m SuspendInstancesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias SuspendInstancesResponseData
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

@@ -1,3 +1,4 @@
+{{define "model_enum" -}}
 {{$schema := .Schema}}
 {{$schemaName := .SchemaName}}
 {{if $schema.Description -}}
@@ -10,3 +11,4 @@ const (
 	{{$schemaName}}{{capitalizeEnum (replace "-" "_" (printf "%v" .))}} {{$schemaName}} = {{printf "%q" .}}
 {{- end}}
 )
+{{- end}}

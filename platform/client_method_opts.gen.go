@@ -15,20 +15,18 @@ type GetCertificatesOpts struct {
 	Sortby  *string
 }
 
+// GetImageStoreOpts holds query-parameter options for [Client.GetImageStore].
+type GetImageStoreOpts struct {
+	Metro  *string
+	Digest *string
+	Tag    *string
+}
+
 // GetImagesOpts holds query-parameter options for [Client.GetImages].
 type GetImagesOpts struct {
-	Metro     *string
-	Namespace *string
-}
-
-// DeleteInstanceByUUIDOpts holds query-parameter options for [Client.DeleteInstanceByUUID].
-type DeleteInstanceByUUIDOpts struct {
-	TimeoutS *int32
-}
-
-// DeleteInstancesOpts holds query-parameter options for [Client.DeleteInstances].
-type DeleteInstancesOpts struct {
-	TimeoutS *int32
+	Metro  *string
+	Digest *string
+	Tag    *string
 }
 
 // GetInstanceByUUIDOpts holds query-parameter options for [Client.GetInstanceByUUID].

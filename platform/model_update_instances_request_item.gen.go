@@ -13,16 +13,20 @@ import "encoding/json"
 type UpdateInstancesRequestItemProp string
 
 const (
-	UpdateInstancesRequestItemPropImage         UpdateInstancesRequestItemProp = "image"
-	UpdateInstancesRequestItemPropArgs          UpdateInstancesRequestItemProp = "args"
-	UpdateInstancesRequestItemPropEnv           UpdateInstancesRequestItemProp = "env"
-	UpdateInstancesRequestItemPropMemory_mb     UpdateInstancesRequestItemProp = "memory_mb"
-	UpdateInstancesRequestItemPropVcpus         UpdateInstancesRequestItemProp = "vcpus"
-	UpdateInstancesRequestItemPropScale_to_zero UpdateInstancesRequestItemProp = "scale_to_zero"
-	UpdateInstancesRequestItemPropTags          UpdateInstancesRequestItemProp = "tags"
-	UpdateInstancesRequestItemPropDelete_lock   UpdateInstancesRequestItemProp = "delete_lock"
-	UpdateInstancesRequestItemPropSchedules     UpdateInstancesRequestItemProp = "schedules"
-	UpdateInstancesRequestItemPropAutokill      UpdateInstancesRequestItemProp = "autokill"
+	UpdateInstancesRequestItemPropImage          UpdateInstancesRequestItemProp = "image"
+	UpdateInstancesRequestItemPropArgs           UpdateInstancesRequestItemProp = "args"
+	UpdateInstancesRequestItemPropEnv            UpdateInstancesRequestItemProp = "env"
+	UpdateInstancesRequestItemPropMemory_mb      UpdateInstancesRequestItemProp = "memory_mb"
+	UpdateInstancesRequestItemPropVcpus          UpdateInstancesRequestItemProp = "vcpus"
+	UpdateInstancesRequestItemPropScale_to_zero  UpdateInstancesRequestItemProp = "scale_to_zero"
+	UpdateInstancesRequestItemPropTags           UpdateInstancesRequestItemProp = "tags"
+	UpdateInstancesRequestItemPropDelete_lock    UpdateInstancesRequestItemProp = "delete_lock"
+	UpdateInstancesRequestItemPropSchedules      UpdateInstancesRequestItemProp = "schedules"
+	UpdateInstancesRequestItemPropAutokill       UpdateInstancesRequestItemProp = "autokill"
+	UpdateInstancesRequestItemPropHostname       UpdateInstancesRequestItemProp = "hostname"
+	UpdateInstancesRequestItemPropRoms           UpdateInstancesRequestItemProp = "roms"
+	UpdateInstancesRequestItemPropDependencies   UpdateInstancesRequestItemProp = "dependencies"
+	UpdateInstancesRequestItemPropSched_priority UpdateInstancesRequestItemProp = "sched_priority"
 )
 
 // The operation to perform on the property.
@@ -57,6 +61,10 @@ type UpdateInstancesRequestItem struct {
 	// - For "schedules": array of schedule objects (with name, when, action, and optional args fields).
 	//   Use action "exec" together with args to execute a command at the scheduled time.
 	// - For "autokill": object with time_ms and num_requests fields
+	// - For "hostname": string (valid DNS label)
+	// - For "roms": array of ROM objects (with name and image fields) for SET/ADD, or array of ROM names for DEL
+	// - For "dependencies": array of instance identifiers (name or UUID)
+	// - For "sched_priority": integer (scheduling priority value)
 	Value *interface{} `json:"value,omitempty"`
 	// The UUID of the instance to update. Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitempty"`

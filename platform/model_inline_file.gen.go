@@ -6,30 +6,30 @@
 
 package platform
 
-import (
-	"encoding/json"
-	"time"
+import "encoding/json"
+
+// An inline file entry represents a single file within an image.
+// (Optional).  The encoding of the data field.  Defaults to "text".
+type InlineFileEncoding string
+
+const (
+	InlineFileEncodingText   InlineFileEncoding = "text"
+	InlineFileEncodingBase64 InlineFileEncoding = "base64"
 )
 
-type Image struct {
-	Url *string `json:"url,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro of the image.
-	Metro *string `json:"metro,omitempty"`
-	// The time the volume was created.
-	CreatedAt   *time.Time        `json:"created_at,omitempty"`
-	InitrdOrRom *bool             `json:"initrd_or_rom,omitempty"`
-	SizeInBytes *int64            `json:"size_in_bytes,omitempty"`
-	Args        []string          `json:"args,omitempty"`
-	Env         map[string]string `json:"env,omitempty"`
-	Tags        []string          `json:"tags,omitempty"`
-	Users       []string          `json:"users,omitempty"`
+type InlineFile struct {
+	// The file path within the image.
+	Path string `json:"path"`
+	// (Optional).  The encoding of the data field.  Defaults to "text".
+	Encoding *InlineFileEncoding `json:"encoding,omitempty"`
+	// The file data, encoded according to the encoding field.
+	Data string `json:"data"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *Image) UnmarshalJSON(data []byte) error {
-	type Alias Image
+func (m *InlineFile) UnmarshalJSON(data []byte) error {
+	type Alias InlineFile
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -40,15 +40,9 @@ func (m *Image) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"url":           {},
-		"metro":         {},
-		"created_at":    {},
-		"initrd_or_rom": {},
-		"size_in_bytes": {},
-		"args":          {},
-		"env":           {},
-		"tags":          {},
-		"users":         {},
+		"path":     {},
+		"encoding": {},
+		"data":     {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -61,8 +55,8 @@ func (m *Image) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m Image) MarshalJSON() ([]byte, error) {
-	type Alias Image
+func (m InlineFile) MarshalJSON() ([]byte, error) {
+	type Alias InlineFile
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

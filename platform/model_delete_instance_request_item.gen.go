@@ -8,18 +8,25 @@ package platform
 
 import "encoding/json"
 
-// The request message for creating one or more template volumes.
+// The request item for deleting an instance by its UUID or name.
 
-type CreateTemplateVolumesRequest struct {
-	// The list of IDs of the volumes that will be converted into templates.
-	// Each ID can be either a UUID or a name.
-	Ids []NameOrUUID `json:"ids"`
+type DeleteInstanceRequestItem struct {
+	// (Only applies when using global control plane).
+	// The metro of the instance.
+	Metro *string `json:"metro,omitempty"`
+	// Timeout in seconds to wait for the instance to be deleted.  No wait
+	// performed for a value of 0.
+	TimeoutS *int64 `json:"timeout_s,omitempty"`
+	// Mutually exclusive with name.
+	Uuid *string `json:"uuid,omitempty"`
+	// Mutually exclusive with UUID.
+	Name *string `json:"name,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateTemplateVolumesRequest) UnmarshalJSON(data []byte) error {
-	type Alias CreateTemplateVolumesRequest
+func (m *DeleteInstanceRequestItem) UnmarshalJSON(data []byte) error {
+	type Alias DeleteInstanceRequestItem
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -30,7 +37,10 @@ func (m *CreateTemplateVolumesRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"ids": {},
+		"metro":     {},
+		"timeout_s": {},
+		"uuid":      {},
+		"name":      {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -43,8 +53,8 @@ func (m *CreateTemplateVolumesRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m CreateTemplateVolumesRequest) MarshalJSON() ([]byte, error) {
-	type Alias CreateTemplateVolumesRequest
+func (m DeleteInstanceRequestItem) MarshalJSON() ([]byte, error) {
+	type Alias DeleteInstanceRequestItem
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

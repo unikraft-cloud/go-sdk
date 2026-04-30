@@ -6,30 +6,20 @@
 
 package platform
 
-import (
-	"encoding/json"
-	"time"
-)
+import "encoding/json"
 
-type Image struct {
-	Url *string `json:"url,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro of the image.
-	Metro *string `json:"metro,omitempty"`
-	// The time the volume was created.
-	CreatedAt   *time.Time        `json:"created_at,omitempty"`
-	InitrdOrRom *bool             `json:"initrd_or_rom,omitempty"`
-	SizeInBytes *int64            `json:"size_in_bytes,omitempty"`
-	Args        []string          `json:"args,omitempty"`
-	Env         map[string]string `json:"env,omitempty"`
-	Tags        []string          `json:"tags,omitempty"`
-	Users       []string          `json:"users,omitempty"`
+// Parameters for suspending the instance.
+
+type SuspendInstanceByUUIDRequestBody struct {
+	// Timeout for draining connections in milliseconds.  No draining
+	// will occur if set to 0.  Use -1 for the largest possible value.
+	DrainTimeoutMs *uint64 `json:"drain_timeout_ms,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *Image) UnmarshalJSON(data []byte) error {
-	type Alias Image
+func (m *SuspendInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) error {
+	type Alias SuspendInstanceByUUIDRequestBody
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -40,15 +30,7 @@ func (m *Image) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"url":           {},
-		"metro":         {},
-		"created_at":    {},
-		"initrd_or_rom": {},
-		"size_in_bytes": {},
-		"args":          {},
-		"env":           {},
-		"tags":          {},
-		"users":         {},
+		"drain_timeout_ms": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -61,8 +43,8 @@ func (m *Image) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m Image) MarshalJSON() ([]byte, error) {
-	type Alias Image
+func (m SuspendInstanceByUUIDRequestBody) MarshalJSON() ([]byte, error) {
+	type Alias SuspendInstanceByUUIDRequestBody
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

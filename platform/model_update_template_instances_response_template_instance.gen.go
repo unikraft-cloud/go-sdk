@@ -17,7 +17,7 @@ type UpdateTemplateInstancesResponseTemplateInstance struct {
 	// The metro of the template instance.
 	Metro *string `json:"metro,omitempty"`
 	// The status of this particular template instance update operation.
-	Status *string `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// (Optional).  The client-provided ID from the request.
 	Id *string `json:"id,omitempty"`
 	// An optional message providing additional information about the status.

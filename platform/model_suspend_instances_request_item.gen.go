@@ -8,15 +8,25 @@ package platform
 
 import "encoding/json"
 
-type TagOrDigest struct {
-	Digest *string `json:"digest,omitempty"`
-	Tag    *string `json:"tag,omitempty"`
+// A single request item to suspend an instance.
+
+type SuspendInstancesRequestItem struct {
+	// (Only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
+	// Timeout for draining connections in milliseconds.  No draining
+	// will occur if set to 0.  Use -1 for the largest possible value.
+	DrainTimeoutMs *uint64 `json:"drain_timeout_ms,omitempty"`
+	// The UUID of the instance to suspend.  Mutually exclusive with name.
+	Uuid *string `json:"uuid,omitempty"`
+	// The name of the instance to suspend.  Mutually exclusive with UUID.
+	Name *string `json:"name,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *TagOrDigest) UnmarshalJSON(data []byte) error {
-	type Alias TagOrDigest
+func (m *SuspendInstancesRequestItem) UnmarshalJSON(data []byte) error {
+	type Alias SuspendInstancesRequestItem
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -27,8 +37,10 @@ func (m *TagOrDigest) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"digest": {},
-		"tag":    {},
+		"metro":            {},
+		"drain_timeout_ms": {},
+		"uuid":             {},
+		"name":             {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -41,8 +53,8 @@ func (m *TagOrDigest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m TagOrDigest) MarshalJSON() ([]byte, error) {
-	type Alias TagOrDigest
+func (m SuspendInstancesRequestItem) MarshalJSON() ([]byte, error) {
+	type Alias SuspendInstancesRequestItem
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

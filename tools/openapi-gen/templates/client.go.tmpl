@@ -1,5 +1,5 @@
 {{template "header"}}
-package {{.PackageName}}
+package {{.Var "package" ""}}
 
 import (
 	"bytes"
@@ -19,7 +19,7 @@ type Client interface {
 {{- range .Operations}}
 {{- template "interface_method" .}}
 {{- end}}
-{{- if eq $.PackageName "platform"}}
+{{- if eq ($.Var "package" "") "platform"}}
 	// WithMetro sets the metro to use when connecting to the API.
 	WithMetro(string) Client
 {{- else}}
@@ -52,7 +52,7 @@ func NewClient(copts ...ClientOption) Client {
 		options.SetToken(os.Getenv("KRAFTCLOUD_TOKEN"))
 	}
 
-{{if eq $.PackageName "platform"}}
+{{if eq ($.Var "package" "") "platform"}}
 	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(os.Getenv("UKC_METRO"))
 	}
@@ -83,7 +83,7 @@ func NewClient(copts ...ClientOption) Client {
 type client struct {
 	request *Request
 }
-{{- if eq $.PackageName "platform"}}
+{{- if eq ($.Var "package" "") "platform"}}
 
 // WithMetro sets the metro to use when connecting to the API.
 func (c *client) WithMetro(m string) Client {
@@ -128,7 +128,7 @@ func (c *client) clone() *client {
 {{- $op := .Operation}}
 {{- $path := .Path}}
 {{- $method := .Method}}
-{{- $pkg := .PackageName}}
+{{- $pkg := .Var "package" ""}}
 {{- $pathParams := list}}
 {{- $queryParams := list}}
 {{- range $op.Parameters}}
@@ -213,7 +213,7 @@ func (c *client) clone() *client {
 {{- $op := .Operation}}
 {{- $path := .Path}}
 {{- $method := .Method}}
-{{- $pkg := .PackageName}}
+{{- $pkg := .Var "package" ""}}
 {{- $pathParams := list}}
 {{- $queryParams := list}}
 {{- range $op.Parameters}}

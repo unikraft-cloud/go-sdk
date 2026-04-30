@@ -8,22 +8,15 @@ package platform
 
 import "encoding/json"
 
-// (Optional).  The UUID of a template instance to create the instance from.
-
-type CreateInstanceRequestTemplateNameOrUuid struct {
-	// (Only applies when using global control plane).
-	// The metro of the resource.
-	Metro *string `json:"metro,omitempty"`
-	// Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
-	// Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+type GetImagesRequestTagOrDigest struct {
+	Digest *string `json:"digest,omitempty"`
+	Tag    *string `json:"tag,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *CreateInstanceRequestTemplateNameOrUuid) UnmarshalJSON(data []byte) error {
-	type Alias CreateInstanceRequestTemplateNameOrUuid
+func (m *GetImagesRequestTagOrDigest) UnmarshalJSON(data []byte) error {
+	type Alias GetImagesRequestTagOrDigest
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -34,9 +27,8 @@ func (m *CreateInstanceRequestTemplateNameOrUuid) UnmarshalJSON(data []byte) err
 	}
 
 	knownKeys := map[string]struct{}{
-		"metro": {},
-		"uuid":  {},
-		"name":  {},
+		"digest": {},
+		"tag":    {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -49,8 +41,8 @@ func (m *CreateInstanceRequestTemplateNameOrUuid) UnmarshalJSON(data []byte) err
 	return nil
 }
 
-func (m CreateInstanceRequestTemplateNameOrUuid) MarshalJSON() ([]byte, error) {
-	type Alias CreateInstanceRequestTemplateNameOrUuid
+func (m GetImagesRequestTagOrDigest) MarshalJSON() ([]byte, error) {
+	type Alias GetImagesRequestTagOrDigest
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

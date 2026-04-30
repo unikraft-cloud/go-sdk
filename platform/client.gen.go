@@ -291,10 +291,25 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/images/list
+	// Performs: GET /v1/image-store
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/images#get-image-store
+	GetImageStore(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImageStoreOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
+	// Retrieve all images.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/images
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-images
-	GetImages(ctx context.Context, request TagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
+	GetImages(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
 	// Create an instance in Unikraft Cloud.
 	//
 	// @param `request`
@@ -322,7 +337,7 @@ type Client interface {
 	// Performs: POST /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#create-template-instances
-	CreateTemplateInstances(ctx context.Context, request CreateTemplateInstancesRequest, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error)
+	CreateTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error)
 	// Delete a specified instance by its UUID.  After this call the UUID of the
 	// instance is no longer valid.  If the instance is currently running,
 	// it is force-stopped.
@@ -330,8 +345,8 @@ type Client interface {
 	// @param `uuid`
 	// 	The UUID of the instance to delete.
 	//
-	// @param `opts`
-	// 	Optional query parameters for this operation.
+	// @param `request`
+	// 	The request body for this operation.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
@@ -339,7 +354,7 @@ type Client interface {
 	// Performs: DELETE /v1/instances/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instance-by-uuid
-	DeleteInstanceByUUID(ctx context.Context, uuid string, opts DeleteInstanceByUUIDOpts, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
+	DeleteInstanceByUUID(ctx context.Context, uuid string, request DeleteInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
 	// Delete the specified instance(s) by ID(s) (name or UUID).  After this call
 	// the IDs of the instances are no longer valid.  If the instances are
 	// currently running, they are force-stopped.
@@ -347,16 +362,13 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `opts`
-	// 	Optional query parameters for this operation.
-	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: DELETE /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instances
-	DeleteInstances(ctx context.Context, request []NameOrUUID, opts DeleteInstancesOpts, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
+	DeleteInstances(ctx context.Context, request []DeleteInstanceRequestItem, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
 	// Delete a specified template instance by its UUID.  After this call the UUID
 	// of the template instance is no longer valid.
 	//
@@ -553,6 +565,35 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instances
 	StopInstances(ctx context.Context, request []StopInstancesRequestItem, ropts ...RequestOption) (*Response[StopInstancesResponseData], error)
+	// Suspend a running instance by its UUID or do nothing if the instance is
+	// already suspended.
+	//
+	// @param `uuid`
+	// 	The UUID of the instance to suspend.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PUT /v1/instances/{uuid}/suspend
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#suspend-instance-by-uuid
+	SuspendInstanceByUUID(ctx context.Context, uuid string, request SuspendInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error)
+	// Suspend one or more running instances by ID(s) (name or UUID) or do
+	// nothing if the instances are already suspended.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PUT /v1/instances/suspend
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#suspend-instances
+	SuspendInstances(ctx context.Context, request []SuspendInstancesRequestItem, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error)
 	// Update (modify) an instance by its UUID.  The instance must be in a stopped
 	// state for most update operations.
 	//
@@ -874,7 +915,7 @@ type Client interface {
 	// Performs: POST /v1/volumes/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#create-template-volume
-	CreateTemplateVolume(ctx context.Context, request CreateTemplateVolumesRequest, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error)
+	CreateTemplateVolume(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error)
 	// Create a volume given the specified configuration parameters.
 	// The volume is automatically initialized with an empty file system.
 	// After initialization, the volume is in the `available` state and can be
@@ -1474,20 +1515,57 @@ func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, reque
 	return resp, nil
 }
 
-func (c *client) GetImages(ctx context.Context, request TagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
-	requestPath := "/v1/images/list"
+func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImageStoreOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
+	requestPath := "/v1/image-store"
 
 	query := make(url.Values)
 	if opts.Metro != nil {
 		query.Add("metro", *opts.Metro)
 	}
-	if opts.Namespace != nil {
-		query.Add("namespace", *opts.Namespace)
+	if opts.Digest != nil {
+		query.Add("digest", *opts.Digest)
+	}
+	if opts.Tag != nil {
+		query.Add("tag", *opts.Tag)
 	}
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[GetImagesResponseData]{}
+	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) GetImages(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
+	requestPath := "/v1/images"
+
+	query := make(url.Values)
+	if opts.Metro != nil {
+		query.Add("metro", *opts.Metro)
+	}
+	if opts.Digest != nil {
+		query.Add("digest", *opts.Digest)
+	}
+	if opts.Tag != nil {
+		query.Add("tag", *opts.Tag)
+	}
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[GetImagesResponseData]{}
@@ -1512,12 +1590,16 @@ func (c *client) CreateInstance(ctx context.Context, request CreateInstanceReque
 	return resp, nil
 }
 
-func (c *client) CreateTemplateInstances(ctx context.Context, request CreateTemplateInstancesRequest, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error) {
+func (c *client) CreateTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[CreateTemplateInstancesResponseData]{}
@@ -1527,29 +1609,24 @@ func (c *client) CreateTemplateInstances(ctx context.Context, request CreateTemp
 	return resp, nil
 }
 
-func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, opts DeleteInstanceByUUIDOpts, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
+func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, request DeleteInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
 
-	query := make(url.Values)
-	if opts.TimeoutS != nil {
-		query.Add("timeout_s", fmt.Sprintf("%d", *opts.TimeoutS))
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
 	resp := &Response[DeleteInstancesResponseData]{}
-	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteInstances(ctx context.Context, request []NameOrUUID, opts DeleteInstancesOpts, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
+func (c *client) DeleteInstances(ctx context.Context, request []DeleteInstanceRequestItem, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
 	requestPath := "/v1/instances"
-
-	query := make(url.Values)
-	if opts.TimeoutS != nil {
-		query.Add("timeout_s", fmt.Sprintf("%d", *opts.TimeoutS))
-	}
 
 	var body []byte
 	var err error
@@ -1561,7 +1638,7 @@ func (c *client) DeleteInstances(ctx context.Context, request []NameOrUUID, opts
 	}
 
 	resp := &Response[DeleteInstancesResponseData]{}
-	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1837,6 +1914,41 @@ func (c *client) StopInstances(ctx context.Context, request []StopInstancesReque
 
 	resp := &Response[StopInstancesResponseData]{}
 	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) SuspendInstanceByUUID(ctx context.Context, uuid string, request SuspendInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error) {
+	requestPath := "/v1/instances/{uuid}/suspend"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[SuspendInstancesResponseData]{}
+	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) SuspendInstances(ctx context.Context, request []SuspendInstancesRequestItem, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error) {
+	requestPath := "/v1/instances/suspend"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[SuspendInstancesResponseData]{}
+	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2190,12 +2302,16 @@ func (c *client) CloneVolumes(ctx context.Context, request []CloneVolumesRequest
 	return resp, nil
 }
 
-func (c *client) CreateTemplateVolume(ctx context.Context, request CreateTemplateVolumesRequest, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error) {
+func (c *client) CreateTemplateVolume(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/templates"
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[CreateTemplateVolumesResponseData]{}

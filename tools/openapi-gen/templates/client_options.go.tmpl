@@ -1,5 +1,5 @@
 {{template "header"}}
-package {{.PackageName}}
+package {{.Var "package" ""}}
 
 import (
 	"unikraft.com/cloud/sdk/pkg/httpclient"
@@ -27,7 +27,7 @@ func (opts *ClientOptions) SetDefaultEndpoint(endpoint string) {
 	opts.defaultEndpoint = endpoint
 }
 
-{{- if eq .PackageName "platform"}}
+{{- if eq (.Var "package" "") "platform"}}
 // SetDefaultMetro sets the default metro.
 func (opts *ClientOptions) SetDefaultMetro(metro string) {
 	opts.defaultEndpoint = EndpointForMetro(metro)
@@ -83,7 +83,7 @@ func WithDefaultEndpoint(endpoint string) ClientOption {
 	}
 }
 
-{{- if eq .PackageName "platform"}}
+{{- if eq (.Var "package" "") "platform"}}
 // WithDefaultMetro sets the default metro for the client.
 func WithDefaultMetro(metro string) ClientOption {
 	return func(client *ClientOptions) {
