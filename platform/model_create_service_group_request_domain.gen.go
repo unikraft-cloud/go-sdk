@@ -14,8 +14,10 @@ type CreateServiceGroupRequestDomain struct {
 	// Publicly accessible domain name.  If this name ends in a period `.` it must
 	// be a valid Full Qualified Domain Name (FQDN), otherwise it will become a
 	// subdomain of the target metro.
-	Name        string                                      `json:"name"`
-	Certificate *CreateServiceGroupRequestDomainCertificate `json:"certificate,omitempty"`
+	Name string `json:"name"`
+	// Use an existing certificate for the domain.  If this field is
+	// specified, the domain must be associated with a valid certificate.
+	Certificate *NameOrUUID `json:"certificate,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

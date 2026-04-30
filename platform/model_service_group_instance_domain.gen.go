@@ -23,8 +23,14 @@ type ServiceGroupInstanceDomain struct {
 	// If this name ends in a period `.` it must be a valid Full Qualified
 	// Domain Name (FQDN), otherwise it will become a subdomain of the target
 	// metro.
-	Fqdn        *string                                `json:"fqdn,omitempty"`
-	Certificate *ServiceGroupInstanceDomainCertificate `json:"certificate,omitempty"`
+	Fqdn *string `json:"fqdn,omitempty"`
+	// The certificate associated with the domain.
+	//
+	// The certificate is used to secure the domain with TLS/SSL.  If no
+	// certificate is specified, Unikraft Cloud will automatically generate a
+	// new certificate for the domain based on Let's Encrypt and seek to
+	// accomplish a DNS-01 challenge.
+	Certificate *NameOrUUID `json:"certificate,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

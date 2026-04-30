@@ -8,8 +8,6 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type WaitNodesResponseData struct {
 	// The nodes after reaching the desired state.
 	Nodes []Node `json:"nodes,omitempty"`

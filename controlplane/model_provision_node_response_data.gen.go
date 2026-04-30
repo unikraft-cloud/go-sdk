@@ -8,10 +8,9 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type ProvisionNodeResponseData struct {
-	Node *ProvisionNodeResponseDataNode `json:"node,omitempty"`
+	// The created node.
+	Node *Node `json:"node,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

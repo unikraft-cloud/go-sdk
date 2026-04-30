@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// Additional limits
-
 type QuotasLimits struct {
 	// Minimum amount of memory assigned to live instances in megabytes
 	MinMemoryMb *int64 `json:"min_memory_mb,omitempty"`

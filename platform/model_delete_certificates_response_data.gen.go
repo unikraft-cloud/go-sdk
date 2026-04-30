@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type DeleteCertificatesResponseData struct {
 	// The certificate(s) which were deleted by the request.
 	Certificates []DeleteCertificatesResponseDeletedCertificate `json:"certificates,omitempty"`

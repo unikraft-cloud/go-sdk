@@ -8,8 +8,6 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type ListRegionsResponseData struct {
 	// The list of available regions.
 	Regions []Region `json:"regions,omitempty"`

@@ -30,8 +30,9 @@ type ProvisionNodeRequest struct {
 	// SSH keys for accessing the node. At least one key is required.
 	SshKeys []SSHKey `json:"ssh_keys"`
 	// Optional user-defined tags.
-	Tags           map[string]string                   `json:"tags,omitempty"`
-	ProviderConfig *ProvisionNodeRequestProviderConfig `json:"provider_config,omitempty"`
+	Tags map[string]string `json:"tags,omitempty"`
+	// Optional provider-specific configuration for advanced customization.
+	ProviderConfig *NodeProviderConfig `json:"provider_config,omitempty"`
 	// The Unikraft Cloud metro to associate this machine with.
 	Metro *string `json:"metro,omitempty"`
 	// Optional user overrides for platform configuration. Keys should be

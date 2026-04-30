@@ -15,8 +15,9 @@ type CreateTemplateVolumesResponse struct {
 	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Message *string                            `json:"message,omitempty"`
-	Data    *CreateTemplateVolumesResponseData `json:"data,omitempty"`
+	Message *string `json:"message,omitempty"`
+	// The response data for this request
+	Data *CreateTemplateVolumesResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process

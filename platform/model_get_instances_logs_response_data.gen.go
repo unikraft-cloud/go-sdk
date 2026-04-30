@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type GetInstancesLogsResponseData struct {
 	// The instance which this requested waited on.
 	//

@@ -8,8 +8,6 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type ListMetroResponseData struct {
 	// The list of metros.
 	Metros []Metro `json:"metros,omitempty"`

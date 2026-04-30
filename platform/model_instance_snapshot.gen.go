@@ -8,7 +8,7 @@ package platform
 
 import "encoding/json"
 
-// The snapshot of the instance, if exists.
+// The snapshot UUID of the instance.
 
 type InstanceSnapshot struct {
 	// The UUID of the snapshot.

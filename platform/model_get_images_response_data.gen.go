@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type GetImagesResponseData struct {
 	// The list of images.
 	Images []Image `json:"images,omitempty"`

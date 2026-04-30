@@ -8,8 +8,6 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type DestroyNodeResponseData struct {
 	// The deleted nodes (with their final state before deletion).
 	Nodes []Node `json:"nodes,omitempty"`

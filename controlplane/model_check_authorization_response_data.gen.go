@@ -8,8 +8,6 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type CheckAuthorizationResponseData struct {
 	// The authorization token which can be used to authenticate requests.
 	Token *string `json:"token,omitempty"`

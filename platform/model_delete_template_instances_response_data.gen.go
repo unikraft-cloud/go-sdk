@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type DeleteTemplateInstancesResponseData struct {
 	// List of template instances that were processed during the delete operation.
 	Instances []DeleteTemplateInstancesResponseTemplateInstance `json:"instances,omitempty"`

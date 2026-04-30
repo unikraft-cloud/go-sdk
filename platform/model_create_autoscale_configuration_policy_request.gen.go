@@ -13,8 +13,9 @@ import "encoding/json"
 
 type CreateAutoscaleConfigurationPolicyRequest struct {
 	// The Name of the service to add a policy to.
-	Name string                                        `json:"name"`
-	Type CreateAutoscaleConfigurationPolicyRequestType `json:"type"`
+	Name string `json:"name"`
+	// The policy type to add to the autoscale configuration.
+	Type AutoscalePolicy `json:"type"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
