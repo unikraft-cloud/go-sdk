@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type CreateCertificateResponseData struct {
 	// The certificate which was created by this request.
 	//

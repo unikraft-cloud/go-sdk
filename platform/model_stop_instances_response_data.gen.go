@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type StopInstancesResponseData struct {
 	// The instance(s) which were stopped by the request.
 	Instances []StopInstancesResponseStoppedInstance `json:"instances,omitempty"`

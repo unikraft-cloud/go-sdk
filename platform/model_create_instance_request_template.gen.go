@@ -8,10 +8,7 @@ package platform
 
 import "encoding/json"
 
-// Template instances.
-// An existing instance can be saved as a template. This template is then
-// used to create new instances that inherit the exact configuration and
-// state the original instance had when the template was created.
+// Defines the source template used to build a new instance.
 
 type CreateInstanceRequestTemplate struct {
 	// (Optional).  Whether the instance needs to run in order to reach template state
@@ -24,8 +21,9 @@ type CreateInstanceRequestTemplate struct {
 	Name *string `json:"name,omitempty"`
 	// (Only applies when using global control plane).
 	// Where the volume is located.
-	Metro      *string                                  `json:"metro,omitempty"`
-	CreateArgs *CreateInstanceRequestTemplateCreateArgs `json:"create_args,omitempty"`
+	Metro *string `json:"metro,omitempty"`
+	// (Optional). Configuration parameters to apply when building the new instance from the source template.
+	CreateArgs *Instance `json:"create_args,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

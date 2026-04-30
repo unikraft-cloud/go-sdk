@@ -89,8 +89,9 @@ type Node struct {
 	// The Unikraft Cloud metro this machine is associated with.
 	Metro *string `json:"metro,omitempty"`
 	// The provider-specific instance ID or resource identifier.
-	ProviderInstanceId *string             `json:"provider_instance_id,omitempty"`
-	ProviderConfig     *NodeProviderConfig `json:"provider_config,omitempty"`
+	ProviderInstanceId *string `json:"provider_instance_id,omitempty"`
+	// Provider-specific configuration that was used to provision this node.
+	ProviderConfig *NodeProviderConfig `json:"provider_config,omitempty"`
 	// User-defined tags for organizing and filtering nodes.
 	Tags map[string]string `json:"tags,omitempty"`
 	// The time when the machine became ready (entered READY state).

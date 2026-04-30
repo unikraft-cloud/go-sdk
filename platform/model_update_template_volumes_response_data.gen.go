@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type UpdateTemplateVolumesResponseData struct {
 	// The template volume(s) which were updated by the request.
 	Volumes []UpdateTemplateVolumesResponseTemplateVolume `json:"volumes,omitempty"`

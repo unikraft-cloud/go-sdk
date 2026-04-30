@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type CreateTemplateInstancesResponseData struct {
 	// List of template instances that were created during the operation.
 	Instances []CreateTemplateInstancesResponseTemplateInstance `json:"instances,omitempty"`

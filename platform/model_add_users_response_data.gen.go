@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type AddUsersResponseData struct {
 	// The status of the operation for each user in the request.
 	Results []DataResult `json:"results,omitempty"`

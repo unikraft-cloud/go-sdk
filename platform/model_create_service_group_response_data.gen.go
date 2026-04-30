@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type CreateServiceGroupResponseData struct {
 	// The service group which was created by this request.
 	//

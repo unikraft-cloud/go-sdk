@@ -8,8 +8,8 @@ package platform
 
 import "encoding/json"
 
-// (Optional).  Automatic delete-on-idle/request-limit configuration.
-// Not used for template instances.
+// Automatic delete-on-idle/request-limit configuration for non-template
+// instances.
 
 type CreateInstanceRequestAutokill struct {
 	// Time in milliseconds after the instance was stopped before it is deleted.

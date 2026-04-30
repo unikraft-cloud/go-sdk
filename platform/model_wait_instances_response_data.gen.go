@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type WaitInstancesResponseData struct {
 	// The instance(s) which this requested waited on.
 	Instances []WaitInstancesResponseWaitedInstance `json:"instances,omitempty"`

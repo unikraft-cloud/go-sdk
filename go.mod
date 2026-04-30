@@ -75,5 +75,5 @@ require (
 	unikraft.com/x/colors v0.0.0-20260105163520-49d071286efd // indirect
 	unikraft.com/x/guesstermwidth v0.0.0-20250930190923-15fda4a56ffe // indirect
 	unikraft.com/x/kingkong v0.0.0-20260105163520-49d071286efd // indirect
-	unikraft.com/x/tools/openapi-gen v0.0.0-20260421162904-5dff2d27682c // indirect
+	unikraft.com/x/tools/openapi-gen v0.0.0-20260430100043-1587f6eb3527 // indirect
 )

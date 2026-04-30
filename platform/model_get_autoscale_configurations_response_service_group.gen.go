@@ -31,8 +31,10 @@ type GetAutoscaleConfigurationsResponseServiceGroup struct {
 	WarmupTimeMs *int64 `json:"warmup_time_ms,omitempty"`
 	// The cooldown time in seconds for the autoscale configuration.
 	// Only if enabled is true.
-	CooldownTimeMs *int64                                                  `json:"cooldown_time_ms,omitempty"`
-	Template       *GetAutoscaleConfigurationsResponseServiceGroupTemplate `json:"template,omitempty"`
+	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitempty"`
+	// The instance template used for the autoscale configuration.
+	// Only if enabled is true.
+	Template *ServiceGroupTemplate `json:"template,omitempty"`
 	// The policies applied to the autoscale configuration.
 	Policies []AutoscalePolicy `json:"policies,omitempty"`
 	// An optional message providing additional information about the status.

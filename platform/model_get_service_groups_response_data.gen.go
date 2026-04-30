@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type GetServiceGroupsResponseData struct {
 	// The service group(s) which were retrieved by the request.
 	ServiceGroups []ServiceGroup `json:"service_groups,omitempty"`

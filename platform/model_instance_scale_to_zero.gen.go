@@ -8,24 +8,11 @@ package platform
 
 import "encoding/json"
 
-// The scale-to-zero configuration for the instance.
-//
-// With conventional cloud platforms you need to keep at least one instance
-// running at all times to be able to respond to incoming requests. Performing
-// a just-in-time cold boot is simply too time-consuming and would create a
-// response latency of multiple seconds.  This is not the case with Unikraft
-// Cloud.  Instances on Unikraft Cloud are able to cold boot within
-// milliseconds, which allows us to perform low-latency scale-to-zero.
-//
-// To enable scale-to-zero for an instance it is sufficient to add a
-// `scale_to_zero` configuration block.  Unikraft Cloud will then put the
-// instance into standby if there is no traffic to your service within the
-// window of a cooldown period.  When there is new traffic coming in, it is
-// automatically started again.
-//
-// If you have a heavyweight application that takes long to cold boot or has
-// bad first request latency (e.g., with JIT compilation) consider to enable
-// stateful scale-to-zero.
+// Scale-to-zero defines the configuration for scaling the instance to zero.
+// When an instance is scaled-to-zero it can be either stopped (and fully
+// shutdown) or paused wherein the state of the instance is preserved (e.g., RAM
+// contents) and the instance can be resumed later without losing its state,
+// i.e. "stateful".
 // The specific policy to use for scaling the instance to zero.
 type InstanceScaleToZeroPolicy string
 

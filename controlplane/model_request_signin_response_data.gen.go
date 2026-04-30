@@ -8,8 +8,6 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type RequestSigninResponseData struct {
 	// The full URL which can be used to remotely confirm the signin.
 	AuthorizationUrl *string `json:"authorization_url,omitempty"`

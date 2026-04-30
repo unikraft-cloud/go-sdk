@@ -8,7 +8,9 @@ package controlplane
 
 import "encoding/json"
 
-// Provider-specific configuration that was used to provision this node.
+// NodeProviderConfig contains provider-specific configuration for node
+// provisioning.  Use this for advanced customization beyond the common
+// machine_type and region fields.
 
 type NodeProviderConfig struct {
 	// AWS-specific configuration.

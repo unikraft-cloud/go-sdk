@@ -8,8 +8,6 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type NodeActivateResponseData struct {
 	// The issued license certificate in base64 URL encoded PEM format.
 	License *string `json:"license,omitempty"`

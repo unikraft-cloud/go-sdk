@@ -27,9 +27,12 @@ type GetInstancesLogsResponseLoggedInstance struct {
 	// The name of the instance.
 	Name *string `json:"name,omitempty"`
 	// Base64 encoded log output of the instance.
-	Output    *string                                          `json:"output,omitempty"`
-	Available *GetInstancesLogsResponseLoggedInstanceAvailable `json:"available,omitempty"`
-	Range     *GetInstancesLogsResponseLoggedInstanceRange     `json:"range,omitempty"`
+	Output *string `json:"output,omitempty"`
+	// Description of the log availability.
+	Available *GetInstancesLogsResponseAvailable `json:"available,omitempty"`
+	// Description of the range that was returned.  Useful for requests with
+	// offset relative to end.
+	Range *GetInstancesLogsResponseRange `json:"range,omitempty"`
 	// State of the instance when the logs were retrieved.
 	State *GetInstancesLogsResponseLoggedInstanceState `json:"state,omitempty"`
 	// An optional message providing additional information about the status.

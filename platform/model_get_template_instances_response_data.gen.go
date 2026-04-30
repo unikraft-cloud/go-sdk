@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type GetTemplateInstancesResponseData struct {
 	// List of template instances that were retrieved during the operation.
 	Instances []Instance `json:"instances,omitempty"`

@@ -16,8 +16,9 @@ type HealthzResponse struct {
 	// An optional message providing additional information about the response.
 	Message *string `json:"message,omitempty"`
 	// A list of errors which may have occurred during the request.
-	Errors []ResponseError      `json:"errors,omitempty"`
-	Data   *HealthzResponseData `json:"data,omitempty"`
+	Errors []ResponseError `json:"errors,omitempty"`
+	// The response data for this request.
+	Data *HealthzResponseData `json:"data,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process
 	// the request and generate the response.
 	OpTimeUs *uint64 `json:"op_time_us,omitempty"`

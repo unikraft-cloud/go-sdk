@@ -8,8 +8,6 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type ListNodesResponseData struct {
 	// The list of nodes matching the request.
 	Nodes []Node `json:"nodes,omitempty"`

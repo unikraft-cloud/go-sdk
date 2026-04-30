@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type GetInstancesMetricsResponseData struct {
 	// The instance which this requested metrics for.  Note: only one instance
 	// can be specified in the request, so this will always contain a single

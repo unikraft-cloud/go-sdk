@@ -8,8 +8,6 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type GetAuthorizationResponseData struct {
 	// The organization name the token is associated with.
 	OrganizationName *string `json:"organization_name,omitempty"`

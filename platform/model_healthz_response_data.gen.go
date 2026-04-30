@@ -8,7 +8,7 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
+// For now, no additional data is returned by the health check.
 
 type HealthzResponseData struct {
 	Services map[string]string `json:"services,omitempty"`

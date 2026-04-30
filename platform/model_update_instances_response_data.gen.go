@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type UpdateInstancesResponseData struct {
 	// List of instances that were processed during the update operation.
 	Instances []UpdateInstancesResponseUpdatedInstance `json:"instances,omitempty"`
