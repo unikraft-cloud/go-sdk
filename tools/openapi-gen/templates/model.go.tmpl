@@ -1,22 +1,11 @@
 {{- range .Models}}
---- {{snakecase .SchemaName}}
+--- model_{{snakecase .SchemaName}}.gen.go
 {{template "header" .}}
 package {{$.Var "package" ""}}
 
-{{$imports := collectImports .Schema}}
-{{- if not (isEnum .Schema)}}
-{{- $imports = append $imports "encoding/json"}}
-{{- end}}
-{{- $imports = uniq $imports}}
-{{if $imports}}
-{{range $imports}}
-import "{{.}}"
-{{end}}
-{{end}}
-
 {{$schema := .Schema}}
 {{$schemaName := .SchemaName}}
-{{if isEnum $schema}}
+{{if $schema.Enum}}
 {{template "model_enum" .}}
 {{else}}
 {{template "model_simple" .}}
