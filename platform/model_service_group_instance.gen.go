@@ -13,12 +13,12 @@ type ServiceGroupInstance struct {
 	// that is generated when the instance is created.  The UUID is used to
 	// reference the instance in API calls and can be used to identify the
 	// instance in all API calls that require an instance identifier.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the instance.  This is a human-readable name that can be used
 	// to identify the instance.  The name must be unique within the context of
 	// your account.  If no name is specified, a random name is generated for
 	// you.  The name can also be used to identify the instance in API calls.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

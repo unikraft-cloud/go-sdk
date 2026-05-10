@@ -12,7 +12,7 @@ import "encoding/json"
 
 type UpdateCertificateByUUIDRequest struct {
 	// The UUID of the certificate to update.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The new certificate chain.
 	//
 	// This is the public chain of the certificate in PEM format. The chain

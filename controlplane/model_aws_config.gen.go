@@ -32,7 +32,7 @@ type AWSConfig struct {
 	AdditionalVolumes []AWSEBSConfig `json:"additional_volumes,omitempty"`
 	// Whether to use a dedicated host. Dedicated hosts provide visibility and
 	// control over how instances are placed on physical servers.
-	DedicatedHost *bool `json:"dedicated_host,omitempty"`
+	DedicatedHost bool `json:"dedicated_host"`
 	// Placement group name for the instance. Placement groups influence how
 	// instances are placed on underlying hardware.
 	PlacementGroup *string `json:"placement_group,omitempty"`

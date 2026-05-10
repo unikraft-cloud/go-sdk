@@ -10,7 +10,7 @@ import "encoding/json"
 
 type AttachVolumeByUUIDRequestBody struct {
 	// UUID or name of the instance to attach the volume to.
-	AttachTo BodyInstanceID `json:"attach_to"`
+	AttachTo NameOrUUID `json:"attach_to"`
 	// Path of the mountpoint.
 	//
 	// The path must be absolute, not contain `.` and `..` components, and not

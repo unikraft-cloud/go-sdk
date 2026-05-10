@@ -13,14 +13,6 @@ import "encoding/json"
 // shutdown) or paused wherein the state of the instance is preserved (e.g., RAM
 // contents) and the instance can be resumed later without losing its state,
 // i.e. "stateful".
-// The specific policy to use for scaling the instance to zero.
-type InstanceScaleToZeroPolicy string
-
-const (
-	InstanceScaleToZeroPolicyOff  InstanceScaleToZeroPolicy = "off"
-	InstanceScaleToZeroPolicyOn   InstanceScaleToZeroPolicy = "on"
-	InstanceScaleToZeroPolicyIdle InstanceScaleToZeroPolicy = "idle"
-)
 
 type InstanceScaleToZero struct {
 	// Indicates whether scale-to-zero is enabled for the instance.

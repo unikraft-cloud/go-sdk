@@ -8,26 +8,13 @@ package platform
 
 import "encoding/json"
 
-// The current state of the instance.
-type WaitInstancesResponseWaitedInstanceState string
-
-const (
-	WaitInstancesResponseWaitedInstanceStateStopped  WaitInstancesResponseWaitedInstanceState = "stopped"
-	WaitInstancesResponseWaitedInstanceStateStarting WaitInstancesResponseWaitedInstanceState = "starting"
-	WaitInstancesResponseWaitedInstanceStateRunning  WaitInstancesResponseWaitedInstanceState = "running"
-	WaitInstancesResponseWaitedInstanceStateDraining WaitInstancesResponseWaitedInstanceState = "draining"
-	WaitInstancesResponseWaitedInstanceStateStopping WaitInstancesResponseWaitedInstanceState = "stopping"
-	WaitInstancesResponseWaitedInstanceStateTemplate WaitInstancesResponseWaitedInstanceState = "template"
-	WaitInstancesResponseWaitedInstanceStateStandby  WaitInstancesResponseWaitedInstanceState = "standby"
-)
-
 type WaitInstancesResponseWaitedInstance struct {
 	// The UUID of the instance.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the instance.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The current state of the instance.
-	State *WaitInstancesResponseWaitedInstanceState `json:"state,omitempty"`
+	State InstanceState `json:"state"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`

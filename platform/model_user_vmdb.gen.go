@@ -8,19 +8,25 @@ package platform
 
 import "encoding/json"
 
-// Reference to the instance to detach the volume from.
-
-type BodyInstanceID struct {
-	// The UUID of the instance that the volume is detached from.
-	Uuid *string `json:"uuid,omitempty"`
-	// The name of the instance that the volume is detached from.
-	Name *string `json:"name,omitempty"`
+type UserVmdb struct {
+	// Maximum number of VM instances the user can have at one moment.
+	MaxInstances *int32 `json:"max_instances,omitempty"`
+	// Minimum amount of memory assigned to a VM in MB.
+	MinMemoryMb *int32 `json:"min_memory_mb,omitempty"`
+	// Default amount of memory assigned to a VM in MB.
+	DefMemoryMb *int32 `json:"def_memory_mb,omitempty"`
+	// Maximum amount of memory assigned to a VM in MB.
+	MaxMemoryMb *int32 `json:"max_memory_mb,omitempty"`
+	// Minimum number of vCPUs assigned to a VM.
+	MinVcpus *int32 `json:"min_vcpus,omitempty"`
+	// Maximum number of vCPUs assigned to a VM.
+	MaxVcpus *int32 `json:"max_vcpus,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *BodyInstanceID) UnmarshalJSON(data []byte) error {
-	type Alias BodyInstanceID
+func (m *UserVmdb) UnmarshalJSON(data []byte) error {
+	type Alias UserVmdb
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -31,8 +37,12 @@ func (m *BodyInstanceID) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"uuid": {},
-		"name": {},
+		"max_instances": {},
+		"min_memory_mb": {},
+		"def_memory_mb": {},
+		"max_memory_mb": {},
+		"min_vcpus":     {},
+		"max_vcpus":     {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
@@ -45,8 +55,8 @@ func (m *BodyInstanceID) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m BodyInstanceID) MarshalJSON() ([]byte, error) {
-	type Alias BodyInstanceID
+func (m UserVmdb) MarshalJSON() ([]byte, error) {
+	type Alias UserVmdb
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

@@ -20,7 +20,7 @@ type CreateServiceGroupRequest struct {
 	// The metro to route the request to.
 	Metro *string `json:"metro,omitempty"`
 	// Description of exposed services.
-	Services []Service `json:"services,omitempty"`
+	Services []Service `json:"services"`
 	// Description of domains associated with the service group.
 	Domains []CreateServiceGroupRequestDomain `json:"domains,omitempty"`
 	// The soft limit is used by the Unikraft Cloud load balancer to decide when

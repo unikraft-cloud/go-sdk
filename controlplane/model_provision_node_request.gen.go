@@ -9,20 +9,13 @@ package controlplane
 import "encoding/json"
 
 // Request message for creating a new node.
-// The cloud provider where the machine should be provisioned.
-type ProvisionNodeRequestProvider string
-
-const (
-	ProvisionNodeRequestProviderUnspecified ProvisionNodeRequestProvider = "unspecified"
-	ProvisionNodeRequestProviderAws         ProvisionNodeRequestProvider = "aws"
-)
 
 type ProvisionNodeRequest struct {
 	// Optional name for the node. If not provided, a name will be
 	// auto-generated.
 	Name *string `json:"name,omitempty"`
 	// The cloud provider where the machine should be provisioned.
-	Provider ProvisionNodeRequestProvider `json:"provider"`
+	Provider NodeProvider `json:"provider"`
 	// The provider region where the machine should be provisioned.
 	Region string `json:"region"`
 	// The machine type to provision. This is provider-specific.

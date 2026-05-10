@@ -805,13 +805,16 @@ type Client interface {
 	// Create new user accounts. This will return 409 Conflict when any of the
 	// requested users already existed on the target.
 	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: POST /v1/users
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/users#add-users
-	AddUsers(ctx context.Context, ropts ...RequestOption) (*Response[AddUsersResponseData], error)
+	AddUsers(ctx context.Context, request AddUsersRequest, ropts ...RequestOption) (*Response[AddUsersResponseData], error)
 	// List quota usage and limits of your user account.
 	// Limits are hard limits that cannot be exceeded.
 	//
@@ -2201,11 +2204,16 @@ func (c *client) UpdateServiceGroups(ctx context.Context, request []UpdateServic
 	return resp, nil
 }
 
-func (c *client) AddUsers(ctx context.Context, ropts ...RequestOption) (*Response[AddUsersResponseData], error) {
+func (c *client) AddUsers(ctx context.Context, request AddUsersRequest, ropts ...RequestOption) (*Response[AddUsersResponseData], error) {
 	requestPath := "/v1/users"
 
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
 	resp := &Response[AddUsersResponseData]{}
-	if err := doRequest[AddUsersResponseData](ctx, c.request, http.MethodPost, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[AddUsersResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil

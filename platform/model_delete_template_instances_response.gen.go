@@ -12,7 +12,7 @@ import "encoding/json"
 
 type DeleteTemplateInstancesResponse struct {
 	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`
@@ -22,7 +22,7 @@ type DeleteTemplateInstancesResponse struct {
 	Errors []ResponseError `json:"errors,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process
 	// the request and generate the response.
-	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
+	OpTimeUs uint64 `json:"op_time_us"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

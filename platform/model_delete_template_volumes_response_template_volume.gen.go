@@ -10,11 +10,11 @@ import "encoding/json"
 
 type DeleteTemplateVolumesResponseTemplateVolume struct {
 	// The UUID of the template volume that was deleted.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the template volume that was deleted.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The status of this particular template volume deletion operation.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`

@@ -10,11 +10,11 @@ import "encoding/json"
 
 type UpdateTemplateVolumesResponseTemplateVolume struct {
 	// The UUID of the template volume that was updated.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the template volume that was updated.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The status of this particular volume update operation.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// (Optional).  The client-provided ID from the request.
 	Id *string `json:"id,omitempty"`
 	// An optional message providing additional information about the status.

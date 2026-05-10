@@ -13,7 +13,7 @@ import "encoding/json"
 type NodeActivateRequest struct {
 	// The certificate signing request (CSR) for the license which is base64
 	// encoded.
-	Csr *string `json:"csr,omitempty"`
+	Csr string `json:"csr"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

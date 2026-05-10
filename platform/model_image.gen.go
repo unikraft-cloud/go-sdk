@@ -12,14 +12,14 @@ import (
 )
 
 type Image struct {
-	Url *string `json:"url,omitempty"`
+	Url string `json:"url"`
 	// (Only applies when using global control plane).
 	// The metro of the image.
 	Metro *string `json:"metro,omitempty"`
 	// The time the volume was created.
-	CreatedAt   *time.Time        `json:"created_at,omitempty"`
-	InitrdOrRom *bool             `json:"initrd_or_rom,omitempty"`
-	SizeInBytes *int64            `json:"size_in_bytes,omitempty"`
+	CreatedAt   time.Time         `json:"created_at"`
+	InitrdOrRom bool              `json:"initrd_or_rom"`
+	SizeInBytes int64             `json:"size_in_bytes"`
 	Args        []string          `json:"args,omitempty"`
 	Env         map[string]string `json:"env,omitempty"`
 	Tags        []string          `json:"tags,omitempty"`

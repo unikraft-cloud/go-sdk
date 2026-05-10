@@ -39,12 +39,12 @@ type ListNodesOpts struct {
 
 // WaitNodeByUUIDOpts holds query-parameter options for [Client.WaitNodeByUUID].
 type WaitNodeByUUIDOpts struct {
-	States    []string
+	States    []NodeState
 	TimeoutMs *int32
 }
 
 // WaitNodesOpts holds query-parameter options for [Client.WaitNodes].
 type WaitNodesOpts struct {
-	States    []string
+	States    []NodeState
 	TimeoutMs *int32
 }

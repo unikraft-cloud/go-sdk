@@ -8,33 +8,13 @@ package platform
 
 import "encoding/json"
 
-// The property to modify.
-type UpdateServiceGroupByUUIDRequestBodyProp string
-
-const (
-	UpdateServiceGroupByUUIDRequestBodyPropServices   UpdateServiceGroupByUUIDRequestBodyProp = "services"
-	UpdateServiceGroupByUUIDRequestBodyPropDomains    UpdateServiceGroupByUUIDRequestBodyProp = "domains"
-	UpdateServiceGroupByUUIDRequestBodyPropSoft_limit UpdateServiceGroupByUUIDRequestBodyProp = "soft_limit"
-	UpdateServiceGroupByUUIDRequestBodyPropHard_limit UpdateServiceGroupByUUIDRequestBodyProp = "hard_limit"
-	UpdateServiceGroupByUUIDRequestBodyPropAutokill   UpdateServiceGroupByUUIDRequestBodyProp = "autokill"
-)
-
-// The operation to perform.
-type UpdateServiceGroupByUUIDRequestBodyOp string
-
-const (
-	UpdateServiceGroupByUUIDRequestBodyOpSet UpdateServiceGroupByUUIDRequestBodyOp = "set"
-	UpdateServiceGroupByUUIDRequestBodyOpAdd UpdateServiceGroupByUUIDRequestBodyOp = "add"
-	UpdateServiceGroupByUUIDRequestBodyOpDel UpdateServiceGroupByUUIDRequestBodyOp = "del"
-)
-
 type UpdateServiceGroupByUUIDRequestBody struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitempty"`
 	// The property to modify.
-	Prop UpdateServiceGroupByUUIDRequestBodyProp `json:"prop"`
+	Prop MutableServiceGroupProperty `json:"prop"`
 	// The operation to perform.
-	Op UpdateServiceGroupByUUIDRequestBodyOp `json:"op"`
+	Op MutableServiceGroupOperation `json:"op"`
 	// The value for the update operation:
 	// - For "services": array of Service objects (same as for creation)
 	// - For "domains": array of Domain objects (same as for creation)

@@ -12,7 +12,7 @@ type ListNodesResponseData struct {
 	// The list of nodes matching the request.
 	Nodes []Node `json:"nodes,omitempty"`
 	// Total count of nodes matching the filters (for pagination).
-	TotalCount *uint32 `json:"total_count,omitempty"`
+	TotalCount uint32 `json:"total_count"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

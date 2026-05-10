@@ -9,17 +9,6 @@ package platform
 import "encoding/json"
 
 // The request message for creating a new instance.
-// Restart policy for the instance.  This defines how the instance
-// should behave when it stops or crashes.  Cannot be combined with
-// the `delete-on-stop` feature.
-type CreateInstanceRequestRestartPolicy string
-
-const (
-	CreateInstanceRequestRestartPolicyNever      CreateInstanceRequestRestartPolicy = "never"
-	CreateInstanceRequestRestartPolicyAlways     CreateInstanceRequestRestartPolicy = "always"
-	CreateInstanceRequestRestartPolicyOn_failure CreateInstanceRequestRestartPolicy = "on-failure"
-)
-
 // Features to enable for the instance.  Features are specific
 // configurations or capabilities that can be enabled for the
 // instance.  The `scale-to-zero` and `delete-on-stop` features are
@@ -35,7 +24,9 @@ type CreateInstanceRequest struct {
 	//
 	// If not provided, a random name will be generated.  The name must be unique.
 	Name *string `json:"name,omitempty"`
-	// The image to use for the instance.
+	// (Optional).  The image to use for the instance.
+	//
+	// Either an image or a template must be specified.
 	Image *string `json:"image,omitempty"`
 	// (Only applies when using global control plane).
 	// The metro to route the request to.
@@ -71,7 +62,7 @@ type CreateInstanceRequest struct {
 	// Restart policy for the instance.  This defines how the instance
 	// should behave when it stops or crashes.  Cannot be combined with
 	// the `delete-on-stop` feature.
-	RestartPolicy *CreateInstanceRequestRestartPolicy `json:"restart_policy,omitempty"`
+	RestartPolicy *InstanceRestartPolicy `json:"restart_policy,omitempty"`
 	// Scale-to-zero configuration for the instance.  Requires
 	// `service_group` to be set.  Cannot be combined with the
 	// `delete-on-stop` feature.
@@ -89,7 +80,7 @@ type CreateInstanceRequest struct {
 	// configurations or capabilities that can be enabled for the
 	// instance.  The `scale-to-zero` and `delete-on-stop` features are
 	// mutually exclusive.
-	Features []CreateInstanceRequestFeatures `json:"features,omitempty"`
+	Features []InstanceFeature `json:"features,omitempty"`
 	// Timeout in seconds to wait for all new instances to reach running
 	// state.  Requires `autostart` to be set.  If you autostart your
 	// new instance, you can wait for it to finish starting with a

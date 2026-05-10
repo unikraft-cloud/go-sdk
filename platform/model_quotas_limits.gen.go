@@ -10,21 +10,21 @@ import "encoding/json"
 
 type QuotasLimits struct {
 	// Minimum amount of memory assigned to live instances in megabytes
-	MinMemoryMb *int64 `json:"min_memory_mb,omitempty"`
+	MinMemoryMb int64 `json:"min_memory_mb"`
 	// Maximum amount of memory assigned to live instances in megabytes
-	MaxMemoryMb *int64 `json:"max_memory_mb,omitempty"`
+	MaxMemoryMb int64 `json:"max_memory_mb"`
 	// Minimum size of a volume in megabytes
-	MinVolumeMb *int64 `json:"min_volume_mb,omitempty"`
+	MinVolumeMb int64 `json:"min_volume_mb"`
 	// Maximum size of a volume in megabytes
-	MaxVolumeMb *int64 `json:"max_volume_mb,omitempty"`
+	MaxVolumeMb int64 `json:"max_volume_mb"`
 	// Minimum size of an autoscale group
-	MinAutoscaleSize *int64 `json:"min_autoscale_size,omitempty"`
+	MinAutoscaleSize int64 `json:"min_autoscale_size"`
 	// Maximum size of an autoscale group
-	MaxAutoscaleSize *int64 `json:"max_autoscale_size,omitempty"`
+	MaxAutoscaleSize int64 `json:"max_autoscale_size"`
 	// Minimum number of vCPUs
-	MinVcpus *int64 `json:"min_vcpus,omitempty"`
+	MinVcpus int64 `json:"min_vcpus"`
 	// Maximum number of vCPUs
-	MaxVcpus *int64 `json:"max_vcpus,omitempty"`
+	MaxVcpus int64 `json:"max_vcpus"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

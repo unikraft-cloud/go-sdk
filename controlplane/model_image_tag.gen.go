@@ -13,13 +13,13 @@ import (
 
 type ImageTag struct {
 	// The tag name.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The digest for the tag.
-	Digest *string `json:"digest,omitempty"`
+	Digest string `json:"digest"`
 	// The size of the image in bytes.
-	Size *uint64 `json:"size,omitempty"`
+	Size uint64 `json:"size"`
 	// The push time of the image.
-	PushTime *time.Time `json:"push_time,omitempty"`
+	PushTime time.Time `json:"push_time"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

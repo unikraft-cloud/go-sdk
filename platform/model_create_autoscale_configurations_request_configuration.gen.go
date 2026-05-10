@@ -21,7 +21,7 @@ type CreateAutoscaleConfigurationsRequestConfiguration struct {
 	// The cooldown time in milliseconds for the autoscale configuration.
 	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitempty"`
 	// The arguments to use when creating the autoscale configuration.
-	CreateArgs *ConfigurationInstanceCreateArgs `json:"create_args,omitempty"`
+	CreateArgs ConfigurationInstanceCreateArgs `json:"create_args"`
 	// The policies to apply to the autoscale configuration.
 	Policies []AutoscalePolicy `json:"policies,omitempty"`
 	// The UUID of the service to create a configuration for.
