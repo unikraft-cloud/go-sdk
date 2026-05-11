@@ -405,7 +405,7 @@ func (c *client) ListImages(ctx context.Context, opts ListImagesOpts, ropts ...R
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
 	for _, v := range opts.Namespace {
-		query.Add("namespace", v)
+		query.Add("namespace", string(v))
 	}
 
 	resp := &Response[ListImagesResponseData]{}
@@ -632,7 +632,7 @@ func (c *client) WaitNodeByUUID(ctx context.Context, uuid string, opts WaitNodeB
 
 	query := make(url.Values)
 	for _, v := range opts.States {
-		query.Add("states", v)
+		query.Add("states", string(v))
 	}
 	if opts.TimeoutMs != nil {
 		query.Add("timeout_ms", fmt.Sprintf("%d", *opts.TimeoutMs))
@@ -650,7 +650,7 @@ func (c *client) WaitNodes(ctx context.Context, opts WaitNodesOpts, ropts ...Req
 
 	query := make(url.Values)
 	for _, v := range opts.States {
-		query.Add("states", v)
+		query.Add("states", string(v))
 	}
 	if opts.TimeoutMs != nil {
 		query.Add("timeout_ms", fmt.Sprintf("%d", *opts.TimeoutMs))

@@ -10,7 +10,7 @@ package controlplane
 type MutableNodeOperation string
 
 const (
-	MutableNodeOperationSET MutableNodeOperation = "set"
-	MutableNodeOperationADD MutableNodeOperation = "add"
-	MutableNodeOperationDEL MutableNodeOperation = "del"
+	MutableNodeOperationSet MutableNodeOperation = "set"
+	MutableNodeOperationAdd MutableNodeOperation = "add"
+	MutableNodeOperationDel MutableNodeOperation = "del"
 )

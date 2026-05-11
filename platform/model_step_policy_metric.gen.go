@@ -12,5 +12,5 @@ package platform
 type StepPolicyMetric string
 
 const (
-	StepPolicyMetricCPU StepPolicyMetric = "cpu"
+	StepPolicyMetricCpu StepPolicyMetric = "cpu"
 )

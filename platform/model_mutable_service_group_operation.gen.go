@@ -10,7 +10,7 @@ package platform
 type MutableServiceGroupOperation string
 
 const (
-	MutableServiceGroupOperationSET MutableServiceGroupOperation = "set"
-	MutableServiceGroupOperationADD MutableServiceGroupOperation = "add"
-	MutableServiceGroupOperationDEL MutableServiceGroupOperation = "del"
+	MutableServiceGroupOperationSet MutableServiceGroupOperation = "set"
+	MutableServiceGroupOperationAdd MutableServiceGroupOperation = "add"
+	MutableServiceGroupOperationDel MutableServiceGroupOperation = "del"
 )

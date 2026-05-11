@@ -10,6 +10,6 @@ package platform
 type PaginationOrder string
 
 const (
-	PaginationOrderASC  PaginationOrder = "asc"
-	PaginationOrderDESC PaginationOrder = "desc"
+	PaginationOrderAsc  PaginationOrder = "asc"
+	PaginationOrderDesc PaginationOrder = "desc"
 )

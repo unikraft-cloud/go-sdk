@@ -11,7 +11,7 @@ type MutableVolumeProperty string
 
 const (
 	MutableVolumePropertySize_mb      MutableVolumeProperty = "size_mb"
-	MutableVolumePropertyTAGS         MutableVolumeProperty = "tags"
+	MutableVolumePropertyTags         MutableVolumeProperty = "tags"
 	MutableVolumePropertyQuota_policy MutableVolumeProperty = "quota_policy"
 	MutableVolumePropertyDelete_lock  MutableVolumeProperty = "delete_lock"
 )

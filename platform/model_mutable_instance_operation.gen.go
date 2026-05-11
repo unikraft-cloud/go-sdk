@@ -10,7 +10,7 @@ package platform
 type MutableInstanceOperation string
 
 const (
-	MutableInstanceOperationSET MutableInstanceOperation = "set"
-	MutableInstanceOperationADD MutableInstanceOperation = "add"
-	MutableInstanceOperationDEL MutableInstanceOperation = "del"
+	MutableInstanceOperationSet MutableInstanceOperation = "set"
+	MutableInstanceOperationAdd MutableInstanceOperation = "add"
+	MutableInstanceOperationDel MutableInstanceOperation = "del"
 )

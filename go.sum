@@ -220,5 +220,5 @@ unikraft.com/x/log v0.0.0-20260126094137-ab6e717e5679 h1:9SvFmRc/cIRzVaRediX9ihd
 unikraft.com/x/log v0.0.0-20260126094137-ab6e717e5679/go.mod h1:f/+5628rnWTnRaRrCDD9mOMf7OV5QmkGIgARlTu4XGE=
 unikraft.com/x/ptr v0.0.0-20260126094137-ab6e717e5679 h1:ohptI7loX492JCbbn6yk13hAxysZHyGIZWN8hTw3080=
 unikraft.com/x/ptr v0.0.0-20260126094137-ab6e717e5679/go.mod h1:une+KauhLNYkBFnT0R4bzVvD8bJ54xACjXMBPMnc5ig=
-unikraft.com/x/tools/openapi-gen v0.0.0-20260430100043-1587f6eb3527 h1:zBex+AOsTYWNoHN8GMgSI8uOBOiIRztxWdRQ6NWI+ac=
-unikraft.com/x/tools/openapi-gen v0.0.0-20260430100043-1587f6eb3527/go.mod h1:agdBwe6MN0Fs25CRAx1q6sf2lgBFZrsgP/vvSJlNWfA=
+unikraft.com/x/tools/openapi-gen v0.0.0-20260508142614-1049e0f32dfa h1:hjXftqcQmdeKgjrVN5RPtxTvnKSgRaLXzLY9tYbsAMw=
+unikraft.com/x/tools/openapi-gen v0.0.0-20260508142614-1049e0f32dfa/go.mod h1:agdBwe6MN0Fs25CRAx1q6sf2lgBFZrsgP/vvSJlNWfA=

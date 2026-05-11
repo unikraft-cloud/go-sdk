@@ -11,7 +11,7 @@ package platform
 type AdjustmentType string
 
 const (
-	AdjustmentTypeCHANGE     AdjustmentType = "change"
-	AdjustmentTypeEXACT      AdjustmentType = "exact"
-	AdjustmentTypePERCENTAGE AdjustmentType = "percentage"
+	AdjustmentTypeChange     AdjustmentType = "change"
+	AdjustmentTypeExact      AdjustmentType = "exact"
+	AdjustmentTypePercentage AdjustmentType = "percentage"
 )

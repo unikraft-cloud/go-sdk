@@ -11,13 +11,13 @@ package controlplane
 type NodeState string
 
 const (
-	NodeStateUNSPECIFIED    NodeState = "unspecified"
-	NodeStatePENDING        NodeState = "pending"
-	NodeStatePROVISIONING   NodeState = "provisioning"
-	NodeStateCONFIGURING    NodeState = "configuring"
-	NodeStateREADY          NodeState = "ready"
-	NodeStateDEPROVISIONING NodeState = "deprovisioning"
-	NodeStateDEPROVISIONED  NodeState = "deprovisioned"
-	NodeStateERROR          NodeState = "error"
-	NodeStateMAINTENANCE    NodeState = "maintenance"
+	NodeStateUnspecified    NodeState = "unspecified"
+	NodeStatePending        NodeState = "pending"
+	NodeStateProvisioning   NodeState = "provisioning"
+	NodeStateConfiguring    NodeState = "configuring"
+	NodeStateReady          NodeState = "ready"
+	NodeStateDeprovisioning NodeState = "deprovisioning"
+	NodeStateDeprovisioned  NodeState = "deprovisioned"
+	NodeStateError          NodeState = "error"
+	NodeStateMaintenance    NodeState = "maintenance"
 )

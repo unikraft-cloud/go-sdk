@@ -10,7 +10,7 @@ package controlplane
 type MutableNodeProperty string
 
 const (
-	MutableNodePropertyTAGS        MutableNodeProperty = "tags"
+	MutableNodePropertyTags        MutableNodeProperty = "tags"
 	MutableNodePropertyDelete_lock MutableNodeProperty = "delete_lock"
 	MutableNodePropertySsh_keys    MutableNodeProperty = "ssh_keys"
 )

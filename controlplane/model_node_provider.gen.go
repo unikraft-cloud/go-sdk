@@ -11,6 +11,6 @@ package controlplane
 type NodeProvider string
 
 const (
-	NodeProviderUNSPECIFIED NodeProvider = "unspecified"
-	NodeProviderAWS         NodeProvider = "aws"
+	NodeProviderUnspecified NodeProvider = "unspecified"
+	NodeProviderAws         NodeProvider = "aws"
 )

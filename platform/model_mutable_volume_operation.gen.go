@@ -10,7 +10,7 @@ package platform
 type MutableVolumeOperation string
 
 const (
-	MutableVolumeOperationSET MutableVolumeOperation = "set"
-	MutableVolumeOperationADD MutableVolumeOperation = "add"
-	MutableVolumeOperationDEL MutableVolumeOperation = "del"
+	MutableVolumeOperationSet MutableVolumeOperation = "set"
+	MutableVolumeOperationAdd MutableVolumeOperation = "add"
+	MutableVolumeOperationDel MutableVolumeOperation = "del"
 )

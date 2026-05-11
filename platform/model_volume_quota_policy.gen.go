@@ -10,6 +10,6 @@ package platform
 type VolumeQuotaPolicy string
 
 const (
-	VolumeQuotaPolicySTATIC  VolumeQuotaPolicy = "static"
-	VolumeQuotaPolicyDYNAMIC VolumeQuotaPolicy = "dynamic"
+	VolumeQuotaPolicyStatic  VolumeQuotaPolicy = "static"
+	VolumeQuotaPolicyDynamic VolumeQuotaPolicy = "dynamic"
 )

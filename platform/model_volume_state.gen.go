@@ -10,12 +10,12 @@ package platform
 type VolumeState string
 
 const (
-	VolumeStateUNINITIALIZED VolumeState = "uninitialized"
-	VolumeStateINITIALIZING  VolumeState = "initializing"
-	VolumeStateAVAILABLE     VolumeState = "available"
-	VolumeStateIDLE          VolumeState = "idle"
-	VolumeStateMOUNTED       VolumeState = "mounted"
-	VolumeStateBUSY          VolumeState = "busy"
-	VolumeStateERROR         VolumeState = "error"
-	VolumeStateTEMPLATE      VolumeState = "template"
+	VolumeStateUninitialized VolumeState = "uninitialized"
+	VolumeStateInitializing  VolumeState = "initializing"
+	VolumeStateAvailable     VolumeState = "available"
+	VolumeStateIdle          VolumeState = "idle"
+	VolumeStateMounted       VolumeState = "mounted"
+	VolumeStateBusy          VolumeState = "busy"
+	VolumeStateError         VolumeState = "error"
+	VolumeStateTemplate      VolumeState = "template"
 )

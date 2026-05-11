@@ -10,8 +10,8 @@ package platform
 type ScheduleAction string
 
 const (
-	ScheduleActionSTART  ScheduleAction = "start"
-	ScheduleActionSTOP   ScheduleAction = "stop"
-	ScheduleActionDELETE ScheduleAction = "delete"
-	ScheduleActionEXEC   ScheduleAction = "exec"
+	ScheduleActionStart  ScheduleAction = "start"
+	ScheduleActionStop   ScheduleAction = "stop"
+	ScheduleActionDelete ScheduleAction = "delete"
+	ScheduleActionExec   ScheduleAction = "exec"
 )

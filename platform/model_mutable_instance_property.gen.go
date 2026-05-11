@@ -10,18 +10,18 @@ package platform
 type MutableInstanceProperty string
 
 const (
-	MutableInstancePropertyIMAGE          MutableInstanceProperty = "image"
-	MutableInstancePropertyARGS           MutableInstanceProperty = "args"
-	MutableInstancePropertyENV            MutableInstanceProperty = "env"
+	MutableInstancePropertyImage          MutableInstanceProperty = "image"
+	MutableInstancePropertyArgs           MutableInstanceProperty = "args"
+	MutableInstancePropertyEnv            MutableInstanceProperty = "env"
 	MutableInstancePropertyMemory_mb      MutableInstanceProperty = "memory_mb"
-	MutableInstancePropertyVCPUS          MutableInstanceProperty = "vcpus"
+	MutableInstancePropertyVcpus          MutableInstanceProperty = "vcpus"
 	MutableInstancePropertyScale_to_zero  MutableInstanceProperty = "scale_to_zero"
-	MutableInstancePropertyTAGS           MutableInstanceProperty = "tags"
+	MutableInstancePropertyTags           MutableInstanceProperty = "tags"
 	MutableInstancePropertyDelete_lock    MutableInstanceProperty = "delete_lock"
-	MutableInstancePropertySCHEDULES      MutableInstanceProperty = "schedules"
-	MutableInstancePropertyAUTOKILL       MutableInstanceProperty = "autokill"
-	MutableInstancePropertyHOSTNAME       MutableInstanceProperty = "hostname"
-	MutableInstancePropertyROMS           MutableInstanceProperty = "roms"
-	MutableInstancePropertyDEPENDENCIES   MutableInstanceProperty = "dependencies"
+	MutableInstancePropertySchedules      MutableInstanceProperty = "schedules"
+	MutableInstancePropertyAutokill       MutableInstanceProperty = "autokill"
+	MutableInstancePropertyHostname       MutableInstanceProperty = "hostname"
+	MutableInstancePropertyRoms           MutableInstanceProperty = "roms"
+	MutableInstancePropertyDependencies   MutableInstanceProperty = "dependencies"
 	MutableInstancePropertySched_priority MutableInstanceProperty = "sched_priority"
 )

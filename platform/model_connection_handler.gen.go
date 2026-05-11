@@ -29,7 +29,7 @@ package platform
 type ConnectionHandler string
 
 const (
-	ConnectionHandlerTLS      ConnectionHandler = "tls"
-	ConnectionHandlerHTTP     ConnectionHandler = "http"
-	ConnectionHandlerREDIRECT ConnectionHandler = "redirect"
+	ConnectionHandlerTls      ConnectionHandler = "tls"
+	ConnectionHandlerHttp     ConnectionHandler = "http"
+	ConnectionHandlerRedirect ConnectionHandler = "redirect"
 )

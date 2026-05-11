@@ -10,7 +10,7 @@ package platform
 type MutableTemplateInstanceProperty string
 
 const (
-	MutableTemplateInstancePropertyTAGS        MutableTemplateInstanceProperty = "tags"
+	MutableTemplateInstancePropertyTags        MutableTemplateInstanceProperty = "tags"
 	MutableTemplateInstancePropertyDelete_lock MutableTemplateInstanceProperty = "delete_lock"
-	MutableTemplateInstancePropertyAUTOKILL    MutableTemplateInstanceProperty = "autokill"
+	MutableTemplateInstancePropertyAutokill    MutableTemplateInstanceProperty = "autokill"
 )

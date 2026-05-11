@@ -1772,7 +1772,7 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, opts Ge
 		query.Add("from", *opts.From)
 	}
 	for _, v := range opts.Tags {
-		query.Add("tags", v)
+		query.Add("tags", string(v))
 	}
 	if opts.Order != nil {
 		query.Add("order", *opts.Order)
@@ -1824,7 +1824,7 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 		query.Add("count", fmt.Sprintf("%d", *opts.Count))
 	}
 	for _, v := range opts.Tags {
-		query.Add("tags", v)
+		query.Add("tags", string(v))
 	}
 	if opts.From != nil {
 		query.Add("from", *opts.From)
@@ -2469,7 +2469,7 @@ func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, o
 		query.Add("from", *opts.From)
 	}
 	for _, v := range opts.Tags {
-		query.Add("tags", v)
+		query.Add("tags", string(v))
 	}
 	if opts.Order != nil {
 		query.Add("order", *opts.Order)
@@ -2524,7 +2524,7 @@ func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, opts GetV
 		query.Add("from", *opts.From)
 	}
 	for _, v := range opts.Tags {
-		query.Add("tags", v)
+		query.Add("tags", string(v))
 	}
 	if opts.Order != nil {
 		query.Add("order", *opts.Order)

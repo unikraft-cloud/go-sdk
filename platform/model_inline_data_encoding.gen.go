@@ -10,6 +10,6 @@ package platform
 type InlineDataEncoding string
 
 const (
-	InlineDataEncodingTEXT   InlineDataEncoding = "text"
+	InlineDataEncodingText   InlineDataEncoding = "text"
 	InlineDataEncodingBase64 InlineDataEncoding = "base64"
 )

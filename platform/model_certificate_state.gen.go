@@ -18,7 +18,7 @@ package platform
 type CertificateState string
 
 const (
-	CertificateStatePENDING CertificateState = "pending"
-	CertificateStateVALID   CertificateState = "valid"
-	CertificateStateERROR   CertificateState = "error"
+	CertificateStatePending CertificateState = "pending"
+	CertificateStateValid   CertificateState = "valid"
+	CertificateStateError   CertificateState = "error"
 )

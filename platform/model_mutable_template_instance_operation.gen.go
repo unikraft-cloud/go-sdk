@@ -10,7 +10,7 @@ package platform
 type MutableTemplateInstanceOperation string
 
 const (
-	MutableTemplateInstanceOperationSET MutableTemplateInstanceOperation = "set"
-	MutableTemplateInstanceOperationADD MutableTemplateInstanceOperation = "add"
-	MutableTemplateInstanceOperationDEL MutableTemplateInstanceOperation = "del"
+	MutableTemplateInstanceOperationSet MutableTemplateInstanceOperation = "set"
+	MutableTemplateInstanceOperationAdd MutableTemplateInstanceOperation = "add"
+	MutableTemplateInstanceOperationDel MutableTemplateInstanceOperation = "del"
 )

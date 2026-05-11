@@ -18,7 +18,7 @@ package platform
 type InstanceScaleToZeroPolicy string
 
 const (
-	InstanceScaleToZeroPolicyOFF  InstanceScaleToZeroPolicy = "off"
-	InstanceScaleToZeroPolicyON   InstanceScaleToZeroPolicy = "on"
-	InstanceScaleToZeroPolicyIDLE InstanceScaleToZeroPolicy = "idle"
+	InstanceScaleToZeroPolicyOff  InstanceScaleToZeroPolicy = "off"
+	InstanceScaleToZeroPolicyOn   InstanceScaleToZeroPolicy = "on"
+	InstanceScaleToZeroPolicyIdle InstanceScaleToZeroPolicy = "idle"
 )

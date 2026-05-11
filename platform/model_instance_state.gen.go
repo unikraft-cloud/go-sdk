@@ -10,11 +10,11 @@ package platform
 type InstanceState string
 
 const (
-	InstanceStateSTOPPED  InstanceState = "stopped"
-	InstanceStateSTARTING InstanceState = "starting"
-	InstanceStateRUNNING  InstanceState = "running"
-	InstanceStateDRAINING InstanceState = "draining"
-	InstanceStateSTOPPING InstanceState = "stopping"
-	InstanceStateTEMPLATE InstanceState = "template"
-	InstanceStateSTANDBY  InstanceState = "standby"
+	InstanceStateStopped  InstanceState = "stopped"
+	InstanceStateStarting InstanceState = "starting"
+	InstanceStateRunning  InstanceState = "running"
+	InstanceStateDraining InstanceState = "draining"
+	InstanceStateStopping InstanceState = "stopping"
+	InstanceStateTemplate InstanceState = "template"
+	InstanceStateStandby  InstanceState = "standby"
 )

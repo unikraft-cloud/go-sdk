@@ -10,6 +10,6 @@ package platform
 type MutableTemplateVolumeProperty string
 
 const (
-	MutableTemplateVolumePropertyTAGS        MutableTemplateVolumeProperty = "tags"
+	MutableTemplateVolumePropertyTags        MutableTemplateVolumeProperty = "tags"
 	MutableTemplateVolumePropertyDelete_lock MutableTemplateVolumeProperty = "delete_lock"
 )
