@@ -12,7 +12,7 @@ import "encoding/json"
 
 type Region struct {
 	// The region identifier (e.g., "us-east-1", "us-central1").
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// Human-readable display name.
 	DisplayName *string `json:"display_name,omitempty"`
 	// The country code where this region is located.
@@ -23,7 +23,7 @@ type Region struct {
 	// Availability zones within this region.
 	AvailabilityZones []string `json:"availability_zones,omitempty"`
 	// Whether this region is currently available for provisioning.
-	Available *bool `json:"available,omitempty"`
+	Available bool `json:"available"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

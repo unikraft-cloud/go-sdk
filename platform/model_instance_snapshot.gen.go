@@ -12,7 +12,7 @@ import "encoding/json"
 
 type InstanceSnapshot struct {
 	// The UUID of the snapshot.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

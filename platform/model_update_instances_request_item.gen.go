@@ -9,34 +9,6 @@ package platform
 import "encoding/json"
 
 // A single update operation to be applied to an instance.
-// The property to modify.
-type UpdateInstancesRequestItemProp string
-
-const (
-	UpdateInstancesRequestItemPropImage          UpdateInstancesRequestItemProp = "image"
-	UpdateInstancesRequestItemPropArgs           UpdateInstancesRequestItemProp = "args"
-	UpdateInstancesRequestItemPropEnv            UpdateInstancesRequestItemProp = "env"
-	UpdateInstancesRequestItemPropMemory_mb      UpdateInstancesRequestItemProp = "memory_mb"
-	UpdateInstancesRequestItemPropVcpus          UpdateInstancesRequestItemProp = "vcpus"
-	UpdateInstancesRequestItemPropScale_to_zero  UpdateInstancesRequestItemProp = "scale_to_zero"
-	UpdateInstancesRequestItemPropTags           UpdateInstancesRequestItemProp = "tags"
-	UpdateInstancesRequestItemPropDelete_lock    UpdateInstancesRequestItemProp = "delete_lock"
-	UpdateInstancesRequestItemPropSchedules      UpdateInstancesRequestItemProp = "schedules"
-	UpdateInstancesRequestItemPropAutokill       UpdateInstancesRequestItemProp = "autokill"
-	UpdateInstancesRequestItemPropHostname       UpdateInstancesRequestItemProp = "hostname"
-	UpdateInstancesRequestItemPropRoms           UpdateInstancesRequestItemProp = "roms"
-	UpdateInstancesRequestItemPropDependencies   UpdateInstancesRequestItemProp = "dependencies"
-	UpdateInstancesRequestItemPropSched_priority UpdateInstancesRequestItemProp = "sched_priority"
-)
-
-// The operation to perform on the property.
-type UpdateInstancesRequestItemOp string
-
-const (
-	UpdateInstancesRequestItemOpSet UpdateInstancesRequestItemOp = "set"
-	UpdateInstancesRequestItemOpAdd UpdateInstancesRequestItemOp = "add"
-	UpdateInstancesRequestItemOpDel UpdateInstancesRequestItemOp = "del"
-)
 
 type UpdateInstancesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
@@ -46,9 +18,9 @@ type UpdateInstancesRequestItem struct {
 	// The metro to route the request to.
 	Metro *string `json:"metro,omitempty"`
 	// The property to modify.
-	Prop UpdateInstancesRequestItemProp `json:"prop"`
+	Prop MutableInstanceProperty `json:"prop"`
 	// The operation to perform on the property.
-	Op UpdateInstancesRequestItemOp `json:"op"`
+	Op MutableInstanceOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "image": string
 	// - For "args": string or array of strings

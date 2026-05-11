@@ -8,32 +8,18 @@ package platform
 
 import "encoding/json"
 
-// The state of the volume.
-type CreateVolumeResponseVolumeState string
-
-const (
-	CreateVolumeResponseVolumeStateUninitialized CreateVolumeResponseVolumeState = "uninitialized"
-	CreateVolumeResponseVolumeStateInitializing  CreateVolumeResponseVolumeState = "initializing"
-	CreateVolumeResponseVolumeStateAvailable     CreateVolumeResponseVolumeState = "available"
-	CreateVolumeResponseVolumeStateIdle          CreateVolumeResponseVolumeState = "idle"
-	CreateVolumeResponseVolumeStateMounted       CreateVolumeResponseVolumeState = "mounted"
-	CreateVolumeResponseVolumeStateBusy          CreateVolumeResponseVolumeState = "busy"
-	CreateVolumeResponseVolumeStateError         CreateVolumeResponseVolumeState = "error"
-	CreateVolumeResponseVolumeStateTemplate      CreateVolumeResponseVolumeState = "template"
-)
-
 type CreateVolumeResponseVolume struct {
 	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// UUID of the newly created volume.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the newly created volume.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// (Only applies when using global control plane).
 	// The metro of the volume.
 	Metro *string `json:"metro,omitempty"`
 	// The state of the volume.
-	State *CreateVolumeResponseVolumeState `json:"state,omitempty"`
+	State VolumeState `json:"state"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`

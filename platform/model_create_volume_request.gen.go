@@ -9,13 +9,6 @@ package platform
 import "encoding/json"
 
 // The request message for creating a volume.
-// Quota policy for the volume.
-type CreateVolumeRequestQuotaPolicy string
-
-const (
-	CreateVolumeRequestQuotaPolicyStatic  CreateVolumeRequestQuotaPolicy = "static"
-	CreateVolumeRequestQuotaPolicyDynamic CreateVolumeRequestQuotaPolicy = "dynamic"
-)
 
 type CreateVolumeRequest struct {
 	// The name of the volume.
@@ -30,7 +23,7 @@ type CreateVolumeRequest struct {
 	// The metro to route the request to.
 	Metro *string `json:"metro,omitempty"`
 	// Quota policy for the volume.
-	QuotaPolicy *CreateVolumeRequestQuotaPolicy `json:"quota_policy,omitempty"`
+	QuotaPolicy *VolumeQuotaPolicy `json:"quota_policy,omitempty"`
 	// Filesystem type to format or configure.
 	// Without custom configuration, this is either `ext4` or `virtiofs`.
 	Filesystem *string `json:"filesystem,omitempty"`

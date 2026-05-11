@@ -278,7 +278,7 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- range $queryParams}}
 {{- if and .Schema .Schema.Value (isType .Schema.Value "array")}}
 	for _, v := range opts.{{pascalcase .Name}} {
-		query.Add("{{.Name}}", v)
+		query.Add("{{.Name}}", string(v))
 	}
 {{- else if and .Schema .Schema.Value (isType .Schema.Value "boolean")}}
 {{- if not .Required}}

@@ -8,33 +8,20 @@ package platform
 
 import "encoding/json"
 
-// State of the instance when the logs were retrieved.
-type GetInstancesLogsResponseLoggedInstanceState string
-
-const (
-	GetInstancesLogsResponseLoggedInstanceStateStopped  GetInstancesLogsResponseLoggedInstanceState = "stopped"
-	GetInstancesLogsResponseLoggedInstanceStateStarting GetInstancesLogsResponseLoggedInstanceState = "starting"
-	GetInstancesLogsResponseLoggedInstanceStateRunning  GetInstancesLogsResponseLoggedInstanceState = "running"
-	GetInstancesLogsResponseLoggedInstanceStateDraining GetInstancesLogsResponseLoggedInstanceState = "draining"
-	GetInstancesLogsResponseLoggedInstanceStateStopping GetInstancesLogsResponseLoggedInstanceState = "stopping"
-	GetInstancesLogsResponseLoggedInstanceStateTemplate GetInstancesLogsResponseLoggedInstanceState = "template"
-	GetInstancesLogsResponseLoggedInstanceStateStandby  GetInstancesLogsResponseLoggedInstanceState = "standby"
-)
-
 type GetInstancesLogsResponseLoggedInstance struct {
 	// The UUID of the instance.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the instance.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// Base64 encoded log output of the instance.
-	Output *string `json:"output,omitempty"`
+	Output string `json:"output"`
 	// Description of the log availability.
-	Available *GetInstancesLogsResponseAvailable `json:"available,omitempty"`
+	Available GetInstancesLogsResponseAvailable `json:"available"`
 	// Description of the range that was returned.  Useful for requests with
 	// offset relative to end.
-	Range *GetInstancesLogsResponseRange `json:"range,omitempty"`
+	Range GetInstancesLogsResponseRange `json:"range"`
 	// State of the instance when the logs were retrieved.
-	State *GetInstancesLogsResponseLoggedInstanceState `json:"state,omitempty"`
+	State InstanceState `json:"state"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`

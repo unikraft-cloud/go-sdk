@@ -9,23 +9,6 @@ package platform
 import "encoding/json"
 
 // A single update operation to be applied to a template instance.
-// The property to modify.
-type UpdateTemplateInstancesRequestItemProp string
-
-const (
-	UpdateTemplateInstancesRequestItemPropTags        UpdateTemplateInstancesRequestItemProp = "tags"
-	UpdateTemplateInstancesRequestItemPropDelete_lock UpdateTemplateInstancesRequestItemProp = "delete_lock"
-	UpdateTemplateInstancesRequestItemPropAutokill    UpdateTemplateInstancesRequestItemProp = "autokill"
-)
-
-// The operation to perform on the property.
-type UpdateTemplateInstancesRequestItemOp string
-
-const (
-	UpdateTemplateInstancesRequestItemOpSet UpdateTemplateInstancesRequestItemOp = "set"
-	UpdateTemplateInstancesRequestItemOpAdd UpdateTemplateInstancesRequestItemOp = "add"
-	UpdateTemplateInstancesRequestItemOpDel UpdateTemplateInstancesRequestItemOp = "del"
-)
 
 type UpdateTemplateInstancesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
@@ -35,9 +18,9 @@ type UpdateTemplateInstancesRequestItem struct {
 	// The metro of the template instance.
 	Metro *string `json:"metro,omitempty"`
 	// The property to modify.
-	Prop UpdateTemplateInstancesRequestItemProp `json:"prop"`
+	Prop MutableTemplateInstanceProperty `json:"prop"`
 	// The operation to perform on the property.
-	Op UpdateTemplateInstancesRequestItemOp `json:"op"`
+	Op MutableTemplateInstanceOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean

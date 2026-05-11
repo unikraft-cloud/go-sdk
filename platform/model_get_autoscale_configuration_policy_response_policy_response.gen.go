@@ -10,9 +10,9 @@ import "encoding/json"
 
 type GetAutoscaleConfigurationPolicyResponsePolicyResponse struct {
 	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// The policy which was retrieved by the request.
-	Policy *AutoscalePolicy `json:"policy,omitempty"`
+	Policy AutoscalePolicy `json:"policy"`
 	// (Only applies when using global control plane).
 	// The metro of the resource.
 	Metro *string `json:"metro,omitempty"`

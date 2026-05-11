@@ -10,16 +10,16 @@ import "encoding/json"
 
 type GetAutoscaleConfigurationsResponseServiceGroup struct {
 	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the service where the configuration was created.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the service where the configuration was created.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// (Only applies when using global control plane).
 	// The metro of the service group.
 	Metro *string `json:"metro,omitempty"`
 	// If the autoscale configuration is enabled.
-	Enabled *bool `json:"enabled,omitempty"`
+	Enabled bool `json:"enabled"`
 	// The minimum number of instances to keep running.
 	// Only if enabled is true.
 	MinSize *int64 `json:"min_size,omitempty"`

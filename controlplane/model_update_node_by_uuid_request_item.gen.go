@@ -9,29 +9,12 @@ package controlplane
 import "encoding/json"
 
 // UpdateNodePayload contains the changes to apply to a node.
-// The operation to perform on the property.
-type UpdateNodeByUUIDRequestItemOperation string
-
-const (
-	UpdateNodeByUUIDRequestItemOperationSet UpdateNodeByUUIDRequestItemOperation = "set"
-	UpdateNodeByUUIDRequestItemOperationAdd UpdateNodeByUUIDRequestItemOperation = "add"
-	UpdateNodeByUUIDRequestItemOperationDel UpdateNodeByUUIDRequestItemOperation = "del"
-)
-
-// The property to update.
-type UpdateNodeByUUIDRequestItemProperty string
-
-const (
-	UpdateNodeByUUIDRequestItemPropertyTags        UpdateNodeByUUIDRequestItemProperty = "tags"
-	UpdateNodeByUUIDRequestItemPropertyDelete_lock UpdateNodeByUUIDRequestItemProperty = "delete_lock"
-	UpdateNodeByUUIDRequestItemPropertySsh_keys    UpdateNodeByUUIDRequestItemProperty = "ssh_keys"
-)
 
 type UpdateNodeByUUIDRequestItem struct {
 	// The operation to perform on the property.
-	Operation *UpdateNodeByUUIDRequestItemOperation `json:"operation,omitempty"`
+	Operation MutableNodeOperation `json:"operation"`
 	// The property to update.
-	Property *UpdateNodeByUUIDRequestItemProperty `json:"property,omitempty"`
+	Property MutableNodeProperty `json:"property"`
 	// The value for the update operation. The type depends on the property:
 	// - TAGS: google.protobuf.Struct with key-value pairs
 	// - DELETE_LOCK: google.protobuf.Value with boolean

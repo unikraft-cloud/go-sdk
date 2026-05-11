@@ -12,7 +12,7 @@ import "encoding/json"
 
 type ResponseError struct {
 	// The HTTP status code of the error.
-	Status *uint64 `json:"status,omitempty"`
+	Status uint64 `json:"status"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

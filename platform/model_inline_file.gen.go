@@ -9,19 +9,12 @@ package platform
 import "encoding/json"
 
 // An inline file entry represents a single file within an image.
-// (Optional).  The encoding of the data field.  Defaults to "text".
-type InlineFileEncoding string
-
-const (
-	InlineFileEncodingText   InlineFileEncoding = "text"
-	InlineFileEncodingBase64 InlineFileEncoding = "base64"
-)
 
 type InlineFile struct {
 	// The file path within the image.
 	Path string `json:"path"`
 	// (Optional).  The encoding of the data field.  Defaults to "text".
-	Encoding *InlineFileEncoding `json:"encoding,omitempty"`
+	Encoding *InlineDataEncoding `json:"encoding,omitempty"`
 	// The file data, encoded according to the encoding field.
 	Data string `json:"data"`
 

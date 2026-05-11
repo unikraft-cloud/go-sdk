@@ -9,22 +9,10 @@ package platform
 import "encoding/json"
 
 // Wait parameters.
-// The desired state to wait for.  Default is `running`.
-type WaitInstanceByUUIDRequestBodyState string
-
-const (
-	WaitInstanceByUUIDRequestBodyStateStopped  WaitInstanceByUUIDRequestBodyState = "stopped"
-	WaitInstanceByUUIDRequestBodyStateStarting WaitInstanceByUUIDRequestBodyState = "starting"
-	WaitInstanceByUUIDRequestBodyStateRunning  WaitInstanceByUUIDRequestBodyState = "running"
-	WaitInstanceByUUIDRequestBodyStateDraining WaitInstanceByUUIDRequestBodyState = "draining"
-	WaitInstanceByUUIDRequestBodyStateStopping WaitInstanceByUUIDRequestBodyState = "stopping"
-	WaitInstanceByUUIDRequestBodyStateTemplate WaitInstanceByUUIDRequestBodyState = "template"
-	WaitInstanceByUUIDRequestBodyStateStandby  WaitInstanceByUUIDRequestBodyState = "standby"
-)
 
 type WaitInstanceByUUIDRequestBody struct {
 	// The desired state to wait for.  Default is `running`.
-	State *WaitInstanceByUUIDRequestBodyState `json:"state,omitempty"`
+	State InstanceState `json:"state"`
 	// Timeout in milliseconds to wait for the instance to reach the desired
 	// state.  If the timeout is reached, the request will fail with an error.
 	// A value of -1 means to wait indefinitely until the instance reaches the

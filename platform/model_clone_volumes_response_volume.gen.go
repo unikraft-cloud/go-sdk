@@ -8,32 +8,18 @@ package platform
 
 import "encoding/json"
 
-// The state of the volume.
-type CloneVolumesResponseVolumeState string
-
-const (
-	CloneVolumesResponseVolumeStateUninitialized CloneVolumesResponseVolumeState = "uninitialized"
-	CloneVolumesResponseVolumeStateInitializing  CloneVolumesResponseVolumeState = "initializing"
-	CloneVolumesResponseVolumeStateAvailable     CloneVolumesResponseVolumeState = "available"
-	CloneVolumesResponseVolumeStateIdle          CloneVolumesResponseVolumeState = "idle"
-	CloneVolumesResponseVolumeStateMounted       CloneVolumesResponseVolumeState = "mounted"
-	CloneVolumesResponseVolumeStateBusy          CloneVolumesResponseVolumeState = "busy"
-	CloneVolumesResponseVolumeStateError         CloneVolumesResponseVolumeState = "error"
-	CloneVolumesResponseVolumeStateTemplate      CloneVolumesResponseVolumeState = "template"
-)
-
 type CloneVolumesResponseVolume struct {
 	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the newly cloned volume.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the newly cloned volume.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// (Only applies when using global control plane).
 	// The metro of the volume.
 	Metro *string `json:"metro,omitempty"`
 	// The state of the volume.
-	State *CloneVolumesResponseVolumeState `json:"state,omitempty"`
+	State VolumeState `json:"state"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`

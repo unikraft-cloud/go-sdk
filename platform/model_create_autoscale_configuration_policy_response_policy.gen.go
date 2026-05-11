@@ -10,11 +10,11 @@ import "encoding/json"
 
 type CreateAutoscaleConfigurationPolicyResponsePolicy struct {
 	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the service of the added policy.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the service of the added policy.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// (Only applies when using global control plane).
 	// The metro of the resource.
 	Metro *string `json:"metro,omitempty"`

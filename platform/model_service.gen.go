@@ -34,14 +34,14 @@ type Service struct {
 	Port uint32 `json:"port"`
 	// The port number that the instance is listening on.  This is the internal
 	// port which Unikraft Cloud will forward traffic to.
-	DestinationPort *uint32 `json:"destination_port,omitempty"`
+	DestinationPort uint32 `json:"destination_port"`
 	// Connection handlers to use for the service.  Handlers define how the
 	// service will handle incoming connections and forward traffic from the
 	// Internet to your application.  For example, a service can be configured
 	// to terminate TLS connections, redirect HTTP traffic, or enable HTTP mode
 	// for load balancing.  You configure the handlers for every published
 	// service port individually.
-	Handlers []ServiceHandlers `json:"handlers,omitempty"`
+	Handlers []ConnectionHandler `json:"handlers,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

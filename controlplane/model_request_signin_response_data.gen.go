@@ -10,10 +10,10 @@ import "encoding/json"
 
 type RequestSigninResponseData struct {
 	// The full URL which can be used to remotely confirm the signin.
-	AuthorizationUrl *string `json:"authorization_url,omitempty"`
+	AuthorizationUrl string `json:"authorization_url"`
 	// A unique identifier for the request.  This can be used to track the
 	// request in the system.
-	RequestId *string `json:"request_id,omitempty"`
+	RequestId string `json:"request_id"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

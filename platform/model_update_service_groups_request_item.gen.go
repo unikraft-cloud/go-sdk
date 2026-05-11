@@ -9,33 +9,14 @@ package platform
 import "encoding/json"
 
 // A single update operation to be applied to a service group
-// The property to modify.
-type UpdateServiceGroupsRequestItemProp string
-
-const (
-	UpdateServiceGroupsRequestItemPropServices   UpdateServiceGroupsRequestItemProp = "services"
-	UpdateServiceGroupsRequestItemPropDomains    UpdateServiceGroupsRequestItemProp = "domains"
-	UpdateServiceGroupsRequestItemPropSoft_limit UpdateServiceGroupsRequestItemProp = "soft_limit"
-	UpdateServiceGroupsRequestItemPropHard_limit UpdateServiceGroupsRequestItemProp = "hard_limit"
-	UpdateServiceGroupsRequestItemPropAutokill   UpdateServiceGroupsRequestItemProp = "autokill"
-)
-
-// The operation to perform.
-type UpdateServiceGroupsRequestItemOp string
-
-const (
-	UpdateServiceGroupsRequestItemOpSet UpdateServiceGroupsRequestItemOp = "set"
-	UpdateServiceGroupsRequestItemOpAdd UpdateServiceGroupsRequestItemOp = "add"
-	UpdateServiceGroupsRequestItemOpDel UpdateServiceGroupsRequestItemOp = "del"
-)
 
 type UpdateServiceGroupsRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitempty"`
 	// The property to modify.
-	Prop UpdateServiceGroupsRequestItemProp `json:"prop"`
+	Prop MutableServiceGroupProperty `json:"prop"`
 	// The operation to perform.
-	Op UpdateServiceGroupsRequestItemOp `json:"op"`
+	Op MutableServiceGroupOperation `json:"op"`
 	// The value for the update operation:
 	// - For "services": array of Service objects (same as for creation)
 	// - For "domains": array of Domain objects (same as for creation)

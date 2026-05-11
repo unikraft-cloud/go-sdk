@@ -10,7 +10,7 @@ import "encoding/json"
 
 type ProvisionNodeResponseData struct {
 	// The created node.
-	Node *Node `json:"node,omitempty"`
+	Node Node `json:"node"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

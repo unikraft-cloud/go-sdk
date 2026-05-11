@@ -9,22 +9,10 @@ package platform
 import "encoding/json"
 
 // A single wait operation to be applied to an instance.
-// The desired state to wait for.  Default is `running`.
-type WaitInstancesRequestItemState string
-
-const (
-	WaitInstancesRequestItemStateStopped  WaitInstancesRequestItemState = "stopped"
-	WaitInstancesRequestItemStateStarting WaitInstancesRequestItemState = "starting"
-	WaitInstancesRequestItemStateRunning  WaitInstancesRequestItemState = "running"
-	WaitInstancesRequestItemStateDraining WaitInstancesRequestItemState = "draining"
-	WaitInstancesRequestItemStateStopping WaitInstancesRequestItemState = "stopping"
-	WaitInstancesRequestItemStateTemplate WaitInstancesRequestItemState = "template"
-	WaitInstancesRequestItemStateStandby  WaitInstancesRequestItemState = "standby"
-)
 
 type WaitInstancesRequestItem struct {
 	// The desired state to wait for.  Default is `running`.
-	State *WaitInstancesRequestItemState `json:"state,omitempty"`
+	State *InstanceState `json:"state,omitempty"`
 	// Timeout in milliseconds to wait for the instance to reach the desired
 	// state.  If the timeout is reached, the request will fail with an error.
 	// A value of -1 means to wait indefinitely until the instance reaches the

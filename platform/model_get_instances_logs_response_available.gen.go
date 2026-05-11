@@ -10,9 +10,9 @@ import "encoding/json"
 
 type GetInstancesLogsResponseAvailable struct {
 	// The first byte offset that can be retrieved.
-	Start *int64 `json:"start,omitempty"`
+	Start int64 `json:"start"`
 	// The last byte offset that can be retrieved.
-	End *int64 `json:"end,omitempty"`
+	End int64 `json:"end"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

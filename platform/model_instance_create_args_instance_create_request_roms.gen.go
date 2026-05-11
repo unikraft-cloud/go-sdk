@@ -10,7 +10,7 @@ import "encoding/json"
 
 type InstanceCreateArgsInstanceCreateRequestRoms struct {
 	// The name of the ROM to use for the autoscale configuration.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// (Optional).  The image of the ROM to use for the autoscale configuration.
 	// Mutually exclusive with `files`.
 	Image *string `json:"image,omitempty"`

@@ -10,15 +10,15 @@ import "encoding/json"
 
 type Metro struct {
 	// The UUID of the metro.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The API endpoint for the metro.
-	Endpoint *string `json:"endpoint,omitempty"`
+	Endpoint string `json:"endpoint"`
 	// The name of the metro.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The IATA code of the metro.
-	IataCode *string `json:"iata_code,omitempty"`
+	IataCode string `json:"iata_code"`
 	// The country where the metro is located.
-	Country *string `json:"country,omitempty"`
+	Country string `json:"country"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

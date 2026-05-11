@@ -24,15 +24,6 @@ import "encoding/json"
 //
 // Example: `*-*-* 09:00:00` - Every day at 09:00 UTC
 // Example: `Sat,Sun *-*-* 20:00:00` - Every Saturday and Sunday at 20:00 UTC
-// The action to perform at the scheduled time.
-type ScheduleAction string
-
-const (
-	ScheduleActionStart  ScheduleAction = "start"
-	ScheduleActionStop   ScheduleAction = "stop"
-	ScheduleActionDelete ScheduleAction = "delete"
-	ScheduleActionExec   ScheduleAction = "exec"
-)
 
 type Schedule struct {
 	// The name of the schedule.
@@ -50,7 +41,7 @@ type Schedule struct {
 	//
 	// This field is populated only in responses (not settable in requests).
 	// Unix timestamp in seconds.  Omitted if no next execution is scheduled.
-	NextAt *int64 `json:"next_at,omitempty"`
+	NextAt int64 `json:"next_at"`
 	// The command to execute when the action is `exec`.
 	//
 	// Required when `action` is `SCHEDULE_ACTION_EXEC`, ignored otherwise.

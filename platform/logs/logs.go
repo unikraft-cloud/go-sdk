@@ -183,22 +183,22 @@ func (r *logsReader) readChunk(p []byte, off int64) (actualOffset int64, n int, 
 	}
 	data := resp.Data.Instances[0]
 
-	dataRange := ptr.ZeroIfNil(data.Range)
-	dataAvailable := ptr.ZeroIfNil(data.Available)
+	dataRange := data.Range
+	dataAvailable := data.Available
 
 	// HACK: if you try reading out-of-range, the API seems to return a 0+0 available response
-	if r.start == nil || r.end == nil || ptr.ZeroIfNil(dataAvailable.Start) != ptr.ZeroIfNil(dataAvailable.End) {
-		r.start = data.Available.Start
-		r.end = data.Available.End
+	if r.start == nil || r.end == nil || dataAvailable.Start != dataAvailable.End {
+		r.start = &data.Available.Start
+		r.end = &data.Available.End
 	}
 
-	n, err = base64.StdEncoding.Decode(p, []byte(ptr.ZeroIfNil(data.Output)))
+	n, err = base64.StdEncoding.Decode(p, []byte(data.Output))
 	if err != nil {
 		return 0, 0, err
 	}
-	dataRangeSize := ptr.ZeroIfNil(dataRange.End) - ptr.ZeroIfNil(dataRange.Start)
+	dataRangeSize := dataRange.End - dataRange.Start
 	if int64(n) != dataRangeSize {
 		return 0, 0, fmt.Errorf("expected to read %d bytes but got %d", dataRangeSize, n)
 	}
-	return ptr.ZeroIfNil(dataRange.Start), n, nil
+	return dataRange.Start, n, nil
 }

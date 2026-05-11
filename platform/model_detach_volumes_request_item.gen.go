@@ -11,7 +11,8 @@ import "encoding/json"
 // A single request of detaching a volume.
 
 type DetachVolumesRequestItem struct {
-	// UUID or name of the instance to detach the volume from.
+	// (Optional).  UUID or name of the instance to detach the volume from.
+	// If not specified, the volume is detached from all instances.
 	From *NameOrUUID `json:"from,omitempty"`
 	// The UUID of the volume to detach. Mutually exclusive with name.
 	// Exactly one of uuid or name must be provided.

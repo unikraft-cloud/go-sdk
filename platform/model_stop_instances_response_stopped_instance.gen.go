@@ -8,44 +8,18 @@ package platform
 
 import "encoding/json"
 
-// The current state of the instance.
-type StopInstancesResponseStoppedInstanceState string
-
-const (
-	StopInstancesResponseStoppedInstanceStateStopped  StopInstancesResponseStoppedInstanceState = "stopped"
-	StopInstancesResponseStoppedInstanceStateStarting StopInstancesResponseStoppedInstanceState = "starting"
-	StopInstancesResponseStoppedInstanceStateRunning  StopInstancesResponseStoppedInstanceState = "running"
-	StopInstancesResponseStoppedInstanceStateDraining StopInstancesResponseStoppedInstanceState = "draining"
-	StopInstancesResponseStoppedInstanceStateStopping StopInstancesResponseStoppedInstanceState = "stopping"
-	StopInstancesResponseStoppedInstanceStateTemplate StopInstancesResponseStoppedInstanceState = "template"
-	StopInstancesResponseStoppedInstanceStateStandby  StopInstancesResponseStoppedInstanceState = "standby"
-)
-
-// The previous state of the instance before the stop operation was invoked.
-type StopInstancesResponseStoppedInstancePreviousState string
-
-const (
-	StopInstancesResponseStoppedInstancePreviousStateStopped  StopInstancesResponseStoppedInstancePreviousState = "stopped"
-	StopInstancesResponseStoppedInstancePreviousStateStarting StopInstancesResponseStoppedInstancePreviousState = "starting"
-	StopInstancesResponseStoppedInstancePreviousStateRunning  StopInstancesResponseStoppedInstancePreviousState = "running"
-	StopInstancesResponseStoppedInstancePreviousStateDraining StopInstancesResponseStoppedInstancePreviousState = "draining"
-	StopInstancesResponseStoppedInstancePreviousStateStopping StopInstancesResponseStoppedInstancePreviousState = "stopping"
-	StopInstancesResponseStoppedInstancePreviousStateTemplate StopInstancesResponseStoppedInstancePreviousState = "template"
-	StopInstancesResponseStoppedInstancePreviousStateStandby  StopInstancesResponseStoppedInstancePreviousState = "standby"
-)
-
 type StopInstancesResponseStoppedInstance struct {
 	// The UUID of the instance.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the instance.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// (Only applies when using global control plane).
 	// The metro of the instance.
 	Metro *string `json:"metro,omitempty"`
 	// The current state of the instance.
-	State *StopInstancesResponseStoppedInstanceState `json:"state,omitempty"`
+	State InstanceState `json:"state"`
 	// The previous state of the instance before the stop operation was invoked.
-	PreviousState *StopInstancesResponseStoppedInstancePreviousState `json:"previous_state,omitempty"`
+	PreviousState InstanceState `json:"previous_state"`
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the status.
