@@ -42,7 +42,7 @@ type Node struct {
 	// state, particularly useful for error states.
 	StateMessage *string `json:"state_message,omitempty"`
 	// The cloud provider where this machine is provisioned.
-	Provider NodeProvider `json:"provider"`
+	Cloudprovider CloudProvider `json:"cloudprovider"`
 	// The provider's region where the machine is located (e.g., "us-east-1" for
 	// AWS, "us-central1" for GCP, "westeurope" for Azure).
 	Region string `json:"region"`
@@ -69,7 +69,7 @@ type Node struct {
 	// The provider-specific instance ID or resource identifier.
 	ProviderInstanceId *string `json:"provider_instance_id,omitempty"`
 	// Provider-specific configuration that was used to provision this node.
-	ProviderConfig *NodeProviderConfig `json:"provider_config,omitempty"`
+	ProviderConfig *CloudProviderConfig `json:"provider_config,omitempty"`
 	// User-defined tags for organizing and filtering nodes.
 	Tags map[string]string `json:"tags,omitempty"`
 	// The time when the machine became ready (entered READY state).
@@ -101,7 +101,7 @@ func (m *Node) UnmarshalJSON(data []byte) error {
 		"updated_at":           {},
 		"state":                {},
 		"state_message":        {},
-		"provider":             {},
+		"cloudprovider":        {},
 		"region":               {},
 		"machine_type":         {},
 		"vcpus":                {},

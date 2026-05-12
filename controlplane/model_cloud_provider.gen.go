@@ -6,11 +6,11 @@
 
 package controlplane
 
-// NodeProvider identifies the cloud infrastructure provider where nodes are
+// CloudProvider identifies the cloud infrastructure provider where nodes are
 // provisioned.
-type NodeProvider string
+type CloudProvider string
 
 const (
-	NodeProviderUnspecified NodeProvider = "unspecified"
-	NodeProviderAws         NodeProvider = "aws"
+	CloudProviderUnspecified CloudProvider = "unspecified"
+	CloudProviderAws         CloudProvider = "aws"
 )

@@ -155,8 +155,8 @@ type Client interface {
 	// Returns the machine types (instance types) available for provisioning
 	// on the specified cloud provider.
 	//
-	// @param `provider`
-	// 	The provider to list machine types for.
+	// @param `cloudprovider`
+	// 	The cloud provider to list machine types for.
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
@@ -164,10 +164,10 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/nodes/provider/{provider}/types
+	// Performs: GET /v1/nodes/provider/{cloudprovider}/types
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#list-machine-types
-	ListMachineTypes(ctx context.Context, provider string, opts ListMachineTypesOpts, ropts ...RequestOption) (*Response[ListMachineTypesResponseData], error)
+	ListMachineTypes(ctx context.Context, cloudprovider string, opts ListMachineTypesOpts, ropts ...RequestOption) (*Response[ListMachineTypesResponseData], error)
 	// Get one or more nodes.
 	//
 	// Returns nodes matching the specified filters. If no filters are
@@ -191,16 +191,16 @@ type Client interface {
 	// Returns the regions available for provisioning on the specified cloud
 	// provider, including availability zone information.
 	//
-	// @param `provider`
-	// 	The provider to list regions for.
+	// @param `cloudprovider`
+	// 	The cloud provider to list regions for.
 	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/nodes/provider/{provider}/regions
+	// Performs: GET /v1/nodes/provider/{cloudprovider}/regions
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node-service#list-regions
-	ListRegions(ctx context.Context, provider string, ropts ...RequestOption) (*Response[ListRegionsResponseData], error)
+	ListRegions(ctx context.Context, cloudprovider string, ropts ...RequestOption) (*Response[ListRegionsResponseData], error)
 	// Create a new node.
 	//
 	// Creates a new compute node on the specified cloud provider. The node
@@ -506,9 +506,9 @@ func (c *client) GetNodeByUUID(ctx context.Context, uuid string, ropts ...Reques
 	return resp, nil
 }
 
-func (c *client) ListMachineTypes(ctx context.Context, provider string, opts ListMachineTypesOpts, ropts ...RequestOption) (*Response[ListMachineTypesResponseData], error) {
-	requestPath := "/v1/nodes/provider/{provider}/types"
-	requestPath = strings.ReplaceAll(requestPath, "{provider}", url.PathEscape(provider))
+func (c *client) ListMachineTypes(ctx context.Context, cloudprovider string, opts ListMachineTypesOpts, ropts ...RequestOption) (*Response[ListMachineTypesResponseData], error) {
+	requestPath := "/v1/nodes/provider/{cloudprovider}/types"
+	requestPath = strings.ReplaceAll(requestPath, "{cloudprovider}", url.PathEscape(cloudprovider))
 
 	query := make(url.Values)
 	if opts.Region != nil {
@@ -526,8 +526,8 @@ func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListN
 	requestPath := "/v1/nodes"
 
 	query := make(url.Values)
-	if opts.Provider != nil {
-		query.Add("provider", *opts.Provider)
+	if opts.Cloudprovider != nil {
+		query.Add("cloudprovider", *opts.Cloudprovider)
 	}
 	if opts.State != nil {
 		query.Add("state", *opts.State)
@@ -561,9 +561,9 @@ func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListN
 	return resp, nil
 }
 
-func (c *client) ListRegions(ctx context.Context, provider string, ropts ...RequestOption) (*Response[ListRegionsResponseData], error) {
-	requestPath := "/v1/nodes/provider/{provider}/regions"
-	requestPath = strings.ReplaceAll(requestPath, "{provider}", url.PathEscape(provider))
+func (c *client) ListRegions(ctx context.Context, cloudprovider string, ropts ...RequestOption) (*Response[ListRegionsResponseData], error) {
+	requestPath := "/v1/nodes/provider/{cloudprovider}/regions"
+	requestPath = strings.ReplaceAll(requestPath, "{cloudprovider}", url.PathEscape(cloudprovider))
 
 	resp := &Response[ListRegionsResponseData]{}
 	if err := doRequest[ListRegionsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {

@@ -15,7 +15,7 @@ type ProvisionNodeRequest struct {
 	// auto-generated.
 	Name *string `json:"name,omitempty"`
 	// The cloud provider where the machine should be provisioned.
-	Provider NodeProvider `json:"provider"`
+	Cloudprovider CloudProvider `json:"cloudprovider"`
 	// The provider region where the machine should be provisioned.
 	Region string `json:"region"`
 	// The machine type to provision. This is provider-specific.
@@ -25,7 +25,7 @@ type ProvisionNodeRequest struct {
 	// Optional user-defined tags.
 	Tags map[string]string `json:"tags,omitempty"`
 	// Optional provider-specific configuration for advanced customization.
-	ProviderConfig *NodeProviderConfig `json:"provider_config,omitempty"`
+	CloudproviderConfig *CloudProviderConfig `json:"cloudprovider_config,omitempty"`
 	// The Unikraft Cloud metro to associate this machine with.
 	Metro *string `json:"metro,omitempty"`
 	// Optional user overrides for platform configuration. Keys should be
@@ -51,17 +51,17 @@ func (m *ProvisionNodeRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"name":            {},
-		"provider":        {},
-		"region":          {},
-		"machine_type":    {},
-		"ssh_keys":        {},
-		"tags":            {},
-		"provider_config": {},
-		"metro":           {},
-		"platform_config": {},
-		"image_pulls":     {},
-		"net_count":       {},
+		"name":                 {},
+		"cloudprovider":        {},
+		"region":               {},
+		"machine_type":         {},
+		"ssh_keys":             {},
+		"tags":                 {},
+		"cloudprovider_config": {},
+		"metro":                {},
+		"platform_config":      {},
+		"image_pulls":          {},
+		"net_count":            {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
