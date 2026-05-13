@@ -8,19 +8,19 @@ package controlplane
 
 import "encoding/json"
 
-// NodeProviderConfig contains provider-specific configuration for node
+// CloudProviderConfig contains provider-specific configuration for node
 // provisioning.  Use this for advanced customization beyond the common
 // machine_type and region fields.
 
-type NodeProviderConfig struct {
+type CloudProviderConfig struct {
 	// AWS-specific configuration.
 	Aws *AWSConfig `json:"aws,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
 
-func (m *NodeProviderConfig) UnmarshalJSON(data []byte) error {
-	type Alias NodeProviderConfig
+func (m *CloudProviderConfig) UnmarshalJSON(data []byte) error {
+	type Alias CloudProviderConfig
 	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
 		return err
 	}
@@ -44,8 +44,8 @@ func (m *NodeProviderConfig) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m NodeProviderConfig) MarshalJSON() ([]byte, error) {
-	type Alias NodeProviderConfig
+func (m CloudProviderConfig) MarshalJSON() ([]byte, error) {
+	type Alias CloudProviderConfig
 	base, err := json.Marshal((*Alias)(&m))
 	if err != nil {
 		return nil, err

@@ -11,9 +11,6 @@ import "encoding/json"
 // AWSConfig contains AWS-specific configuration for node provisioning.
 
 type AWSConfig struct {
-	// The AWS availability zone (e.g., "us-east-1a"). If not specified, AWS
-	// will select an availability zone within the region.
-	AvailabilityZone *string `json:"availability_zone,omitempty"`
 	// The VPC ID where the instance will be launched. If not specified, the
 	// default VPC for the region will be used.
 	VpcId *string `json:"vpc_id,omitempty"`
@@ -52,7 +49,6 @@ func (m *AWSConfig) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"availability_zone":    {},
 		"vpc_id":               {},
 		"subnet_id":            {},
 		"security_group_ids":   {},

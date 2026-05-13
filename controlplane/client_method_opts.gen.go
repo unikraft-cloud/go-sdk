@@ -29,12 +29,12 @@ type ListMachineTypesOpts struct {
 
 // ListNodesOpts holds query-parameter options for [Client.ListNodes].
 type ListNodesOpts struct {
-	Provider *string
-	State    *string
-	Metro    *string
-	Region   *string
-	Limit    *int32
-	Offset   *int32
+	Cloudprovider *string
+	State         *string
+	Metro         *string
+	Region        *string
+	Limit         *int32
+	Offset        *int32
 }
 
 // WaitNodeByUUIDOpts holds query-parameter options for [Client.WaitNodeByUUID].
