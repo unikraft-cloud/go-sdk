@@ -5,7 +5,7 @@ go 1.26.1
 tool unikraft.com/x/tools/openapi-gen
 
 require (
-	golang.org/x/net v0.48.0
+	golang.org/x/net v0.53.0
 	unikraft.com/x/joinerrgroup v0.0.0-20260220150535-dbc51abe4158
 	unikraft.com/x/log v0.0.0-20260126094137-ab6e717e5679
 	unikraft.com/x/ptr v0.0.0-20260126094137-ab6e717e5679
@@ -67,13 +67,16 @@ require (
 	github.com/woodsbury/decimal128 v1.3.0 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
-	golang.org/x/crypto v0.46.0 // indirect
-	golang.org/x/sys v0.40.0 // indirect
-	golang.org/x/text v0.33.0 // indirect
+	golang.org/x/crypto v0.50.0 // indirect
+	golang.org/x/mod v0.35.0 // indirect
+	golang.org/x/sync v0.20.0 // indirect
+	golang.org/x/sys v0.43.0 // indirect
+	golang.org/x/text v0.36.0 // indirect
+	golang.org/x/tools v0.44.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	unikraft.com/x/colors v0.0.0-20260105163520-49d071286efd // indirect
 	unikraft.com/x/guesstermwidth v0.0.0-20250930190923-15fda4a56ffe // indirect
 	unikraft.com/x/kingkong v0.0.0-20260105163520-49d071286efd // indirect
-	unikraft.com/x/tools/openapi-gen v0.0.0-20260508142614-1049e0f32dfa // indirect
+	unikraft.com/x/tools/openapi-gen v0.0.0-20260513112619-df353f7e2a05 // indirect
 )

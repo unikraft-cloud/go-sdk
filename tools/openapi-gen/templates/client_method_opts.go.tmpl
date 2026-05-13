@@ -13,7 +13,7 @@ package {{.Var "package" ""}}
 // {{$op.OperationID}}Opts holds query-parameter options for [Client.{{$op.OperationID}}].
 type {{$op.OperationID}}Opts struct {
 {{- range $queryParams}}
-	{{pascalcase .Name}} {{if and (not .Required) (not (and .Schema .Schema.Value (isType .Schema.Value "array")))}}*{{end}}{{paramToGoType .}}
+	{{pascalcase .Name}} {{if and (not .Required) (not (and .Schema .Schema.Value (eq (getType .Schema.Value) "array")))}}*{{end}}{{paramToGoType .}}
 {{- end}}
 }
 
