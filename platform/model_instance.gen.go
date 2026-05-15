@@ -277,6 +277,8 @@ type Instance struct {
 	// Template-specific automatic delete-on-idle configuration.
 	// Not used for non-template instances.
 	TemplateAutokill *InstanceTemplateAutokill `json:"template_autokill,omitempty"`
+	// Queued property changes awaiting application.
+	Updates []InstancePendingUpdate `json:"updates,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -333,6 +335,7 @@ func (m *Instance) UnmarshalJSON(data []byte) error {
 		"schedules":          {},
 		"autokill":           {},
 		"template_autokill":  {},
+		"updates":            {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
