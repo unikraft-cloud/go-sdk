@@ -51,6 +51,34 @@ func (lr LogsReader) Reader(id platform.NameOrUUID, tail int, follow bool) (io.R
 	return io.NewSectionReader(r, offset, math.MaxInt64), nil
 }
 
+// End returns the current end offset of the instance's log stream.
+func (lr LogsReader) End(id platform.NameOrUUID) (int64, error) {
+	if (id.Name == nil && id.Uuid == nil) || (id.Name != nil && id.Uuid != nil) {
+		return 0, fmt.Errorf("instance identifier must have either name or uuid")
+	}
+
+	req := platform.GetInstancesLogsRequestItem{
+		Offset: new(int64(0)),
+		Limit:  new(int64(1)),
+	}
+	if id.Name != nil {
+		req.Name = id.Name
+	}
+	if id.Uuid != nil {
+		req.Uuid = id.Uuid
+	}
+
+	resp, err := lr.client.GetInstanceLogs(lr.ctx, []platform.GetInstancesLogsRequestItem{req})
+	if err != nil {
+		return 0, err
+	}
+	if len(resp.Data.Instances) == 0 {
+		return 0, fmt.Errorf("no data returned for instance")
+	}
+
+	return resp.Data.Instances[0].Available.End, nil
+}
+
 type logsReader struct {
 	LogsReader
 	id platform.NameOrUUID
