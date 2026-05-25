@@ -36,15 +36,19 @@ type LogsReader struct {
 	client platform.Client
 }
 
-func (lr LogsReader) Reader(id platform.NameOrUUID, tail int, follow bool) (io.Reader, error) {
+func (lr LogsReader) Reader(id platform.NameOrUUID, tail *int, follow bool) (io.Reader, error) {
 	r := &logsReader{
 		LogsReader: lr,
 		id:         id,
 		follow:     follow,
 	}
-	offset, err := r.rewind(tail)
-	if err != nil {
-		return nil, err
+	offset := int64(0)
+	if tail != nil {
+		var err error
+		offset, err = r.rewind(*tail)
+		if err != nil {
+			return nil, err
+		}
 	}
 	// section reader needs a max size, but we don't know it here, so just use
 	// max int - we'll handle returning EOF ourselves in ReadAt
@@ -73,10 +77,6 @@ const (
 
 // rewind rewinds the reader to tail newlines from the end.
 func (r *logsReader) rewind(tail int) (n int64, err error) {
-	if tail <= 0 {
-		return 0, nil
-	}
-
 	total := 0
 
 	chunk := make([]byte, logPageSize)
