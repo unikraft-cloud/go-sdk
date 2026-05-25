@@ -17,4 +17,5 @@ const (
 	InstanceStateStopping InstanceState = "stopping"
 	InstanceStateTemplate InstanceState = "template"
 	InstanceStateStandby  InstanceState = "standby"
+	InstanceStateDeleted  InstanceState = "deleted"
 )
