@@ -35,6 +35,9 @@ type CreateVolumeRequest struct {
 	Gid *uint32 `json:"gid,omitempty"`
 	// Script arguments passed to volume initialization scripts.
 	Args map[string]string `json:"args,omitempty"`
+	// The access mode of the volume, controlling volume sharing behavior.
+	// Defaults to `rwo` if not specified.
+	AccessMode *VolumeAccessMode `json:"access_mode,omitempty"`
 	// The size of the volume in megabytes.
 	SizeMb *uint64 `json:"size_mb,omitempty"`
 	// A host path to create a managed volume from.
@@ -65,6 +68,7 @@ func (m *CreateVolumeRequest) UnmarshalJSON(data []byte) error {
 		"uid":          {},
 		"gid":          {},
 		"args":         {},
+		"access_mode":  {},
 		"size_mb":      {},
 		"host_path":    {},
 		"template":     {},
