@@ -74,6 +74,9 @@ type Volume struct {
 	// Optional script arguments that were applied to the custom volume filesystem
 	// initialization scripts.
 	Args map[string]string `json:"args,omitempty"`
+	// The access mode of the volume, controlling volume sharing behavior.
+	// Defaults to `rwo` if not specified.
+	AccessMode VolumeAccessMode `json:"access_mode"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -109,6 +112,7 @@ func (m *Volume) UnmarshalJSON(data []byte) error {
 		"filesystem":   {},
 		"host_path":    {},
 		"args":         {},
+		"access_mode":  {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)
