@@ -157,6 +157,7 @@ func (c *client) clone() *client {
 {{- end}}
 {{- end}}
 {{- $responseType := ""}}
+{{- $responseHasData := false}}
 {{- $isSSE := false}}
 {{- if $op.Responses}}
 {{- $defaultResp := $op.Responses.Default}}
@@ -166,6 +167,9 @@ func (c *client) clone() *client {
 {{- if $respContent}}
 {{- if $respContent.Schema.Ref}}
 {{- $responseType = refName $respContent.Schema.Ref}}
+{{- if and $respContent.Schema.Value (getProperty $respContent.Schema.Value "data")}}
+{{- $responseHasData = true}}
+{{- end}}
 {{- end}}
 {{- end}}
 {{- $sseContent := index $defaultResp.Value.Content "text/event-stream"}}
@@ -173,6 +177,9 @@ func (c *client) clone() *client {
 {{- $isSSE = true}}
 {{- if $sseContent.Schema.Ref}}
 {{- $responseType = refName $sseContent.Schema.Ref}}
+{{- if and $sseContent.Schema.Value (getProperty $sseContent.Schema.Value "data")}}
+{{- $responseHasData = true}}
+{{- end}}
 {{- end}}
 {{- end}}
 {{- end}}
@@ -208,7 +215,7 @@ func (c *client) clone() *client {
 	{{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error)
+{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error)
 {{- end}}
 
 {{- define "impl_method"}}
@@ -244,6 +251,7 @@ func (c *client) clone() *client {
 {{- end}}
 {{- end}}
 {{- $responseType := ""}}
+{{- $responseHasData := false}}
 {{- $isSSE := false}}
 {{- if $op.Responses}}
 {{- $defaultResp := $op.Responses.Default}}
@@ -253,6 +261,9 @@ func (c *client) clone() *client {
 {{- if $respContent}}
 {{- if $respContent.Schema.Ref}}
 {{- $responseType = refName $respContent.Schema.Ref}}
+{{- if and $respContent.Schema.Value (getProperty $respContent.Schema.Value "data")}}
+{{- $responseHasData = true}}
+{{- end}}
 {{- end}}
 {{- end}}
 {{- $sseContent := index $defaultResp.Value.Content "text/event-stream"}}
@@ -260,6 +271,9 @@ func (c *client) clone() *client {
 {{- $isSSE = true}}
 {{- if $sseContent.Schema.Ref}}
 {{- $responseType = refName $sseContent.Schema.Ref}}
+{{- if and $sseContent.Schema.Value (getProperty $sseContent.Schema.Value "data")}}
+{{- $responseHasData = true}}
+{{- end}}
 {{- end}}
 {{- end}}
 {{- end}}
@@ -268,7 +282,7 @@ func (c *client) clone() *client {
 func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error) {
+{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error) {
 	requestPath := "{{$path}}"
 {{- range $pathParams}}
 	requestPath = strings.ReplaceAll(requestPath, "{{"{"}}{{.Name}}{{"}"}}", url.PathEscape(string({{camelcase .Name}})))
@@ -338,8 +352,8 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- end}}
 {{- end}}
 
-	resp := &Response[{{$responseType}}Data]{}
-	if err := doRequest[{{$responseType}}Data](ctx, c.request, http.Method{{title (lower $method)}}, requestPath, {{if $queryParams}}query{{else}}nil{{end}}, {{if $hasRequestBody}}bytes.NewReader(body){{else}}nil{{end}}, resp, ropts...); err != nil {
+	resp := &Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}]{}
+	if err := doRequest[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}](ctx, c.request, http.Method{{title (lower $method)}}, requestPath, {{if $queryParams}}query{{else}}nil{{end}}, {{if $hasRequestBody}}bytes.NewReader(body){{else}}nil{{end}}, resp, ropts...); err != nil {
 {{- if $isSSE}}
 		return nil, fmt.Errorf("performing the request: %w", err)
 {{- else}}
