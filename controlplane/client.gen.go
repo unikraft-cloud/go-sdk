@@ -78,6 +78,16 @@ type Client interface {
 	//
 	// Performs: POST /v1/nodes/activate
 	NodeActivate(ctx context.Context, request NodeActivateRequest, ropts ...RequestOption) (*Response[NodeActivateResponseData], error)
+	// Sends a heartbeat from a node to report its platform status.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/nodes/heartbeat
+	NodeHeartbeat(ctx context.Context, request NodeHeartbeatRequest, ropts ...RequestOption) (*Response[NodeHeartbeatResponseData], error)
 	// Renews a node's license.
 	//
 	// @param `request`
@@ -399,6 +409,21 @@ func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest, 
 
 	resp := &Response[NodeActivateResponseData]{}
 	if err := doRequest[NodeActivateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) NodeHeartbeat(ctx context.Context, request NodeHeartbeatRequest, ropts ...RequestOption) (*Response[NodeHeartbeatResponseData], error) {
+	requestPath := "/v1/nodes/heartbeat"
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[NodeHeartbeatResponseData]{}
+	if err := doRequest[NodeHeartbeatResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
