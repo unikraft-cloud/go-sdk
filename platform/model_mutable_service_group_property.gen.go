@@ -10,9 +10,9 @@ package platform
 type MutableServiceGroupProperty string
 
 const (
-	MutableServiceGroupPropertyServices   MutableServiceGroupProperty = "services"
-	MutableServiceGroupPropertyDomains    MutableServiceGroupProperty = "domains"
-	MutableServiceGroupPropertySoft_limit MutableServiceGroupProperty = "soft_limit"
-	MutableServiceGroupPropertyHard_limit MutableServiceGroupProperty = "hard_limit"
-	MutableServiceGroupPropertyAutokill   MutableServiceGroupProperty = "autokill"
+	MutableServiceGroupPropertyServices  MutableServiceGroupProperty = "services"
+	MutableServiceGroupPropertyDomains   MutableServiceGroupProperty = "domains"
+	MutableServiceGroupPropertySoftLimit MutableServiceGroupProperty = "soft_limit"
+	MutableServiceGroupPropertyHardLimit MutableServiceGroupProperty = "hard_limit"
+	MutableServiceGroupPropertyAutokill  MutableServiceGroupProperty = "autokill"
 )

@@ -10,8 +10,8 @@ package platform
 type MutableVolumeProperty string
 
 const (
-	MutableVolumePropertySize_mb      MutableVolumeProperty = "size_mb"
-	MutableVolumePropertyTags         MutableVolumeProperty = "tags"
-	MutableVolumePropertyQuota_policy MutableVolumeProperty = "quota_policy"
-	MutableVolumePropertyDelete_lock  MutableVolumeProperty = "delete_lock"
+	MutableVolumePropertySizeMb      MutableVolumeProperty = "size_mb"
+	MutableVolumePropertyTags        MutableVolumeProperty = "tags"
+	MutableVolumePropertyQuotaPolicy MutableVolumeProperty = "quota_policy"
+	MutableVolumePropertyDeleteLock  MutableVolumeProperty = "delete_lock"
 )

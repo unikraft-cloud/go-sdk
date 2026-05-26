@@ -16,7 +16,7 @@ import "encoding/json"
 type CreateInstanceRequestFeatures string
 
 const (
-	CreateInstanceRequestFeaturesDelete_on_stop CreateInstanceRequestFeatures = "delete-on-stop"
+	CreateInstanceRequestFeaturesDeleteOnStop CreateInstanceRequestFeatures = "delete-on-stop"
 )
 
 type CreateInstanceRequest struct {
