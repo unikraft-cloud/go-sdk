@@ -331,13 +331,16 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: POST /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#create-template-instances
-	CreateTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error)
+	CreateTemplateInstances(ctx context.Context, request []NameOrUUID, opts CreateTemplateInstancesOpts, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error)
 	// Delete a specified instance by its UUID.  After this call the UUID of the
 	// instance is no longer valid.  If the instance is currently running,
 	// it is force-stopped.
@@ -1593,8 +1596,13 @@ func (c *client) CreateInstance(ctx context.Context, request CreateInstanceReque
 	return resp, nil
 }
 
-func (c *client) CreateTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error) {
+func (c *client) CreateTemplateInstances(ctx context.Context, request []NameOrUUID, opts CreateTemplateInstancesOpts, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
+
+	query := make(url.Values)
+	if opts.TimeoutS != nil {
+		query.Add("timeout_s", fmt.Sprintf("%d", *opts.TimeoutS))
+	}
 
 	var body []byte
 	var err error
@@ -1606,7 +1614,7 @@ func (c *client) CreateTemplateInstances(ctx context.Context, request []NameOrUU
 	}
 
 	resp := &Response[CreateTemplateInstancesResponseData]{}
-	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil

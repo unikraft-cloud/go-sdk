@@ -13,11 +13,16 @@ import "encoding/json"
 type WaitInstancesRequestItem struct {
 	// The desired state to wait for.  Default is `running`.
 	State *InstanceState `json:"state,omitempty"`
-	// Timeout in milliseconds to wait for the instance to reach the desired
-	// state.  If the timeout is reached, the request will fail with an error.
-	// A value of -1 means to wait indefinitely until the instance reaches the
-	// desired state.
+	// Deprecated: Use `timeout_s` instead. Timeout in milliseconds to
+	// wait for the instance to reach the desired state. If `timeout_s` is
+	// not set, this value is converted by rounding up to the next full
+	// second. A value of -1 means to wait indefinitely.
 	TimeoutMs *int64 `json:"timeout_ms,omitempty"`
+	// Timeout in seconds to wait for the instance to reach the desired
+	// state. If the timeout is reached, the request will fail with an
+	// error. A value of -1 means to wait indefinitely until the instance
+	// reaches the desired state. No wait performed for a value of 0.
+	TimeoutS *int64 `json:"timeout_s,omitempty"`
 	// The UUID of the instance to wait for.  Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitempty"`
 	// The name of the instance to wait for.  Mutually exclusive with UUID.
@@ -40,6 +45,7 @@ func (m *WaitInstancesRequestItem) UnmarshalJSON(data []byte) error {
 	knownKeys := map[string]struct{}{
 		"state":      {},
 		"timeout_ms": {},
+		"timeout_s":  {},
 		"uuid":       {},
 		"name":       {},
 	}
