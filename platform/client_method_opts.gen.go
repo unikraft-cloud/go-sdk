@@ -29,6 +29,11 @@ type GetImagesOpts struct {
 	Tag    *string
 }
 
+// CreateTemplateInstancesOpts holds query-parameter options for [Client.CreateTemplateInstances].
+type CreateTemplateInstancesOpts struct {
+	TimeoutS *int64
+}
+
 // GetInstanceByUUIDOpts holds query-parameter options for [Client.GetInstanceByUUID].
 type GetInstanceByUUIDOpts struct {
 	Details *bool

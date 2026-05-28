@@ -100,9 +100,9 @@ type CreateInstanceRequest struct {
 	// used to create new instances that inherit the exact configuration and
 	// state the original instance had when the template was created.
 	Template *CreateInstanceRequestTemplate `json:"template,omitempty"`
-	// (Optional).  The scheduling priority for the instance.  Higher values
-	// indicate higher priority.
-	SchedPriority *int32 `json:"sched_priority,omitempty"`
+	// The scheduling priority for the instance. Only settable by
+	// users with scheduling priority override permissions.
+	SchedPriority *SchedPriority `json:"sched_priority,omitempty"`
 	// (Optional).  Schedules for the instance.  Scheduled operations let you
 	// automatically start, stop, delete, or exec a command in the instance on
 	// a calendar-based schedule.  For `exec` schedules, set the `args` field

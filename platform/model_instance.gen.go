@@ -279,6 +279,9 @@ type Instance struct {
 	TemplateAutokill *InstanceTemplateAutokill `json:"template_autokill,omitempty"`
 	// Queued property changes awaiting application.
 	Updates []InstancePendingUpdate `json:"updates,omitempty"`
+	// The scheduling priority for the instance. Only present for
+	// users with scheduling priority override permissions.
+	SchedPriority *SchedPriority `json:"sched_priority,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -336,6 +339,7 @@ func (m *Instance) UnmarshalJSON(data []byte) error {
 		"autokill":           {},
 		"template_autokill":  {},
 		"updates":            {},
+		"sched_priority":     {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

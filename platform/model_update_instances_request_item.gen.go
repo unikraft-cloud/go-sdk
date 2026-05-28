@@ -36,7 +36,7 @@ type UpdateInstancesRequestItem struct {
 	// - For "hostname": string (valid DNS label)
 	// - For "roms": array of ROM objects (with name and image fields) for SET/ADD, or array of ROM names for DEL
 	// - For "dependencies": array of instance identifiers (name or UUID)
-	// - For "sched_priority": integer (scheduling priority value)
+	// - For "sched_priority": SchedPriority enum value ("normal", "medium", "high", "admin")
 	Value *interface{} `json:"value,omitempty"`
 	// The UUID of the instance to update. Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitempty"`
