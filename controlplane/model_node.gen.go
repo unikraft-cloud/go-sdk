@@ -17,28 +17,6 @@ import (
 // Node nodes are the underlying compute resources where Unikraft Cloud
 // instances run.  They are provisioned on-demand across multiple cloud
 // providers and managed through a unified API.
-// The current state of the machine.
-type NodeState string
-
-const (
-	NodeStateUnspecified    NodeState = "unspecified"
-	NodeStatePending        NodeState = "pending"
-	NodeStateProvisioning   NodeState = "provisioning"
-	NodeStateConfiguring    NodeState = "configuring"
-	NodeStateReady          NodeState = "ready"
-	NodeStateDeprovisioning NodeState = "deprovisioning"
-	NodeStateDeprovisioned  NodeState = "deprovisioned"
-	NodeStateError          NodeState = "error"
-	NodeStateMaintenance    NodeState = "maintenance"
-)
-
-// The cloud provider where this machine is provisioned.
-type NodeProvider string
-
-const (
-	NodeProviderUnspecified NodeProvider = "unspecified"
-	NodeProviderAws         NodeProvider = "aws"
-)
 
 type Node struct {
 	// The UUID of the machine.
@@ -47,37 +25,37 @@ type Node struct {
 	// machine is created. The UUID is used to reference the machine in API calls and
 	// can be used to identify the machine in all API calls that require a machine
 	// identifier.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the machine.
 	//
 	// This is a human-readable name that can be used to identify the machine.
 	// The name must be unique within the context of your account. The name can
 	// also be used to identify the machine in API calls.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The time the machine was created.
-	CreatedAt *time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
 	// The time the machine was last updated.
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 	// The current state of the machine.
-	State *NodeState `json:"state,omitempty"`
+	State NodeState `json:"state"`
 	// An optional message providing additional information about the current
 	// state, particularly useful for error states.
 	StateMessage *string `json:"state_message,omitempty"`
 	// The cloud provider where this machine is provisioned.
-	Provider *NodeProvider `json:"provider,omitempty"`
+	Cloudprovider CloudProvider `json:"cloudprovider"`
 	// The provider's region where the machine is located (e.g., "us-east-1" for
 	// AWS, "us-central1" for GCP, "westeurope" for Azure).
-	Region *string `json:"region,omitempty"`
+	Region string `json:"region"`
 	// The machine type as defined by the provider (e.g., "m5.xlarge" for AWS,
 	// "n2-standard-4" for GCP, "Standard_D4s_v3" for Azure).
 	//
 	// This determines the compute resources (CPU, memory, etc.) available on
 	// the machine. The valid values depend on the chosen provider.
-	MachineType *string `json:"machine_type,omitempty"`
+	MachineType string `json:"machine_type"`
 	// The number of vCPUs available on this machine.
-	Vcpus *uint32 `json:"vcpus,omitempty"`
+	Vcpus uint32 `json:"vcpus"`
 	// The amount of memory in MiB available on this machine.
-	MemoryMib *uint64 `json:"memory_mib,omitempty"`
+	MemoryMib uint64 `json:"memory_mib"`
 	// The SSH keys configured for access to this machine.
 	SshKeys []SSHKey `json:"ssh_keys,omitempty"`
 	// The public IPv4 address of the machine, if assigned.
@@ -89,17 +67,18 @@ type Node struct {
 	// The Unikraft Cloud metro this machine is associated with.
 	Metro *string `json:"metro,omitempty"`
 	// The provider-specific instance ID or resource identifier.
-	ProviderInstanceId *string             `json:"provider_instance_id,omitempty"`
-	ProviderConfig     *NodeProviderConfig `json:"provider_config,omitempty"`
+	ProviderInstanceId *string `json:"provider_instance_id,omitempty"`
+	// Provider-specific configuration that was used to provision this node.
+	ProviderConfig *CloudProviderConfig `json:"provider_config,omitempty"`
 	// User-defined tags for organizing and filtering nodes.
 	Tags map[string]string `json:"tags,omitempty"`
 	// The time when the machine became ready (entered READY state).
 	ReadyAt *time.Time `json:"ready_at,omitempty"`
 	// The total uptime of the machine in seconds since it became ready.
-	UptimeSeconds *uint64 `json:"uptime_seconds,omitempty"`
+	UptimeSeconds uint64 `json:"uptime_seconds"`
 	// Whether the machine is protected from deletion. When true, delete operations
 	// will fail until this is set to false.
-	DeleteLock *bool `json:"delete_lock,omitempty"`
+	DeleteLock bool `json:"delete_lock"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -122,7 +101,7 @@ func (m *Node) UnmarshalJSON(data []byte) error {
 		"updated_at":           {},
 		"state":                {},
 		"state_message":        {},
-		"provider":             {},
+		"cloudprovider":        {},
 		"region":               {},
 		"machine_type":         {},
 		"vcpus":                {},

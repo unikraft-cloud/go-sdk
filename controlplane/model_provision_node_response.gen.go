@@ -12,14 +12,15 @@ import "encoding/json"
 
 type ProvisionNodeResponse struct {
 	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the response.
-	Message *string                    `json:"message,omitempty"`
-	Data    *ProvisionNodeResponseData `json:"data,omitempty"`
+	Message *string `json:"message,omitempty"`
+	// The response data for this request.
+	Data *ProvisionNodeResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitempty"`
 	// The operation time in microseconds.
-	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
+	OpTimeUs uint64 `json:"op_time_us"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

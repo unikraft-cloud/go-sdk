@@ -9,8 +9,8 @@ package platform
 import "encoding/json"
 
 type DataResult struct {
-	Uuid  *string `json:"uuid,omitempty"`
-	Added *bool   `json:"added,omitempty"`
+	Uuid  string `json:"uuid"`
+	Added bool   `json:"added"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

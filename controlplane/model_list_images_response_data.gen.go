@@ -8,8 +8,6 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type ListImagesResponseData struct {
 	// The list of images.
 	Images []Image `json:"images,omitempty"`

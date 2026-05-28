@@ -8,7 +8,7 @@ package platform
 
 import "encoding/json"
 
-// Automatic delete-on-idle configuration.
+// Automatic delete-on-idle configuration for service groups.
 
 type ServiceGroupAutokill struct {
 	// Time in milliseconds after the service group becomes empty before it is

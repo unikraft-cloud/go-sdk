@@ -10,9 +10,9 @@ import "encoding/json"
 
 type ServiceGroupTemplate struct {
 	// The name of the template used for the autoscale configuration.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The UUID of the template used for the autoscale configuration.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

@@ -10,10 +10,13 @@ import "encoding/json"
 
 type Quotas struct {
 	// The UUID of the quota.
-	Uuid   *string       `json:"uuid,omitempty"`
-	Used   *QuotasUsed   `json:"used,omitempty"`
-	Hard   *QuotasHard   `json:"hard,omitempty"`
-	Limits *QuotasLimits `json:"limits,omitempty"`
+	Uuid string `json:"uuid"`
+	// Used quota
+	Used QuotasStats `json:"used"`
+	// Configured quota limits
+	Hard QuotasStats `json:"hard"`
+	// Additional limits
+	Limits QuotasLimits `json:"limits"`
 	// An optional field representing the status of the request.  This field is
 	// only set when this message object is used as a response message.
 	Status *ResponseStatus `json:"status,omitempty"`

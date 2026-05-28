@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type DeleteVolumesResponseData struct {
 	// The volume(s) which were deleted by the request.
 	Volumes []DeleteVolumesResponseDeletedVolume `json:"volumes,omitempty"`

@@ -12,18 +12,9 @@ import "encoding/json"
 
 type Region struct {
 	// The region identifier (e.g., "us-east-1", "us-central1").
-	Name *string `json:"name,omitempty"`
-	// Human-readable display name.
-	DisplayName *string `json:"display_name,omitempty"`
-	// The country code where this region is located.
-	Country *string `json:"country,omitempty"`
-	// Geographic coordinates of the region.
-	Latitude  *float64 `json:"latitude,omitempty"`
-	Longitude *float64 `json:"longitude,omitempty"`
-	// Availability zones within this region.
-	AvailabilityZones []string `json:"availability_zones,omitempty"`
-	// Whether this region is currently available for provisioning.
-	Available *bool `json:"available,omitempty"`
+	Name string `json:"name"`
+	// The IATA code for the region.
+	Iata string `json:"iata"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -40,13 +31,8 @@ func (m *Region) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"name":               {},
-		"display_name":       {},
-		"country":            {},
-		"latitude":           {},
-		"longitude":          {},
-		"availability_zones": {},
-		"available":          {},
+		"name": {},
+		"iata": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

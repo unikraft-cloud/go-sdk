@@ -10,7 +10,7 @@ import "encoding/json"
 
 type AutoscalePolicyStep struct {
 	// The adjustment value for the step.
-	Adjustment *int64 `json:"adjustment,omitempty"`
+	Adjustment int64 `json:"adjustment"`
 	// Lower bound for the step.
 	LowerBound *int64 `json:"lower_bound,omitempty"`
 	// Upper bound for the step.

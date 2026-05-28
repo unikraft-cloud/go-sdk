@@ -45,10 +45,10 @@ func main() {
 	}
 
 	for _, inst := range resp.Data.Instances {
-		fmt.Printf("Name:  %s\n", *inst.Name)
-		fmt.Printf("UUID:  %s\n", *inst.Uuid)
-		fmt.Printf("State: %s\n", *inst.State)
-		fmt.Printf("Image: %s\n", *inst.Image)
+		fmt.Printf("Name:  %s\n", inst.Name)
+		fmt.Printf("UUID:  %s\n", inst.Uuid)
+		fmt.Printf("State: %s\n", inst.State)
+		fmt.Printf("Image: %s\n", inst.Image)
 		fmt.Println("---")
 	}
 }

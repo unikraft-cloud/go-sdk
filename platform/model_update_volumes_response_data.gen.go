@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type UpdateVolumesResponseData struct {
 	// List of volumes that were processed during the update operation.
 	Volumes []UpdateVolumesResponseUpdatedVolume `json:"volumes,omitempty"`

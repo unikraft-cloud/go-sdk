@@ -41,7 +41,7 @@ type Service struct {
 	// to terminate TLS connections, redirect HTTP traffic, or enable HTTP mode
 	// for load balancing.  You configure the handlers for every published
 	// service port individually.
-	Handlers []ServiceHandlers `json:"handlers,omitempty"`
+	Handlers []ConnectionHandler `json:"handlers,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

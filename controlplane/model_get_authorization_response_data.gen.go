@@ -8,13 +8,11 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type GetAuthorizationResponseData struct {
 	// The organization name the token is associated with.
-	OrganizationName *string `json:"organization_name,omitempty"`
+	OrganizationName string `json:"organization_name"`
 	// The display name of the organization the token is associated with.
-	OrganizationDisplayName *string `json:"organization_display_name,omitempty"`
+	OrganizationDisplayName string `json:"organization_display_name"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

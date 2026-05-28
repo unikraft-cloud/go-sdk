@@ -9,32 +9,14 @@ package platform
 import "encoding/json"
 
 // A single request item for updating a volume.
-// The property to modify.
-type UpdateVolumesRequestItemProp string
-
-const (
-	UpdateVolumesRequestItemPropSize_mb      UpdateVolumesRequestItemProp = "size_mb"
-	UpdateVolumesRequestItemPropTags         UpdateVolumesRequestItemProp = "tags"
-	UpdateVolumesRequestItemPropQuota_policy UpdateVolumesRequestItemProp = "quota_policy"
-	UpdateVolumesRequestItemPropDelete_lock  UpdateVolumesRequestItemProp = "delete_lock"
-)
-
-// The operation to perform.
-type UpdateVolumesRequestItemOp string
-
-const (
-	UpdateVolumesRequestItemOpSet UpdateVolumesRequestItemOp = "set"
-	UpdateVolumesRequestItemOpAdd UpdateVolumesRequestItemOp = "add"
-	UpdateVolumesRequestItemOpDel UpdateVolumesRequestItemOp = "del"
-)
 
 type UpdateVolumesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitempty"`
 	// The property to modify.
-	Prop UpdateVolumesRequestItemProp `json:"prop"`
+	Prop MutableVolumeProperty `json:"prop"`
 	// The operation to perform.
-	Op UpdateVolumesRequestItemOp `json:"op"`
+	Op MutableVolumeOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "size_mb": unsigned integer
 	// - For "quota_policy": "static" or "dynamic"

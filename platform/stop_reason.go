@@ -38,11 +38,11 @@ func (instance *Instance) DescribeStop() string {
 
 // DescribeStatus returns a human-readable description of the instance's status.
 func (instance *Instance) DescribeStatus() string {
-	if instance.State == nil {
+	if instance.State == "" {
 		return ""
 	}
 
-	switch *instance.State {
+	switch instance.State {
 	case InstanceStateRunning:
 		dur := time.Since(*instance.StartedAt)
 		days := int64(dur.Hours() / 24)
@@ -80,6 +80,6 @@ func (instance *Instance) DescribeStatus() string {
 	case InstanceStateStopped:
 		return instance.DescribeStop()
 	default:
-		return string(*instance.State)
+		return string(instance.State)
 	}
 }

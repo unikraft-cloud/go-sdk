@@ -20,7 +20,7 @@ type CreateServiceGroupRequest struct {
 	// The metro to route the request to.
 	Metro *string `json:"metro,omitempty"`
 	// Description of exposed services.
-	Services []Service `json:"services,omitempty"`
+	Services []Service `json:"services"`
 	// Description of domains associated with the service group.
 	Domains []CreateServiceGroupRequestDomain `json:"domains,omitempty"`
 	// The soft limit is used by the Unikraft Cloud load balancer to decide when
@@ -40,8 +40,9 @@ type CreateServiceGroupRequest struct {
 	// The load balancer will never assign more requests to a single instance.  In
 	// case there are no other instances available, excess requests fail (i.e.,
 	// they are blocked and not queued).
-	HardLimit *uint64                            `json:"hard_limit,omitempty"`
-	Autokill  *CreateServiceGroupRequestAutokill `json:"autokill,omitempty"`
+	HardLimit *uint64 `json:"hard_limit,omitempty"`
+	// Automatic delete-on-idle configuration.
+	Autokill *CreateServiceGroupRequestAutokill `json:"autokill,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

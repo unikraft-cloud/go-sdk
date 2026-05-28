@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type CreateInstanceResponseData struct {
 	// The instance that was created in this request.
 	Instances []Instance `json:"instances,omitempty"`

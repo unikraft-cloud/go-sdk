@@ -8,13 +8,14 @@ package platform
 
 import "encoding/json"
 
-// (Optional).  The service group configuration when creating an instance.
+// The service group configuration when creating an instance.
 //
-// When creating an instance, either a previously created (persistent) service
-// group can be referenced (either through its name or UUID), or a new
-// (ephemeral) service group can be created for the instance by specifying the
-// list of services it should expose and optionally the domains it should use.
-// Not used by template instances.
+// If no existing (persistent) service group is specified via its identifier,
+// a new (ephemeral) service group can be created by specifying the services
+// it should expose.  A service defines the configuration settings of an
+// exposed port by the instance.  A service is a combination of a public port,
+// an internal port, and a set of handlers that define how the service will
+// handle incoming connections.
 
 type CreateInstanceRequestServiceGroup struct {
 	// If no existing (persistent) service group is specified via its

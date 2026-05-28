@@ -331,13 +331,16 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: POST /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#create-template-instances
-	CreateTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error)
+	CreateTemplateInstances(ctx context.Context, request []NameOrUUID, opts CreateTemplateInstancesOpts, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error)
 	// Delete a specified instance by its UUID.  After this call the UUID of the
 	// instance is no longer valid.  If the instance is currently running,
 	// it is force-stopped.
@@ -805,13 +808,16 @@ type Client interface {
 	// Create new user accounts. This will return 409 Conflict when any of the
 	// requested users already existed on the target.
 	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: POST /v1/users
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/users#add-users
-	AddUsers(ctx context.Context, ropts ...RequestOption) (*Response[AddUsersResponseData], error)
+	AddUsers(ctx context.Context, request AddUsersRequest, ropts ...RequestOption) (*Response[AddUsersResponseData], error)
 	// List quota usage and limits of your user account.
 	// Limits are hard limits that cannot be exceeded.
 	//
@@ -1227,7 +1233,7 @@ func (c *client) clone() *client {
 
 func (c *client) CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -1243,7 +1249,7 @@ func (c *client) CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Cont
 
 func (c *client) CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -1278,7 +1284,7 @@ func (c *client) CreateAutoscaleConfigurations(ctx context.Context, request []Cr
 
 func (c *client) DeleteAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request DeletePolicyRequest, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -1294,8 +1300,8 @@ func (c *client) DeleteAutoscaleConfigurationPolicies(ctx context.Context, uuid 
 
 func (c *client) DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies/{name}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
-	requestPath = strings.ReplaceAll(requestPath, "{name}", url.PathEscape(name))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
+	requestPath = strings.ReplaceAll(requestPath, "{name}", url.PathEscape(string(name)))
 
 	resp := &Response[DeleteAutoscaleConfigurationPolicyResponseData]{}
 	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
@@ -1325,7 +1331,7 @@ func (c *client) DeleteAutoscaleConfigurations(ctx context.Context, request []Na
 
 func (c *client) DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteAutoscaleConfigurationsResponseData]{}
 	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
@@ -1336,7 +1342,7 @@ func (c *client) DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Con
 
 func (c *client) GetAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request GetAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -1352,8 +1358,8 @@ func (c *client) GetAutoscaleConfigurationPolicies(ctx context.Context, uuid str
 
 func (c *client) GetAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies/{name}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
-	requestPath = strings.ReplaceAll(requestPath, "{name}", url.PathEscape(name))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
+	requestPath = strings.ReplaceAll(requestPath, "{name}", url.PathEscape(string(name)))
 
 	resp := &Response[GetAutoscaleConfigurationPolicyResponseData]{}
 	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
@@ -1383,7 +1389,7 @@ func (c *client) GetAutoscaleConfigurations(ctx context.Context, request []NameO
 
 func (c *client) GetAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetAutoscaleConfigurationsResponseData]{}
 	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
@@ -1409,7 +1415,7 @@ func (c *client) CreateCertificate(ctx context.Context, request CreateCertificat
 
 func (c *client) DeleteCertificateByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteCertificatesResponseData], error) {
 	requestPath := "/v1/certificates/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteCertificatesResponseData]{}
 	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
@@ -1439,7 +1445,7 @@ func (c *client) DeleteCertificates(ctx context.Context, request []NameOrUUID, r
 
 func (c *client) GetCertificateByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error) {
 	requestPath := "/v1/certificates/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetCertificatesResponseData]{}
 	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
@@ -1459,13 +1465,13 @@ func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, opts
 		query.Add("count", fmt.Sprintf("%d", *opts.Count))
 	}
 	if opts.From != nil {
-		query.Add("from", *opts.From)
+		query.Add("from", string(*opts.From))
 	}
 	if opts.Order != nil {
-		query.Add("order", *opts.Order)
+		query.Add("order", string(*opts.Order))
 	}
 	if opts.Sortby != nil {
-		query.Add("sortby", *opts.Sortby)
+		query.Add("sortby", string(*opts.Sortby))
 	}
 
 	var body []byte
@@ -1501,7 +1507,7 @@ func (c *client) UpdateCertificate(ctx context.Context, request UpdateCertificat
 
 func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequest, ropts ...RequestOption) (*Response[UpdateCertificateResponseData], error) {
 	requestPath := "/v1/certificates/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -1520,13 +1526,13 @@ func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTa
 
 	query := make(url.Values)
 	if opts.Metro != nil {
-		query.Add("metro", *opts.Metro)
+		query.Add("metro", string(*opts.Metro))
 	}
 	if opts.Digest != nil {
-		query.Add("digest", *opts.Digest)
+		query.Add("digest", string(*opts.Digest))
 	}
 	if opts.Tag != nil {
-		query.Add("tag", *opts.Tag)
+		query.Add("tag", string(*opts.Tag))
 	}
 
 	var body []byte
@@ -1550,13 +1556,13 @@ func (c *client) GetImages(ctx context.Context, request []GetImagesRequestTagOrD
 
 	query := make(url.Values)
 	if opts.Metro != nil {
-		query.Add("metro", *opts.Metro)
+		query.Add("metro", string(*opts.Metro))
 	}
 	if opts.Digest != nil {
-		query.Add("digest", *opts.Digest)
+		query.Add("digest", string(*opts.Digest))
 	}
 	if opts.Tag != nil {
-		query.Add("tag", *opts.Tag)
+		query.Add("tag", string(*opts.Tag))
 	}
 
 	var body []byte
@@ -1590,8 +1596,13 @@ func (c *client) CreateInstance(ctx context.Context, request CreateInstanceReque
 	return resp, nil
 }
 
-func (c *client) CreateTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error) {
+func (c *client) CreateTemplateInstances(ctx context.Context, request []NameOrUUID, opts CreateTemplateInstancesOpts, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
+
+	query := make(url.Values)
+	if opts.TimeoutS != nil {
+		query.Add("timeout_s", fmt.Sprintf("%d", *opts.TimeoutS))
+	}
 
 	var body []byte
 	var err error
@@ -1603,7 +1614,7 @@ func (c *client) CreateTemplateInstances(ctx context.Context, request []NameOrUU
 	}
 
 	resp := &Response[CreateTemplateInstancesResponseData]{}
-	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1611,7 +1622,7 @@ func (c *client) CreateTemplateInstances(ctx context.Context, request []NameOrUU
 
 func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, request DeleteInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -1646,7 +1657,7 @@ func (c *client) DeleteInstances(ctx context.Context, request []DeleteInstanceRe
 
 func (c *client) DeleteTemplateInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteTemplateInstancesResponseData]{}
 	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
@@ -1676,7 +1687,7 @@ func (c *client) DeleteTemplateInstances(ctx context.Context, request []NameOrUU
 
 func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, opts GetInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	query := make(url.Values)
 	if opts.Details != nil {
@@ -1711,7 +1722,7 @@ func (c *client) GetInstanceLogs(ctx context.Context, request []GetInstancesLogs
 
 func (c *client) GetInstanceLogsByUUID(ctx context.Context, uuid string, request GetInstanceLogsByUUIDRequestBody, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/log"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -1746,7 +1757,7 @@ func (c *client) GetInstanceMetrics(ctx context.Context, request []NameOrUUID, r
 
 func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/metrics"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetInstancesMetricsResponseData]{}
 	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
@@ -1766,16 +1777,16 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, opts Ge
 		query.Add("count", fmt.Sprintf("%d", *opts.Count))
 	}
 	if opts.From != nil {
-		query.Add("from", *opts.From)
+		query.Add("from", string(*opts.From))
 	}
 	for _, v := range opts.Tags {
-		query.Add("tags", v)
+		query.Add("tags", string(v))
 	}
 	if opts.Order != nil {
-		query.Add("order", *opts.Order)
+		query.Add("order", string(*opts.Order))
 	}
 	if opts.Sortby != nil {
-		query.Add("sortby", *opts.Sortby)
+		query.Add("sortby", string(*opts.Sortby))
 	}
 
 	var body []byte
@@ -1796,7 +1807,7 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, opts Ge
 
 func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, opts GetTemplateInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	query := make(url.Values)
 	if opts.Details != nil {
@@ -1821,16 +1832,16 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 		query.Add("count", fmt.Sprintf("%d", *opts.Count))
 	}
 	for _, v := range opts.Tags {
-		query.Add("tags", v)
+		query.Add("tags", string(v))
 	}
 	if opts.From != nil {
-		query.Add("from", *opts.From)
+		query.Add("from", string(*opts.From))
 	}
 	if opts.Order != nil {
-		query.Add("order", *opts.Order)
+		query.Add("order", string(*opts.Order))
 	}
 	if opts.Sortby != nil {
-		query.Add("sortby", *opts.Sortby)
+		query.Add("sortby", string(*opts.Sortby))
 	}
 
 	var body []byte
@@ -1851,7 +1862,7 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 
 func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, request StartInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/start"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -1886,7 +1897,7 @@ func (c *client) StartInstances(ctx context.Context, request []StartInstancesReq
 
 func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, request StopInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StopInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/stop"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -1921,7 +1932,7 @@ func (c *client) StopInstances(ctx context.Context, request []StopInstancesReque
 
 func (c *client) SuspendInstanceByUUID(ctx context.Context, uuid string, request SuspendInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/suspend"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -1956,7 +1967,7 @@ func (c *client) SuspendInstances(ctx context.Context, request []SuspendInstance
 
 func (c *client) UpdateInstanceByUUID(ctx context.Context, uuid string, request UpdateInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -1991,7 +2002,7 @@ func (c *client) UpdateInstances(ctx context.Context, request []UpdateInstancesR
 
 func (c *client) UpdateTemplateInstanceByUUID(ctx context.Context, uuid string, request UpdateTemplateInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -2026,7 +2037,7 @@ func (c *client) UpdateTemplateInstances(ctx context.Context, request []UpdateTe
 
 func (c *client) WaitInstanceByUUID(ctx context.Context, uuid string, request WaitInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/wait"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -2086,7 +2097,7 @@ func (c *client) CreateServiceGroup(ctx context.Context, request CreateServiceGr
 
 func (c *client) DeleteServiceGroupByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteServiceGroupsResponseData], error) {
 	requestPath := "/v1/services/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteServiceGroupsResponseData]{}
 	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
@@ -2116,7 +2127,7 @@ func (c *client) DeleteServiceGroups(ctx context.Context, request []NameOrUUID, 
 
 func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, opts GetServiceGroupByUUIDOpts, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
 	requestPath := "/v1/services/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	query := make(url.Values)
 	if opts.Details != nil {
@@ -2141,13 +2152,13 @@ func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, opt
 		query.Add("count", fmt.Sprintf("%d", *opts.Count))
 	}
 	if opts.From != nil {
-		query.Add("from", *opts.From)
+		query.Add("from", string(*opts.From))
 	}
 	if opts.Order != nil {
-		query.Add("order", *opts.Order)
+		query.Add("order", string(*opts.Order))
 	}
 	if opts.Sortby != nil {
-		query.Add("sortby", *opts.Sortby)
+		query.Add("sortby", string(*opts.Sortby))
 	}
 
 	var body []byte
@@ -2168,7 +2179,7 @@ func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, opt
 
 func (c *client) UpdateServiceGroupByUUID(ctx context.Context, uuid string, request UpdateServiceGroupByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateServiceGroupsResponseData], error) {
 	requestPath := "/v1/services/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -2201,11 +2212,16 @@ func (c *client) UpdateServiceGroups(ctx context.Context, request []UpdateServic
 	return resp, nil
 }
 
-func (c *client) AddUsers(ctx context.Context, ropts ...RequestOption) (*Response[AddUsersResponseData], error) {
+func (c *client) AddUsers(ctx context.Context, request AddUsersRequest, ropts ...RequestOption) (*Response[AddUsersResponseData], error) {
 	requestPath := "/v1/users"
 
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
 	resp := &Response[AddUsersResponseData]{}
-	if err := doRequest[AddUsersResponseData](ctx, c.request, http.MethodPost, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[AddUsersResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2223,7 +2239,7 @@ func (c *client) GetUser(ctx context.Context, ropts ...RequestOption) (*Response
 
 func (c *client) GetUserByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[QuotasResponseData], error) {
 	requestPath := "/v1/users/{uuid}/quotas"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[QuotasResponseData]{}
 	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
@@ -2234,7 +2250,7 @@ func (c *client) GetUserByUUID(ctx context.Context, uuid string, ropts ...Reques
 
 func (c *client) AttachVolumeByUUID(ctx context.Context, uuid string, request AttachVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}/attach"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -2269,7 +2285,7 @@ func (c *client) AttachVolumes(ctx context.Context, request []AttachVolumesReque
 
 func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}/clone"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -2338,7 +2354,7 @@ func (c *client) CreateVolume(ctx context.Context, request CreateVolumeRequest, 
 
 func (c *client) DeleteTemplateVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/templates/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteTemplateVolumesResponseData]{}
 	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
@@ -2368,7 +2384,7 @@ func (c *client) DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID
 
 func (c *client) DeleteVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteVolumesResponseData]{}
 	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
@@ -2398,7 +2414,7 @@ func (c *client) DeleteVolumes(ctx context.Context, request []NameOrUUID, ropts 
 
 func (c *client) DetachVolumeByUUID(ctx context.Context, uuid string, request DetachVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}/detach"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -2433,7 +2449,7 @@ func (c *client) DetachVolumes(ctx context.Context, request []DetachVolumesReque
 
 func (c *client) GetTemplateVolumeByUUID(ctx context.Context, uuid string, opts GetTemplateVolumeByUUIDOpts, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/templates/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	query := make(url.Values)
 	if opts.Details != nil {
@@ -2458,16 +2474,16 @@ func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, o
 		query.Add("count", fmt.Sprintf("%d", *opts.Count))
 	}
 	if opts.From != nil {
-		query.Add("from", *opts.From)
+		query.Add("from", string(*opts.From))
 	}
 	for _, v := range opts.Tags {
-		query.Add("tags", v)
+		query.Add("tags", string(v))
 	}
 	if opts.Order != nil {
-		query.Add("order", *opts.Order)
+		query.Add("order", string(*opts.Order))
 	}
 	if opts.Sortby != nil {
-		query.Add("sortby", *opts.Sortby)
+		query.Add("sortby", string(*opts.Sortby))
 	}
 
 	var body []byte
@@ -2488,7 +2504,7 @@ func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, o
 
 func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, opts GetVolumeByUUIDOpts, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	query := make(url.Values)
 	if opts.Details != nil {
@@ -2513,16 +2529,16 @@ func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, opts GetV
 		query.Add("count", fmt.Sprintf("%d", *opts.Count))
 	}
 	if opts.From != nil {
-		query.Add("from", *opts.From)
+		query.Add("from", string(*opts.From))
 	}
 	for _, v := range opts.Tags {
-		query.Add("tags", v)
+		query.Add("tags", string(v))
 	}
 	if opts.Order != nil {
-		query.Add("order", *opts.Order)
+		query.Add("order", string(*opts.Order))
 	}
 	if opts.Sortby != nil {
-		query.Add("sortby", *opts.Sortby)
+		query.Add("sortby", string(*opts.Sortby))
 	}
 
 	var body []byte
@@ -2543,7 +2559,7 @@ func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, opts GetV
 
 func (c *client) UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, request UpdateTemplateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/templates/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {
@@ -2578,7 +2594,7 @@ func (c *client) UpdateTemplateVolumes(ctx context.Context, request []UpdateTemp
 
 func (c *client) UpdateVolumeByUUID(ctx context.Context, uuid string, request UpdateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}"
-	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(uuid))
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	body, err := json.Marshal(request)
 	if err != nil {

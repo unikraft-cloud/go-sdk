@@ -10,16 +10,16 @@ import "encoding/json"
 
 type GetAutoscaleConfigurationsResponseServiceGroup struct {
 	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the service where the configuration was created.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the service where the configuration was created.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// (Only applies when using global control plane).
 	// The metro of the service group.
 	Metro *string `json:"metro,omitempty"`
 	// If the autoscale configuration is enabled.
-	Enabled *bool `json:"enabled,omitempty"`
+	Enabled bool `json:"enabled"`
 	// The minimum number of instances to keep running.
 	// Only if enabled is true.
 	MinSize *int64 `json:"min_size,omitempty"`
@@ -31,8 +31,10 @@ type GetAutoscaleConfigurationsResponseServiceGroup struct {
 	WarmupTimeMs *int64 `json:"warmup_time_ms,omitempty"`
 	// The cooldown time in seconds for the autoscale configuration.
 	// Only if enabled is true.
-	CooldownTimeMs *int64                                                  `json:"cooldown_time_ms,omitempty"`
-	Template       *GetAutoscaleConfigurationsResponseServiceGroupTemplate `json:"template,omitempty"`
+	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitempty"`
+	// The instance template used for the autoscale configuration.
+	// Only if enabled is true.
+	Template *ServiceGroupTemplate `json:"template,omitempty"`
 	// The policies applied to the autoscale configuration.
 	Policies []AutoscalePolicy `json:"policies,omitempty"`
 	// An optional message providing additional information about the status.

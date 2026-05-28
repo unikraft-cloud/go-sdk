@@ -8,11 +8,9 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type NodeRenewResponseData struct {
 	// The renewed license certificate in base64 URL encoded PEM format.
-	License *string `json:"license,omitempty"`
+	License string `json:"license"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

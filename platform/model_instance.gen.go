@@ -12,54 +12,6 @@ import (
 )
 
 // An instance is a unikernel virtual machine running an application.
-// The state of the instance.  This indicates the current state of the
-// instance, such as whether it is running, stopped, or in an error state.
-type InstanceState string
-
-const (
-	InstanceStateStopped  InstanceState = "stopped"
-	InstanceStateStarting InstanceState = "starting"
-	InstanceStateRunning  InstanceState = "running"
-	InstanceStateDraining InstanceState = "draining"
-	InstanceStateStopping InstanceState = "stopping"
-	InstanceStateTemplate InstanceState = "template"
-	InstanceStateStandby  InstanceState = "standby"
-)
-
-// The restart configuration for the instance.
-//
-// When an instance stops either because the application exits or the instance
-// crashes, Unikraft Cloud can auto-restart your instance.  Auto-restarts are
-// performed according to the restart policy configured for a particular
-// instance.
-//
-// The policy can have the following values:
-//
-// | Policy       | Description |
-// |--------------|-------------|
-// | `never`      | Never restart the instance (default). |
-// | `always`     | Always restart the instance when the stop is initiated from within the instance (i.e., the application exits or the instance crashes). |
-// | `on-failure` | Only restart the instance if it crashes. |
-//
-// When an instance stops, the stop reason and the configured restart policy
-// are evaluated to decide if a restart should be performed.  Unikraft Cloud
-// uses an exponential back-off delay (immediate, 5s, 10s, 20s, 40s, ..., 5m)
-// to slow down restarts in tight crash loops.  If an instance runs without
-// problems for 10s the back-off delay is reset and the restart sequence ends.
-//
-// The `restart.attempt` attribute reported in counts the number of restarts
-// performed in the current sequence.  The `restart.next_at` field indicates
-// when the next restart will take place if a back-off delay is in effect.
-//
-// A manual start or stop of the instance aborts the restart sequence and
-// resets the back-off delay.
-type InstanceRestartPolicy string
-
-const (
-	InstanceRestartPolicyNever      InstanceRestartPolicy = "never"
-	InstanceRestartPolicyAlways     InstanceRestartPolicy = "always"
-	InstanceRestartPolicyOn_failure InstanceRestartPolicy = "on-failure"
-)
 
 type Instance struct {
 	// The UUID of the instance.
@@ -68,36 +20,36 @@ type Instance struct {
 	// instance is created.  The UUID is used to reference the instance in API
 	// calls and can be used to identify the instance in all API calls that
 	// require an instance identifier.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the instance.
 	//
 	// This is a human-readable name that can be used to identify the instance.
 	// The name must be unique within the context of your account.  The name can
 	// also be used to identify the instance in API calls.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// (Only applies when using global control plane).
 	// Where the instance is located.
 	Metro *string `json:"metro,omitempty"`
 	// The time the instance was created.
-	CreatedAt *time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
 	// The state of the instance.  This indicates the current state of the
 	// instance, such as whether it is running, stopped, or in an error state.
-	State *InstanceState `json:"state,omitempty"`
+	State InstanceState `json:"state"`
 	// The internal hostname of the instance.  This address can be used privately
 	// within the Unikraft Cloud network to access the instance.  It is not
 	// accessible from the public Internet.
 	PrivateFqdn *string `json:"private_fqdn,omitempty"`
 	// The image used to create the instance.  This is a reference to the
 	// Unikraft image that was used to create the instance.
-	Image *string `json:"image,omitempty"`
+	Image string `json:"image"`
 	// The amount of memory in megabytes allocated for the instance.  This is the
 	// total amount of memory that is available to the instance for its
 	// operations.
-	MemoryMb *uint64 `json:"memory_mb,omitempty"`
+	MemoryMb uint64 `json:"memory_mb"`
 	// The number of vCPUs allocated for the instance.  This is the total
 	// number of virtual CPUs that are available to the instance for its
 	// operations.
-	Vcpus *uint32 `json:"vcpus,omitempty"`
+	Vcpus uint32 `json:"vcpus"`
 	// The arguments passed to the instance when it was started.  This is a
 	// list of command-line arguments that were provided to the instance at
 	// startup.  These arguments can be used to configure the behavior of the
@@ -259,10 +211,29 @@ type Instance struct {
 	//
 	// A manual start or stop of the instance aborts the restart sequence and
 	// resets the back-off delay.
-	RestartPolicy *InstanceRestartPolicy `json:"restart_policy,omitempty"`
-	ScaleToZero   *InstanceScaleToZero   `json:"scale_to_zero,omitempty"`
+	RestartPolicy InstanceRestartPolicy `json:"restart_policy"`
+	// The scale-to-zero configuration for the instance.
+	//
+	// With conventional cloud platforms you need to keep at least one instance
+	// running at all times to be able to respond to incoming requests. Performing
+	// a just-in-time cold boot is simply too time-consuming and would create a
+	// response latency of multiple seconds.  This is not the case with Unikraft
+	// Cloud.  Instances on Unikraft Cloud are able to cold boot within
+	// milliseconds, which allows us to perform low-latency scale-to-zero.
+	//
+	// To enable scale-to-zero for an instance it is sufficient to add a
+	// `scale_to_zero` configuration block.  Unikraft Cloud will then put the
+	// instance into standby if there is no traffic to your service within the
+	// window of a cooldown period.  When there is new traffic coming in, it is
+	// automatically started again.
+	//
+	// If you have a heavyweight application that takes long to cold boot or has
+	// bad first request latency (e.g., with JIT compilation) consider to enable
+	// stateful scale-to-zero.
+	ScaleToZero *InstanceScaleToZero `json:"scale_to_zero,omitempty"`
 	// The list of volumes attached to the instance.
-	Volumes      []InstanceVolume      `json:"volumes,omitempty"`
+	Volumes []InstanceVolume `json:"volumes,omitempty"`
+	// The service group configuration for the instance.
 	ServiceGroup *InstanceServiceGroup `json:"service_group,omitempty"`
 	// The network interfaces of the instance.
 	// Not used for template instances.
@@ -279,11 +250,14 @@ type Instance struct {
 	// An optional error code providing additional information about the status.
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.
-	Error    *int32            `json:"error,omitempty"`
+	Error *int32 `json:"error,omitempty"`
+	// The snapshot of the instance, if exists.
 	Snapshot *InstanceSnapshot `json:"snapshot,omitempty"`
 	// If set to true, the instance cannot be deleted until the lock is removed.
-	DeleteLock *bool            `json:"delete_lock,omitempty"`
-	Restart    *InstanceRestart `json:"restart,omitempty"`
+	DeleteLock *bool `json:"delete_lock,omitempty"`
+	// The current restart attempt for the instance.
+	// Not used for template instances.
+	Restart *InstanceRestartAttempt `json:"restart,omitempty"`
 	// Read-Only Memory (ROM) blobs to attach to the instance.
 	// Unikraft Cloud supports the ability to attach Read-Only Memory (ROM) blobs
 	// to instances. It allows you to create a general-purpose base image and
@@ -296,9 +270,18 @@ type Instance struct {
 	// `stop`, `delete`, or `exec`) to perform at matching times.  When the
 	// action is `exec`, the `args` field of the schedule specifies the command
 	// to run inside the instance.
-	Schedules        []Schedule                `json:"schedules,omitempty"`
-	Autokill         *InstanceAutokill         `json:"autokill,omitempty"`
+	Schedules []Schedule `json:"schedules,omitempty"`
+	// Automatic delete-on-idle/request-limit configuration.
+	// Not used for template instances.
+	Autokill *InstanceAutokill `json:"autokill,omitempty"`
+	// Template-specific automatic delete-on-idle configuration.
+	// Not used for non-template instances.
 	TemplateAutokill *InstanceTemplateAutokill `json:"template_autokill,omitempty"`
+	// Queued property changes awaiting application.
+	Updates []InstancePendingUpdate `json:"updates,omitempty"`
+	// The scheduling priority for the instance. Only present for
+	// users with scheduling priority override permissions.
+	SchedPriority *SchedPriority `json:"sched_priority,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -355,6 +338,8 @@ func (m *Instance) UnmarshalJSON(data []byte) error {
 		"schedules":          {},
 		"autokill":           {},
 		"template_autokill":  {},
+		"updates":            {},
+		"sched_priority":     {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

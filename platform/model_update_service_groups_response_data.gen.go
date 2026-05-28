@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type UpdateServiceGroupsResponseData struct {
 	// List of service groups that were processed during the update operation.
 	ServiceGroups []UpdateServiceGroupsResponseUpdatedServiceGroup `json:"service_groups,omitempty"`

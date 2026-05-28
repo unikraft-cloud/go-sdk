@@ -8,8 +8,6 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type ListMachineTypesResponseData struct {
 	// The list of available machine types.
 	MachineTypes []MachineType `json:"machine_types,omitempty"`

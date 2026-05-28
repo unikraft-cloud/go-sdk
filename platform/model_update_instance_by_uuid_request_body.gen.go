@@ -8,43 +8,14 @@ package platform
 
 import "encoding/json"
 
-// The property to modify.
-type UpdateInstanceByUUIDRequestBodyProp string
-
-const (
-	UpdateInstanceByUUIDRequestBodyPropImage          UpdateInstanceByUUIDRequestBodyProp = "image"
-	UpdateInstanceByUUIDRequestBodyPropArgs           UpdateInstanceByUUIDRequestBodyProp = "args"
-	UpdateInstanceByUUIDRequestBodyPropEnv            UpdateInstanceByUUIDRequestBodyProp = "env"
-	UpdateInstanceByUUIDRequestBodyPropMemory_mb      UpdateInstanceByUUIDRequestBodyProp = "memory_mb"
-	UpdateInstanceByUUIDRequestBodyPropVcpus          UpdateInstanceByUUIDRequestBodyProp = "vcpus"
-	UpdateInstanceByUUIDRequestBodyPropScale_to_zero  UpdateInstanceByUUIDRequestBodyProp = "scale_to_zero"
-	UpdateInstanceByUUIDRequestBodyPropTags           UpdateInstanceByUUIDRequestBodyProp = "tags"
-	UpdateInstanceByUUIDRequestBodyPropDelete_lock    UpdateInstanceByUUIDRequestBodyProp = "delete_lock"
-	UpdateInstanceByUUIDRequestBodyPropSchedules      UpdateInstanceByUUIDRequestBodyProp = "schedules"
-	UpdateInstanceByUUIDRequestBodyPropAutokill       UpdateInstanceByUUIDRequestBodyProp = "autokill"
-	UpdateInstanceByUUIDRequestBodyPropHostname       UpdateInstanceByUUIDRequestBodyProp = "hostname"
-	UpdateInstanceByUUIDRequestBodyPropRoms           UpdateInstanceByUUIDRequestBodyProp = "roms"
-	UpdateInstanceByUUIDRequestBodyPropDependencies   UpdateInstanceByUUIDRequestBodyProp = "dependencies"
-	UpdateInstanceByUUIDRequestBodyPropSched_priority UpdateInstanceByUUIDRequestBodyProp = "sched_priority"
-)
-
-// The operation to perform on the property.
-type UpdateInstanceByUUIDRequestBodyOp string
-
-const (
-	UpdateInstanceByUUIDRequestBodyOpSet UpdateInstanceByUUIDRequestBodyOp = "set"
-	UpdateInstanceByUUIDRequestBodyOpAdd UpdateInstanceByUUIDRequestBodyOp = "add"
-	UpdateInstanceByUUIDRequestBodyOpDel UpdateInstanceByUUIDRequestBodyOp = "del"
-)
-
 type UpdateInstanceByUUIDRequestBody struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.
 	Id *string `json:"id,omitempty"`
 	// The property to modify.
-	Prop UpdateInstanceByUUIDRequestBodyProp `json:"prop"`
+	Prop MutableInstanceProperty `json:"prop"`
 	// The operation to perform on the property.
-	Op UpdateInstanceByUUIDRequestBodyOp `json:"op"`
+	Op MutableInstanceOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "image": string
 	// - For "args": string or array of strings
@@ -60,7 +31,7 @@ type UpdateInstanceByUUIDRequestBody struct {
 	// - For "hostname": string (valid DNS label)
 	// - For "roms": array of ROM objects (with name and image fields) for SET/ADD, or array of ROM names for DEL
 	// - For "dependencies": array of instance identifiers (name or UUID)
-	// - For "sched_priority": integer (scheduling priority value)
+	// - For "sched_priority": SchedPriority enum value ("normal", "medium", "high", "admin")
 	Value *interface{} `json:"value,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`

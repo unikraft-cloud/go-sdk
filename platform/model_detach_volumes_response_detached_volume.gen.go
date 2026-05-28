@@ -10,11 +10,11 @@ import "encoding/json"
 
 type DetachVolumesResponseDetachedVolume struct {
 	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the volume that was detached.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the volume that was detached.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// (Only applies when using global control plane).
 	// The metro of the volume.
 	Metro *string `json:"metro,omitempty"`

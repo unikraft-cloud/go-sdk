@@ -12,20 +12,20 @@ import "encoding/json"
 
 type MachineType struct {
 	// The machine type identifier (e.g., "m5.xlarge", "n2-standard-4").
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// Human-readable description.
 	Description *string `json:"description,omitempty"`
 	// Number of vCPUs.
-	Vcpus *uint32 `json:"vcpus,omitempty"`
+	Vcpus uint32 `json:"vcpus"`
 	// Memory in MiB.
-	MemoryMib *uint64 `json:"memory_mib,omitempty"`
+	MemoryMib uint64 `json:"memory_mib"`
 	// Machine category (e.g., "general-purpose", "compute-optimized",
 	// "memory-optimized").
 	Category *string `json:"category,omitempty"`
 	// Regions where this machine type is available.
 	AvailableRegions []string `json:"available_regions,omitempty"`
 	// Whether this machine type supports nested virtualization.
-	NestedVirtualization *bool `json:"nested_virtualization,omitempty"`
+	NestedVirtualization bool `json:"nested_virtualization"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type CreateAutoscaleConfigurationsResponseData struct {
 	// The configuration(s) which were created by the request.
 	ServiceGroups []CreateAutoscaleConfigurationsResponseConfigurationsResponse `json:"service_groups,omitempty"`

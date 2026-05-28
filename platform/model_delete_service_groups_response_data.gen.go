@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type DeleteServiceGroupsResponseData struct {
 	// The service group(s) which were deleted by the request.
 	ServiceGroups []DeleteServiceGroupsResponseDeletedServiceGroup `json:"service_groups,omitempty"`

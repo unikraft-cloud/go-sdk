@@ -8,7 +8,7 @@ type {{$schemaName}} string
 
 const (
 {{- range $schema.Enum}}
-	{{$schemaName}}{{capitalizeEnum (replace "-" "_" (printf "%v" .))}} {{$schemaName}} = {{printf "%q" .}}
+	{{$schemaName}}{{capitalize (replace "-" "_" (printf "%v" .))}} {{$schemaName}} = {{printf "%q" .}}
 {{- end}}
 )
 {{- end}}

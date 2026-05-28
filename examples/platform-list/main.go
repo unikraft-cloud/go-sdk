@@ -7,6 +7,7 @@
 package main
 
 import (
+	"cmp"
 	"context"
 	"fmt"
 	"os"
@@ -47,30 +48,11 @@ func main() {
 	fmt.Fprintln(w, "NAME\tUUID\tSTATE\tIMAGE\tMEMORY")
 
 	for _, inst := range instances {
-		name := "-"
-		if inst.Name != nil {
-			name = *inst.Name
-		}
-
-		uuid := "-"
-		if inst.Uuid != nil {
-			uuid = *inst.Uuid
-		}
-
-		state := "-"
-		if inst.State != nil {
-			state = string(*inst.State)
-		}
-
-		image := "-"
-		if inst.Image != nil {
-			image = *inst.Image
-		}
-
-		memory := "-"
-		if inst.MemoryMb != nil {
-			memory = fmt.Sprintf("%dMiB", *inst.MemoryMb)
-		}
+		name := cmp.Or(inst.Name, "-")
+		uuid := cmp.Or(inst.Uuid, "-")
+		state := cmp.Or(string(inst.State), "-")
+		image := cmp.Or(inst.Image, "-")
+		memory := fmt.Sprintf("%dMiB", inst.MemoryMb)
 
 		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", name, uuid, state, image, memory)
 	}

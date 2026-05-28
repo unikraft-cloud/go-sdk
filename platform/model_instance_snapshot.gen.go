@@ -8,11 +8,11 @@ package platform
 
 import "encoding/json"
 
-// The snapshot of the instance, if exists.
+// The snapshot UUID of the instance.
 
 type InstanceSnapshot struct {
 	// The UUID of the snapshot.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

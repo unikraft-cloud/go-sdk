@@ -8,32 +8,13 @@ package platform
 
 import "encoding/json"
 
-// The property to modify.
-type UpdateVolumeByUUIDRequestBodyProp string
-
-const (
-	UpdateVolumeByUUIDRequestBodyPropSize_mb      UpdateVolumeByUUIDRequestBodyProp = "size_mb"
-	UpdateVolumeByUUIDRequestBodyPropTags         UpdateVolumeByUUIDRequestBodyProp = "tags"
-	UpdateVolumeByUUIDRequestBodyPropQuota_policy UpdateVolumeByUUIDRequestBodyProp = "quota_policy"
-	UpdateVolumeByUUIDRequestBodyPropDelete_lock  UpdateVolumeByUUIDRequestBodyProp = "delete_lock"
-)
-
-// The operation to perform.
-type UpdateVolumeByUUIDRequestBodyOp string
-
-const (
-	UpdateVolumeByUUIDRequestBodyOpSet UpdateVolumeByUUIDRequestBodyOp = "set"
-	UpdateVolumeByUUIDRequestBodyOpAdd UpdateVolumeByUUIDRequestBodyOp = "add"
-	UpdateVolumeByUUIDRequestBodyOpDel UpdateVolumeByUUIDRequestBodyOp = "del"
-)
-
 type UpdateVolumeByUUIDRequestBody struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitempty"`
 	// The property to modify.
-	Prop UpdateVolumeByUUIDRequestBodyProp `json:"prop"`
+	Prop MutableVolumeProperty `json:"prop"`
 	// The operation to perform.
-	Op UpdateVolumeByUUIDRequestBodyOp `json:"op"`
+	Op MutableVolumeOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "size_mb": unsigned integer
 	// - For "quota_policy": "static" or "dynamic"

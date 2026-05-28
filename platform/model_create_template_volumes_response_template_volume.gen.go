@@ -8,29 +8,15 @@ package platform
 
 import "encoding/json"
 
-// The state of the volume.
-type CreateTemplateVolumesResponseTemplateVolumeState string
-
-const (
-	CreateTemplateVolumesResponseTemplateVolumeStateUninitialized CreateTemplateVolumesResponseTemplateVolumeState = "uninitialized"
-	CreateTemplateVolumesResponseTemplateVolumeStateInitializing  CreateTemplateVolumesResponseTemplateVolumeState = "initializing"
-	CreateTemplateVolumesResponseTemplateVolumeStateAvailable     CreateTemplateVolumesResponseTemplateVolumeState = "available"
-	CreateTemplateVolumesResponseTemplateVolumeStateIdle          CreateTemplateVolumesResponseTemplateVolumeState = "idle"
-	CreateTemplateVolumesResponseTemplateVolumeStateMounted       CreateTemplateVolumesResponseTemplateVolumeState = "mounted"
-	CreateTemplateVolumesResponseTemplateVolumeStateBusy          CreateTemplateVolumesResponseTemplateVolumeState = "busy"
-	CreateTemplateVolumesResponseTemplateVolumeStateError         CreateTemplateVolumesResponseTemplateVolumeState = "error"
-	CreateTemplateVolumesResponseTemplateVolumeStateTemplate      CreateTemplateVolumesResponseTemplateVolumeState = "template"
-)
-
 type CreateTemplateVolumesResponseTemplateVolume struct {
 	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the volume converted into a template.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the volume converted into a template.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The state of the volume.
-	State *CreateTemplateVolumesResponseTemplateVolumeState `json:"state,omitempty"`
+	State VolumeState `json:"state"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`

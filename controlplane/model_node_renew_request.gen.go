@@ -13,9 +13,9 @@ import "encoding/json"
 type NodeRenewRequest struct {
 	// The certificate signing request (CSR) for the license which is base64
 	// encoded.
-	Csr *string `json:"csr,omitempty"`
+	Csr string `json:"csr"`
 	// The serial number of the certificate that ought to be renewed.
-	PreviousSerial *string `json:"previous_serial,omitempty"`
+	PreviousSerial string `json:"previous_serial"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

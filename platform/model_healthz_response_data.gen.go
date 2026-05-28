@@ -8,10 +8,11 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
+// Additional data returned by the health check.
 
 type HealthzResponseData struct {
-	Services map[string]string `json:"services,omitempty"`
+	Checks   map[string]string `json:"checks,omitempty"`
+	Versions map[string]string `json:"versions,omitempty"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }
@@ -28,7 +29,8 @@ func (m *HealthzResponseData) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"services": {},
+		"checks":   {},
+		"versions": {},
 	}
 	for key := range knownKeys {
 		delete(extra, key)

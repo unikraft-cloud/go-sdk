@@ -8,7 +8,7 @@ package platform
 
 import "encoding/json"
 
-// Automatic delete-on-idle/request-limit configuration.
+// Automatic delete-on-idle/request-limit configuration for non-template instances.
 // Not used for template instances.
 
 type InstanceAutokill struct {

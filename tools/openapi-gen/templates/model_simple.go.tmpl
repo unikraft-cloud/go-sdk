@@ -10,11 +10,11 @@
 {{- $prop := getProperty $schema $propName}}
 {{- $enumSchema := ""}}
 {{- $enumDescription := ""}}
-{{- if and $prop (isEnum $prop)}}
+{{- if and $prop $prop.Enum}}
 {{- /* Direct enum property */}}
 {{- $enumSchema = $prop}}
 {{- $enumDescription = $prop.Description}}
-{{- else if and $prop (eq (getType $prop) "array") $prop.Items $prop.Items.Value (isEnum $prop.Items.Value)}}
+{{- else if and $prop (eq (getType $prop) "array") $prop.Items $prop.Items.Value $prop.Items.Value.Enum}}
 {{- /* Array of enum items - description is on the property, not items */}}
 {{- $enumSchema = $prop.Items.Value}}
 {{- $enumDescription = $prop.Description}}
@@ -42,19 +42,18 @@ type {{$schemaName}} struct {
 {{- if $prop.Description}}
 	// {{$prop.Description | replace "\n" "\n	// "}}
 {{- end}}
-{{- $required := isRequired $schema $propName}}
-{{- $inOneOf := isInOneOf $schema $propName}}
+{{- $required := getPropertyRequired $schema $propName}}
 {{- $propGoName := pascalcase $propName}}
 {{- $openAPIType := getType $prop}}
 {{- /* Determine the Go type */}}
 {{- $propType := schemaToGoType $prop }}
-{{- /* Add pointer for optional fields or fields defined within oneOf */}}
-{{- if or (not $required) $inOneOf}}
+{{- /* Add pointer for optional fields */}}
+{{- if not $required}}
 	{{- if and (ne $openAPIType "array") (ne $openAPIType "object")}}
 		{{- $propType = printf "*%s" $propType}}
 	{{- end}}
 {{- end}}
-	{{$propGoName}} {{$propType}} `json:"{{$propName}}{{if or (not $required) $inOneOf}},omitempty{{end}}"`
+	{{$propGoName}} {{$propType}} `json:"{{$propName}}{{if not $required}},omitempty{{end}}"`
 {{- end}}
 {{- end}}
 

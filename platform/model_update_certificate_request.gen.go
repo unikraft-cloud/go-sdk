@@ -12,7 +12,8 @@ import "encoding/json"
 // UUID(s) or name(s).
 
 type UpdateCertificateRequest struct {
-	Id UpdateCertificateRequestId `json:"id"`
+	// The ID of the certificate to update.
+	Id NameOrUUID `json:"id"`
 	// The new certificate chain.
 	//
 	// This is the public chain of the certificate in PEM format. The chain

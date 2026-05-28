@@ -13,7 +13,7 @@ import "encoding/json"
 type CheckAuthorizationRequest struct {
 	// The request ID is a unique identifier for the request.  This is used to
 	// track the request in the system and should be provided by the client.
-	RequestId *string `json:"request_id,omitempty"`
+	RequestId string `json:"request_id"`
 
 	AdditionalProperties map[string]json.RawMessage `json:"-"`
 }

@@ -145,18 +145,19 @@ func (c *client) clone() *client {
 {{- $content := index $op.RequestBody.Value.Content "application/json"}}
 {{- if $content}}
 {{- if $content.Schema.Ref}}
-{{- $requestBodyType = refToType $content.Schema.Ref}}
+{{- $requestBodyType = refName $content.Schema.Ref}}
 {{- else if $content.Schema.Value}}
-{{- if and $content.Schema.Value.Type (isType $content.Schema.Value "array")}}
+{{- if and $content.Schema.Value.Type (eq (getType $content.Schema.Value) "array")}}
 {{- $requestBodyIsArray = true}}
 {{- if $content.Schema.Value.Items.Ref}}
-{{- $requestBodyType = refToType $content.Schema.Value.Items.Ref}}
+{{- $requestBodyType = refName $content.Schema.Value.Items.Ref}}
 {{- end}}
 {{- end}}
 {{- end}}
 {{- end}}
 {{- end}}
 {{- $responseType := ""}}
+{{- $responseHasData := false}}
 {{- $isSSE := false}}
 {{- if $op.Responses}}
 {{- $defaultResp := $op.Responses.Default}}
@@ -165,14 +166,20 @@ func (c *client) clone() *client {
 {{- $respContent := index $defaultResp.Value.Content "application/json"}}
 {{- if $respContent}}
 {{- if $respContent.Schema.Ref}}
-{{- $responseType = refToType $respContent.Schema.Ref}}
+{{- $responseType = refName $respContent.Schema.Ref}}
+{{- if and $respContent.Schema.Value (getProperty $respContent.Schema.Value "data")}}
+{{- $responseHasData = true}}
+{{- end}}
 {{- end}}
 {{- end}}
 {{- $sseContent := index $defaultResp.Value.Content "text/event-stream"}}
 {{- if $sseContent}}
 {{- $isSSE = true}}
 {{- if $sseContent.Schema.Ref}}
-{{- $responseType = refToType $sseContent.Schema.Ref}}
+{{- $responseType = refName $sseContent.Schema.Ref}}
+{{- if and $sseContent.Schema.Value (getProperty $sseContent.Schema.Value "data")}}
+{{- $responseHasData = true}}
+{{- end}}
 {{- end}}
 {{- end}}
 {{- end}}
@@ -201,12 +208,14 @@ func (c *client) clone() *client {
 	// 	Optional request modifiers.
 	//
 	// Performs: {{$method}} {{$path}}
+{{- if and $op.Tags (eq ($.Var "package" "") "platform")}}
 	//
-	// See: {{docsURL $op}}
+	// See: https://unikraft.com/docs/api/platform/v1/{{index $op.Tags 0 | kebabcase}}#{{$op.OperationID | kebabcase}}
+{{- end}}
 	{{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error)
+{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error)
 {{- end}}
 
 {{- define "impl_method"}}
@@ -230,18 +239,19 @@ func (c *client) clone() *client {
 {{- $content := index $op.RequestBody.Value.Content "application/json"}}
 {{- if $content}}
 {{- if $content.Schema.Ref}}
-{{- $requestBodyType = refToType $content.Schema.Ref}}
+{{- $requestBodyType = refName $content.Schema.Ref}}
 {{- else if $content.Schema.Value}}
-{{- if and $content.Schema.Value.Type (isType $content.Schema.Value "array")}}
+{{- if and $content.Schema.Value.Type (eq (getType $content.Schema.Value) "array")}}
 {{- $requestBodyIsArray = true}}
 {{- if $content.Schema.Value.Items.Ref}}
-{{- $requestBodyType = refToType $content.Schema.Value.Items.Ref}}
+{{- $requestBodyType = refName $content.Schema.Value.Items.Ref}}
 {{- end}}
 {{- end}}
 {{- end}}
 {{- end}}
 {{- end}}
 {{- $responseType := ""}}
+{{- $responseHasData := false}}
 {{- $isSSE := false}}
 {{- if $op.Responses}}
 {{- $defaultResp := $op.Responses.Default}}
@@ -250,14 +260,20 @@ func (c *client) clone() *client {
 {{- $respContent := index $defaultResp.Value.Content "application/json"}}
 {{- if $respContent}}
 {{- if $respContent.Schema.Ref}}
-{{- $responseType = refToType $respContent.Schema.Ref}}
+{{- $responseType = refName $respContent.Schema.Ref}}
+{{- if and $respContent.Schema.Value (getProperty $respContent.Schema.Value "data")}}
+{{- $responseHasData = true}}
+{{- end}}
 {{- end}}
 {{- end}}
 {{- $sseContent := index $defaultResp.Value.Content "text/event-stream"}}
 {{- if $sseContent}}
 {{- $isSSE = true}}
 {{- if $sseContent.Schema.Ref}}
-{{- $responseType = refToType $sseContent.Schema.Ref}}
+{{- $responseType = refName $sseContent.Schema.Ref}}
+{{- if and $sseContent.Schema.Value (getProperty $sseContent.Schema.Value "data")}}
+{{- $responseHasData = true}}
+{{- end}}
 {{- end}}
 {{- end}}
 {{- end}}
@@ -266,21 +282,21 @@ func (c *client) clone() *client {
 func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{$responseType}}Data], error) {
+{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error) {
 	requestPath := "{{$path}}"
 {{- range $pathParams}}
-	requestPath = strings.ReplaceAll(requestPath, "{{"{"}}{{.Name}}{{"}"}}", url.PathEscape({{camelcase .Name}}))
+	requestPath = strings.ReplaceAll(requestPath, "{{"{"}}{{.Name}}{{"}"}}", url.PathEscape(string({{camelcase .Name}})))
 {{- end}}
 
 {{- if $queryParams}}
 
 	query := make(url.Values)
 {{- range $queryParams}}
-{{- if and .Schema .Schema.Value (isType .Schema.Value "array")}}
+{{- if and .Schema .Schema.Value (eq (getType .Schema.Value) "array")}}
 	for _, v := range opts.{{pascalcase .Name}} {
-		query.Add("{{.Name}}", v)
+		query.Add("{{.Name}}", string(v))
 	}
-{{- else if and .Schema .Schema.Value (isType .Schema.Value "boolean")}}
+{{- else if and .Schema .Schema.Value (eq (getType .Schema.Value) "boolean")}}
 {{- if not .Required}}
 	if opts.{{pascalcase .Name}} != nil {
 		query.Add("{{.Name}}", fmt.Sprintf("%t", *opts.{{pascalcase .Name}}))
@@ -288,7 +304,7 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- else}}
 	query.Add("{{.Name}}", fmt.Sprintf("%t", opts.{{pascalcase .Name}}))
 {{- end}}
-{{- else if and .Schema .Schema.Value (isType .Schema.Value "integer")}}
+{{- else if and .Schema .Schema.Value (eq (getType .Schema.Value) "integer")}}
 {{- if not .Required}}
 	if opts.{{pascalcase .Name}} != nil {
 		query.Add("{{.Name}}", fmt.Sprintf("%d", *opts.{{pascalcase .Name}}))
@@ -296,7 +312,7 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- else}}
 	query.Add("{{.Name}}", fmt.Sprintf("%d", opts.{{pascalcase .Name}}))
 {{- end}}
-{{- else if and .Schema .Schema.Value (isType .Schema.Value "number")}}
+{{- else if and .Schema .Schema.Value (eq (getType .Schema.Value) "number")}}
 {{- if not .Required}}
 	if opts.{{pascalcase .Name}} != nil {
 		query.Add("{{.Name}}", fmt.Sprintf("%g", *opts.{{pascalcase .Name}}))
@@ -307,10 +323,10 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- else}}
 {{- if not .Required}}
 	if opts.{{pascalcase .Name}} != nil {
-		query.Add("{{.Name}}", *opts.{{pascalcase .Name}})
+		query.Add("{{.Name}}", string(*opts.{{pascalcase .Name}}))
 	}
 {{- else}}
-	query.Add("{{.Name}}", opts.{{pascalcase .Name}})
+	query.Add("{{.Name}}", string(opts.{{pascalcase .Name}}))
 {{- end}}
 {{- end}}
 {{- end}}
@@ -336,8 +352,8 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- end}}
 {{- end}}
 
-	resp := &Response[{{$responseType}}Data]{}
-	if err := doRequest[{{$responseType}}Data](ctx, c.request, http.Method{{title (lower $method)}}, requestPath, {{if $queryParams}}query{{else}}nil{{end}}, {{if $hasRequestBody}}bytes.NewReader(body){{else}}nil{{end}}, resp, ropts...); err != nil {
+	resp := &Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}]{}
+	if err := doRequest[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}](ctx, c.request, http.Method{{title (lower $method)}}, requestPath, {{if $queryParams}}query{{else}}nil{{end}}, {{if $hasRequestBody}}bytes.NewReader(body){{else}}nil{{end}}, resp, ropts...); err != nil {
 {{- if $isSSE}}
 		return nil, fmt.Errorf("performing the request: %w", err)
 {{- else}}

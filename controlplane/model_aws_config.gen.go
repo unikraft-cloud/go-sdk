@@ -11,9 +11,6 @@ import "encoding/json"
 // AWSConfig contains AWS-specific configuration for node provisioning.
 
 type AWSConfig struct {
-	// The AWS availability zone (e.g., "us-east-1a"). If not specified, AWS
-	// will select an availability zone within the region.
-	AvailabilityZone *string `json:"availability_zone,omitempty"`
 	// The VPC ID where the instance will be launched. If not specified, the
 	// default VPC for the region will be used.
 	VpcId *string `json:"vpc_id,omitempty"`
@@ -24,13 +21,15 @@ type AWSConfig struct {
 	// default security group for the VPC will be used.
 	SecurityGroupIds []string `json:"security_group_ids,omitempty"`
 	// The IAM instance profile ARN or name to attach to the instance.
-	IamInstanceProfile *string              `json:"iam_instance_profile,omitempty"`
-	RootVolume         *AWSConfigRootVolume `json:"root_volume,omitempty"`
+	IamInstanceProfile *string `json:"iam_instance_profile,omitempty"`
+	// Root EBS volume configuration. If not specified, provider defaults
+	// will be used.
+	RootVolume *AWSEBSConfig `json:"root_volume,omitempty"`
 	// Additional EBS volumes to attach to the instance.
 	AdditionalVolumes []AWSEBSConfig `json:"additional_volumes,omitempty"`
 	// Whether to use a dedicated host. Dedicated hosts provide visibility and
 	// control over how instances are placed on physical servers.
-	DedicatedHost *bool `json:"dedicated_host,omitempty"`
+	DedicatedHost bool `json:"dedicated_host"`
 	// Placement group name for the instance. Placement groups influence how
 	// instances are placed on underlying hardware.
 	PlacementGroup *string `json:"placement_group,omitempty"`
@@ -50,7 +49,6 @@ func (m *AWSConfig) UnmarshalJSON(data []byte) error {
 	}
 
 	knownKeys := map[string]struct{}{
-		"availability_zone":    {},
 		"vpc_id":               {},
 		"subnet_id":            {},
 		"security_group_ids":   {},

@@ -9,17 +9,6 @@ package platform
 import "encoding/json"
 
 // The request message for creating a new instance.
-// Restart policy for the instance.  This defines how the instance
-// should behave when it stops or crashes.  Cannot be combined with
-// the `delete-on-stop` feature.
-type CreateInstanceRequestRestartPolicy string
-
-const (
-	CreateInstanceRequestRestartPolicyNever      CreateInstanceRequestRestartPolicy = "never"
-	CreateInstanceRequestRestartPolicyAlways     CreateInstanceRequestRestartPolicy = "always"
-	CreateInstanceRequestRestartPolicyOn_failure CreateInstanceRequestRestartPolicy = "on-failure"
-)
-
 // Features to enable for the instance.  Features are specific
 // configurations or capabilities that can be enabled for the
 // instance.  The `scale-to-zero` and `delete-on-stop` features are
@@ -35,7 +24,9 @@ type CreateInstanceRequest struct {
 	//
 	// If not provided, a random name will be generated.  The name must be unique.
 	Name *string `json:"name,omitempty"`
-	// The image to use for the instance.
+	// (Optional).  The image to use for the instance.
+	//
+	// Either an image or a template must be specified.
 	Image *string `json:"image,omitempty"`
 	// (Only applies when using global control plane).
 	// The metro to route the request to.
@@ -45,7 +36,14 @@ type CreateInstanceRequest struct {
 	// (Optional).  Environment variables to set for the instance.
 	Env map[string]string `json:"env,omitempty"`
 	// (Optional).  Memory in MB to allocate for the instance.  Default is 128.
-	MemoryMb     *int64                             `json:"memory_mb,omitempty"`
+	MemoryMb *int64 `json:"memory_mb,omitempty"`
+	// (Optional).  The service group configuration when creating an instance.
+	//
+	// When creating an instance, either a previously created (persistent) service
+	// group can be referenced (either through its name or UUID), or a new
+	// (ephemeral) service group can be created for the instance by specifying the
+	// list of services it should expose and optionally the domains it should use.
+	// Not used by template instances.
 	ServiceGroup *CreateInstanceRequestServiceGroup `json:"service_group,omitempty"`
 	// Volumes to attach to the instance.
 	//
@@ -64,8 +62,11 @@ type CreateInstanceRequest struct {
 	// Restart policy for the instance.  This defines how the instance
 	// should behave when it stops or crashes.  Cannot be combined with
 	// the `delete-on-stop` feature.
-	RestartPolicy *CreateInstanceRequestRestartPolicy `json:"restart_policy,omitempty"`
-	ScaleToZero   *CreateInstanceRequestScaleToZero   `json:"scale_to_zero,omitempty"`
+	RestartPolicy *InstanceRestartPolicy `json:"restart_policy,omitempty"`
+	// Scale-to-zero configuration for the instance.  Requires
+	// `service_group` to be set.  Cannot be combined with the
+	// `delete-on-stop` feature.
+	ScaleToZero *CreateInstanceScaleToZero `json:"scale_to_zero,omitempty"`
 	// (Optional).  Number of vCPUs to allocate for the instance.
 	// Defaults to 1.
 	Vcpus *int32 `json:"vcpus,omitempty"`
@@ -79,7 +80,7 @@ type CreateInstanceRequest struct {
 	// configurations or capabilities that can be enabled for the
 	// instance.  The `scale-to-zero` and `delete-on-stop` features are
 	// mutually exclusive.
-	Features []CreateInstanceRequestFeatures `json:"features,omitempty"`
+	Features []InstanceFeature `json:"features,omitempty"`
 	// Timeout in seconds to wait for all new instances to reach running
 	// state.  Requires `autostart` to be set.  If you autostart your
 	// new instance, you can wait for it to finish starting with a
@@ -93,18 +94,24 @@ type CreateInstanceRequest struct {
 	// ROM blobs.
 	Roms []CreateInstanceRequestRom `json:"roms,omitempty"`
 	// (Optional).  Tags to associate with the instance.
-	Tags     []string                       `json:"tags,omitempty"`
+	Tags []string `json:"tags,omitempty"`
+	// Template instances.
+	// An existing instance can be saved as a template. This template is then
+	// used to create new instances that inherit the exact configuration and
+	// state the original instance had when the template was created.
 	Template *CreateInstanceRequestTemplate `json:"template,omitempty"`
-	// (Optional).  The scheduling priority for the instance.  Higher values
-	// indicate higher priority.
-	SchedPriority *int32 `json:"sched_priority,omitempty"`
+	// The scheduling priority for the instance. Only settable by
+	// users with scheduling priority override permissions.
+	SchedPriority *SchedPriority `json:"sched_priority,omitempty"`
 	// (Optional).  Schedules for the instance.  Scheduled operations let you
 	// automatically start, stop, delete, or exec a command in the instance on
 	// a calendar-based schedule.  For `exec` schedules, set the `args` field
 	// to the command and its arguments.  Each instance stores its own
 	// schedules, and cloning preserves them.
-	Schedules []Schedule                     `json:"schedules,omitempty"`
-	Autokill  *CreateInstanceRequestAutokill `json:"autokill,omitempty"`
+	Schedules []Schedule `json:"schedules,omitempty"`
+	// (Optional).  Automatic delete-on-idle/request-limit configuration.
+	// Not used for template instances.
+	Autokill *CreateInstanceRequestAutokill `json:"autokill,omitempty"`
 	// (Optional).  The hostname of the instance.
 	//
 	// If not provided, the hostname will be set to the instance name.  The

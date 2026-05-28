@@ -8,44 +8,18 @@ package platform
 
 import "encoding/json"
 
-// The current state of the instance.
-type SuspendInstancesResponseSuspendedInstanceState string
-
-const (
-	SuspendInstancesResponseSuspendedInstanceStateStopped  SuspendInstancesResponseSuspendedInstanceState = "stopped"
-	SuspendInstancesResponseSuspendedInstanceStateStarting SuspendInstancesResponseSuspendedInstanceState = "starting"
-	SuspendInstancesResponseSuspendedInstanceStateRunning  SuspendInstancesResponseSuspendedInstanceState = "running"
-	SuspendInstancesResponseSuspendedInstanceStateDraining SuspendInstancesResponseSuspendedInstanceState = "draining"
-	SuspendInstancesResponseSuspendedInstanceStateStopping SuspendInstancesResponseSuspendedInstanceState = "stopping"
-	SuspendInstancesResponseSuspendedInstanceStateTemplate SuspendInstancesResponseSuspendedInstanceState = "template"
-	SuspendInstancesResponseSuspendedInstanceStateStandby  SuspendInstancesResponseSuspendedInstanceState = "standby"
-)
-
-// The previous state of the instance before the suspend operation was invoked.
-type SuspendInstancesResponseSuspendedInstancePreviousState string
-
-const (
-	SuspendInstancesResponseSuspendedInstancePreviousStateStopped  SuspendInstancesResponseSuspendedInstancePreviousState = "stopped"
-	SuspendInstancesResponseSuspendedInstancePreviousStateStarting SuspendInstancesResponseSuspendedInstancePreviousState = "starting"
-	SuspendInstancesResponseSuspendedInstancePreviousStateRunning  SuspendInstancesResponseSuspendedInstancePreviousState = "running"
-	SuspendInstancesResponseSuspendedInstancePreviousStateDraining SuspendInstancesResponseSuspendedInstancePreviousState = "draining"
-	SuspendInstancesResponseSuspendedInstancePreviousStateStopping SuspendInstancesResponseSuspendedInstancePreviousState = "stopping"
-	SuspendInstancesResponseSuspendedInstancePreviousStateTemplate SuspendInstancesResponseSuspendedInstancePreviousState = "template"
-	SuspendInstancesResponseSuspendedInstancePreviousStateStandby  SuspendInstancesResponseSuspendedInstancePreviousState = "standby"
-)
-
 type SuspendInstancesResponseSuspendedInstance struct {
 	// The UUID of the instance.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the instance.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// (Only applies when using global control plane).
 	// The metro of the instance.
 	Metro *string `json:"metro,omitempty"`
 	// The current state of the instance.
-	State *SuspendInstancesResponseSuspendedInstanceState `json:"state,omitempty"`
+	State InstanceState `json:"state"`
 	// The previous state of the instance before the suspend operation was invoked.
-	PreviousState *SuspendInstancesResponseSuspendedInstancePreviousState `json:"previous_state,omitempty"`
+	PreviousState InstanceState `json:"previous_state"`
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the status.

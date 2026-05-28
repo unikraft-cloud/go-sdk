@@ -13,7 +13,7 @@ import "encoding/json"
 type RequestSigninRequest struct {
 	// The hostname is the name of the machine making the request.  This is
 	// mandatory as it consitutes a unique identifier for the machine.
-	Hostname *string `json:"hostname,omitempty"`
+	Hostname string `json:"hostname"`
 	// The operating system of the machine making the request.
 	Os *string `json:"os,omitempty"`
 	// The version of the operating system of the machine making the request, if

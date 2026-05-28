@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type GetInstancesResponseData struct {
 	// The instance(s) that were retrieved by the request.
 	Instances []Instance `json:"instances,omitempty"`

@@ -8,8 +8,7 @@ package platform
 
 import "encoding/json"
 
-// Template-specific automatic delete-on-idle configuration.
-// Not used for non-template instances.
+// Automatic delete-on-idle configuration for template instances.
 
 type InstanceTemplateAutokill struct {
 	// Time in milliseconds after the template was last used for cloning before

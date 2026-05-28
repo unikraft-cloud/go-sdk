@@ -8,8 +8,6 @@ package controlplane
 
 import "encoding/json"
 
-// The response data for this request.
-
 type UpdateNodesResponseData struct {
 	// The updated nodes.
 	Nodes []Node `json:"nodes,omitempty"`

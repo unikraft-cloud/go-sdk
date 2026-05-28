@@ -8,8 +8,6 @@ package platform
 
 import "encoding/json"
 
-// The response data for this request.
-
 type UpdateCertificateResponseData struct {
 	// The certificate(s) which were updated by the request.
 	Certificates []Certificate `json:"certificates,omitempty"`

@@ -10,11 +10,11 @@ import "encoding/json"
 
 type UpdateInstancesResponseUpdatedInstance struct {
 	// The UUID of the instance that was updated.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 	// The name of the instance that was updated.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The status of this particular instance update operation.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status ResponseStatus `json:"status"`
 	// (Only applies when using global control plane).
 	// The metro of the instance.
 	Metro *string `json:"metro,omitempty"`
