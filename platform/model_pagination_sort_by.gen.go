@@ -10,5 +10,5 @@ package platform
 type PaginationSortBy string
 
 const (
-	PaginationSortByCreate_time PaginationSortBy = "create_time"
+	PaginationSortByCreateTime PaginationSortBy = "create_time"
 )

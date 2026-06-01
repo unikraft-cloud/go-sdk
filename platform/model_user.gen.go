@@ -12,11 +12,11 @@ import "encoding/json"
 type UserPermissions string
 
 const (
-	UserPermissionsRoot                    UserPermissions = "root"
-	UserPermissionsOverride_edns_blacklist UserPermissions = "override_edns_blacklist"
-	UserPermissionsDeveloper               UserPermissions = "developer"
-	UserPermissionsVolume_manager          UserPermissions = "volume_manager"
-	UserPermissionsOverride_vm_priority    UserPermissions = "override_vm_priority"
+	UserPermissionsRoot                  UserPermissions = "root"
+	UserPermissionsOverrideEdnsBlacklist UserPermissions = "override_edns_blacklist"
+	UserPermissionsDeveloper             UserPermissions = "developer"
+	UserPermissionsVolumeManager         UserPermissions = "volume_manager"
+	UserPermissionsOverrideVmPriority    UserPermissions = "override_vm_priority"
 )
 
 type User struct {

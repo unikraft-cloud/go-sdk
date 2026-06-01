@@ -17,5 +17,5 @@ package platform
 type InstanceFeature string
 
 const (
-	InstanceFeatureDelete_on_stop InstanceFeature = "delete-on-stop"
+	InstanceFeatureDeleteOnStop InstanceFeature = "delete-on-stop"
 )
