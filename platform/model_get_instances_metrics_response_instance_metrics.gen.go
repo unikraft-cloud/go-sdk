@@ -6,7 +6,10 @@
 
 package platform
 
-import "encoding/json"
+import (
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
+)
 
 type GetInstancesMetricsResponseInstanceMetrics struct {
 	// Resident set size of the VMM in bytes.
@@ -63,66 +66,17 @@ type GetInstancesMetricsResponseInstanceMetrics struct {
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *GetInstancesMetricsResponseInstanceMetrics) UnmarshalJSON(data []byte) error {
 	type Alias GetInstancesMetricsResponseInstanceMetrics
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"rss_bytes":    {},
-		"cpu_time_ms":  {},
-		"boot_time_us": {},
-		"net_time_us":  {},
-		"rx_bytes":     {},
-		"rx_packets":   {},
-		"tx_bytes":     {},
-		"tx_packets":   {},
-		"nconns":       {},
-		"nreqs":        {},
-		"nqueued":      {},
-		"ntotal":       {},
-		"message":      {},
-		"error":        {},
-		"status":       {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m GetInstancesMetricsResponseInstanceMetrics) MarshalJSON() ([]byte, error) {
 	type Alias GetInstancesMetricsResponseInstanceMetrics
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }
