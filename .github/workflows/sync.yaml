@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   sync:
@@ -38,7 +38,21 @@ jobs:
       run: |
         git diff
 
+    - name: Detect deleted lines
+      id: diff_check
+      shell: bash
+      run: |
+        deletions=$(git diff --numstat -- controlplane platform | awk '$2 ~ /^[0-9]+$/ {d += $2} END {print d + 0}')
+        echo "deletions=$deletions" >> "$GITHUB_OUTPUT"
+
+        if [ "$deletions" -gt 0 ]; then
+          echo "has_deletions=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "has_deletions=false" >> "$GITHUB_OUTPUT"
+        fi
+
     - name: Create pull request
+      id: create_pr
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GH_PAT }}
@@ -50,3 +64,163 @@ jobs:
         author: Unikraft Bot <monkey@unikraft.io>
         add-paths: controlplane,platform
         signoff: true
+
+    - name: Auto merge
+      if: steps.create_pr.outputs.pull-request-number != '' && steps.diff_check.outputs.has_deletions == 'false'
+      id: auto_merge_gate
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GH_PAT }}
+        script: |
+          const owner = context.repo.owner;
+          const repo = context.repo.repo;
+          const pull_number = Number('${{ steps.create_pr.outputs.pull-request-number }}');
+          const body = `Reviewed-by: Unikraft Bot <monkey@unikraft.io>\nApproved-by: Unikraft Bot <monkey@unikraft.io>`;
+
+          await github.rest.pulls.createReview({
+            owner,
+            repo,
+            pull_number,
+            event: 'APPROVE',
+            body,
+          });
+
+          const startedAt = Date.now();
+          const timeoutMs = 5 * 60 * 1000;
+          let checksPassed = false;
+          let timedOut = false;
+          let lastState = 'unknown';
+          let headSha = '${{ steps.create_pr.outputs.pull-request-head-sha }}'.trim();
+          const successfulConclusions = new Set(['success', 'neutral', 'skipped']);
+          const failingConclusions = new Set([
+            'action_required',
+            'cancelled',
+            'failure',
+            'stale',
+            'startup_failure',
+            'timed_out',
+          ]);
+
+          if (!headSha) {
+            const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number });
+            headSha = pr.head.sha;
+          }
+
+          while (Date.now() - startedAt < timeoutMs) {
+            const { data: checks } = await github.rest.checks.listForRef({
+              owner,
+              repo,
+              ref: headSha,
+              per_page: 100,
+            });
+
+            const runs = checks.check_runs;
+            if (runs.length === 0) {
+              // No checks have been created yet for this SHA, keep waiting.
+              lastState = 'pending';
+              await new Promise((resolve) => setTimeout(resolve, 10000));
+              continue;
+            }
+
+            const hasFailure = runs.some((run) => run.status === 'completed' && failingConclusions.has(run.conclusion));
+            if (hasFailure) {
+              lastState = 'failure';
+              break;
+            }
+
+            const allCompleted = runs.every((run) => run.status === 'completed');
+            const allSuccessful = runs.every(
+              (run) => run.status === 'completed' && successfulConclusions.has(run.conclusion)
+            );
+
+            if (allCompleted && allSuccessful) {
+              lastState = 'success';
+              checksPassed = true;
+              break;
+            }
+
+            lastState = allCompleted ? 'unknown' : 'pending';
+
+            await new Promise((resolve) => setTimeout(resolve, 10000));
+          }
+
+          if (!checksPassed && (lastState === 'pending' || lastState === 'unknown')) {
+            timedOut = true;
+          }
+
+          core.setOutput('checks_passed', checksPassed ? 'true' : 'false');
+          core.setOutput('timed_out', timedOut ? 'true' : 'false');
+          core.setOutput('last_state', lastState);
+
+          if (!checksPassed) {
+            return;
+          }
+
+          const { data: prForMerge } = await github.rest.pulls.get({ owner, repo, pull_number });
+          await github.graphql(
+            `mutation EnableAutoMerge($pullRequestId: ID!, $commitBody: String!, $mergeMethod: PullRequestMergeMethod!) {
+              enablePullRequestAutoMerge(input: {
+                pullRequestId: $pullRequestId,
+                mergeMethod: $mergeMethod,
+                commitBody: $commitBody
+              }) {
+                pullRequest {
+                  number
+                }
+              }
+            }`,
+            {
+              pullRequestId: prForMerge.node_id,
+              commitBody: body,
+              mergeMethod: 'MERGE',
+            }
+          );
+
+    - name: Notify breaking changes
+      if: steps.create_pr.outputs.pull-request-number != '' && steps.diff_check.outputs.has_deletions == 'true'
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        token: ${{ secrets.GH_PAT }}
+        issue-number: ${{ steps.create_pr.outputs.pull-request-number }}
+        body: |
+          This pull request might contain breaking changes. Disabling auto-merge.
+
+    - name: Notify manual merge required
+      if: steps.create_pr.outputs.pull-request-number != '' && steps.diff_check.outputs.has_deletions == 'false' && steps.auto_merge_gate.outputs.timed_out == 'true'
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        token: ${{ secrets.GH_PAT }}
+        issue-number: ${{ steps.create_pr.outputs.pull-request-number }}
+        body: |
+          Pipelines did not pass within 5 minutes. Leaving this PR unmerged.
+          Please merge this PR manually once all checks are green.
+
+    - name: Notify pipeline failure
+      if: steps.create_pr.outputs.pull-request-number != '' && steps.diff_check.outputs.has_deletions == 'false' && steps.auto_merge_gate.outputs.checks_passed != 'true' && steps.auto_merge_gate.outputs.timed_out != 'true'
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        token: ${{ secrets.GH_PAT }}
+        issue-number: ${{ steps.create_pr.outputs.pull-request-number }}
+        body: |
+          Pipelines failed before timeout (state: `${{ steps.auto_merge_gate.outputs.last_state }}`).
+          Leaving this PR unmerged.
+          Please inspect failing checks and merge manually once fixed.
+
+    - name: Cancel workflow run on timeout
+      if: steps.create_pr.outputs.pull-request-number != '' && steps.diff_check.outputs.has_deletions == 'false' && steps.auto_merge_gate.outputs.timed_out == 'true'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GH_PAT }}
+        script: |
+          await github.rest.actions.cancelWorkflowRun({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            run_id: context.runId,
+          });
+
+    - name: Fail workflow on pipeline failure
+      if: steps.create_pr.outputs.pull-request-number != '' && steps.diff_check.outputs.has_deletions == 'false' && steps.auto_merge_gate.outputs.checks_passed != 'true' && steps.auto_merge_gate.outputs.timed_out != 'true'
+      shell: bash
+      run: |
+        echo "Pipelines failed before timeout. Leaving PR unmerged and marking workflow as failed."
+        exit 1
