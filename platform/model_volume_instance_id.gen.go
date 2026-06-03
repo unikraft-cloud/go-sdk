@@ -12,7 +12,6 @@ import (
 )
 
 // Reference to the instance to attach the volume to.
-
 type VolumeInstanceID struct {
 	// The UUID of the instance that the volume is attached to.
 	Uuid string `json:"uuid"`

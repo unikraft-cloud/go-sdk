@@ -16,7 +16,6 @@ import (
 // shutdown) or paused wherein the state of the instance is preserved (e.g., RAM
 // contents) and the instance can be resumed later without losing its state,
 // i.e. "stateful".
-
 type InstanceScaleToZero struct {
 	// Indicates whether scale-to-zero is enabled for the instance.
 	Enabled *bool `json:"enabled,omitempty"`

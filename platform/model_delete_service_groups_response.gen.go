@@ -13,7 +13,6 @@ import (
 
 // The response message for deleting of one or more service group(s) given their
 // UUID(s) or name(s).
-
 type DeleteServiceGroupsResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

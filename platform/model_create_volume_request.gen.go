@@ -12,7 +12,6 @@ import (
 )
 
 // The request message for creating a volume.
-
 type CreateVolumeRequest struct {
 	// The name of the volume.
 	//

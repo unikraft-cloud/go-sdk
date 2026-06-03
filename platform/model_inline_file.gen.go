@@ -12,7 +12,6 @@ import (
 )
 
 // An inline file entry represents a single file within an image.
-
 type InlineFile struct {
 	// The file path within the image.
 	Path string `json:"path"`

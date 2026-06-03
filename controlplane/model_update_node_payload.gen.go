@@ -12,7 +12,6 @@ import (
 )
 
 // UpdateNodePayload contains the changes to apply to a node.
-
 type UpdateNodePayload struct {
 	// The property to update.
 	Property MutableNodeProperty `json:"property"`

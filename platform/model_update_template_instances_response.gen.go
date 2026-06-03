@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for updating a template instance by its UUID.
-
 type UpdateTemplateInstancesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

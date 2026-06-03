@@ -13,7 +13,6 @@ import (
 
 // The response message for deleting one or more instance(s) given their UUID(s)
 // or name(s).
-
 type DeleteInstancesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

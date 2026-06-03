@@ -13,7 +13,6 @@ import (
 
 // The response message for deleting of one or more certificate(s) given their
 // UUID(s) or name(s).
-
 type DeleteCertificatesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

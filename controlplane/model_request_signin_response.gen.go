@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for a sign-in request.
-
 type RequestSigninResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

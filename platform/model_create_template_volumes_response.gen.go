@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for creating one or more template volumes.
-
 type CreateTemplateVolumesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

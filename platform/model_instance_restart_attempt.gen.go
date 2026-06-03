@@ -14,7 +14,6 @@ import (
 )
 
 // Records the current restart attempt of an instance.
-
 type InstanceRestartAttempt struct {
 	// Current restart attempt number. This is incremented each time the instance
 	// is restarted automatically by the platform.

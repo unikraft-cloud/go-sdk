@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for certificate renewal.
-
 type NodeRenewResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

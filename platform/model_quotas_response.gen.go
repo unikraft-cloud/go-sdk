@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for getting the quota of a user given their UUID.
-
 type QuotasResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

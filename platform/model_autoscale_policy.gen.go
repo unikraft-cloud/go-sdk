@@ -15,7 +15,6 @@ import (
 // Right now it contains fields from both the `ondemand` and `step` policies.
 // They are marked both as optional, so only one of them should be set at a
 // time. This is a current limitation of the API design.
-
 type AutoscalePolicy struct {
 	// The name of the policy.
 	Name string `json:"name"`

@@ -11,7 +11,6 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// A queued property change awaiting application (typically on next restart).
 // The status of this update.
 type InstancePendingUpdateStatus string
 
@@ -20,6 +19,7 @@ const (
 	InstancePendingUpdateStatusFailed  InstancePendingUpdateStatus = "failed"
 )
 
+// A queued property change awaiting application (typically on next restart).
 type InstancePendingUpdate struct {
 	// The property being updated.
 	Prop MutableInstanceProperty `json:"prop"`

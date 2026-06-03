@@ -13,7 +13,6 @@ import (
 
 // The response message for getting the metrics of one or more instance(s)
 // given their UUID(s) or name(s).
-
 type GetInstancesMetricsResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

@@ -12,7 +12,6 @@ import (
 )
 
 // Response message for listing machine types.
-
 type ListMachineTypesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

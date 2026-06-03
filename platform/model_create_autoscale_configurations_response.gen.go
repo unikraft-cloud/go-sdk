@@ -12,7 +12,6 @@ import (
 )
 
 // The response to a CreateAutoscaleConfigurationRequest.
-
 type CreateAutoscaleConfigurationsResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

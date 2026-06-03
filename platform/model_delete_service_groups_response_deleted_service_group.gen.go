@@ -12,7 +12,6 @@ import (
 )
 
 // Details of the service group which was deleted by this request.
-
 type DeleteServiceGroupsResponseDeletedServiceGroup struct {
 	// Indicates whether the delete operation was successful or not for this
 	// service group.

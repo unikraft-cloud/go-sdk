@@ -12,7 +12,6 @@ import (
 )
 
 // The request message for certificate renewal.
-
 type NodeRenewRequest struct {
 	// The certificate signing request (CSR) for the license which is base64
 	// encoded.

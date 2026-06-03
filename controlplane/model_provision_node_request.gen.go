@@ -12,7 +12,6 @@ import (
 )
 
 // Request message for creating a new node.
-
 type ProvisionNodeRequest struct {
 	// Optional name for the node. If not provided, a name will be
 	// auto-generated.

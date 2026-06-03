@@ -13,7 +13,6 @@ import (
 
 // The response message for getting the logs of one or more instance(s) by
 // their UUID(s) or name(s).
-
 type GetInstancesLogsResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

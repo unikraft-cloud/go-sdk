@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for certificate activation.
-
 type NodeActivateResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

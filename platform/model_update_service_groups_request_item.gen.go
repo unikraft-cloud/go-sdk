@@ -12,7 +12,6 @@ import (
 )
 
 // A single update operation to be applied to a service group
-
 type UpdateServiceGroupsRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitempty"`

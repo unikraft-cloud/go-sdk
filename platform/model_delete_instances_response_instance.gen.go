@@ -12,7 +12,6 @@ import (
 )
 
 // Details of the instance which was deleted by this request.
-
 type DeleteInstancesResponseInstance struct {
 	// Indicates whether the start operation was successful or not for this
 	// instance.

@@ -12,7 +12,6 @@ import (
 )
 
 // Details of the certificate which was deleted by this request.
-
 type DeleteCertificatesResponseDeletedCertificate struct {
 	// Indicates whether the delete operation was successful or not for this
 	// certificate.

@@ -12,7 +12,6 @@ import (
 )
 
 // Parameters for deleting the instance by UUID.
-
 type DeleteInstanceByUUIDRequestBody struct {
 	// Timeout in seconds to wait for the instance to be deleted.  No wait
 	// performed for a value of 0.

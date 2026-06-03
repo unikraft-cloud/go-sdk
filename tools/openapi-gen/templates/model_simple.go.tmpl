@@ -7,9 +7,6 @@ import (
 {{$schema := .Schema}}
 {{$schemaName := .SchemaName}}
 {{$propNames := propertyNamesOrdered $schemaName $schema}}
-{{if $schema.Description -}}
-// {{$schema.Description | replace "\n" "\n// "}}
-{{end -}}
 {{- /* Inline enum types for fields */ -}}
 {{- range $propName := $propNames -}}
 {{- $prop := getProperty $schema $propName}}
@@ -38,6 +35,9 @@ const (
 )
 {{ end }}
 
+{{- end}}
+{{- if $schema.Description}}
+// {{$schema.Description | replace "\n" "\n// "}}
 {{- end}}
 type {{$schemaName}} struct {
 {{- range $propName := propertyNamesOrdered $schemaName $schema}}

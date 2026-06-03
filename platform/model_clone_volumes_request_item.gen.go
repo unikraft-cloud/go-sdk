@@ -12,7 +12,6 @@ import (
 )
 
 // A single request item describing the volume to clone.
-
 type CloneVolumesRequestItem struct {
 	// The name of the new cloned volume.  If not provided, a random name
 	// of the form `vol-X` is generated for you, where `X` is a 5 character

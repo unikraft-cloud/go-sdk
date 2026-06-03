@@ -12,7 +12,6 @@ import (
 )
 
 // The request message for updating a certificate by its UUID.
-
 type UpdateCertificateByUUIDRequest struct {
 	// The UUID of the certificate to update.
 	Uuid string `json:"uuid"`

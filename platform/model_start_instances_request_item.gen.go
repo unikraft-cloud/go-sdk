@@ -12,7 +12,6 @@ import (
 )
 
 // A single request item to start an instance.
-
 type StartInstancesRequestItem struct {
 	// (Only applies when using global control plane).
 	// The metro to route the request to.

@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for a node heartbeat.
-
 type NodeHeartbeatResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

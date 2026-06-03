@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for updating one or more instances.
-
 type UpdateInstancesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

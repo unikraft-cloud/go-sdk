@@ -12,7 +12,6 @@ import (
 )
 
 // A single item in the request.
-
 type GetInstancesLogsRequestItem struct {
 	// The byte offset of the log output to receive.  A negative sign makes the
 	// offset relative to the end of the log.

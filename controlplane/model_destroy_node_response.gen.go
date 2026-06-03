@@ -12,7 +12,6 @@ import (
 )
 
 // Response message for deleting nodes.
-
 type DestroyNodeResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

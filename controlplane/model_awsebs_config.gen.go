@@ -12,7 +12,6 @@ import (
 )
 
 // AWSEBSConfig defines the configuration for an AWS EBS volume.
-
 type AWSEBSConfig struct {
 	// The device name (e.g., "/dev/sda1", "/dev/xvdf"). Required for
 	// additional volumes.

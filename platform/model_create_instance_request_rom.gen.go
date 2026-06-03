@@ -12,7 +12,6 @@ import (
 )
 
 // Read-Only Memory (ROM) blob to attach to the instance.
-
 type CreateInstanceRequestRom struct {
 	// The name of the ROM to use for the instance configuration.
 	Name string `json:"name"`

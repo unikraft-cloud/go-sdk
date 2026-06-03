@@ -12,7 +12,6 @@ import (
 )
 
 // Automatic delete-on-idle configuration for service groups.
-
 type CreateServiceGroupRequestAutokill struct {
 	// Time in milliseconds after the service group becomes empty before it is
 	// deleted. A value of 0 disables autokill.

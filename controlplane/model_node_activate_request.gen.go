@@ -12,7 +12,6 @@ import (
 )
 
 // The request message for certificate activation.
-
 type NodeActivateRequest struct {
 	// The certificate signing request (CSR) for the license which is base64
 	// encoded.

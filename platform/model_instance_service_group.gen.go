@@ -16,7 +16,6 @@ import (
 // This is a reference to the service group that the instance is part of.  The
 // service group defines the services (e.g. ports, connection handling) that
 // the instance exposes and how they are configured.
-
 type InstanceServiceGroup struct {
 	// The UUID of the service group.
 	//

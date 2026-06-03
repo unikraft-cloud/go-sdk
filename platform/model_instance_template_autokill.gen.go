@@ -12,7 +12,6 @@ import (
 )
 
 // Automatic delete-on-idle configuration for template instances.
-
 type InstanceTemplateAutokill struct {
 	// Time in milliseconds after the template was last used for cloning before
 	// it is deleted. A value of 0 disables template autokill.

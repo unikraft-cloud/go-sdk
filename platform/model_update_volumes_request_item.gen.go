@@ -12,7 +12,6 @@ import (
 )
 
 // A single request item for updating a volume.
-
 type UpdateVolumesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitempty"`
