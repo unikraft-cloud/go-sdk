@@ -7,8 +7,10 @@
 package platform
 
 import (
-	"encoding/json"
 	"time"
+
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
 )
 
 // An instance is a unikernel virtual machine running an application.
@@ -283,93 +285,17 @@ type Instance struct {
 	// users with scheduling priority override permissions.
 	SchedPriority *SchedPriority `json:"sched_priority,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *Instance) UnmarshalJSON(data []byte) error {
 	type Alias Instance
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"uuid":               {},
-		"name":               {},
-		"metro":              {},
-		"created_at":         {},
-		"state":              {},
-		"private_fqdn":       {},
-		"image":              {},
-		"memory_mb":          {},
-		"vcpus":              {},
-		"args":               {},
-		"env":                {},
-		"start_count":        {},
-		"restart_count":      {},
-		"started_at":         {},
-		"stopped_at":         {},
-		"uptime_ms":          {},
-		"vmm_start_time_us":  {},
-		"vmm_load_time_us":   {},
-		"vmm_ready_time_us":  {},
-		"boot_time_us":       {},
-		"net_time_us":        {},
-		"stop_reason":        {},
-		"exit_code":          {},
-		"stop_code":          {},
-		"restart_policy":     {},
-		"scale_to_zero":      {},
-		"volumes":            {},
-		"service_group":      {},
-		"network_interfaces": {},
-		"tags":               {},
-		"status":             {},
-		"message":            {},
-		"error":              {},
-		"snapshot":           {},
-		"delete_lock":        {},
-		"restart":            {},
-		"roms":               {},
-		"schedules":          {},
-		"autokill":           {},
-		"template_autokill":  {},
-		"updates":            {},
-		"sched_priority":     {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m Instance) MarshalJSON() ([]byte, error) {
 	type Alias Instance
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }
