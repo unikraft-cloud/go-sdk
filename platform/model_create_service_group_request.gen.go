@@ -12,7 +12,6 @@ import (
 )
 
 // The request message for creating a new service group.
-
 type CreateServiceGroupRequest struct {
 	// Name of the service group.  This is a human-readable name that can be used
 	// to identify the service group.  The name must be unique within the context

@@ -12,7 +12,6 @@ import (
 )
 
 // AWSConfig contains AWS-specific configuration for node provisioning.
-
 type AWSConfig struct {
 	// The VPC ID where the instance will be launched. If not specified, the
 	// default VPC for the region will be used.

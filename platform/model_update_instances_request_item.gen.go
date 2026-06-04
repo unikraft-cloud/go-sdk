@@ -12,7 +12,6 @@ import (
 )
 
 // A single update operation to be applied to an instance.
-
 type UpdateInstancesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.

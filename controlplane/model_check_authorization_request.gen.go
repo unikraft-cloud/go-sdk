@@ -12,7 +12,6 @@ import (
 )
 
 // The request message for checking authorization given a request ID.
-
 type CheckAuthorizationRequest struct {
 	// The request ID is a unique identifier for the request.  This is used to
 	// track the request in the system and should be provided by the client.

@@ -12,7 +12,6 @@ import (
 )
 
 // A volume defines a storage volume that can be attached to the instance.
-
 type CreateInstanceRequestVolume struct {
 	// The UUID of an existing volume.
 	//

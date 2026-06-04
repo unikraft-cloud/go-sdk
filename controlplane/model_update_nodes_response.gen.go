@@ -12,7 +12,6 @@ import (
 )
 
 // Response message for updating nodes.
-
 type UpdateNodesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

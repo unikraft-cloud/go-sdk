@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for creating of a service group.
-
 type CreateServiceGroupResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

@@ -27,7 +27,6 @@ import (
 //
 // Example: `*-*-* 09:00:00` - Every day at 09:00 UTC
 // Example: `Sat,Sun *-*-* 20:00:00` - Every Saturday and Sunday at 20:00 UTC
-
 type Schedule struct {
 	// The name of the schedule.
 	//

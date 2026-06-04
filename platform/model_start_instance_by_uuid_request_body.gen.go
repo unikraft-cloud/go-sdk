@@ -12,7 +12,6 @@ import (
 )
 
 // Parameters for starting the instance.
-
 type StartInstanceByUUIDRequestBody struct {
 	// Deprecated: Use `timeout_s` instead.  Timeout in milliseconds to
 	// wait for the instance to reach running state.  If `timeout_s` is

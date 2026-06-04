@@ -12,7 +12,6 @@ import (
 )
 
 // A domain name
-
 type CreateServiceGroupRequestDomain struct {
 	// Publicly accessible domain name.  If this name ends in a period `.` it must
 	// be a valid Full Qualified Domain Name (FQDN), otherwise it will become a

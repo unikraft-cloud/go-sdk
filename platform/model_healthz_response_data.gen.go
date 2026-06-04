@@ -12,7 +12,6 @@ import (
 )
 
 // Additional data returned by the health check.
-
 type HealthzResponseData struct {
 	Checks   map[string]string `json:"checks,omitempty"`
 	Versions map[string]string `json:"versions,omitempty"`

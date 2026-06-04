@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for creating of a certificate.
-
 type CreateCertificateResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

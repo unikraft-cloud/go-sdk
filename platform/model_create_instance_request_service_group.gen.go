@@ -19,7 +19,6 @@ import (
 // exposed port by the instance.  A service is a combination of a public port,
 // an internal port, and a set of handlers that define how the service will
 // handle incoming connections.
-
 type CreateInstanceRequestServiceGroup struct {
 	// If no existing (persistent) service group is specified via its
 	// identifier, a new (ephemeral) service group can be created.  In addition

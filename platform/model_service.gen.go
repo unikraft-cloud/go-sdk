@@ -11,12 +11,6 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// A service connects a public-facing port to an internal destination port on
-// which an application instance listens on.  Additional handlers can be defined
-// for each published port in order to define how the service will handle
-// incoming connections and forward traffic from the Internet to your
-// application.  For example, a service can be configured to terminate TLS
-// connections, redirect HTTP traffic, or enable HTTP mode for load balancing.
 // Connection handlers to use for the service.  Handlers define how the
 // service will handle incoming connections and forward traffic from the
 // Internet to your application.  For example, a service can be configured
@@ -31,6 +25,12 @@ const (
 	ServiceHandlersRedirect ServiceHandlers = "redirect"
 )
 
+// A service connects a public-facing port to an internal destination port on
+// which an application instance listens on.  Additional handlers can be defined
+// for each published port in order to define how the service will handle
+// incoming connections and forward traffic from the Internet to your
+// application.  For example, a service can be configured to terminate TLS
+// connections, redirect HTTP traffic, or enable HTTP mode for load balancing.
 type Service struct {
 	// This is the public-facing port that the service will be accessible from
 	// on the Internet.

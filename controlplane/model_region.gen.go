@@ -12,7 +12,6 @@ import (
 )
 
 // Information about an available region.
-
 type Region struct {
 	// The region identifier (e.g., "us-east-1", "us-central1").
 	Name string `json:"name"`

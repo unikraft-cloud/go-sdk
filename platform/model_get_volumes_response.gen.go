@@ -13,7 +13,6 @@ import (
 
 // The response message for getting one or more volume(s) given their
 // UUID(s) or name(s).
-
 type GetVolumesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

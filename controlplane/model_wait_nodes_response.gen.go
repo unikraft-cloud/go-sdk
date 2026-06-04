@@ -12,7 +12,6 @@ import (
 )
 
 // Response message for wait operations.
-
 type WaitNodesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

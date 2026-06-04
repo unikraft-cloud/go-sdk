@@ -12,7 +12,6 @@ import (
 )
 
 // The request message for creating/uploading a new certificate.
-
 type CreateCertificateRequest struct {
 	// The name of the certificate.
 	//

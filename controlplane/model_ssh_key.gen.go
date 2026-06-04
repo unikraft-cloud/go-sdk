@@ -12,7 +12,6 @@ import (
 )
 
 // SSHKey represents an SSH public key for authentication.
-
 type SSHKey struct {
 	// A name or label for this SSH key.
 	Name string `json:"name"`

@@ -14,7 +14,6 @@ import (
 )
 
 // A volume represents a storage device that can be attached to an instance.
-
 type Volume struct {
 	// The UUID of the volume.
 	//

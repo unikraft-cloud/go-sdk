@@ -12,7 +12,6 @@ import (
 )
 
 // Parameters for suspending the instance.
-
 type SuspendInstanceByUUIDRequestBody struct {
 	// Timeout for draining connections in milliseconds.  No draining
 	// will occur if set to 0.  Use -1 for the largest possible value.

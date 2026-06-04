@@ -13,7 +13,6 @@ import (
 
 // The response message for stopping one or more instance(s) given their UUID(s)
 // or name(s).
-
 type StopInstancesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

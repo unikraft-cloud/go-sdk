@@ -15,7 +15,6 @@ import (
 //
 // Volumes can be used to store persistent data which should remain available
 // even if the instance is stopped or restarted.
-
 type InstanceVolume struct {
 	// The UUID of the volume.
 	//

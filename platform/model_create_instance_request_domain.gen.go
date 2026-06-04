@@ -21,7 +21,6 @@ import (
 // and a FQDN is provided, Unikraft Cloud will automatically generate a new
 // certificate for the domain based on Let's Encrypt and seek to accomplish a
 // DNS-01 challenge.
-
 type CreateInstanceRequestDomain struct {
 	// Publicly accessible domain name.
 	//

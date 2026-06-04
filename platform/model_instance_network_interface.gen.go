@@ -12,7 +12,6 @@ import (
 )
 
 // An instance network interface.
-
 type InstanceNetworkInterface struct {
 	// The UUID of the network interface. This is a unique identifier for the
 	// network interface that is generated when the instance is created.

@@ -11,7 +11,6 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// The response message for a GetAutoscaleConfigurationsRequest.
 // The status of the response.
 type GetAutoscaleConfigurationsResponseStatus string
 
@@ -21,6 +20,7 @@ const (
 	GetAutoscaleConfigurationsResponseStatusUnconfigured GetAutoscaleConfigurationsResponseStatus = "unconfigured"
 )
 
+// The response message for a GetAutoscaleConfigurationsRequest.
 type GetAutoscaleConfigurationsResponse struct {
 	// The status of the response.
 	Status GetAutoscaleConfigurationsResponseStatus `json:"status"`

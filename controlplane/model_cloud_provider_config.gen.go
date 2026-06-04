@@ -14,7 +14,6 @@ import (
 // CloudProviderConfig contains provider-specific configuration for node
 // provisioning.  Use this for advanced customization beyond the common
 // machine_type and region fields.
-
 type CloudProviderConfig struct {
 	// AWS-specific configuration.
 	Aws *AWSConfig `json:"aws,omitempty"`

@@ -13,7 +13,6 @@ import (
 
 // The response message for getting one or more service group(s) given their
 // UUID(s) or name(s).
-
 type GetServiceGroupsResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

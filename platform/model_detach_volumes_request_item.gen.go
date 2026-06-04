@@ -12,7 +12,6 @@ import (
 )
 
 // A single request of detaching a volume.
-
 type DetachVolumesRequestItem struct {
 	// (Optional).  UUID or name of the instance to detach the volume from.
 	// If not specified, the volume is detached from all instances.

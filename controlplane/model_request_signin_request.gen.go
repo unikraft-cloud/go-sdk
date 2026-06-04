@@ -12,7 +12,6 @@ import (
 )
 
 // The request message for a sign-in request.
-
 type RequestSigninRequest struct {
 	// The hostname is the name of the machine making the request.  This is
 	// mandatory as it consitutes a unique identifier for the machine.

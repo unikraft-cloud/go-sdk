@@ -12,7 +12,6 @@ import (
 )
 
 // Parameters for stopping the instance.
-
 type StopInstanceByUUIDRequestBody struct {
 	// Whether to immediately force stop the instance.
 	Force *bool `json:"force,omitempty"`

@@ -12,7 +12,6 @@ import (
 )
 
 // Response message for listing regions.
-
 type ListRegionsResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

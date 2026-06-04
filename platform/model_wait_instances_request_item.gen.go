@@ -12,7 +12,6 @@ import (
 )
 
 // A single wait operation to be applied to an instance.
-
 type WaitInstancesRequestItem struct {
 	// The desired state to wait for.  Default is `running`.
 	State *InstanceState `json:"state,omitempty"`

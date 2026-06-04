@@ -31,7 +31,6 @@ import (
 // indicate that the application exposes some ports, Unikraft Cloud will
 // generates a random DNS name for you.  Unikraft Cloud also supports custom
 // domains like www.example.com and wildcard domains like *.example.com.
-
 type ServiceGroup struct {
 	// The UUID of the service group.
 	//

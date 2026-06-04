@@ -13,7 +13,6 @@ import (
 
 // Automatic delete-on-idle/request-limit configuration for non-template
 // instances.
-
 type CreateInstanceRequestAutokill struct {
 	// Time in milliseconds after the instance was stopped before it is deleted.
 	// A value of 0 disables time-based autokill.

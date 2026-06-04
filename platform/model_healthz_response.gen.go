@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for a health check of the platform.
-
 type HealthzResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

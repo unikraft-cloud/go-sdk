@@ -12,7 +12,6 @@ import (
 )
 
 // The response after retrieving an instance by its name or UUID.
-
 type GetInstancesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

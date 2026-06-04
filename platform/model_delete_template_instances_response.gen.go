@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for deleting one or more template instances.
-
 type DeleteTemplateInstancesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

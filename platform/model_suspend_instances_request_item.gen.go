@@ -12,7 +12,6 @@ import (
 )
 
 // A single request item to suspend an instance.
-
 type SuspendInstancesRequestItem struct {
 	// (Only applies when using global control plane).
 	// The metro to route the request to.

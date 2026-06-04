@@ -12,7 +12,6 @@ import (
 )
 
 // Wait parameters.
-
 type WaitInstanceByUUIDRequestBody struct {
 	// The desired state to wait for.  Default is `running`.
 	State InstanceState `json:"state"`

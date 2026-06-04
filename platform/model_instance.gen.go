@@ -14,7 +14,6 @@ import (
 )
 
 // An instance is a unikernel virtual machine running an application.
-
 type Instance struct {
 	// The UUID of the instance.
 	//

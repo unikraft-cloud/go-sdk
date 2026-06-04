@@ -12,7 +12,6 @@ import (
 )
 
 // A single request item for attaching a volume to an instance.
-
 type AttachVolumesRequestItem struct {
 	// UUID or name of the instance to attach the volume to.
 	AttachTo NameOrUUID `json:"attach_to"`

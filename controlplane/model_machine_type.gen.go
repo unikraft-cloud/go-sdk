@@ -12,7 +12,6 @@ import (
 )
 
 // Information about an available machine type.
-
 type MachineType struct {
 	// The machine type identifier (e.g., "m5.xlarge", "n2-standard-4").
 	Name string `json:"name"`

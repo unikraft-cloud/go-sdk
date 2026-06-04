@@ -12,7 +12,6 @@ import (
 )
 
 // The request item for deleting an instance by its UUID or name.
-
 type DeleteInstanceRequestItem struct {
 	// (Only applies when using global control plane).
 	// The metro of the instance.

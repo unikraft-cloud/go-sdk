@@ -13,7 +13,6 @@ import (
 
 // The request message for updating one or more certificate(s) by their
 // UUID(s) or name(s).
-
 type UpdateCertificateRequest struct {
 	// The ID of the certificate to update.
 	Id NameOrUUID `json:"id"`

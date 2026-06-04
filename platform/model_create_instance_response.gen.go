@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for creating a new instance.
-
 type CreateInstanceResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

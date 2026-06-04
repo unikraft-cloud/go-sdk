@@ -13,7 +13,6 @@ import (
 
 // The response message for waiting for one or more instance(s) to reach a
 // certain state given their UUID(s) or name(s).
-
 type WaitInstancesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

@@ -12,7 +12,6 @@ import (
 )
 
 // The response message for cloning one or more volume(s).
-
 type CloneVolumesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

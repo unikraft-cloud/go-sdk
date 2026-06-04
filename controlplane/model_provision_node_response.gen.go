@@ -12,7 +12,6 @@ import (
 )
 
 // Response message for creating a node.
-
 type ProvisionNodeResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`

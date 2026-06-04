@@ -12,7 +12,6 @@ import (
 )
 
 // The snapshot UUID of the instance.
-
 type InstanceSnapshot struct {
 	// The UUID of the snapshot.
 	Uuid string `json:"uuid"`

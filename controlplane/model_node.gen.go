@@ -19,7 +19,6 @@ import (
 // Node nodes are the underlying compute resources where Unikraft Cloud
 // instances run.  They are provisioned on-demand across multiple cloud
 // providers and managed through a unified API.
-
 type Node struct {
 	// The UUID of the machine.
 	//

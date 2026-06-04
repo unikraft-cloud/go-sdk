@@ -12,7 +12,6 @@ import (
 )
 
 // Defines the source template used to build a new instance.
-
 type CreateInstanceRequestTemplate struct {
 	// (Optional).  Whether the instance needs to run in order to reach template state
 	Prepare *bool `json:"prepare,omitempty"`
