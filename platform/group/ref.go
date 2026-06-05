@@ -39,6 +39,10 @@ func (r Ref) NameOrUUID() platform.NameOrUUID {
 	return platform.NameOrUUID{}
 }
 
+func (r Ref) IsZero() bool {
+	return r.Name == "" && r.UUID == ""
+}
+
 func (r Ref) String() string {
 	if r.Display != "" {
 		return r.Display
