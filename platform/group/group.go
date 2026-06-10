@@ -51,18 +51,22 @@ func (c *Group[C]) WithClient(metro string, client C) *Group[C] {
 	return c
 }
 
-// Filter creates a new group by passing all client names to f and keeping
-// only the clients whose names are returned.
-func (c *Group[C]) Filter(f func(names []string) []string) *Group[C] {
+// Names returns the names of all clients in the Group.
+func (c *Group[C]) Names() []string {
 	names := make([]string, len(c.clients))
 	for i, nc := range c.clients {
 		names[i] = nc.Name
 	}
+	return names
+}
 
+// Filter creates a new group containing only the clients whose names are in
+// the provided list.
+func (c *Group[C]) Filter(names []string) *Group[C] {
 	g := New[C]()
-	for _, name := range f(names) {
+	for _, name := range names {
 		if client, ok := c.clientsMap[name]; ok {
-			g.WithClient(name, client)
+			g = g.WithClient(name, client)
 		}
 	}
 	return g
