@@ -77,7 +77,7 @@ type Volume struct {
 	Args map[string]string `json:"args,omitempty"`
 	// The access mode of the volume, controlling volume sharing behavior.
 	// Defaults to `rwo` if not specified.
-	AccessMode VolumeAccessMode `json:"access_mode"`
+	AccessMode *VolumeAccessMode `json:"access_mode,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
