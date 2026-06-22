@@ -35,6 +35,12 @@ type AWSConfig struct {
 	// Placement group name for the instance. Placement groups influence how
 	// instances are placed on underlying hardware.
 	PlacementGroup *string `json:"placement_group,omitempty"`
+	// The AWS region where the machine is located.
+	Region string `json:"region"`
+	// The AWS machine type. This determines the compute resources
+	// (CPU, memory, etc.) available on the machine. The valid values depend
+	// on the chosen provider.
+	MachineType string `json:"machine_type"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

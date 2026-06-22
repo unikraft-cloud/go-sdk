@@ -43,7 +43,7 @@ type Node struct {
 	// state, particularly useful for error states.
 	StateMessage *string `json:"state_message,omitempty"`
 	// The cloud provider where this machine is provisioned.
-	Cloudprovider CloudProvider `json:"cloudprovider"`
+	Cloudprovider *CloudProvider `json:"cloudprovider,omitempty"`
 	// The provider's region where the machine is located (e.g., "us-east-1" for
 	// AWS, "us-central1" for GCP, "westeurope" for Azure).
 	Region string `json:"region"`
