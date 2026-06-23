@@ -34,6 +34,12 @@ func DoMetro[C platform.Client](ctx context.Context, c *Group[C], name string, f
 	return nil
 }
 
+// DoMetros performs the given function fn across the clients in the group
+// corresponding to the given metros.
+func DoMetros[C platform.Client](ctx context.Context, c *Group[C], names []string, fn func(context.Context, C) error) error {
+	return DoAll(ctx, c.Filter(names), fn)
+}
+
 // DoAll performs the given function fn across all clients in the group.
 func DoAll[C platform.Client](ctx context.Context, c *Group[C], fn func(context.Context, C) error) error {
 	eg := joinerrgroup.Group{}
