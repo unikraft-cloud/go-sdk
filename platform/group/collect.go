@@ -23,6 +23,19 @@ func CollectMetro[C platform.Client, T any](ctx context.Context, c *Group[C], me
 	return result, err
 }
 
+// CollectMetros performs the given function fn across the clients in the group
+// corresponding to the given metros, collecting and returning the results.
+func CollectMetros[C platform.Client, T any](ctx context.Context, c *Group[C], metros []string, fn func(context.Context, C) (T, error)) ([]T, error) {
+	return CollectAll(ctx, c.Filter(metros), fn)
+}
+
+// CollectMetrosSlices performs the same operation as CollectMetros, but for
+// functions that return slices. The resulting slices from the selected clients
+// are concatenated into a single slice and returned.
+func CollectMetrosSlices[C platform.Client, T any](ctx context.Context, c *Group[C], metros []string, fn func(context.Context, C) ([]T, error)) ([]T, error) {
+	return CollectAllSlices(ctx, c.Filter(metros), fn)
+}
+
 // CollectAll performs the given function fn across all clients in the group,
 // collecting and returning the results.
 func CollectAll[C platform.Client, T any](ctx context.Context, c *Group[C], fn func(context.Context, C) (T, error)) ([]T, error) {

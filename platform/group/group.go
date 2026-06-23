@@ -17,6 +17,8 @@
 //     concatenated into a single slice.
 //   - The Metro variants of the functions are used when the operation is to be
 //     performed on a single metro/client.
+//   - The Metros variants of the functions are used when the operation is to be
+//     performed on a specific subset of metros/clients.
 //   - The Refs variants of the functions are used when the operation is to be
 //     performed on a set of refs, which may be distributed across multiple
 //     clients.
