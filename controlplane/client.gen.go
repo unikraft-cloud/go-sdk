@@ -68,7 +68,9 @@ type Client interface {
 	//
 	// Performs: GET /v1/metros
 	ListMetros(ctx context.Context, ropts ...RequestOption) (*Response[ListMetroResponseData], error)
-	// Activates a new node.
+	// Activates a new node, or renews an existing node's license. For first-time
+	// activation, a secret must be provided. For renewal, the CSR self-signature
+	// is used as proof of key possession and the secret is omitted.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -88,16 +90,6 @@ type Client interface {
 	//
 	// Performs: POST /v1/nodes/heartbeat
 	NodeHeartbeat(ctx context.Context, request NodeHeartbeatRequest, ropts ...RequestOption) (*Response[any], error)
-	// Renews a node's license.
-	//
-	// @param `request`
-	// 	The request body for this operation.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
-	// Performs: POST /v1/nodes/renew
-	NodeRenew(ctx context.Context, request NodeRenewRequest, ropts ...RequestOption) (*Response[NodeRenewResponseData], error)
 	// Delete one or more nodes.
 	//
 	// Batch deletion of nodes by their identifiers.
@@ -424,21 +416,6 @@ func (c *client) NodeHeartbeat(ctx context.Context, request NodeHeartbeatRequest
 
 	resp := &Response[any]{}
 	if err := doRequest[any](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return resp, fmt.Errorf("performing the request: %w", err)
-	}
-	return resp, nil
-}
-
-func (c *client) NodeRenew(ctx context.Context, request NodeRenewRequest, ropts ...RequestOption) (*Response[NodeRenewResponseData], error) {
-	requestPath := "/v1/nodes/renew"
-
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
-	}
-
-	resp := &Response[NodeRenewResponseData]{}
-	if err := doRequest[NodeRenewResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
