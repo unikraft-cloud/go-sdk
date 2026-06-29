@@ -17,7 +17,7 @@ type ProvisionNodeRequest struct {
 	// auto-generated.
 	Name *string `json:"name,omitempty"`
 	// The cloud provider where the machine should be provisioned.
-	Cloudprovider CloudProvider `json:"cloudprovider"`
+	Cloudprovider *CloudProvider `json:"cloudprovider,omitempty"`
 	// The provider region where the machine should be provisioned.
 	Region string `json:"region"`
 	// The machine type to provision. This is provider-specific.
