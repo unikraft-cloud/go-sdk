@@ -20,6 +20,8 @@ type NodeActivateRequest struct {
 	// public key is already known), this field is omitted and the CSR
 	// self-signature is used as proof of key possession.
 	Secret *string `json:"secret,omitempty"`
+	// The serial number of the last issued certificate.
+	Serial *string `json:"serial,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
