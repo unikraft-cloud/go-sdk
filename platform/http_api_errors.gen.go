@@ -152,6 +152,9 @@ func ErrorContainsOnly(err error, code APIHTTPError) bool {
 	if ok := errors.As(err, &apiErr); !ok {
 		return false
 	}
+	if len(apiErr.items) == 0 {
+		return false
+	}
 
 	for _, e := range apiErr.items {
 		if e.Code != code {
