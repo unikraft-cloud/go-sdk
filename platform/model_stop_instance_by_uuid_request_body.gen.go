@@ -32,6 +32,9 @@ type StopInstanceByUUIDRequestBody struct {
 	Quick *bool `json:"quick,omitempty"`
 	// Only stop the instance if it is in this state.
 	Ifstate *string `json:"ifstate,omitempty"`
+	// If set, forces the VMM to shutdown immediately and generate a coredump.
+	// Can only be used in conjunction with force.
+	Dump *bool `json:"dump,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

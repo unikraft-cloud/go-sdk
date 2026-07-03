@@ -47,6 +47,9 @@ type CreateInstanceRequestVolume struct {
 	Gid *uint32 `json:"gid,omitempty"`
 	// Script arguments passed to volume initialization scripts.
 	Args map[string]string `json:"args,omitempty"`
+	// Access mode of the volume, controlling sharing behavior.
+	// Defaults to read-write by a single instance (RWO).
+	AccessMode *VolumeAccessMode `json:"access_mode,omitempty"`
 	// The size of the volume when creating a new volume.
 	//
 	// When creating a new volume as part of the instance create request,

@@ -31,7 +31,8 @@ type GetImagesOpts struct {
 
 // CreateTemplateInstancesOpts holds query-parameter options for [Client.CreateTemplateInstances].
 type CreateTemplateInstancesOpts struct {
-	TimeoutS *int64
+	TimeoutS       *int64
+	AutokillTimeMs *uint64
 }
 
 // GetInstanceByUUIDOpts holds query-parameter options for [Client.GetInstanceByUUID].

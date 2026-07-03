@@ -26,6 +26,13 @@ type CreateInstanceRequestTemplate struct {
 	Metro *string `json:"metro,omitempty"`
 	// (Optional). Configuration parameters to apply when building the new instance from the source template.
 	CreateArgs *Instance `json:"create_args,omitempty"`
+	// (Optional). Timeout in seconds for preparing the template before the
+	// preparation is aborted. Only applies when `prepare` is set. A value of
+	// 0 means no timeout.
+	PrepareTimeoutS *int64 `json:"prepare_timeout_s,omitempty"`
+	// (Optional). Automatic delete-on-idle configuration for the template.
+	// Only applies when `prepare` is set.
+	Autokill *TemplateAutokill `json:"autokill,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
