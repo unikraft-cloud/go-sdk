@@ -1603,6 +1603,9 @@ func (c *client) CreateTemplateInstances(ctx context.Context, request []NameOrUU
 	if opts.TimeoutS != nil {
 		query.Add("timeout_s", fmt.Sprintf("%d", *opts.TimeoutS))
 	}
+	if opts.AutokillTimeMs != nil {
+		query.Add("autokill.time_ms", fmt.Sprintf("%d", *opts.AutokillTimeMs))
+	}
 
 	var body []byte
 	var err error
