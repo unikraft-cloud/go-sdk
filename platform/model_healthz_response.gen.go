@@ -19,6 +19,9 @@ type HealthzResponse struct {
 	Message *string `json:"message,omitempty"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitempty"`
+	// (Only applies when using global control plane).
+	// Where the node is located.
+	Metro *string `json:"metro,omitempty"`
 	// The response data for this request.
 	Data *HealthzResponseData `json:"data,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process

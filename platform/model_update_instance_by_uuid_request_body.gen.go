@@ -20,7 +20,7 @@ type UpdateInstanceByUUIDRequestBody struct {
 	// The operation to perform on the property.
 	Op MutableInstanceOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
-	// - For "image": string
+	// - For "image": object with image url, credentials, headers and pull policy
 	// - For "args": string or array of strings
 	// - For "env": object (for SET/ADD) or string/array of strings (for DEL)
 	// - For "memory_mb": integer

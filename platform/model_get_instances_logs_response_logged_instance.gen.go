@@ -16,6 +16,9 @@ type GetInstancesLogsResponseLoggedInstance struct {
 	Uuid string `json:"uuid"`
 	// The name of the instance.
 	Name string `json:"name"`
+	// (Only applies when using global control plane).
+	// The metro of the instance.
+	Metro *string `json:"metro,omitempty"`
 	// Base64 encoded log output of the instance.
 	Output string `json:"output"`
 	// Description of the log availability.

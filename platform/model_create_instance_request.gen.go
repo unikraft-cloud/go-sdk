@@ -30,7 +30,7 @@ type CreateInstanceRequest struct {
 	// (Optional).  The image to use for the instance.
 	//
 	// Either an image or a template must be specified.
-	Image *string `json:"image,omitempty"`
+	Image *ImageSpec `json:"image,omitempty"`
 	// (Only applies when using global control plane).
 	// The metro to route the request to.
 	Metro *string `json:"metro,omitempty"`

@@ -260,7 +260,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: PATCH /v1/certificates
+	// Performs: PUT /v1/certificates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#update-certificate
 	UpdateCertificate(ctx context.Context, request UpdateCertificateRequest, ropts ...RequestOption) (*Response[UpdateCertificateResponseData], error)
@@ -276,7 +276,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: PATCH /v1/certificates/{uuid}
+	// Performs: PUT /v1/certificates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#update-certificate-by-uuid
 	UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequest, ropts ...RequestOption) (*Response[UpdateCertificateResponseData], error)
@@ -1499,7 +1499,7 @@ func (c *client) UpdateCertificate(ctx context.Context, request UpdateCertificat
 	}
 
 	resp := &Response[UpdateCertificateResponseData]{}
-	if err := doRequest[UpdateCertificateResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateCertificateResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1515,7 +1515,7 @@ func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, reque
 	}
 
 	resp := &Response[UpdateCertificateResponseData]{}
-	if err := doRequest[UpdateCertificateResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateCertificateResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil

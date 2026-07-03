@@ -31,6 +31,9 @@ type Quotas struct {
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.
 	Error *int32 `json:"error,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro of the user.
+	Metro *string `json:"metro,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
