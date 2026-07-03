@@ -13,6 +13,9 @@ import (
 
 // A single request of detaching a volume.
 type DetachVolumesRequestItem struct {
+	// (Only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
 	// (Optional).  UUID or name of the instance to detach the volume from.
 	// If not specified, the volume is detached from all instances.
 	From *NameOrUUID `json:"from,omitempty"`
