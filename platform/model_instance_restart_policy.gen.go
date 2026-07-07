@@ -36,7 +36,7 @@ package platform
 type InstanceRestartPolicy string
 
 const (
-	InstanceRestartPolicyNever      InstanceRestartPolicy = "never"
-	InstanceRestartPolicyAlways     InstanceRestartPolicy = "always"
-	InstanceRestartPolicyOn_failure InstanceRestartPolicy = "on-failure"
+	InstanceRestartPolicyNever     InstanceRestartPolicy = "never"
+	InstanceRestartPolicyAlways    InstanceRestartPolicy = "always"
+	InstanceRestartPolicyOnFailure InstanceRestartPolicy = "on-failure"
 )

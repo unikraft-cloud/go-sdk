@@ -6,10 +6,12 @@
 
 package controlplane
 
-import "encoding/json"
+import (
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
+)
 
 // AWSConfig contains AWS-specific configuration for node provisioning.
-
 type AWSConfig struct {
 	// The VPC ID where the instance will be launched. If not specified, the
 	// default VPC for the region will be used.
@@ -33,60 +35,24 @@ type AWSConfig struct {
 	// Placement group name for the instance. Placement groups influence how
 	// instances are placed on underlying hardware.
 	PlacementGroup *string `json:"placement_group,omitempty"`
+	// The AWS region where the machine is located.
+	Region string `json:"region"`
+	// The AWS machine type. This determines the compute resources
+	// (CPU, memory, etc.) available on the machine. The valid values depend
+	// on the chosen provider.
+	MachineType string `json:"machine_type"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *AWSConfig) UnmarshalJSON(data []byte) error {
 	type Alias AWSConfig
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"vpc_id":               {},
-		"subnet_id":            {},
-		"security_group_ids":   {},
-		"iam_instance_profile": {},
-		"root_volume":          {},
-		"additional_volumes":   {},
-		"dedicated_host":       {},
-		"placement_group":      {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m AWSConfig) MarshalJSON() ([]byte, error) {
 	type Alias AWSConfig
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }

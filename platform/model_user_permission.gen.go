@@ -9,9 +9,9 @@ package platform
 type UserPermission string
 
 const (
-	UserPermissionRoot                    UserPermission = "root"
-	UserPermissionOverride_edns_blacklist UserPermission = "override_edns_blacklist"
-	UserPermissionDeveloper               UserPermission = "developer"
-	UserPermissionVolume_manager          UserPermission = "volume_manager"
-	UserPermissionOverride_vm_priority    UserPermission = "override_vm_priority"
+	UserPermissionRoot                  UserPermission = "root"
+	UserPermissionOverrideEdnsBlacklist UserPermission = "override_edns_blacklist"
+	UserPermissionDeveloper             UserPermission = "developer"
+	UserPermissionVolumeManager         UserPermission = "volume_manager"
+	UserPermissionOverrideVmPriority    UserPermission = "override_vm_priority"
 )

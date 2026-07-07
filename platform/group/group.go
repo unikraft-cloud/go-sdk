@@ -17,6 +17,8 @@
 //     concatenated into a single slice.
 //   - The Metro variants of the functions are used when the operation is to be
 //     performed on a single metro/client.
+//   - The Metros variants of the functions are used when the operation is to be
+//     performed on a specific subset of metros/clients.
 //   - The Refs variants of the functions are used when the operation is to be
 //     performed on a set of refs, which may be distributed across multiple
 //     clients.
@@ -49,6 +51,27 @@ func (c *Group[C]) WithClient(metro string, client C) *Group[C] {
 	})
 	c.clientsMap[metro] = client
 	return c
+}
+
+// Names returns the names of all clients in the Group.
+func (c *Group[C]) Names() []string {
+	names := make([]string, len(c.clients))
+	for i, nc := range c.clients {
+		names[i] = nc.Name
+	}
+	return names
+}
+
+// Filter creates a new group containing only the clients whose names are in
+// the provided list.
+func (c *Group[C]) Filter(names []string) *Group[C] {
+	g := New[C]()
+	for _, name := range names {
+		if client, ok := c.clientsMap[name]; ok {
+			g = g.WithClient(name, client)
+		}
+	}
+	return g
 }
 
 type Group[C platform.Client] struct {

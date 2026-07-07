@@ -7,8 +7,10 @@
 package controlplane
 
 import (
-	"encoding/json"
 	"time"
+
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
 )
 
 // Node represents a physical or virtual compute node provisioned on a
@@ -17,7 +19,6 @@ import (
 // Node nodes are the underlying compute resources where Unikraft Cloud
 // instances run.  They are provisioned on-demand across multiple cloud
 // providers and managed through a unified API.
-
 type Node struct {
 	// The UUID of the machine.
 	//
@@ -42,16 +43,7 @@ type Node struct {
 	// state, particularly useful for error states.
 	StateMessage *string `json:"state_message,omitempty"`
 	// The cloud provider where this machine is provisioned.
-	Cloudprovider CloudProvider `json:"cloudprovider"`
-	// The provider's region where the machine is located (e.g., "us-east-1" for
-	// AWS, "us-central1" for GCP, "westeurope" for Azure).
-	Region string `json:"region"`
-	// The machine type as defined by the provider (e.g., "m5.xlarge" for AWS,
-	// "n2-standard-4" for GCP, "Standard_D4s_v3" for Azure).
-	//
-	// This determines the compute resources (CPU, memory, etc.) available on
-	// the machine. The valid values depend on the chosen provider.
-	MachineType string `json:"machine_type"`
+	Cloudprovider *CloudProvider `json:"cloudprovider,omitempty"`
 	// The number of vCPUs available on this machine.
 	Vcpus uint32 `json:"vcpus"`
 	// The amount of memory in MiB available on this machine.
@@ -79,74 +71,20 @@ type Node struct {
 	// Whether the machine is protected from deletion. When true, delete operations
 	// will fail until this is set to false.
 	DeleteLock bool `json:"delete_lock"`
+	// The API endpoint for the node, used to connect to the node's platform SDK.
+	ApiEndpoint *string `json:"api_endpoint,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *Node) UnmarshalJSON(data []byte) error {
 	type Alias Node
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"uuid":                 {},
-		"name":                 {},
-		"created_at":           {},
-		"updated_at":           {},
-		"state":                {},
-		"state_message":        {},
-		"cloudprovider":        {},
-		"region":               {},
-		"machine_type":         {},
-		"vcpus":                {},
-		"memory_mib":           {},
-		"ssh_keys":             {},
-		"public_ipv4":          {},
-		"public_ipv6":          {},
-		"private_ipv4":         {},
-		"metro":                {},
-		"provider_instance_id": {},
-		"provider_config":      {},
-		"tags":                 {},
-		"ready_at":             {},
-		"uptime_seconds":       {},
-		"delete_lock":          {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m Node) MarshalJSON() ([]byte, error) {
 	type Alias Node
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }

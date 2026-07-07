@@ -6,10 +6,12 @@
 
 package platform
 
-import "encoding/json"
+import (
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
+)
 
 // A volume defines a storage volume that can be attached to the instance.
-
 type CreateInstanceRequestVolume struct {
 	// The UUID of an existing volume.
 	//
@@ -45,6 +47,9 @@ type CreateInstanceRequestVolume struct {
 	Gid *uint32 `json:"gid,omitempty"`
 	// Script arguments passed to volume initialization scripts.
 	Args map[string]string `json:"args,omitempty"`
+	// Access mode of the volume, controlling sharing behavior.
+	// Defaults to read-write by a single instance (RWO).
+	AccessMode *VolumeAccessMode `json:"access_mode,omitempty"`
 	// The size of the volume when creating a new volume.
 	//
 	// When creating a new volume as part of the instance create request,
@@ -53,63 +58,17 @@ type CreateInstanceRequestVolume struct {
 	// A host path to create a managed volume from.
 	HostPath *string `json:"host_path,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *CreateInstanceRequestVolume) UnmarshalJSON(data []byte) error {
 	type Alias CreateInstanceRequestVolume
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"uuid":         {},
-		"name":         {},
-		"at":           {},
-		"readonly":     {},
-		"quota_policy": {},
-		"filesystem":   {},
-		"tags":         {},
-		"uid":          {},
-		"gid":          {},
-		"args":         {},
-		"size_mb":      {},
-		"host_path":    {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m CreateInstanceRequestVolume) MarshalJSON() ([]byte, error) {
 	type Alias CreateInstanceRequestVolume
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }

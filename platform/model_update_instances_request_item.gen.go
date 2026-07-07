@@ -6,10 +6,12 @@
 
 package platform
 
-import "encoding/json"
+import (
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
+)
 
 // A single update operation to be applied to an instance.
-
 type UpdateInstancesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.
@@ -22,7 +24,7 @@ type UpdateInstancesRequestItem struct {
 	// The operation to perform on the property.
 	Op MutableInstanceOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
-	// - For "image": string
+	// - For "image": object with image url, credentials, headers and pull policy
 	// - For "args": string or array of strings
 	// - For "env": object (for SET/ADD) or string/array of strings (for DEL)
 	// - For "memory_mb": integer
@@ -43,58 +45,17 @@ type UpdateInstancesRequestItem struct {
 	// The name of the instance to update. Mutually exclusive with UUID.
 	Name *string `json:"name,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *UpdateInstancesRequestItem) UnmarshalJSON(data []byte) error {
 	type Alias UpdateInstancesRequestItem
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"id":    {},
-		"metro": {},
-		"prop":  {},
-		"op":    {},
-		"value": {},
-		"uuid":  {},
-		"name":  {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m UpdateInstancesRequestItem) MarshalJSON() ([]byte, error) {
 	type Alias UpdateInstancesRequestItem
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }

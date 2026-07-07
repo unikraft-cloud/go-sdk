@@ -6,13 +6,15 @@
 
 package platform
 
-import "encoding/json"
+import (
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
+)
 
 // AutoscalePolicy defines the autoscale policy for a service.
 // Right now it contains fields from both the `ondemand` and `step` policies.
 // They are marked both as optional, so only one of them should be set at a
 // time. This is a current limitation of the API design.
-
 type AutoscalePolicy struct {
 	// The name of the policy.
 	Name string `json:"name"`
@@ -29,57 +31,17 @@ type AutoscalePolicy struct {
 	// Each step defines an adjustment value and optional bounds.
 	Steps []AutoscalePolicyStep `json:"steps,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *AutoscalePolicy) UnmarshalJSON(data []byte) error {
 	type Alias AutoscalePolicy
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"name":            {},
-		"metro":           {},
-		"enabled":         {},
-		"metric":          {},
-		"adjustment_type": {},
-		"steps":           {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m AutoscalePolicy) MarshalJSON() ([]byte, error) {
 	type Alias AutoscalePolicy
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }

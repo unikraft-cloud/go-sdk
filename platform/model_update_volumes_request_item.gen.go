@@ -6,13 +6,18 @@
 
 package platform
 
-import "encoding/json"
+import (
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
+)
 
 // A single request item for updating a volume.
-
 type UpdateVolumesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitempty"`
+	// (Only applies when using global control plane).
+	// The metro to route the request to.
+	Metro *string `json:"metro,omitempty"`
 	// The property to modify.
 	Prop MutableVolumeProperty `json:"prop"`
 	// The operation to perform.
@@ -28,57 +33,17 @@ type UpdateVolumesRequestItem struct {
 	// The name of the volume to update.  Mutually exclusive with UUID.
 	Name *string `json:"name,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *UpdateVolumesRequestItem) UnmarshalJSON(data []byte) error {
 	type Alias UpdateVolumesRequestItem
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"id":    {},
-		"prop":  {},
-		"op":    {},
-		"value": {},
-		"uuid":  {},
-		"name":  {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m UpdateVolumesRequestItem) MarshalJSON() ([]byte, error) {
 	type Alias UpdateVolumesRequestItem
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }

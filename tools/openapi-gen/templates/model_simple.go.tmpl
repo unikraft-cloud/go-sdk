@@ -1,10 +1,12 @@
 {{define "model_simple" -}}
+import (
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
+)
+
 {{$schema := .Schema}}
 {{$schemaName := .SchemaName}}
 {{$propNames := propertyNamesOrdered $schemaName $schema}}
-{{if $schema.Description -}}
-// {{$schema.Description | replace "\n" "\n// "}}
-{{end -}}
 {{- /* Inline enum types for fields */ -}}
 {{- range $propName := $propNames -}}
 {{- $prop := getProperty $schema $propName}}
@@ -28,11 +30,14 @@ type {{$enumTypeName}} string
 
 const (
 {{- range $enumSchema.Enum}}
-	{{$enumTypeName}}{{capitalize (replace "-" "_" (printf "%v" .))}} {{$enumTypeName}} = {{printf "%q" .}}
+	{{$enumTypeName}}{{pascalcase (printf "%v" .)}} {{$enumTypeName}} = {{printf "%q" .}}
 {{- end}}
 )
 {{ end }}
 
+{{- end}}
+{{- if $schema.Description}}
+// {{$schema.Description | replace "\n" "\n// "}}
 {{- end}}
 type {{$schemaName}} struct {
 {{- range $propName := propertyNamesOrdered $schemaName $schema}}
@@ -57,55 +62,19 @@ type {{$schemaName}} struct {
 {{- end}}
 {{- end}}
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
+{{/* ensure that callers using encoding/json don't break */}}
 func (m *{{$schemaName}}) UnmarshalJSON(data []byte) error {
 	type Alias {{$schemaName}}
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-{{- range $propName := propertyNamesOrdered $schemaName $schema}}
-		"{{$propName}}": {},
-{{- end}}
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m {{$schemaName}}) MarshalJSON() ([]byte, error) {
 	type Alias {{$schemaName}}
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }
 {{- end}}

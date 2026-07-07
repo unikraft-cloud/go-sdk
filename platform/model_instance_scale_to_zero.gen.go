@@ -6,14 +6,16 @@
 
 package platform
 
-import "encoding/json"
+import (
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
+)
 
 // Scale-to-zero defines the configuration for scaling the instance to zero.
 // When an instance is scaled-to-zero it can be either stopped (and fully
 // shutdown) or paused wherein the state of the instance is preserved (e.g., RAM
 // contents) and the instance can be resumed later without losing its state,
 // i.e. "stateful".
-
 type InstanceScaleToZero struct {
 	// Indicates whether scale-to-zero is enabled for the instance.
 	Enabled *bool `json:"enabled,omitempty"`
@@ -35,56 +37,17 @@ type InstanceScaleToZero struct {
 	// saving before being scaled down.
 	NotifyTimeMs *int32 `json:"notify_time_ms,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *InstanceScaleToZero) UnmarshalJSON(data []byte) error {
 	type Alias InstanceScaleToZero
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"enabled":          {},
-		"policy":           {},
-		"stateful":         {},
-		"cooldown_time_ms": {},
-		"notify_time_ms":   {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m InstanceScaleToZero) MarshalJSON() ([]byte, error) {
 	type Alias InstanceScaleToZero
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }

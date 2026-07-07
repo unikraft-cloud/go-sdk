@@ -11,6 +11,6 @@ package controlplane
 type CloudProvider string
 
 const (
-	CloudProviderUnspecified CloudProvider = "unspecified"
-	CloudProviderAws         CloudProvider = "aws"
+	CloudProviderManual CloudProvider = "manual"
+	CloudProviderAws    CloudProvider = "aws"
 )

@@ -68,7 +68,9 @@ type Client interface {
 	//
 	// Performs: GET /v1/metros
 	ListMetros(ctx context.Context, ropts ...RequestOption) (*Response[ListMetroResponseData], error)
-	// Activates a new node.
+	// Activates a new node, or renews an existing node's license. For first-time
+	// activation, a secret must be provided. For renewal, the CSR self-signature
+	// is used as proof of key possession and the secret is omitted.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -88,16 +90,6 @@ type Client interface {
 	//
 	// Performs: POST /v1/nodes/heartbeat
 	NodeHeartbeat(ctx context.Context, request NodeHeartbeatRequest, ropts ...RequestOption) (*Response[any], error)
-	// Renews a node's license.
-	//
-	// @param `request`
-	// 	The request body for this operation.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
-	// Performs: POST /v1/nodes/renew
-	NodeRenew(ctx context.Context, request NodeRenewRequest, ropts ...RequestOption) (*Response[NodeRenewResponseData], error)
 	// Delete one or more nodes.
 	//
 	// Batch deletion of nodes by their identifiers.
@@ -154,7 +146,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/nodes/provider/{cloudprovider}/types
+	// Performs: GET /v1/nodes/providers/{cloudprovider}/types
 	ListMachineTypes(ctx context.Context, cloudprovider CloudProvider, opts ListMachineTypesOpts, ropts ...RequestOption) (*Response[ListMachineTypesResponseData], error)
 	// Get one or more nodes.
 	//
@@ -183,7 +175,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/nodes/provider/{cloudprovider}/regions
+	// Performs: GET /v1/nodes/providers/{cloudprovider}/regions
 	ListRegions(ctx context.Context, cloudprovider CloudProvider, ropts ...RequestOption) (*Response[ListRegionsResponseData], error)
 	// Create a new node.
 	//
@@ -429,21 +421,6 @@ func (c *client) NodeHeartbeat(ctx context.Context, request NodeHeartbeatRequest
 	return resp, nil
 }
 
-func (c *client) NodeRenew(ctx context.Context, request NodeRenewRequest, ropts ...RequestOption) (*Response[NodeRenewResponseData], error) {
-	requestPath := "/v1/nodes/renew"
-
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
-	}
-
-	resp := &Response[NodeRenewResponseData]{}
-	if err := doRequest[NodeRenewResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return resp, fmt.Errorf("performing the request: %w", err)
-	}
-	return resp, nil
-}
-
 func (c *client) DestroyNode(ctx context.Context, request []NameOrUUID, opts DestroyNodeOpts, ropts ...RequestOption) (*Response[DestroyNodeResponseData], error) {
 	requestPath := "/v1/nodes"
 
@@ -496,7 +473,7 @@ func (c *client) GetNodeByUUID(ctx context.Context, uuid string, ropts ...Reques
 }
 
 func (c *client) ListMachineTypes(ctx context.Context, cloudprovider CloudProvider, opts ListMachineTypesOpts, ropts ...RequestOption) (*Response[ListMachineTypesResponseData], error) {
-	requestPath := "/v1/nodes/provider/{cloudprovider}/types"
+	requestPath := "/v1/nodes/providers/{cloudprovider}/types"
 	requestPath = strings.ReplaceAll(requestPath, "{cloudprovider}", url.PathEscape(string(cloudprovider)))
 
 	query := make(url.Values)
@@ -524,9 +501,6 @@ func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListN
 	if opts.Metro != nil {
 		query.Add("metro", string(*opts.Metro))
 	}
-	if opts.Region != nil {
-		query.Add("region", string(*opts.Region))
-	}
 	if opts.Limit != nil {
 		query.Add("limit", fmt.Sprintf("%d", *opts.Limit))
 	}
@@ -551,7 +525,7 @@ func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListN
 }
 
 func (c *client) ListRegions(ctx context.Context, cloudprovider CloudProvider, ropts ...RequestOption) (*Response[ListRegionsResponseData], error) {
-	requestPath := "/v1/nodes/provider/{cloudprovider}/regions"
+	requestPath := "/v1/nodes/providers/{cloudprovider}/regions"
 	requestPath = strings.ReplaceAll(requestPath, "{cloudprovider}", url.PathEscape(string(cloudprovider)))
 
 	resp := &Response[ListRegionsResponseData]{}

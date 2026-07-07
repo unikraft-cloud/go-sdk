@@ -285,10 +285,11 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 		if _, err = io.Copy(&target.body, resp.Body); err != nil {
 			return errors.Join(rerr, fmt.Errorf("reading response: %w", err))
 		}
+
 		if err := json.Unmarshal(target.body.Bytes(), target); err != nil {
 			return errors.Join(rerr, fmt.Errorf("parsing response: %w", err))
 		}
-		if target.Status != "success" {
+		if target.Status != "success" && target.Status != "" {
 			return errors.Join(rerr, NewFromResponse(target))
 		}
 		if rerr != nil {

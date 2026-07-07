@@ -7,12 +7,13 @@
 package platform
 
 import (
-	"encoding/json"
 	"time"
+
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
 )
 
 // A volume represents a storage device that can be attached to an instance.
-
 type Volume struct {
 	// The UUID of the volume.
 	//
@@ -76,73 +77,19 @@ type Volume struct {
 	Args map[string]string `json:"args,omitempty"`
 	// The access mode of the volume, controlling volume sharing behavior.
 	// Defaults to `rwo` if not specified.
-	AccessMode VolumeAccessMode `json:"access_mode"`
+	AccessMode *VolumeAccessMode `json:"access_mode,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *Volume) UnmarshalJSON(data []byte) error {
 	type Alias Volume
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"uuid":         {},
-		"name":         {},
-		"metro":        {},
-		"created_at":   {},
-		"state":        {},
-		"size_mb":      {},
-		"persistent":   {},
-		"attached_to":  {},
-		"mounted_by":   {},
-		"tags":         {},
-		"status":       {},
-		"message":      {},
-		"error":        {},
-		"quota_policy": {},
-		"delete_lock":  {},
-		"free_mb":      {},
-		"filesystem":   {},
-		"host_path":    {},
-		"args":         {},
-		"access_mode":  {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m Volume) MarshalJSON() ([]byte, error) {
 	type Alias Volume
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }

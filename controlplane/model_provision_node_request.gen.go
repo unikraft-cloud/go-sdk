@@ -6,20 +6,18 @@
 
 package controlplane
 
-import "encoding/json"
+import (
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
+)
 
 // Request message for creating a new node.
-
 type ProvisionNodeRequest struct {
 	// Optional name for the node. If not provided, a name will be
 	// auto-generated.
 	Name *string `json:"name,omitempty"`
 	// The cloud provider where the machine should be provisioned.
-	Cloudprovider CloudProvider `json:"cloudprovider"`
-	// The provider region where the machine should be provisioned.
-	Region string `json:"region"`
-	// The machine type to provision. This is provider-specific.
-	MachineType string `json:"machine_type"`
+	Cloudprovider *CloudProvider `json:"cloudprovider,omitempty"`
 	// SSH keys for accessing the node. At least one key is required.
 	SshKeys []SSHKey `json:"ssh_keys"`
 	// Optional user-defined tags.
@@ -36,62 +34,17 @@ type ProvisionNodeRequest struct {
 	// Optional network count override. If not specified, defaults to 1000.
 	NetCount *uint32 `json:"net_count,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *ProvisionNodeRequest) UnmarshalJSON(data []byte) error {
 	type Alias ProvisionNodeRequest
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"name":                 {},
-		"cloudprovider":        {},
-		"region":               {},
-		"machine_type":         {},
-		"ssh_keys":             {},
-		"tags":                 {},
-		"cloudprovider_config": {},
-		"metro":                {},
-		"platform_config":      {},
-		"image_pulls":          {},
-		"net_count":            {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m ProvisionNodeRequest) MarshalJSON() ([]byte, error) {
 	type Alias ProvisionNodeRequest
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }

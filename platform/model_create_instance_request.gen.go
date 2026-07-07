@@ -6,9 +6,11 @@
 
 package platform
 
-import "encoding/json"
+import (
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
+)
 
-// The request message for creating a new instance.
 // Features to enable for the instance.  Features are specific
 // configurations or capabilities that can be enabled for the
 // instance.  The `scale-to-zero` and `delete-on-stop` features are
@@ -16,9 +18,10 @@ import "encoding/json"
 type CreateInstanceRequestFeatures string
 
 const (
-	CreateInstanceRequestFeaturesDelete_on_stop CreateInstanceRequestFeatures = "delete-on-stop"
+	CreateInstanceRequestFeaturesDeleteOnStop CreateInstanceRequestFeatures = "delete-on-stop"
 )
 
+// The request message for creating a new instance.
 type CreateInstanceRequest struct {
 	// (Optional).  The name of the instance.
 	//
@@ -27,7 +30,7 @@ type CreateInstanceRequest struct {
 	// (Optional).  The image to use for the instance.
 	//
 	// Either an image or a template must be specified.
-	Image *string `json:"image,omitempty"`
+	Image *ImageSpec `json:"image,omitempty"`
 	// (Only applies when using global control plane).
 	// The metro to route the request to.
 	Metro *string `json:"metro,omitempty"`
@@ -124,76 +127,29 @@ type CreateInstanceRequest struct {
 	// on.  Dependencies define startup ordering and can be used to ensure that
 	// prerequisite instances are running before this instance starts.
 	Dependencies []NameOrUUID `json:"dependencies,omitempty"`
+	// (Optional).  Reference to an existing instance to branch from.
+	// The instance can be running, stopped, or a template.  If the source
+	// instance is running, a snapshot will be taken asynchronously and the
+	// new instance will wait for it to complete before starting.
+	// Mutually exclusive with `image` and `template`.
+	BranchFrom *NameOrUUID `json:"branch_from,omitempty"`
+	// (Optional).  Reference to an existing checkpoint to create the instance
+	// from.  The checkpoint must be in the `checkpoint` state.  The new instance
+	// will be created with the same configuration and state as the checkpoint.
+	// Mutually exclusive with `image`, `template`, and `branch_from`.
+	Checkpoint *NameOrUUID `json:"checkpoint,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *CreateInstanceRequest) UnmarshalJSON(data []byte) error {
 	type Alias CreateInstanceRequest
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"name":            {},
-		"image":           {},
-		"metro":           {},
-		"args":            {},
-		"env":             {},
-		"memory_mb":       {},
-		"service_group":   {},
-		"volumes":         {},
-		"autostart":       {},
-		"replicas":        {},
-		"restart_policy":  {},
-		"scale_to_zero":   {},
-		"vcpus":           {},
-		"wait_timeout_ms": {},
-		"features":        {},
-		"timeout_s":       {},
-		"roms":            {},
-		"tags":            {},
-		"template":        {},
-		"sched_priority":  {},
-		"schedules":       {},
-		"autokill":        {},
-		"hostname":        {},
-		"dependencies":    {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m CreateInstanceRequest) MarshalJSON() ([]byte, error) {
 	type Alias CreateInstanceRequest
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }

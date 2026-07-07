@@ -6,9 +6,11 @@
 
 package platform
 
-import "encoding/json"
+import (
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
+)
 
-// A queued property change awaiting application (typically on next restart).
 // The status of this update.
 type InstancePendingUpdateStatus string
 
@@ -17,6 +19,7 @@ const (
 	InstancePendingUpdateStatusFailed  InstancePendingUpdateStatus = "failed"
 )
 
+// A queued property change awaiting application (typically on next restart).
 type InstancePendingUpdate struct {
 	// The property being updated.
 	Prop MutableInstanceProperty `json:"prop"`
@@ -30,56 +33,17 @@ type InstancePendingUpdate struct {
 	// Error message.  Only present when status is "failed".
 	Error *string `json:"error,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *InstancePendingUpdate) UnmarshalJSON(data []byte) error {
 	type Alias InstancePendingUpdate
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"prop":   {},
-		"op":     {},
-		"value":  {},
-		"status": {},
-		"error":  {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m InstancePendingUpdate) MarshalJSON() ([]byte, error) {
 	type Alias InstancePendingUpdate
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }

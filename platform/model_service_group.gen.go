@@ -7,8 +7,10 @@
 package platform
 
 import (
-	"encoding/json"
 	"time"
+
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
 )
 
 // A service group on Unikraft Cloud is used to describe how your application
@@ -29,7 +31,6 @@ import (
 // indicate that the application exposes some ports, Unikraft Cloud will
 // generates a random DNS name for you.  Unikraft Cloud also supports custom
 // domains like www.example.com and wildcard domains like *.example.com.
-
 type ServiceGroup struct {
 	// The UUID of the service group.
 	//
@@ -102,66 +103,17 @@ type ServiceGroup struct {
 	// Automatic delete-on-idle configuration.
 	Autokill *ServiceGroupAutokill `json:"autokill,omitempty"`
 
-	AdditionalProperties map[string]json.RawMessage `json:"-"`
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
 func (m *ServiceGroup) UnmarshalJSON(data []byte) error {
 	type Alias ServiceGroup
-	if err := json.Unmarshal(data, (*Alias)(m)); err != nil {
-		return err
-	}
-
-	var extra map[string]json.RawMessage
-	if err := json.Unmarshal(data, &extra); err != nil {
-		return err
-	}
-
-	knownKeys := map[string]struct{}{
-		"uuid":       {},
-		"name":       {},
-		"metro":      {},
-		"created_at": {},
-		"persistent": {},
-		"autoscale":  {},
-		"soft_limit": {},
-		"hard_limit": {},
-		"services":   {},
-		"domains":    {},
-		"instances":  {},
-		"status":     {},
-		"message":    {},
-		"error":      {},
-		"autokill":   {},
-	}
-	for key := range knownKeys {
-		delete(extra, key)
-	}
-	if len(extra) == 0 {
-		m.AdditionalProperties = nil
-		return nil
-	}
-	m.AdditionalProperties = extra
-	return nil
+	return json.Unmarshal(data, (*Alias)(m))
 }
 
 func (m ServiceGroup) MarshalJSON() ([]byte, error) {
 	type Alias ServiceGroup
-	base, err := json.Marshal((*Alias)(&m))
-	if err != nil {
-		return nil, err
-	}
-	if len(m.AdditionalProperties) == 0 {
-		return base, nil
-	}
-
-	var out map[string]json.RawMessage
-	if err := json.Unmarshal(base, &out); err != nil {
-		return nil, err
-	}
-	for key, value := range m.AdditionalProperties {
-		if _, exists := out[key]; !exists {
-			out[key] = value
-		}
-	}
-	return json.Marshal(out)
+	return json.Marshal((Alias)(m))
 }

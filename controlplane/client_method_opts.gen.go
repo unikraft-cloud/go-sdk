@@ -32,7 +32,6 @@ type ListNodesOpts struct {
 	Cloudprovider *CloudProvider
 	State         *NodeState
 	Metro         *string
-	Region        *string
 	Limit         *uint32
 	Offset        *uint32
 }
