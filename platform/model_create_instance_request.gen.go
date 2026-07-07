@@ -138,6 +138,12 @@ type CreateInstanceRequest struct {
 	// will be created with the same configuration and state as the checkpoint.
 	// Mutually exclusive with `image`, `template`, and `branch_from`.
 	Checkpoint *NameOrUUID `json:"checkpoint,omitempty"`
+	// The default gateway to configure inside the guest.
+	Gateway *string `json:"gateway,omitempty"`
+	// The DNS resolver to configure inside the guest.
+	Nameserver *string `json:"nameserver,omitempty"`
+	// A list of one to four interfaces to attach
+	NetworkInterfaces []CreateInstanceRequestNetworkInterface `json:"network_interfaces,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

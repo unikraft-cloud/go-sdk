@@ -286,6 +286,12 @@ type Instance struct {
 	// Checkpoint-specific automatic delete-on-idle configuration.
 	// Only used for checkpoint instances.
 	CheckpointAutokill *InstanceTemplateAutokill `json:"checkpoint_autokill,omitempty"`
+	// The private IP address of the instance.
+	PrivateIp *string `json:"private_ip,omitempty"`
+	// The default gateway configured inside the guest.
+	Gateway *string `json:"gateway,omitempty"`
+	// The DNS resolver configured inside the guest.
+	Nameserver *string `json:"nameserver,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
