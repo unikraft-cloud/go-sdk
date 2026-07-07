@@ -30,6 +30,19 @@ type InstanceNetworkInterface struct {
 	TxBytes uint64 `json:"tx_bytes"`
 	// Count of packets sent to interface
 	TxPackets uint64 `json:"tx_packets"`
+	// The interface name. If omitted, Unikraft Cloud generates one as
+	// <instance-name>-ethX, falling back to eth-<suffix> when the
+	// instance name is too long.
+	Name *string `json:"name,omitempty"`
+	// The TAP device to attach the interface. Provide it together with ip.
+	TapName *string `json:"tap_name,omitempty"`
+	// Whether the interface is automatically configured inside the guest
+	// (IP address, routes, etc.).  When absent or true, autoconfiguration
+	// is enabled.  Present and false when the guest is expected to
+	// configure the interface manually.
+	Autoconfig *bool `json:"autoconfig,omitempty"`
+	// Relay configuration for this interface.
+	Relay *InstanceNetworkInterfaceRelay `json:"relay,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
