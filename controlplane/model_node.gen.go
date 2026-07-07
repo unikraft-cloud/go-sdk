@@ -44,15 +44,6 @@ type Node struct {
 	StateMessage *string `json:"state_message,omitempty"`
 	// The cloud provider where this machine is provisioned.
 	Cloudprovider *CloudProvider `json:"cloudprovider,omitempty"`
-	// The provider's region where the machine is located (e.g., "us-east-1" for
-	// AWS, "us-central1" for GCP, "westeurope" for Azure).
-	Region string `json:"region"`
-	// The machine type as defined by the provider (e.g., "m5.xlarge" for AWS,
-	// "n2-standard-4" for GCP, "Standard_D4s_v3" for Azure).
-	//
-	// This determines the compute resources (CPU, memory, etc.) available on
-	// the machine. The valid values depend on the chosen provider.
-	MachineType string `json:"machine_type"`
 	// The number of vCPUs available on this machine.
 	Vcpus uint32 `json:"vcpus"`
 	// The amount of memory in MiB available on this machine.
@@ -80,6 +71,8 @@ type Node struct {
 	// Whether the machine is protected from deletion. When true, delete operations
 	// will fail until this is set to false.
 	DeleteLock bool `json:"delete_lock"`
+	// The API endpoint for the node, used to connect to the node's platform SDK.
+	ApiEndpoint *string `json:"api_endpoint,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

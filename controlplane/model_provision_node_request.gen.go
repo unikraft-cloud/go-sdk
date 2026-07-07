@@ -18,10 +18,6 @@ type ProvisionNodeRequest struct {
 	Name *string `json:"name,omitempty"`
 	// The cloud provider where the machine should be provisioned.
 	Cloudprovider *CloudProvider `json:"cloudprovider,omitempty"`
-	// The provider region where the machine should be provisioned.
-	Region string `json:"region"`
-	// The machine type to provision. This is provider-specific.
-	MachineType string `json:"machine_type"`
 	// SSH keys for accessing the node. At least one key is required.
 	SshKeys []SSHKey `json:"ssh_keys"`
 	// Optional user-defined tags.

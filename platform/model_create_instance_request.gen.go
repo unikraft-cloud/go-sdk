@@ -127,6 +127,17 @@ type CreateInstanceRequest struct {
 	// on.  Dependencies define startup ordering and can be used to ensure that
 	// prerequisite instances are running before this instance starts.
 	Dependencies []NameOrUUID `json:"dependencies,omitempty"`
+	// (Optional).  Reference to an existing instance to branch from.
+	// The instance can be running, stopped, or a template.  If the source
+	// instance is running, a snapshot will be taken asynchronously and the
+	// new instance will wait for it to complete before starting.
+	// Mutually exclusive with `image` and `template`.
+	BranchFrom *NameOrUUID `json:"branch_from,omitempty"`
+	// (Optional).  Reference to an existing checkpoint to create the instance
+	// from.  The checkpoint must be in the `checkpoint` state.  The new instance
+	// will be created with the same configuration and state as the checkpoint.
+	// Mutually exclusive with `image`, `template`, and `branch_from`.
+	Checkpoint *NameOrUUID `json:"checkpoint,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
