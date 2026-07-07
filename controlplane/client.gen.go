@@ -146,7 +146,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/nodes/provider/{cloudprovider}/types
+	// Performs: GET /v1/nodes/providers/{cloudprovider}/types
 	ListMachineTypes(ctx context.Context, cloudprovider CloudProvider, opts ListMachineTypesOpts, ropts ...RequestOption) (*Response[ListMachineTypesResponseData], error)
 	// Get one or more nodes.
 	//
@@ -175,7 +175,7 @@ type Client interface {
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
-	// Performs: GET /v1/nodes/provider/{cloudprovider}/regions
+	// Performs: GET /v1/nodes/providers/{cloudprovider}/regions
 	ListRegions(ctx context.Context, cloudprovider CloudProvider, ropts ...RequestOption) (*Response[ListRegionsResponseData], error)
 	// Create a new node.
 	//
@@ -473,7 +473,7 @@ func (c *client) GetNodeByUUID(ctx context.Context, uuid string, ropts ...Reques
 }
 
 func (c *client) ListMachineTypes(ctx context.Context, cloudprovider CloudProvider, opts ListMachineTypesOpts, ropts ...RequestOption) (*Response[ListMachineTypesResponseData], error) {
-	requestPath := "/v1/nodes/provider/{cloudprovider}/types"
+	requestPath := "/v1/nodes/providers/{cloudprovider}/types"
 	requestPath = strings.ReplaceAll(requestPath, "{cloudprovider}", url.PathEscape(string(cloudprovider)))
 
 	query := make(url.Values)
@@ -501,9 +501,6 @@ func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListN
 	if opts.Metro != nil {
 		query.Add("metro", string(*opts.Metro))
 	}
-	if opts.Region != nil {
-		query.Add("region", string(*opts.Region))
-	}
 	if opts.Limit != nil {
 		query.Add("limit", fmt.Sprintf("%d", *opts.Limit))
 	}
@@ -528,7 +525,7 @@ func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListN
 }
 
 func (c *client) ListRegions(ctx context.Context, cloudprovider CloudProvider, ropts ...RequestOption) (*Response[ListRegionsResponseData], error) {
-	requestPath := "/v1/nodes/provider/{cloudprovider}/regions"
+	requestPath := "/v1/nodes/providers/{cloudprovider}/regions"
 	requestPath = strings.ReplaceAll(requestPath, "{cloudprovider}", url.PathEscape(string(cloudprovider)))
 
 	resp := &Response[ListRegionsResponseData]{}

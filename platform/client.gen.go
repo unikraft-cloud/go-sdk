@@ -310,6 +310,20 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-images
 	GetImages(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
+	// Create a checkpoint from an existing instance.  A checkpoint captures the
+	// state of an instance at a specific point in time.  Checkpoints can be
+	// created from running, stopped, or standby instances.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/instances/checkpoints
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#create-checkpoint-instances
+	CreateCheckpointInstances(ctx context.Context, request []CreateCheckpointInstancesRequestItem, ropts ...RequestOption) (*Response[CreateCheckpointInstancesResponseData], error)
 	// Create an instance in Unikraft Cloud.
 	//
 	// @param `request`
@@ -331,16 +345,39 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `opts`
-	// 	Optional query parameters for this operation.
-	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: POST /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#create-template-instances
-	CreateTemplateInstances(ctx context.Context, request []NameOrUUID, opts CreateTemplateInstancesOpts, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error)
+	CreateTemplateInstances(ctx context.Context, request []CreateTemplateInstancesRequestItem, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error)
+	// Delete a specified checkpoint instance by its UUID.  After this call the
+	// UUID of the checkpoint instance is no longer valid.
+	//
+	// @param `uuid`
+	// 	The UUID of the checkpoint instance to delete.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: DELETE /v1/instances/checkpoints/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-checkpoint-instance-by-uuid
+	DeleteCheckpointInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteCheckpointInstancesResponseData], error)
+	// Delete the specified checkpoint instance(s) by ID(s) (name or UUID).
+	// After this call the IDs of the checkpoint instances are no longer valid.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: DELETE /v1/instances/checkpoints
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-checkpoint-instances
+	DeleteCheckpointInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteCheckpointInstancesResponseData], error)
 	// Delete a specified instance by its UUID.  After this call the UUID of the
 	// instance is no longer valid.  If the instance is currently running,
 	// it is force-stopped.
@@ -398,6 +435,62 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-template-instances
 	DeleteTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteTemplateInstancesResponseData], error)
+	// Get the checkpoint history of one or more checkpoint instances.
+	// Returns the ordered list of checkpoints in each checkpoint's history.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/instances/checkpoints/history
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#get-checkpoint-history
+	GetCheckpointHistory(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error)
+	// Get the checkpoint history of a checkpoint instance by its UUID.
+	// Returns the ordered list of checkpoints in the checkpoint's history.
+	//
+	// @param `uuid`
+	// 	The UUID of the instance or checkpoint to retrieve history for.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/instances/checkpoints/{uuid}/history
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#get-checkpoint-history-by-uuid
+	GetCheckpointHistoryByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error)
+	// Get a single checkpoint instance by its UUID.
+	//
+	// @param `uuid`
+	// 	The UUID of the checkpoint instance to retrieve.
+	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/instances/checkpoints/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#get-checkpoint-instance-by-uuid
+	GetCheckpointInstanceByUUID(ctx context.Context, uuid string, opts GetCheckpointInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetCheckpointInstancesResponseData], error)
+	// Get one or more checkpoint instances by their UUID(s) or name(s).
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/instances/checkpoints
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#get-checkpoint-instances
+	GetCheckpointInstances(ctx context.Context, request []NameOrUUID, opts GetCheckpointInstancesOpts, ropts ...RequestOption) (*Response[GetCheckpointInstancesResponseData], error)
 	// Get a single instance by its UUID.
 	//
 	// @param `uuid`
@@ -413,6 +506,32 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-by-uuid
 	GetInstanceByUUID(ctx context.Context, uuid string, opts GetInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	// Get the checkpoint history of one or more instances.
+	// Returns the ordered list of checkpoints associated with each instance.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/instances/history
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-history
+	GetInstanceHistory(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error)
+	// Get the checkpoint history of an instance by its UUID.
+	// Returns the ordered list of checkpoints associated with the instance.
+	//
+	// @param `uuid`
+	// 	The UUID of the instance or checkpoint to retrieve history for.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: GET /v1/instances/{uuid}/history
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-history-by-uuid
+	GetInstanceHistoryByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error)
 	// Retrieve the logs of one or more instances by ID(s) (name or UUID).
 	//
 	// @param `request`
@@ -597,6 +716,33 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#suspend-instances
 	SuspendInstances(ctx context.Context, request []SuspendInstancesRequestItem, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error)
+	// Update (modify) a checkpoint instance by its UUID.
+	//
+	// @param `uuid`
+	// 	The UUID of the checkpoint instance to update.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/instances/checkpoints/{uuid}
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#update-checkpoint-instance-by-uuid
+	UpdateCheckpointInstanceByUUID(ctx context.Context, uuid string, request UpdateCheckpointInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateCheckpointInstancesResponseData], error)
+	// Update (modify) one or more checkpoint instances by ID(s) (name or UUID).
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: PATCH /v1/instances/checkpoints
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#update-checkpoint-instances
+	UpdateCheckpointInstances(ctx context.Context, request []UpdateCheckpointInstancesRequestItem, ropts ...RequestOption) (*Response[UpdateCheckpointInstancesResponseData], error)
 	// Update (modify) an instance by its UUID.  The instance must be in a stopped
 	// state for most update operations.
 	//
@@ -1581,6 +1727,25 @@ func (c *client) GetImages(ctx context.Context, request []GetImagesRequestTagOrD
 	return resp, nil
 }
 
+func (c *client) CreateCheckpointInstances(ctx context.Context, request []CreateCheckpointInstancesRequestItem, ropts ...RequestOption) (*Response[CreateCheckpointInstancesResponseData], error) {
+	requestPath := "/v1/instances/checkpoints"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[CreateCheckpointInstancesResponseData]{}
+	if err := doRequest[CreateCheckpointInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
 func (c *client) CreateInstance(ctx context.Context, request CreateInstanceRequest, ropts ...RequestOption) (*Response[CreateInstanceResponseData], error) {
 	requestPath := "/v1/instances"
 
@@ -1596,16 +1761,8 @@ func (c *client) CreateInstance(ctx context.Context, request CreateInstanceReque
 	return resp, nil
 }
 
-func (c *client) CreateTemplateInstances(ctx context.Context, request []NameOrUUID, opts CreateTemplateInstancesOpts, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error) {
+func (c *client) CreateTemplateInstances(ctx context.Context, request []CreateTemplateInstancesRequestItem, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
-
-	query := make(url.Values)
-	if opts.TimeoutS != nil {
-		query.Add("timeout_s", fmt.Sprintf("%d", *opts.TimeoutS))
-	}
-	if opts.AutokillTimeMs != nil {
-		query.Add("autokill.time_ms", fmt.Sprintf("%d", *opts.AutokillTimeMs))
-	}
 
 	var body []byte
 	var err error
@@ -1617,7 +1774,37 @@ func (c *client) CreateTemplateInstances(ctx context.Context, request []NameOrUU
 	}
 
 	resp := &Response[CreateTemplateInstancesResponseData]{}
-	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) DeleteCheckpointInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteCheckpointInstancesResponseData], error) {
+	requestPath := "/v1/instances/checkpoints/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
+
+	resp := &Response[DeleteCheckpointInstancesResponseData]{}
+	if err := doRequest[DeleteCheckpointInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) DeleteCheckpointInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteCheckpointInstancesResponseData], error) {
+	requestPath := "/v1/instances/checkpoints"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[DeleteCheckpointInstancesResponseData]{}
+	if err := doRequest[DeleteCheckpointInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1688,6 +1875,91 @@ func (c *client) DeleteTemplateInstances(ctx context.Context, request []NameOrUU
 	return resp, nil
 }
 
+func (c *client) GetCheckpointHistory(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error) {
+	requestPath := "/v1/instances/checkpoints/history"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[GetCheckpointHistoryResponseData]{}
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) GetCheckpointHistoryByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error) {
+	requestPath := "/v1/instances/checkpoints/{uuid}/history"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
+
+	resp := &Response[GetCheckpointHistoryResponseData]{}
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) GetCheckpointInstanceByUUID(ctx context.Context, uuid string, opts GetCheckpointInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetCheckpointInstancesResponseData], error) {
+	requestPath := "/v1/instances/checkpoints/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
+
+	query := make(url.Values)
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
+	}
+
+	resp := &Response[GetCheckpointInstancesResponseData]{}
+	if err := doRequest[GetCheckpointInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) GetCheckpointInstances(ctx context.Context, request []NameOrUUID, opts GetCheckpointInstancesOpts, ropts ...RequestOption) (*Response[GetCheckpointInstancesResponseData], error) {
+	requestPath := "/v1/instances/checkpoints"
+
+	query := make(url.Values)
+	if opts.Details != nil {
+		query.Add("details", fmt.Sprintf("%t", *opts.Details))
+	}
+	if opts.Count != nil {
+		query.Add("count", fmt.Sprintf("%d", *opts.Count))
+	}
+	for _, v := range opts.Tags {
+		query.Add("tags", string(v))
+	}
+	if opts.From != nil {
+		query.Add("from", string(*opts.From))
+	}
+	if opts.Order != nil {
+		query.Add("order", string(*opts.Order))
+	}
+	if opts.Sortby != nil {
+		query.Add("sortby", string(*opts.Sortby))
+	}
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[GetCheckpointInstancesResponseData]{}
+	if err := doRequest[GetCheckpointInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
 func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, opts GetInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
@@ -1699,6 +1971,36 @@ func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, opts GetIns
 
 	resp := &Response[GetInstancesResponseData]{}
 	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) GetInstanceHistory(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error) {
+	requestPath := "/v1/instances/history"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[GetCheckpointHistoryResponseData]{}
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) GetInstanceHistoryByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error) {
+	requestPath := "/v1/instances/{uuid}/history"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
+
+	resp := &Response[GetCheckpointHistoryResponseData]{}
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1963,6 +2265,41 @@ func (c *client) SuspendInstances(ctx context.Context, request []SuspendInstance
 
 	resp := &Response[SuspendInstancesResponseData]{}
 	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateCheckpointInstanceByUUID(ctx context.Context, uuid string, request UpdateCheckpointInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateCheckpointInstancesResponseData], error) {
+	requestPath := "/v1/instances/checkpoints/{uuid}"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[UpdateCheckpointInstancesResponseData]{}
+	if err := doRequest[UpdateCheckpointInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) UpdateCheckpointInstances(ctx context.Context, request []UpdateCheckpointInstancesRequestItem, ropts ...RequestOption) (*Response[UpdateCheckpointInstancesResponseData], error) {
+	requestPath := "/v1/instances/checkpoints"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[UpdateCheckpointInstancesResponseData]{}
+	if err := doRequest[UpdateCheckpointInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil

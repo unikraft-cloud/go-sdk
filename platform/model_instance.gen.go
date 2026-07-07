@@ -13,7 +13,7 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// An instance is a unikernel virtual machine running an application.
+// An instance is a micro vm running an application.
 type Instance struct {
 	// The UUID of the instance.
 	//
@@ -283,6 +283,9 @@ type Instance struct {
 	// The scheduling priority for the instance. Only present for
 	// users with scheduling priority override permissions.
 	SchedPriority *SchedPriority `json:"sched_priority,omitempty"`
+	// Checkpoint-specific automatic delete-on-idle configuration.
+	// Only used for checkpoint instances.
+	CheckpointAutokill *InstanceTemplateAutokill `json:"checkpoint_autokill,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

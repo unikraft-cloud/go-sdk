@@ -4,30 +4,28 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package controlplane
+package platform
 
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// CloudProviderConfig contains provider-specific configuration for node
-// provisioning.
-type CloudProviderConfig struct {
-	// AWS-specific configuration.
-	Aws *AWSConfig `json:"aws,omitempty"`
+type CreateCheckpointInstancesResponseData struct {
+	// List of checkpoint instances that were created during the operation.
+	Instances []CreateCheckpointInstancesResponseCheckpointInstance `json:"instances,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
-func (m *CloudProviderConfig) UnmarshalJSON(data []byte) error {
-	type Alias CloudProviderConfig
+func (m *CreateCheckpointInstancesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias CreateCheckpointInstancesResponseData
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m CloudProviderConfig) MarshalJSON() ([]byte, error) {
-	type Alias CloudProviderConfig
+func (m CreateCheckpointInstancesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias CreateCheckpointInstancesResponseData
 	return json.Marshal((Alias)(m))
 }

@@ -29,10 +29,19 @@ type GetImagesOpts struct {
 	Tag    *string
 }
 
-// CreateTemplateInstancesOpts holds query-parameter options for [Client.CreateTemplateInstances].
-type CreateTemplateInstancesOpts struct {
-	TimeoutS       *int64
-	AutokillTimeMs *uint64
+// GetCheckpointInstanceByUUIDOpts holds query-parameter options for [Client.GetCheckpointInstanceByUUID].
+type GetCheckpointInstanceByUUIDOpts struct {
+	Details *bool
+}
+
+// GetCheckpointInstancesOpts holds query-parameter options for [Client.GetCheckpointInstances].
+type GetCheckpointInstancesOpts struct {
+	Details *bool
+	Count   *uint32
+	Tags    []string
+	From    *string
+	Order   *PaginationOrder
+	Sortby  *PaginationSortBy
 }
 
 // GetInstanceByUUIDOpts holds query-parameter options for [Client.GetInstanceByUUID].
