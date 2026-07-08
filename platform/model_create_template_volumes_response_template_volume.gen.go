@@ -18,9 +18,6 @@ type CreateTemplateVolumesResponseTemplateVolume struct {
 	Uuid string `json:"uuid"`
 	// The name of the volume converted into a template.
 	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the volume.
-	Metro *string `json:"metro,omitempty"`
 	// The state of the volume.
 	State VolumeState `json:"state"`
 	// An optional message providing additional information about the status.

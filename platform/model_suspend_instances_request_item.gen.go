@@ -13,9 +13,6 @@ import (
 
 // A single request item to suspend an instance.
 type SuspendInstancesRequestItem struct {
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
 	// Timeout for draining connections in milliseconds.  No draining
 	// will occur if set to 0.  Use -1 for the largest possible value.
 	DrainTimeoutMs *uint64 `json:"drain_timeout_ms,omitempty"`

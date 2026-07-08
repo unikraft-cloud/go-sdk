@@ -16,9 +16,6 @@ type UpdateTemplateInstancesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.
 	Id *string `json:"id,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro of the template instance.
-	Metro *string `json:"metro,omitempty"`
 	// The property to modify.
 	Prop MutableTemplateInstanceProperty `json:"prop"`
 	// The operation to perform on the property.

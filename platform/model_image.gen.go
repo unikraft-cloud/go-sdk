@@ -15,9 +15,6 @@ import (
 
 type Image struct {
 	Url string `json:"url"`
-	// (Only applies when using global control plane).
-	// The metro of the image.
-	Metro *string `json:"metro,omitempty"`
 	// The time the volume was created.
 	CreatedAt   time.Time         `json:"created_at"`
 	InitrdOrRom bool              `json:"initrd_or_rom"`

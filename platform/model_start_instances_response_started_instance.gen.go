@@ -19,9 +19,6 @@ type StartInstancesResponseStartedInstance struct {
 	Uuid string `json:"uuid"`
 	// The name of the instance which was deleted.
 	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the instance.
-	Metro *string `json:"metro,omitempty"`
 	// The current state of the instance after this request.
 	State string `json:"state"`
 	// The previous state of the instance before it was deleted.

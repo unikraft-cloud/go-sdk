@@ -18,9 +18,6 @@ type DeleteVolumesResponseDeletedVolume struct {
 	Uuid string `json:"uuid"`
 	// The name of the volume that was deleted.
 	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the volume.
-	Metro *string `json:"metro,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`

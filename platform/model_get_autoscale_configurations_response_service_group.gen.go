@@ -18,9 +18,6 @@ type GetAutoscaleConfigurationsResponseServiceGroup struct {
 	Uuid string `json:"uuid"`
 	// The name of the service where the configuration was created.
 	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the service group.
-	Metro *string `json:"metro,omitempty"`
 	// If the autoscale configuration is enabled.
 	Enabled bool `json:"enabled"`
 	// The minimum number of instances to keep running.

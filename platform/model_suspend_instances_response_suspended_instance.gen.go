@@ -16,9 +16,6 @@ type SuspendInstancesResponseSuspendedInstance struct {
 	Uuid string `json:"uuid"`
 	// The name of the instance.
 	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the instance.
-	Metro *string `json:"metro,omitempty"`
 	// The current state of the instance.
 	State InstanceState `json:"state"`
 	// The previous state of the instance before the suspend operation was invoked.

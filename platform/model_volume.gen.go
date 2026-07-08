@@ -28,9 +28,6 @@ type Volume struct {
 	// The name must be unique within the context of your account.  The name can
 	// also be used to identify the volume in API calls.
 	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// Where the volume is located.
-	Metro *string `json:"metro,omitempty"`
 	// The time the volume was created.
 	CreatedAt time.Time `json:"created_at"`
 	// Current state of the volume.

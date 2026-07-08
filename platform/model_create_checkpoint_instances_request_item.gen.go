@@ -18,9 +18,6 @@ type CreateCheckpointInstancesRequestItem struct {
 	// (Optional).  The name of the checkpoint.
 	// If not provided, a name will be generated.
 	Name *string `json:"name,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
 	// Timeout in seconds to wait for the checkpoint to be created.
 	// No wait performed for a value of 0.
 	TimeoutS *int64 `json:"timeout_s,omitempty"`

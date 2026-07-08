@@ -16,9 +16,6 @@ type DeleteTemplateInstancesResponseTemplateInstance struct {
 	Uuid string `json:"uuid"`
 	// The name of the template instance that was deleted.
 	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the template instance.
-	Metro *string `json:"metro,omitempty"`
 	// The status of this particular template instance deletion operation.
 	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the status.

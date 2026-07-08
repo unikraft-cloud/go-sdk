@@ -23,9 +23,6 @@ type AttachVolumesRequestItem struct {
 	At string `json:"at"`
 	// Whether the volume should be mounted read-only.
 	Readonly *bool `json:"readonly,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
 	// The UUID of the volume to attach. Mutually exclusive with name.
 	// Exactly one of uuid or name must be provided.
 	Uuid *string `json:"uuid,omitempty"`

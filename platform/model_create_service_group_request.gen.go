@@ -18,9 +18,6 @@ type CreateServiceGroupRequest struct {
 	// of your account.  If no name is specified, a random name is generated for
 	// you.  The name can also be used to identify the service group in API calls.
 	Name *string `json:"name,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
 	// Description of exposed services.
 	Services []Service `json:"services"`
 	// Description of domains associated with the service group.

@@ -13,9 +13,6 @@ import (
 
 // A single request item to start an instance.
 type StartInstancesRequestItem struct {
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
 	// Deprecated: Use `timeout_s` instead.  Timeout in milliseconds to
 	// wait for the instance to reach running state.  If `timeout_s` is
 	// not set, this value is converted by rounding up to the next full

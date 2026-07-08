@@ -65,9 +65,6 @@ type GetInstancesMetricsResponseInstanceMetrics struct {
 	Error *int32 `json:"error,omitempty"`
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro of the instance.
-	Metro *string `json:"metro,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

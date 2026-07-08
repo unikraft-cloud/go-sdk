@@ -13,9 +13,6 @@ import (
 
 // A single request item to stop an instance.
 type StopInstancesRequestItem struct {
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
 	// Whether to immediately force stop the instance.
 	Force *bool `json:"force,omitempty"`
 	// Timeout for draining connections in milliseconds.  The instance does not

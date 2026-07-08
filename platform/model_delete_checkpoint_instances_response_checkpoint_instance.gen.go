@@ -16,9 +16,6 @@ type DeleteCheckpointInstancesResponseCheckpointInstance struct {
 	Uuid string `json:"uuid"`
 	// The name of the checkpoint instance that was deleted.
 	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the checkpoint instance.
-	Metro *string `json:"metro,omitempty"`
 	// The status of this particular checkpoint instance deletion operation.
 	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the status.
