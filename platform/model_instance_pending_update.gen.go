@@ -11,14 +11,6 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// The status of this update.
-type InstancePendingUpdateStatus string
-
-const (
-	InstancePendingUpdateStatusPending InstancePendingUpdateStatus = "pending"
-	InstancePendingUpdateStatusFailed  InstancePendingUpdateStatus = "failed"
-)
-
 // A queued property change awaiting application (typically on next restart).
 type InstancePendingUpdate struct {
 	// The property being updated.
