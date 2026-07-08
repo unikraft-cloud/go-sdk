@@ -15,9 +15,6 @@ import (
 type UpdateVolumesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
 	// The property to modify.
 	Prop MutableVolumeProperty `json:"prop"`
 	// The operation to perform.

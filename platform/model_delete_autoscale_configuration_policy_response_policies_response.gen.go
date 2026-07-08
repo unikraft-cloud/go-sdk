@@ -16,9 +16,6 @@ type DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse struct {
 	Status ResponseStatus `json:"status"`
 	// The name of the service of the deleted policy.
 	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the resource.
-	Metro *string `json:"metro,omitempty"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`

@@ -18,9 +18,6 @@ type CreateTemplateInstancesResponseTemplateInstance struct {
 	Uuid string `json:"uuid"`
 	// The name of the template instance that was created.
 	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the template instance.
-	Metro *string `json:"metro,omitempty"`
 	// The current state of the instance.
 	State InstanceState `json:"state"`
 	// An optional message providing additional information about the status.

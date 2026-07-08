@@ -1671,9 +1671,6 @@ func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTa
 	requestPath := "/v1/image-store"
 
 	query := make(url.Values)
-	if opts.Metro != nil {
-		query.Add("metro", string(*opts.Metro))
-	}
 	if opts.Digest != nil {
 		query.Add("digest", string(*opts.Digest))
 	}
@@ -1701,9 +1698,6 @@ func (c *client) GetImages(ctx context.Context, request []GetImagesRequestTagOrD
 	requestPath := "/v1/images"
 
 	query := make(url.Values)
-	if opts.Metro != nil {
-		query.Add("metro", string(*opts.Metro))
-	}
 	if opts.Digest != nil {
 		query.Add("digest", string(*opts.Digest))
 	}

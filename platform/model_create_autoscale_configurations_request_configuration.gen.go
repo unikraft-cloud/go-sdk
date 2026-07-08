@@ -12,9 +12,6 @@ import (
 )
 
 type CreateAutoscaleConfigurationsRequestConfiguration struct {
-	// (Optional, only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
 	// The minimum number of instances to keep running.
 	MinSize *int64 `json:"min_size,omitempty"`
 	// The maximum number of instances to keep running.

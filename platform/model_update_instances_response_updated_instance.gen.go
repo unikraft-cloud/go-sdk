@@ -18,9 +18,6 @@ type UpdateInstancesResponseUpdatedInstance struct {
 	Name string `json:"name"`
 	// The status of this particular instance update operation.
 	Status ResponseStatus `json:"status"`
-	// (Only applies when using global control plane).
-	// The metro of the instance.
-	Metro *string `json:"metro,omitempty"`
 	// (Optional).  The client-provided ID from the request.
 	Id *string `json:"id,omitempty"`
 	// An optional message providing additional information about the status.

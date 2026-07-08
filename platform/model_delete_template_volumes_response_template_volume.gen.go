@@ -16,9 +16,6 @@ type DeleteTemplateVolumesResponseTemplateVolume struct {
 	Uuid string `json:"uuid"`
 	// The name of the template volume that was deleted.
 	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the volume.
-	Metro *string `json:"metro,omitempty"`
 	// The status of this particular template volume deletion operation.
 	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the status.

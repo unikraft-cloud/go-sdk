@@ -16,9 +16,6 @@ type UpdateCheckpointInstancesResponseCheckpointInstance struct {
 	Uuid string `json:"uuid"`
 	// The name of the checkpoint instance that was updated.
 	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the checkpoint instance.
-	Metro *string `json:"metro,omitempty"`
 	// The status of this particular checkpoint instance update operation.
 	Status ResponseStatus `json:"status"`
 	// (Optional).  The client-provided ID from the request.

@@ -21,9 +21,6 @@ type CreateInstanceRequestTemplate struct {
 	// (Optional).  The name of a template instance to create the instance from.
 	// Mutually exclusive with UUID.
 	Name *string `json:"name,omitempty"`
-	// (Only applies when using global control plane).
-	// Where the volume is located.
-	Metro *string `json:"metro,omitempty"`
 	// (Optional). Configuration parameters to apply when building the new instance from the source template.
 	CreateArgs *Instance `json:"create_args,omitempty"`
 	// (Optional). Timeout in seconds for preparing the template before the

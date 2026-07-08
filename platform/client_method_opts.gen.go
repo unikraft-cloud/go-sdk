@@ -17,14 +17,12 @@ type GetCertificatesOpts struct {
 
 // GetImageStoreOpts holds query-parameter options for [Client.GetImageStore].
 type GetImageStoreOpts struct {
-	Metro  *string
 	Digest *string
 	Tag    *string
 }
 
 // GetImagesOpts holds query-parameter options for [Client.GetImages].
 type GetImagesOpts struct {
-	Metro  *string
 	Digest *string
 	Tag    *string
 }

@@ -21,9 +21,6 @@ type CreateVolumeRequest struct {
 	// `X` is a 5 character long random alphanumeric suffix..  The name can also
 	// be used to identify the volume in API calls.
 	Name *string `json:"name,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
 	// Quota policy for the volume.
 	QuotaPolicy *VolumeQuotaPolicy `json:"quota_policy,omitempty"`
 	// Filesystem type to format or configure.

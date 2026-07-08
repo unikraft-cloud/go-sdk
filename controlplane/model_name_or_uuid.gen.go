@@ -13,9 +13,6 @@ import (
 
 // An identifier for a resource.  Either a name or a UUID.
 type NameOrUUID struct {
-	// (Only applies when using global control plane).
-	// The metro of the resource.
-	Metro *string `json:"metro,omitempty"`
 	// Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitempty"`
 	// Mutually exclusive with UUID.
