@@ -264,7 +264,7 @@ type Client interface {
 	// Performs: PUT /v1/certificates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#update-certificate-by-uuid
-	UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequest, ropts ...RequestOption) (*Response[UpdateCertificatesResponseData], error)
+	UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateCertificatesResponseData], error)
 	// Update the specified certificate(s) with new certificate chain(s) and private
 	// key(s). Only user-uploaded certificates can be updated; system-managed
 	// certificates cannot be modified. The new certificate(s) must have the same
@@ -279,7 +279,7 @@ type Client interface {
 	// Performs: PUT /v1/certificates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#update-certificates
-	UpdateCertificates(ctx context.Context, request UpdateCertificatesRequest, ropts ...RequestOption) (*Response[UpdateCertificatesResponseData], error)
+	UpdateCertificates(ctx context.Context, request []UpdateCertificatesRequestItem, ropts ...RequestOption) (*Response[UpdateCertificatesResponseData], error)
 	// Retrieve all images.
 	//
 	// @param `request`
@@ -1636,7 +1636,7 @@ func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, opts
 	return resp, nil
 }
 
-func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequest, ropts ...RequestOption) (*Response[UpdateCertificatesResponseData], error) {
+func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateCertificatesResponseData], error) {
 	requestPath := "/v1/certificates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -1652,12 +1652,16 @@ func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, reque
 	return resp, nil
 }
 
-func (c *client) UpdateCertificates(ctx context.Context, request UpdateCertificatesRequest, ropts ...RequestOption) (*Response[UpdateCertificatesResponseData], error) {
+func (c *client) UpdateCertificates(ctx context.Context, request []UpdateCertificatesRequestItem, ropts ...RequestOption) (*Response[UpdateCertificatesResponseData], error) {
 	requestPath := "/v1/certificates"
 
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
 	}
 
 	resp := &Response[UpdateCertificatesResponseData]{}

@@ -11,10 +11,7 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// The request message for updating a certificate by its UUID.
-type UpdateCertificateByUUIDRequest struct {
-	// The UUID of the certificate to update.
-	Uuid string `json:"uuid"`
+type UpdateCertificateByUUIDRequestBody struct {
 	// The new certificate chain.
 	//
 	// This is the public chain of the certificate in PEM format. The chain
@@ -31,12 +28,12 @@ type UpdateCertificateByUUIDRequest struct {
 	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
-func (m *UpdateCertificateByUUIDRequest) UnmarshalJSON(data []byte) error {
-	type Alias UpdateCertificateByUUIDRequest
+func (m *UpdateCertificateByUUIDRequestBody) UnmarshalJSON(data []byte) error {
+	type Alias UpdateCertificateByUUIDRequestBody
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m UpdateCertificateByUUIDRequest) MarshalJSON() ([]byte, error) {
-	type Alias UpdateCertificateByUUIDRequest
+func (m UpdateCertificateByUUIDRequestBody) MarshalJSON() ([]byte, error) {
+	type Alias UpdateCertificateByUUIDRequestBody
 	return json.Marshal((Alias)(m))
 }
