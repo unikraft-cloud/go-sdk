@@ -13,31 +13,21 @@ import (
 
 // The request message for updating one or more certificate(s) by their
 // UUID(s) or name(s).
-type UpdateCertificateRequest struct {
-	// The ID of the certificate to update.
-	Id NameOrUUID `json:"id"`
-	// The new certificate chain.
-	//
-	// This is the public chain of the certificate in PEM format. The chain
-	// should include the certificate and any intermediate certificates.
-	Chain string `json:"chain"`
-	// The new private key.
-	//
-	// This is the private key of the certificate in PEM format. The private
-	// key must match the public key in the certificate chain.
-	Pkey string `json:"pkey"`
+type UpdateCertificatesRequest struct {
+	// A list of update operations to apply to certificates.
+	Body []UpdateCertificatesRequestItem `json:"body"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
-func (m *UpdateCertificateRequest) UnmarshalJSON(data []byte) error {
-	type Alias UpdateCertificateRequest
+func (m *UpdateCertificatesRequest) UnmarshalJSON(data []byte) error {
+	type Alias UpdateCertificatesRequest
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m UpdateCertificateRequest) MarshalJSON() ([]byte, error) {
-	type Alias UpdateCertificateRequest
+func (m UpdateCertificatesRequest) MarshalJSON() ([]byte, error) {
+	type Alias UpdateCertificatesRequest
 	return json.Marshal((Alias)(m))
 }

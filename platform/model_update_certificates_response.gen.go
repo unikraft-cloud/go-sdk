@@ -12,14 +12,14 @@ import (
 )
 
 // The response message for updating one or more certificate(s).
-type UpdateCertificateResponse struct {
+type UpdateCertificatesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitempty"`
 	// The response data for this request.
-	Data *UpdateCertificateResponseData `json:"data,omitempty"`
+	Data *UpdateCertificatesResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process
@@ -31,12 +31,12 @@ type UpdateCertificateResponse struct {
 	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
-func (m *UpdateCertificateResponse) UnmarshalJSON(data []byte) error {
-	type Alias UpdateCertificateResponse
+func (m *UpdateCertificatesResponse) UnmarshalJSON(data []byte) error {
+	type Alias UpdateCertificatesResponse
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m UpdateCertificateResponse) MarshalJSON() ([]byte, error) {
-	type Alias UpdateCertificateResponse
+func (m UpdateCertificatesResponse) MarshalJSON() ([]byte, error) {
+	type Alias UpdateCertificatesResponse
 	return json.Marshal((Alias)(m))
 }
