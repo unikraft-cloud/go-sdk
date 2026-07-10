@@ -11,20 +11,6 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// Connection handlers to use for the service.  Handlers define how the
-// service will handle incoming connections and forward traffic from the
-// Internet to your application.  For example, a service can be configured
-// to terminate TLS connections, redirect HTTP traffic, or enable HTTP mode
-// for load balancing.  You configure the handlers for every published
-// service port individually.
-type ServiceHandlers string
-
-const (
-	ServiceHandlersTls      ServiceHandlers = "tls"
-	ServiceHandlersHttp     ServiceHandlers = "http"
-	ServiceHandlersRedirect ServiceHandlers = "redirect"
-)
-
 // A service connects a public-facing port to an internal destination port on
 // which an application instance listens on.  Additional handlers can be defined
 // for each published port in order to define how the service will handle

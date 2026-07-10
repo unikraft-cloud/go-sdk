@@ -161,6 +161,9 @@ func (c *client) clone() *client {
 {{- $isSSE := false}}
 {{- if $op.Responses}}
 {{- $defaultResp := $op.Responses.Default}}
+{{- if not $defaultResp}}
+{{- $defaultResp = index ($op.Responses.Map) "200"}}
+{{- end}}
 {{- if $defaultResp}}
 {{- if $defaultResp.Value}}
 {{- $respContent := index $defaultResp.Value.Content "application/json"}}
@@ -255,6 +258,9 @@ func (c *client) clone() *client {
 {{- $isSSE := false}}
 {{- if $op.Responses}}
 {{- $defaultResp := $op.Responses.Default}}
+{{- if not $defaultResp}}
+{{- $defaultResp = index ($op.Responses.Map) "200"}}
+{{- end}}
 {{- if $defaultResp}}
 {{- if $defaultResp.Value}}
 {{- $respContent := index $defaultResp.Value.Content "application/json"}}

@@ -11,16 +11,6 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// Features to enable for the instance.  Features are specific
-// configurations or capabilities that can be enabled for the
-// instance.  The `scale-to-zero` and `delete-on-stop` features are
-// mutually exclusive.
-type CreateInstanceRequestFeatures string
-
-const (
-	CreateInstanceRequestFeaturesDeleteOnStop CreateInstanceRequestFeatures = "delete-on-stop"
-)
-
 // The request message for creating a new instance.
 type CreateInstanceRequest struct {
 	// (Optional).  The name of the instance.
