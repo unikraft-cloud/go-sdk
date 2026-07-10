@@ -1386,7 +1386,9 @@ func (c *client) CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Cont
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
+	resp := &Response[CreateAutoscaleConfigurationsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1402,7 +1404,9 @@ func (c *client) CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid st
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CreateAutoscaleConfigurationPolicyResponseData]{}
+	resp := &Response[CreateAutoscaleConfigurationPolicyResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CreateAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1421,7 +1425,9 @@ func (c *client) CreateAutoscaleConfigurations(ctx context.Context, request []Cr
 		}
 	}
 
-	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
+	resp := &Response[CreateAutoscaleConfigurationsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1437,7 +1443,9 @@ func (c *client) DeleteAutoscaleConfigurationPolicies(ctx context.Context, uuid 
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[DeleteAutoscaleConfigurationPolicyResponseData]{}
+	resp := &Response[DeleteAutoscaleConfigurationPolicyResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1449,7 +1457,9 @@ func (c *client) DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, u
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 	requestPath = strings.ReplaceAll(requestPath, "{name}", url.PathEscape(string(name)))
 
-	resp := &Response[DeleteAutoscaleConfigurationPolicyResponseData]{}
+	resp := &Response[DeleteAutoscaleConfigurationPolicyResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1468,7 +1478,9 @@ func (c *client) DeleteAutoscaleConfigurations(ctx context.Context, request []Na
 		}
 	}
 
-	resp := &Response[DeleteAutoscaleConfigurationsResponseData]{}
+	resp := &Response[DeleteAutoscaleConfigurationsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1479,7 +1491,9 @@ func (c *client) DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Con
 	requestPath := "/v1/services/{uuid}/autoscale"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[DeleteAutoscaleConfigurationsResponseData]{}
+	resp := &Response[DeleteAutoscaleConfigurationsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1495,7 +1509,9 @@ func (c *client) GetAutoscaleConfigurationPolicies(ctx context.Context, uuid str
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[GetAutoscaleConfigurationPolicyResponseData]{}
+	resp := &Response[GetAutoscaleConfigurationPolicyResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1507,7 +1523,9 @@ func (c *client) GetAutoscaleConfigurationPolicyByName(ctx context.Context, uuid
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 	requestPath = strings.ReplaceAll(requestPath, "{name}", url.PathEscape(string(name)))
 
-	resp := &Response[GetAutoscaleConfigurationPolicyResponseData]{}
+	resp := &Response[GetAutoscaleConfigurationPolicyResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1526,7 +1544,9 @@ func (c *client) GetAutoscaleConfigurations(ctx context.Context, request []NameO
 		}
 	}
 
-	resp := &Response[GetAutoscaleConfigurationsResponseData]{}
+	resp := &Response[GetAutoscaleConfigurationsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1537,7 +1557,9 @@ func (c *client) GetAutoscaleConfigurationsByServiceGroupUUID(ctx context.Contex
 	requestPath := "/v1/services/{uuid}/autoscale"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[GetAutoscaleConfigurationsResponseData]{}
+	resp := &Response[GetAutoscaleConfigurationsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1552,7 +1574,9 @@ func (c *client) CreateCertificate(ctx context.Context, request CreateCertificat
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CreateCertificateResponseData]{}
+	resp := &Response[CreateCertificateResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CreateCertificateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1563,7 +1587,9 @@ func (c *client) DeleteCertificateByUUID(ctx context.Context, uuid string, ropts
 	requestPath := "/v1/certificates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[DeleteCertificatesResponseData]{}
+	resp := &Response[DeleteCertificatesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1582,7 +1608,9 @@ func (c *client) DeleteCertificates(ctx context.Context, request []NameOrUUID, r
 		}
 	}
 
-	resp := &Response[DeleteCertificatesResponseData]{}
+	resp := &Response[DeleteCertificatesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1593,7 +1621,9 @@ func (c *client) GetCertificateByUUID(ctx context.Context, uuid string, ropts ..
 	requestPath := "/v1/certificates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[GetCertificatesResponseData]{}
+	resp := &Response[GetCertificatesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1629,7 +1659,9 @@ func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, opts
 		}
 	}
 
-	resp := &Response[GetCertificatesResponseData]{}
+	resp := &Response[GetCertificatesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1645,7 +1677,9 @@ func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, reque
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[UpdateCertificatesResponseData]{}
+	resp := &Response[UpdateCertificatesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateCertificatesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1664,7 +1698,9 @@ func (c *client) UpdateCertificates(ctx context.Context, request []UpdateCertifi
 		}
 	}
 
-	resp := &Response[UpdateCertificatesResponseData]{}
+	resp := &Response[UpdateCertificatesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateCertificatesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1691,7 +1727,9 @@ func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTa
 		}
 	}
 
-	resp := &Response[GetImagesResponseData]{}
+	resp := &Response[GetImagesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1718,7 +1756,9 @@ func (c *client) GetImages(ctx context.Context, request []GetImagesRequestTagOrD
 		}
 	}
 
-	resp := &Response[GetImagesResponseData]{}
+	resp := &Response[GetImagesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1737,7 +1777,9 @@ func (c *client) CreateCheckpointInstances(ctx context.Context, request []Create
 		}
 	}
 
-	resp := &Response[CreateCheckpointInstancesResponseData]{}
+	resp := &Response[CreateCheckpointInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CreateCheckpointInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1752,7 +1794,9 @@ func (c *client) CreateInstance(ctx context.Context, request CreateInstanceReque
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CreateInstanceResponseData]{}
+	resp := &Response[CreateInstanceResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CreateInstanceResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1771,7 +1815,9 @@ func (c *client) CreateTemplateInstances(ctx context.Context, request []CreateTe
 		}
 	}
 
-	resp := &Response[CreateTemplateInstancesResponseData]{}
+	resp := &Response[CreateTemplateInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1782,7 +1828,9 @@ func (c *client) DeleteCheckpointInstanceByUUID(ctx context.Context, uuid string
 	requestPath := "/v1/instances/checkpoints/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[DeleteCheckpointInstancesResponseData]{}
+	resp := &Response[DeleteCheckpointInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteCheckpointInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1801,7 +1849,9 @@ func (c *client) DeleteCheckpointInstances(ctx context.Context, request []NameOr
 		}
 	}
 
-	resp := &Response[DeleteCheckpointInstancesResponseData]{}
+	resp := &Response[DeleteCheckpointInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteCheckpointInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1817,7 +1867,9 @@ func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, request 
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[DeleteInstancesResponseData]{}
+	resp := &Response[DeleteInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1836,7 +1888,9 @@ func (c *client) DeleteInstances(ctx context.Context, request []DeleteInstanceRe
 		}
 	}
 
-	resp := &Response[DeleteInstancesResponseData]{}
+	resp := &Response[DeleteInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1847,7 +1901,9 @@ func (c *client) DeleteTemplateInstanceByUUID(ctx context.Context, uuid string, 
 	requestPath := "/v1/instances/templates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[DeleteTemplateInstancesResponseData]{}
+	resp := &Response[DeleteTemplateInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1866,7 +1922,9 @@ func (c *client) DeleteTemplateInstances(ctx context.Context, request []NameOrUU
 		}
 	}
 
-	resp := &Response[DeleteTemplateInstancesResponseData]{}
+	resp := &Response[DeleteTemplateInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1885,7 +1943,9 @@ func (c *client) GetCheckpointHistory(ctx context.Context, request []NameOrUUID,
 		}
 	}
 
-	resp := &Response[GetCheckpointHistoryResponseData]{}
+	resp := &Response[GetCheckpointHistoryResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1896,7 +1956,9 @@ func (c *client) GetCheckpointHistoryByUUID(ctx context.Context, uuid string, ro
 	requestPath := "/v1/instances/checkpoints/{uuid}/history"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[GetCheckpointHistoryResponseData]{}
+	resp := &Response[GetCheckpointHistoryResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1912,7 +1974,9 @@ func (c *client) GetCheckpointInstanceByUUID(ctx context.Context, uuid string, o
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
 
-	resp := &Response[GetCheckpointInstancesResponseData]{}
+	resp := &Response[GetCheckpointInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetCheckpointInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1951,7 +2015,9 @@ func (c *client) GetCheckpointInstances(ctx context.Context, request []NameOrUUI
 		}
 	}
 
-	resp := &Response[GetCheckpointInstancesResponseData]{}
+	resp := &Response[GetCheckpointInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetCheckpointInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1967,7 +2033,9 @@ func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, opts GetIns
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
 
-	resp := &Response[GetInstancesResponseData]{}
+	resp := &Response[GetInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1986,7 +2054,9 @@ func (c *client) GetInstanceHistory(ctx context.Context, request []NameOrUUID, r
 		}
 	}
 
-	resp := &Response[GetCheckpointHistoryResponseData]{}
+	resp := &Response[GetCheckpointHistoryResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -1997,7 +2067,9 @@ func (c *client) GetInstanceHistoryByUUID(ctx context.Context, uuid string, ropt
 	requestPath := "/v1/instances/{uuid}/history"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[GetCheckpointHistoryResponseData]{}
+	resp := &Response[GetCheckpointHistoryResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2016,7 +2088,9 @@ func (c *client) GetInstanceLogs(ctx context.Context, request []GetInstancesLogs
 		}
 	}
 
-	resp := &Response[GetInstancesLogsResponseData]{}
+	resp := &Response[GetInstancesLogsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2032,7 +2106,9 @@ func (c *client) GetInstanceLogsByUUID(ctx context.Context, uuid string, request
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[GetInstancesLogsResponseData]{}
+	resp := &Response[GetInstancesLogsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2051,7 +2127,9 @@ func (c *client) GetInstanceMetrics(ctx context.Context, request []NameOrUUID, r
 		}
 	}
 
-	resp := &Response[GetInstancesMetricsResponseData]{}
+	resp := &Response[GetInstancesMetricsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2062,7 +2140,9 @@ func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropt
 	requestPath := "/v1/instances/{uuid}/metrics"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[GetInstancesMetricsResponseData]{}
+	resp := &Response[GetInstancesMetricsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2101,7 +2181,9 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, opts Ge
 		}
 	}
 
-	resp := &Response[GetInstancesResponseData]{}
+	resp := &Response[GetInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2117,7 +2199,9 @@ func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, opt
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
 
-	resp := &Response[GetTemplateInstancesResponseData]{}
+	resp := &Response[GetTemplateInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2156,7 +2240,9 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 		}
 	}
 
-	resp := &Response[GetTemplateInstancesResponseData]{}
+	resp := &Response[GetTemplateInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2172,7 +2258,9 @@ func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, request S
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[StartInstancesResponseData]{}
+	resp := &Response[StartInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2191,7 +2279,9 @@ func (c *client) StartInstances(ctx context.Context, request []StartInstancesReq
 		}
 	}
 
-	resp := &Response[StartInstancesResponseData]{}
+	resp := &Response[StartInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2207,7 +2297,9 @@ func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, request St
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[StopInstancesResponseData]{}
+	resp := &Response[StopInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2226,7 +2318,9 @@ func (c *client) StopInstances(ctx context.Context, request []StopInstancesReque
 		}
 	}
 
-	resp := &Response[StopInstancesResponseData]{}
+	resp := &Response[StopInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2242,7 +2336,9 @@ func (c *client) SuspendInstanceByUUID(ctx context.Context, uuid string, request
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[SuspendInstancesResponseData]{}
+	resp := &Response[SuspendInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2261,7 +2357,9 @@ func (c *client) SuspendInstances(ctx context.Context, request []SuspendInstance
 		}
 	}
 
-	resp := &Response[SuspendInstancesResponseData]{}
+	resp := &Response[SuspendInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2277,7 +2375,9 @@ func (c *client) UpdateCheckpointInstanceByUUID(ctx context.Context, uuid string
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[UpdateCheckpointInstancesResponseData]{}
+	resp := &Response[UpdateCheckpointInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateCheckpointInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2296,7 +2396,9 @@ func (c *client) UpdateCheckpointInstances(ctx context.Context, request []Update
 		}
 	}
 
-	resp := &Response[UpdateCheckpointInstancesResponseData]{}
+	resp := &Response[UpdateCheckpointInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateCheckpointInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2312,7 +2414,9 @@ func (c *client) UpdateInstanceByUUID(ctx context.Context, uuid string, request 
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[UpdateInstancesResponseData]{}
+	resp := &Response[UpdateInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2331,7 +2435,9 @@ func (c *client) UpdateInstances(ctx context.Context, request []UpdateInstancesR
 		}
 	}
 
-	resp := &Response[UpdateInstancesResponseData]{}
+	resp := &Response[UpdateInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2347,7 +2453,9 @@ func (c *client) UpdateTemplateInstanceByUUID(ctx context.Context, uuid string, 
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[UpdateTemplateInstancesResponseData]{}
+	resp := &Response[UpdateTemplateInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2366,7 +2474,9 @@ func (c *client) UpdateTemplateInstances(ctx context.Context, request []UpdateTe
 		}
 	}
 
-	resp := &Response[UpdateTemplateInstancesResponseData]{}
+	resp := &Response[UpdateTemplateInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2382,7 +2492,9 @@ func (c *client) WaitInstanceByUUID(ctx context.Context, uuid string, request Wa
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[WaitInstancesResponseData]{}
+	resp := &Response[WaitInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2401,7 +2513,9 @@ func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesReque
 		}
 	}
 
-	resp := &Response[WaitInstancesResponseData]{}
+	resp := &Response[WaitInstancesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2411,7 +2525,9 @@ func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesReque
 func (c *client) Healthz(ctx context.Context, ropts ...RequestOption) (*Response[HealthzResponseData], error) {
 	requestPath := "/v1/healthz"
 
-	resp := &Response[HealthzResponseData]{}
+	resp := &Response[HealthzResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[HealthzResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2426,7 +2542,9 @@ func (c *client) CreateServiceGroup(ctx context.Context, request CreateServiceGr
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CreateServiceGroupResponseData]{}
+	resp := &Response[CreateServiceGroupResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CreateServiceGroupResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2437,7 +2555,9 @@ func (c *client) DeleteServiceGroupByUUID(ctx context.Context, uuid string, ropt
 	requestPath := "/v1/services/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[DeleteServiceGroupsResponseData]{}
+	resp := &Response[DeleteServiceGroupsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2456,7 +2576,9 @@ func (c *client) DeleteServiceGroups(ctx context.Context, request []NameOrUUID, 
 		}
 	}
 
-	resp := &Response[DeleteServiceGroupsResponseData]{}
+	resp := &Response[DeleteServiceGroupsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2472,7 +2594,9 @@ func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, opts Ge
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
 
-	resp := &Response[GetServiceGroupsResponseData]{}
+	resp := &Response[GetServiceGroupsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2508,7 +2632,9 @@ func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, opt
 		}
 	}
 
-	resp := &Response[GetServiceGroupsResponseData]{}
+	resp := &Response[GetServiceGroupsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2524,7 +2650,9 @@ func (c *client) UpdateServiceGroupByUUID(ctx context.Context, uuid string, requ
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[UpdateServiceGroupsResponseData]{}
+	resp := &Response[UpdateServiceGroupsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2543,7 +2671,9 @@ func (c *client) UpdateServiceGroups(ctx context.Context, request []UpdateServic
 		}
 	}
 
-	resp := &Response[UpdateServiceGroupsResponseData]{}
+	resp := &Response[UpdateServiceGroupsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2558,7 +2688,9 @@ func (c *client) AddUsers(ctx context.Context, request AddUsersRequest, ropts ..
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[AddUsersResponseData]{}
+	resp := &Response[AddUsersResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[AddUsersResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2568,7 +2700,9 @@ func (c *client) AddUsers(ctx context.Context, request AddUsersRequest, ropts ..
 func (c *client) GetUser(ctx context.Context, ropts ...RequestOption) (*Response[QuotasResponseData], error) {
 	requestPath := "/v1/users/quotas"
 
-	resp := &Response[QuotasResponseData]{}
+	resp := &Response[QuotasResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2579,7 +2713,9 @@ func (c *client) GetUserByUUID(ctx context.Context, uuid string, ropts ...Reques
 	requestPath := "/v1/users/{uuid}/quotas"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[QuotasResponseData]{}
+	resp := &Response[QuotasResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2595,7 +2731,9 @@ func (c *client) AttachVolumeByUUID(ctx context.Context, uuid string, request At
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[AttachVolumesResponseData]{}
+	resp := &Response[AttachVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2614,7 +2752,9 @@ func (c *client) AttachVolumes(ctx context.Context, request []AttachVolumesReque
 		}
 	}
 
-	resp := &Response[AttachVolumesResponseData]{}
+	resp := &Response[AttachVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2630,7 +2770,9 @@ func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request Clo
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CloneVolumesResponseData]{}
+	resp := &Response[CloneVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2649,7 +2791,9 @@ func (c *client) CloneVolumes(ctx context.Context, request []CloneVolumesRequest
 		}
 	}
 
-	resp := &Response[CloneVolumesResponseData]{}
+	resp := &Response[CloneVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2668,7 +2812,9 @@ func (c *client) CreateTemplateVolume(ctx context.Context, request []NameOrUUID,
 		}
 	}
 
-	resp := &Response[CreateTemplateVolumesResponseData]{}
+	resp := &Response[CreateTemplateVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CreateTemplateVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2683,7 +2829,9 @@ func (c *client) CreateVolume(ctx context.Context, request CreateVolumeRequest, 
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CreateVolumeResponseData]{}
+	resp := &Response[CreateVolumeResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CreateVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2694,7 +2842,9 @@ func (c *client) DeleteTemplateVolumeByUUID(ctx context.Context, uuid string, ro
 	requestPath := "/v1/volumes/templates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[DeleteTemplateVolumesResponseData]{}
+	resp := &Response[DeleteTemplateVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2713,7 +2863,9 @@ func (c *client) DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID
 		}
 	}
 
-	resp := &Response[DeleteTemplateVolumesResponseData]{}
+	resp := &Response[DeleteTemplateVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2724,7 +2876,9 @@ func (c *client) DeleteVolumeByUUID(ctx context.Context, uuid string, ropts ...R
 	requestPath := "/v1/volumes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[DeleteVolumesResponseData]{}
+	resp := &Response[DeleteVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2743,7 +2897,9 @@ func (c *client) DeleteVolumes(ctx context.Context, request []NameOrUUID, ropts 
 		}
 	}
 
-	resp := &Response[DeleteVolumesResponseData]{}
+	resp := &Response[DeleteVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2759,7 +2915,9 @@ func (c *client) DetachVolumeByUUID(ctx context.Context, uuid string, request De
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[DetachVolumesResponseData]{}
+	resp := &Response[DetachVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2778,7 +2936,9 @@ func (c *client) DetachVolumes(ctx context.Context, request []DetachVolumesReque
 		}
 	}
 
-	resp := &Response[DetachVolumesResponseData]{}
+	resp := &Response[DetachVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2794,7 +2954,9 @@ func (c *client) GetTemplateVolumeByUUID(ctx context.Context, uuid string, opts 
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
 
-	resp := &Response[GetTemplateVolumesResponseData]{}
+	resp := &Response[GetTemplateVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2833,7 +2995,9 @@ func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, o
 		}
 	}
 
-	resp := &Response[GetTemplateVolumesResponseData]{}
+	resp := &Response[GetTemplateVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2849,7 +3013,9 @@ func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, opts GetVolum
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
 
-	resp := &Response[GetVolumesResponseData]{}
+	resp := &Response[GetVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2888,7 +3054,9 @@ func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, opts GetV
 		}
 	}
 
-	resp := &Response[GetVolumesResponseData]{}
+	resp := &Response[GetVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2904,7 +3072,9 @@ func (c *client) UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, re
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[UpdateTemplateVolumesResponseData]{}
+	resp := &Response[UpdateTemplateVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2923,7 +3093,9 @@ func (c *client) UpdateTemplateVolumes(ctx context.Context, request []UpdateTemp
 		}
 	}
 
-	resp := &Response[UpdateTemplateVolumesResponseData]{}
+	resp := &Response[UpdateTemplateVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2939,7 +3111,9 @@ func (c *client) UpdateVolumeByUUID(ctx context.Context, uuid string, request Up
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[UpdateVolumesResponseData]{}
+	resp := &Response[UpdateVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
@@ -2958,7 +3132,9 @@ func (c *client) UpdateVolumes(ctx context.Context, request []UpdateVolumesReque
 		}
 	}
 
-	resp := &Response[UpdateVolumesResponseData]{}
+	resp := &Response[UpdateVolumesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}

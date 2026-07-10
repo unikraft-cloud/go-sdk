@@ -331,7 +331,9 @@ func (c *client) CheckAuthorization(ctx context.Context, request CheckAuthorizat
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CheckAuthorizationResponseData]{}
+	resp := &Response[CheckAuthorizationResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[CheckAuthorizationResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
@@ -341,7 +343,9 @@ func (c *client) CheckAuthorization(ctx context.Context, request CheckAuthorizat
 func (c *client) GetAuthorization(ctx context.Context, ropts ...RequestOption) (*Response[GetAuthorizationResponseData], error) {
 	requestPath := "/v1/auth"
 
-	resp := &Response[GetAuthorizationResponseData]{}
+	resp := &Response[GetAuthorizationResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[GetAuthorizationResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -356,7 +360,9 @@ func (c *client) RequestSignin(ctx context.Context, request RequestSigninRequest
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[RequestSigninResponseData]{}
+	resp := &Response[RequestSigninResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[RequestSigninResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -374,7 +380,9 @@ func (c *client) ListImages(ctx context.Context, opts ListImagesOpts, ropts ...R
 		query.Add("namespace", string(v))
 	}
 
-	resp := &Response[ListImagesResponseData]{}
+	resp := &Response[ListImagesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[ListImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -384,7 +392,9 @@ func (c *client) ListImages(ctx context.Context, opts ListImagesOpts, ropts ...R
 func (c *client) ListMetros(ctx context.Context, ropts ...RequestOption) (*Response[ListMetroResponseData], error) {
 	requestPath := "/v1/metros"
 
-	resp := &Response[ListMetroResponseData]{}
+	resp := &Response[ListMetroResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[ListMetroResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -399,7 +409,9 @@ func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest, 
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[NodeActivateResponseData]{}
+	resp := &Response[NodeActivateResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[NodeActivateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -414,7 +426,9 @@ func (c *client) NodeHeartbeat(ctx context.Context, request NodeHeartbeatRequest
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[any]{}
+	resp := &Response[any]{
+		Request: c.request,
+	}
 	if err := doRequest[any](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -438,7 +452,9 @@ func (c *client) DestroyNode(ctx context.Context, request []NameOrUUID, opts Des
 		}
 	}
 
-	resp := &Response[DestroyNodeResponseData]{}
+	resp := &Response[DestroyNodeResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DestroyNodeResponseData](ctx, c.request, http.MethodDelete, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -454,7 +470,9 @@ func (c *client) DestroyNodeByUUID(ctx context.Context, uuid string, opts Destro
 		query.Add("force", fmt.Sprintf("%t", *opts.Force))
 	}
 
-	resp := &Response[DestroyNodeResponseData]{}
+	resp := &Response[DestroyNodeResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[DestroyNodeResponseData](ctx, c.request, http.MethodDelete, requestPath, query, nil, resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -465,7 +483,9 @@ func (c *client) GetNodeByUUID(ctx context.Context, uuid string, ropts ...Reques
 	requestPath := "/v1/nodes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
-	resp := &Response[ListNodesResponseData]{}
+	resp := &Response[ListNodesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[ListNodesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -481,7 +501,9 @@ func (c *client) ListMachineTypes(ctx context.Context, cloudprovider CloudProvid
 		query.Add("region", string(*opts.Region))
 	}
 
-	resp := &Response[ListMachineTypesResponseData]{}
+	resp := &Response[ListMachineTypesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[ListMachineTypesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -517,7 +539,9 @@ func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListN
 		}
 	}
 
-	resp := &Response[ListNodesResponseData]{}
+	resp := &Response[ListNodesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[ListNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -528,7 +552,9 @@ func (c *client) ListRegions(ctx context.Context, cloudprovider CloudProvider, r
 	requestPath := "/v1/nodes/providers/{cloudprovider}/regions"
 	requestPath = strings.ReplaceAll(requestPath, "{cloudprovider}", url.PathEscape(string(cloudprovider)))
 
-	resp := &Response[ListRegionsResponseData]{}
+	resp := &Response[ListRegionsResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[ListRegionsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -543,7 +569,9 @@ func (c *client) ProvisionNode(ctx context.Context, request ProvisionNodeRequest
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[ProvisionNodeResponseData]{}
+	resp := &Response[ProvisionNodeResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[ProvisionNodeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -563,7 +591,9 @@ func (c *client) UpdateNodeByUUID(ctx context.Context, uuid string, request []Up
 		}
 	}
 
-	resp := &Response[UpdateNodesResponseData]{}
+	resp := &Response[UpdateNodesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateNodesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -582,7 +612,9 @@ func (c *client) UpdateNodes(ctx context.Context, request []NameOrUUID, ropts ..
 		}
 	}
 
-	resp := &Response[UpdateNodesResponseData]{}
+	resp := &Response[UpdateNodesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[UpdateNodesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -601,7 +633,9 @@ func (c *client) WaitNodeByUUID(ctx context.Context, uuid string, opts WaitNodeB
 		query.Add("timeout_ms", fmt.Sprintf("%d", *opts.TimeoutMs))
 	}
 
-	resp := &Response[WaitNodesResponseData]{}
+	resp := &Response[WaitNodesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[WaitNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
@@ -619,7 +653,9 @@ func (c *client) WaitNodes(ctx context.Context, opts WaitNodesOpts, ropts ...Req
 		query.Add("timeout_ms", fmt.Sprintf("%d", *opts.TimeoutMs))
 	}
 
-	resp := &Response[WaitNodesResponseData]{}
+	resp := &Response[WaitNodesResponseData]{
+		Request: c.request,
+	}
 	if err := doRequest[WaitNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
