@@ -33,6 +33,9 @@ type Response[T any] struct {
 	// information.
 	Data *T `json:"data,omitempty"`
 
+	// OpTimeUs is the time taken to process the request in microseconds.
+	OpTimeUs uint64 `json:"op_time_us,omitempty"`
+
 	// Buffer holding the raw API response body.
 	body bytes.Buffer
 
