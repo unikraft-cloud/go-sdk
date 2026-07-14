@@ -28,7 +28,7 @@ type UpdateInstanceByUUIDRequestBody struct {
 	// - For "scale_to_zero": object with cooldown_time_ms, policy, and stateful fields
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean
-	// - For "schedules": array of schedule objects (with name, when, action, and optional args fields).
+	// - For "schedules": array of schedule objects (with name, when, action, and optional args fields) for SET/ADD, or array of schedule names for DEL.
 	//   Use action "exec" together with args to execute a command at the scheduled time.
 	// - For "autokill": object with time_ms and num_requests fields
 	// - For "hostname": string (valid DNS label)

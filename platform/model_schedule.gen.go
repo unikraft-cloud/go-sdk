@@ -7,6 +7,8 @@
 package platform
 
 import (
+	"time"
+
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
 )
@@ -43,7 +45,7 @@ type Schedule struct {
 	//
 	// This field is populated only in responses (not settable in requests).
 	// Unix timestamp in seconds.  Omitted if no next execution is scheduled.
-	NextAt *int64 `json:"next_at,omitempty"`
+	NextAt *time.Time `json:"next_at,omitempty"`
 	// The command to execute when the action is `exec`.
 	//
 	// Required when `action` is `SCHEDULE_ACTION_EXEC`, ignored otherwise.
