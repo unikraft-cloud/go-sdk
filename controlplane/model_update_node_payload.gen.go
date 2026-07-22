@@ -14,9 +14,9 @@ import (
 // UpdateNodePayload contains the changes to apply to a node.
 type UpdateNodePayload struct {
 	// The property to update.
-	Property MutableNodeProperty `json:"property"`
+	Property *UpdateNodePayloadProperty `json:"property,omitempty"`
 	// The operation to perform on the property.
-	Operation MutableNodeOperation `json:"operation"`
+	Operation *UpdateNodePayloadOperation `json:"operation,omitempty"`
 	// The value for the update operation. The type depends on the property:
 	// - TAGS: google.protobuf.Struct with key-value pairs
 	// - DELETE_LOCK: google.protobuf.Value with boolean

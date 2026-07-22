@@ -6,11 +6,10 @@
 
 package controlplane
 
-// The operations available on a node's mutable properties.
-type MutableNodeOperation string
+// The cloud provider where this machine is provisioned.
+type NodeProvider string
 
 const (
-	MutableNodeOperationSet MutableNodeOperation = "set"
-	MutableNodeOperationAdd MutableNodeOperation = "add"
-	MutableNodeOperationDel MutableNodeOperation = "del"
+	NodeProviderUnspecified NodeProvider = "unspecified"
+	NodeProviderAws         NodeProvider = "aws"
 )

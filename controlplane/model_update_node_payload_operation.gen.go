@@ -6,11 +6,11 @@
 
 package controlplane
 
-// CloudProvider identifies the cloud infrastructure provider where nodes are
-// provisioned.
-type CloudProvider string
+// The operation to perform on the property.
+type UpdateNodePayloadOperation string
 
 const (
-	CloudProviderManual CloudProvider = "manual"
-	CloudProviderAws    CloudProvider = "aws"
+	UpdateNodePayloadOperationSet UpdateNodePayloadOperation = "set"
+	UpdateNodePayloadOperationAdd UpdateNodePayloadOperation = "add"
+	UpdateNodePayloadOperationDel UpdateNodePayloadOperation = "del"
 )

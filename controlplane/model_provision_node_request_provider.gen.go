@@ -6,10 +6,10 @@
 
 package controlplane
 
-type PlatformStatus string
+// The cloud provider where the machine should be provisioned.
+type ProvisionNodeRequestProvider string
 
 const (
-	PlatformStatusHealthy  PlatformStatus = "healthy"
-	PlatformStatusDegraded PlatformStatus = "degraded"
-	PlatformStatusUnknown  PlatformStatus = "unknown"
+	ProvisionNodeRequestProviderUnspecified ProvisionNodeRequestProvider = "unspecified"
+	ProvisionNodeRequestProviderAws         ProvisionNodeRequestProvider = "aws"
 )

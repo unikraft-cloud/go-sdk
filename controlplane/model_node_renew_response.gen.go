@@ -11,31 +11,30 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// The response message for getting authorization details.
-type GetAuthorizationResponse struct {
+// The response message for certificate renewal.
+type NodeRenewResponse struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string `json:"message,omitempty"`
 	// The response data for this request.
-	Data *GetAuthorizationResponseData `json:"data,omitempty"`
+	Data *NodeRenewResponseData `json:"data,omitempty"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitempty"`
-	// The operation time in microseconds.  This is the time it took to process
-	// the request and generate the response.
-	OpTimeUs uint64 `json:"op_time_us"`
+	// The operation time in microseconds.
+	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
-func (m *GetAuthorizationResponse) UnmarshalJSON(data []byte) error {
-	type Alias GetAuthorizationResponse
+func (m *NodeRenewResponse) UnmarshalJSON(data []byte) error {
+	type Alias NodeRenewResponse
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m GetAuthorizationResponse) MarshalJSON() ([]byte, error) {
-	type Alias GetAuthorizationResponse
+func (m NodeRenewResponse) MarshalJSON() ([]byte, error) {
+	type Alias NodeRenewResponse
 	return json.Marshal((Alias)(m))
 }

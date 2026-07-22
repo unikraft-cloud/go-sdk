@@ -10,7 +10,6 @@ package controlplane
 type ResponseStatus string
 
 const (
-	ResponseStatusSuccess        ResponseStatus = "success"
-	ResponseStatusError          ResponseStatus = "error"
-	ResponseStatusPartialSuccess ResponseStatus = "partial_success"
+	ResponseStatusSuccess ResponseStatus = "success"
+	ResponseStatusError   ResponseStatus = "error"
 )

@@ -11,23 +11,25 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// CloudProviderConfig contains provider-specific configuration for node
-// provisioning.
-type CloudProviderConfig struct {
-	// AWS-specific configuration.
-	Aws *AWSConfig `json:"aws,omitempty"`
+// The request message for certificate renewal.
+type NodeRenewRequest struct {
+	// The certificate signing request (CSR) for the license which is base64
+	// encoded.
+	Csr *string `json:"csr,omitempty"`
+	// The serial number of the certificate that ought to be renewed.
+	PreviousSerial *string `json:"previous_serial,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
-func (m *CloudProviderConfig) UnmarshalJSON(data []byte) error {
-	type Alias CloudProviderConfig
+func (m *NodeRenewRequest) UnmarshalJSON(data []byte) error {
+	type Alias NodeRenewRequest
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m CloudProviderConfig) MarshalJSON() ([]byte, error) {
-	type Alias CloudProviderConfig
+func (m NodeRenewRequest) MarshalJSON() ([]byte, error) {
+	type Alias NodeRenewRequest
 	return json.Marshal((Alias)(m))
 }

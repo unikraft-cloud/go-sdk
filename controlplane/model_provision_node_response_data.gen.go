@@ -13,7 +13,7 @@ import (
 
 type ProvisionNodeResponseData struct {
 	// The created node.
-	Node Node `json:"node"`
+	Node *Node `json:"node,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

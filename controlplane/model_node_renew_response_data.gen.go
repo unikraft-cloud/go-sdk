@@ -11,24 +11,21 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// The request message for a node heartbeat.
-type NodeHeartbeatRequest struct {
-	// The unique machine identifier of the node sending the heartbeat.
-	MachineId string `json:"machine_id"`
-	// The current platform status of the node.
-	PlatformStatus PlatformStatus `json:"platform_status"`
+type NodeRenewResponseData struct {
+	// The renewed license certificate in base64 URL encoded PEM format.
+	License *string `json:"license,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
-func (m *NodeHeartbeatRequest) UnmarshalJSON(data []byte) error {
-	type Alias NodeHeartbeatRequest
+func (m *NodeRenewResponseData) UnmarshalJSON(data []byte) error {
+	type Alias NodeRenewResponseData
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m NodeHeartbeatRequest) MarshalJSON() ([]byte, error) {
-	type Alias NodeHeartbeatRequest
+func (m NodeRenewResponseData) MarshalJSON() ([]byte, error) {
+	type Alias NodeRenewResponseData
 	return json.Marshal((Alias)(m))
 }

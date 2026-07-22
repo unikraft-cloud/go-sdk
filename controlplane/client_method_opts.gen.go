@@ -6,12 +6,6 @@
 
 package controlplane
 
-// ListImagesOpts holds query-parameter options for [Client.ListImages].
-type ListImagesOpts struct {
-	Details   *bool
-	Namespace []string
-}
-
 // DestroyNodeOpts holds query-parameter options for [Client.DestroyNode].
 type DestroyNodeOpts struct {
 	Force *bool
@@ -29,21 +23,22 @@ type ListMachineTypesOpts struct {
 
 // ListNodesOpts holds query-parameter options for [Client.ListNodes].
 type ListNodesOpts struct {
-	Cloudprovider *CloudProvider
-	State         *NodeState
-	Metro         *string
-	Limit         *uint32
-	Offset        *uint32
+	Provider *string
+	State    *string
+	Metro    *string
+	Region   *string
+	Limit    *uint32
+	Offset   *uint32
 }
 
 // WaitNodeByUUIDOpts holds query-parameter options for [Client.WaitNodeByUUID].
 type WaitNodeByUUIDOpts struct {
-	States    []NodeState
+	States    []string
 	TimeoutMs *int64
 }
 
 // WaitNodesOpts holds query-parameter options for [Client.WaitNodes].
 type WaitNodesOpts struct {
-	States    []NodeState
+	States    []string
 	TimeoutMs *int64
 }

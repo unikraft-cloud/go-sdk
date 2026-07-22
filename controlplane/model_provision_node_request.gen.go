@@ -17,13 +17,17 @@ type ProvisionNodeRequest struct {
 	// auto-generated.
 	Name *string `json:"name,omitempty"`
 	// The cloud provider where the machine should be provisioned.
-	Cloudprovider *CloudProvider `json:"cloudprovider,omitempty"`
+	Provider ProvisionNodeRequestProvider `json:"provider"`
+	// The provider region where the machine should be provisioned.
+	Region string `json:"region"`
+	// The machine type to provision. This is provider-specific.
+	MachineType string `json:"machine_type"`
 	// SSH keys for accessing the node. At least one key is required.
 	SshKeys []SSHKey `json:"ssh_keys"`
 	// Optional user-defined tags.
 	Tags map[string]string `json:"tags,omitempty"`
 	// Optional provider-specific configuration for advanced customization.
-	CloudproviderConfig *CloudProviderConfig `json:"cloudprovider_config,omitempty"`
+	ProviderConfig *NodeProviderConfig `json:"provider_config,omitempty"`
 	// The Unikraft Cloud metro to associate this machine with.
 	Metro *string `json:"metro,omitempty"`
 	// Optional user overrides for platform configuration. Keys should be

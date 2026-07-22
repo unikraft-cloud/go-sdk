@@ -14,7 +14,7 @@ import (
 // The response message for checking authorization.
 type CheckAuthorizationResponse struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status"`
+	Status *ResponseStatus `json:"status,omitempty"`
 	// An optional message providing additional information about the response.
 	Message *string `json:"message,omitempty"`
 	// The response data for this request.
@@ -23,7 +23,7 @@ type CheckAuthorizationResponse struct {
 	Errors []ResponseError `json:"errors,omitempty"`
 	// The operation time in microseconds.  This is the time it took to process
 	// the request and generate the response.
-	OpTimeUs uint64 `json:"op_time_us"`
+	OpTimeUs *uint64 `json:"op_time_us,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

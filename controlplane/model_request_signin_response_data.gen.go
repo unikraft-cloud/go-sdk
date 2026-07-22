@@ -13,10 +13,10 @@ import (
 
 type RequestSigninResponseData struct {
 	// The full URL which can be used to remotely confirm the signin.
-	AuthorizationUrl string `json:"authorization_url"`
+	AuthorizationUrl *string `json:"authorization_url,omitempty"`
 	// A unique identifier for the request.  This can be used to track the
 	// request in the system.
-	RequestId string `json:"request_id"`
+	RequestId *string `json:"request_id,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

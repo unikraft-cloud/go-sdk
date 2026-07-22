@@ -15,7 +15,7 @@ type ListNodesResponseData struct {
 	// The list of nodes matching the request.
 	Nodes []Node `json:"nodes,omitempty"`
 	// Total count of nodes matching the filters (for pagination).
-	TotalCount uint32 `json:"total_count"`
+	TotalCount *uint32 `json:"total_count,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

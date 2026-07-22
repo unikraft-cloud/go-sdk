@@ -6,8 +6,7 @@
 
 package controlplane
 
-// NodeState defines the provisioning lifecycle state of a machine which will
-// run the Unikraft Cloud Platform.
+// The current state of the machine.
 type NodeState string
 
 const (

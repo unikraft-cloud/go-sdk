@@ -11,24 +11,24 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// The response message for a node heartbeat.
-type NodeHeartbeatResponse struct {
-	// The status of the response.
-	Status ResponseStatus `json:"status"`
-	// An optional message providing additional information about the response.
-	Message *string `json:"message,omitempty"`
+// NodeProviderConfig contains provider-specific configuration for node
+// provisioning.  Use this for advanced customization beyond the common
+// machine_type and region fields.
+type NodeProviderConfig struct {
+	// AWS-specific configuration.
+	Aws *AWSConfig `json:"aws,omitempty"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",inline"`
 }
 
-func (m *NodeHeartbeatResponse) UnmarshalJSON(data []byte) error {
-	type Alias NodeHeartbeatResponse
+func (m *NodeProviderConfig) UnmarshalJSON(data []byte) error {
+	type Alias NodeProviderConfig
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m NodeHeartbeatResponse) MarshalJSON() ([]byte, error) {
-	type Alias NodeHeartbeatResponse
+func (m NodeProviderConfig) MarshalJSON() ([]byte, error) {
+	type Alias NodeProviderConfig
 	return json.Marshal((Alias)(m))
 }

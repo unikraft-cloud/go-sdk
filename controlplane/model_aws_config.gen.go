@@ -13,6 +13,9 @@ import (
 
 // AWSConfig contains AWS-specific configuration for node provisioning.
 type AWSConfig struct {
+	// The AWS availability zone (e.g., "us-east-1a"). If not specified, AWS
+	// will select an availability zone within the region.
+	AvailabilityZone *string `json:"availability_zone,omitempty"`
 	// The VPC ID where the instance will be launched. If not specified, the
 	// default VPC for the region will be used.
 	VpcId *string `json:"vpc_id,omitempty"`
@@ -31,16 +34,10 @@ type AWSConfig struct {
 	AdditionalVolumes []AWSEBSConfig `json:"additional_volumes,omitempty"`
 	// Whether to use a dedicated host. Dedicated hosts provide visibility and
 	// control over how instances are placed on physical servers.
-	DedicatedHost bool `json:"dedicated_host"`
+	DedicatedHost *bool `json:"dedicated_host,omitempty"`
 	// Placement group name for the instance. Placement groups influence how
 	// instances are placed on underlying hardware.
 	PlacementGroup *string `json:"placement_group,omitempty"`
-	// The AWS region where the machine is located.
-	Region string `json:"region"`
-	// The AWS machine type. This determines the compute resources
-	// (CPU, memory, etc.) available on the machine. The valid values depend
-	// on the chosen provider.
-	MachineType string `json:"machine_type"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
