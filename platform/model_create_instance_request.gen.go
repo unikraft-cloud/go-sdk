@@ -83,6 +83,13 @@ type CreateInstanceRequest struct {
 	// then customize individual instances by attaching code or data as separate
 	// ROM blobs.
 	Roms []CreateInstanceRequestRom `json:"roms,omitempty"`
+	// (Optional).  Plugins to attach to the instance.  Plugins let you attach
+	// small helper programs to an instance and reach each one over a direct,
+	// authenticated HTTP endpoint.  Each plugin loads from its own ROM image,
+	// mounts at `/uk/plugins/<plugin_name>`, and is reachable at
+	// `.../v1/instances/<uuid>/plugins/<plugin_name>/<path>`.  At most 8 plugins
+	// may be attached to an instance.
+	Plugins []CreateInstanceRequestPlugin `json:"plugins,omitempty"`
 	// (Optional).  Tags to associate with the instance.
 	Tags []string `json:"tags,omitempty"`
 	// Template instances.

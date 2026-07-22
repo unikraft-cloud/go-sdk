@@ -34,6 +34,7 @@ type UpdateInstancesRequestItem struct {
 	// - For "autokill": object with time_ms and num_requests fields
 	// - For "hostname": string (valid DNS label)
 	// - For "roms": array of ROM objects (with name and image fields) for SET/ADD, or array of ROM names for DEL
+	// - For "plugins": array of plugin objects (with name, rom, and optional config fields) for SET/ADD
 	// - For "dependencies": array of instance identifiers (name or UUID)
 	// - For "sched_priority": SchedPriority enum value ("normal", "medium", "high", "admin")
 	Value *interface{} `json:"value,omitempty"`

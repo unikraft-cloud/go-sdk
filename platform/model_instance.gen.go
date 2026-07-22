@@ -262,6 +262,13 @@ type Instance struct {
 	// then customize individual instances by attaching code or data as separate
 	// ROM blobs.
 	Roms []InstanceRom `json:"roms,omitempty"`
+	// Plugins attached to the instance.  Plugins let you attach small helper
+	// programs to an instance and reach each one over a direct, authenticated
+	// HTTP endpoint.  Each plugin loads from its own ROM image, mounts at
+	// `/uk/plugins/<plugin_name>`, and is reachable at
+	// `.../v1/instances/<uuid>/plugins/<plugin_name>/<path>`.  At most 8 plugins
+	// may be attached to an instance.
+	Plugins []InstancePlugin `json:"plugins,omitempty"`
 	// Scheduled operations for this instance.
 	//
 	// Each schedule defines a calendar expression and an action (`start`,
