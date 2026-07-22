@@ -23,7 +23,7 @@ import (
 type Response[T any] struct {
 	// Status contains the top-level information about a server response, and
 	// returns either `success`, `partial_success` or `error`.
-	Status string `json:"status,omitempty"`
+	Status ResponseStatus `json:"status,omitempty"`
 
 	// Message contains the error message either on `partial_success` or `error`.
 	Message string `json:"message,omitempty"`

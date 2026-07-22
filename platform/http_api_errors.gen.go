@@ -15,13 +15,13 @@ import (
 
 // APIError implements an error that allows platform SDK clients to check for error codes
 type APIError struct {
-	status string
+	status ResponseStatus
 	items  []apiError
 }
 
 // NewFromResponse returns APIerror with error codes
 func NewFromResponse[T any](r *Response[T]) error {
-	if r == nil || r.Status == "success" {
+	if r == nil || r.Status == ResponseStatusSuccess {
 		return nil
 	}
 
