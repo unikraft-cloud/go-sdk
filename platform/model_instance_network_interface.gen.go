@@ -22,14 +22,6 @@ type InstanceNetworkInterface struct {
 	PrivateIp string `json:"private_ip"`
 	// The MAC address of the network interface.
 	Mac string `json:"mac"`
-	// Amount of bytes received from interface.
-	RxBytes uint64 `json:"rx_bytes"`
-	// Count of packets received from interface
-	RxPackets uint64 `json:"rx_packets"`
-	// Amount of bytes sent to interface.
-	TxBytes uint64 `json:"tx_bytes"`
-	// Count of packets sent to interface
-	TxPackets uint64 `json:"tx_packets"`
 	// The interface name. If omitted, Unikraft Cloud generates one as
 	// <instance-name>-ethX, falling back to eth-<suffix> when the
 	// instance name is too long.
