@@ -13,8 +13,6 @@ import (
 
 // The request message for a node heartbeat.
 type NodeHeartbeatRequest struct {
-	// The unique machine identifier of the node sending the heartbeat.
-	MachineId string `json:"machine_id"`
 	// The current platform status of the node.
 	PlatformStatus PlatformStatus `json:"platform_status"`
 
