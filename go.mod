@@ -6,6 +6,7 @@ tool unikraft.com/x/tools/openapi-gen
 
 require (
 	github.com/go-json-experiment/json v0.0.0-20260601182631-00ed12fed2a6
+	github.com/stretchr/testify v1.11.1
 	golang.org/x/net v0.57.0
 	unikraft.com/x/joinerrgroup v0.0.0-20260220150535-dbc51abe4158
 	unikraft.com/x/log v0.0.0-20260126094137-ab6e717e5679
@@ -32,6 +33,7 @@ require (
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/cloudflare/circl v1.6.4 // indirect
 	github.com/cyphar/filepath-securejoin v0.7.0 // indirect
+	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/ettle/strcase v0.2.0 // indirect
 	github.com/getkin/kin-openapi v0.141.0 // indirect
@@ -57,6 +59,7 @@ require (
 	github.com/oasdiff/yaml v0.1.1 // indirect
 	github.com/oasdiff/yaml3 v0.0.14 // indirect
 	github.com/pjbgf/sha1cd v0.6.0 // indirect
+	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rs/zerolog v1.34.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2 // indirect
