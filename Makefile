@@ -46,3 +46,6 @@ fmt:
 lint:
 	golangci-lint run ./...
 
+.PHONY: test
+test:
+	$(GO) test ./...
