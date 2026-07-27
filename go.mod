@@ -5,7 +5,7 @@ go 1.26.1
 tool unikraft.com/x/tools/openapi-gen
 
 require (
-	github.com/go-json-experiment/json v0.0.0-20260601182631-00ed12fed2a6
+	github.com/go-json-experiment/json v0.0.0-20260623181947-01eb4420fa68
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/net v0.57.0
 	unikraft.com/x/joinerrgroup v0.0.0-20260220150535-dbc51abe4158

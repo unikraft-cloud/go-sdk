@@ -28,7 +28,7 @@ type UpdateServiceGroupByUUIDRequestBody struct {
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *UpdateServiceGroupByUUIDRequestBody) UnmarshalJSON(data []byte) error {
