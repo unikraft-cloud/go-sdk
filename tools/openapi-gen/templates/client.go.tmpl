@@ -358,7 +358,9 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- end}}
 {{- end}}
 
-	resp := &Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}]{}
+	resp := &Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}]{
+		Request: c.request,
+	}
 	if err := doRequest[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}](ctx, c.request, http.Method{{title (lower $method)}}, requestPath, {{if $queryParams}}query{{else}}nil{{end}}, {{if $hasRequestBody}}bytes.NewReader(body){{else}}nil{{end}}, resp, ropts...); err != nil {
 {{- if $isSSE}}
 		return nil, fmt.Errorf("performing the request: %w", err)

@@ -50,6 +50,9 @@ type Response[T any] struct {
 	// The channel to stream events from the response body.
 	// This is only used for streaming responses (e.g., SSE).
 	events chan *Response[T]
+
+	// The request of the API call.
+	Request *Request `json:"-"`
 }
 
 // RawBody returns the raw API response body.
