@@ -13,7 +13,7 @@ import (
 
 type GetImagesResponseData struct {
 	// The list of images.
-	Images []Image `json:"images,omitempty"`
+	Images []Image `json:"images,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

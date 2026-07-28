@@ -13,7 +13,7 @@ import (
 
 type UpdateServiceGroupsResponseData struct {
 	// List of service groups that were processed during the update operation.
-	ServiceGroups []UpdateServiceGroupsResponseUpdatedServiceGroup `json:"service_groups,omitempty"`
+	ServiceGroups []UpdateServiceGroupsResponseUpdatedServiceGroup `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

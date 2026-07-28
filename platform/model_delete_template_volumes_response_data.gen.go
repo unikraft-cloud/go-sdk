@@ -13,7 +13,7 @@ import (
 
 type DeleteTemplateVolumesResponseData struct {
 	// The template volume(s) which were deleted by the request.
-	Volumes []DeleteTemplateVolumesResponseTemplateVolume `json:"volumes,omitempty"`
+	Volumes []DeleteTemplateVolumesResponseTemplateVolume `json:"volumes,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

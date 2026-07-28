@@ -13,7 +13,7 @@ import (
 
 type DeleteCheckpointInstancesResponseData struct {
 	// List of checkpoint instances that were processed during the delete operation.
-	Instances []DeleteCheckpointInstancesResponseCheckpointInstance `json:"instances,omitempty"`
+	Instances []DeleteCheckpointInstancesResponseCheckpointInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

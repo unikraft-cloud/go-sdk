@@ -13,9 +13,9 @@ import (
 
 type ServiceGroupTemplate struct {
 	// The name of the template used for the autoscale configuration.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// The UUID of the template used for the autoscale configuration.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

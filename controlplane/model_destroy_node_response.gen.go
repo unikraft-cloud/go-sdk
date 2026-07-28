@@ -14,15 +14,15 @@ import (
 // Response message for deleting nodes.
 type DestroyNodeResponse struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status"`
+	Status ResponseStatus `json:"status,omitzero"`
 	// An optional message providing additional information about the response.
-	Message *string `json:"message,omitempty"`
+	Message *string `json:"message,omitzero"`
 	// The response data for this request.
-	Data *DestroyNodeResponseData `json:"data,omitempty"`
+	Data *DestroyNodeResponseData `json:"data,omitzero"`
 	// A list of errors which may have occurred during the request.
-	Errors []ResponseError `json:"errors,omitempty"`
+	Errors []ResponseError `json:"errors,omitzero"`
 	// The operation time in microseconds.
-	OpTimeUs uint64 `json:"op_time_us"`
+	OpTimeUs uint64 `json:"op_time_us,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

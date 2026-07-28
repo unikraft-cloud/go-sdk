@@ -14,22 +14,22 @@ import (
 // Defines the source template used to build a new instance.
 type CreateInstanceRequestTemplate struct {
 	// (Optional).  Whether the instance needs to run in order to reach template state
-	Prepare *bool `json:"prepare,omitempty"`
+	Prepare *bool `json:"prepare,omitzero"`
 	// (Optional).  The UUID of a template instance to create the instance from.
 	// Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid *string `json:"uuid,omitzero"`
 	// (Optional).  The name of a template instance to create the instance from.
 	// Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 	// (Optional). Configuration parameters to apply when building the new instance from the source template.
-	CreateArgs *Instance `json:"create_args,omitempty"`
+	CreateArgs *Instance `json:"create_args,omitzero"`
 	// (Optional). Timeout in seconds for preparing the template before the
 	// preparation is aborted. Only applies when `prepare` is set. A value of
 	// 0 means no timeout.
-	PrepareTimeoutS *int64 `json:"prepare_timeout_s,omitempty"`
+	PrepareTimeoutS *int64 `json:"prepare_timeout_s,omitzero"`
 	// (Optional). Automatic delete-on-idle configuration for the template.
 	// Only applies when `prepare` is set.
-	Autokill *TemplateAutokill `json:"autokill,omitempty"`
+	Autokill *TemplateAutokill `json:"autokill,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

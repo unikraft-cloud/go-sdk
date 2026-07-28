@@ -13,9 +13,9 @@ import (
 
 type Image struct {
 	// The canonical name of the image.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// The list of tags for the image.  Only populated when details are requested.
-	Tags []ImageTag `json:"tags,omitempty"`
+	Tags []ImageTag `json:"tags,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

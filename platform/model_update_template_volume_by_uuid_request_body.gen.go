@@ -14,15 +14,15 @@ import (
 type UpdateTemplateVolumeByUUIDRequestBody struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.
-	Id *string `json:"id,omitempty"`
+	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableTemplateVolumeProperty `json:"prop"`
+	Prop MutableTemplateVolumeProperty `json:"prop,omitzero"`
 	// The operation to perform.
-	Op MutableTemplateVolumeOperation `json:"op"`
+	Op MutableTemplateVolumeOperation `json:"op,omitzero"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "tags": array of Strings
 	// - For "delete_lock": boolean
-	Value *interface{} `json:"value,omitempty"`
+	Value *interface{} `json:"value,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

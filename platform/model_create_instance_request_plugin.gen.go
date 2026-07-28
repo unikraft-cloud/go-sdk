@@ -20,16 +20,16 @@ type CreateInstanceRequestPlugin struct {
 	// endpoint (`.../plugins/<plugin_name>/<path>`).  A plugin name has a
 	// maximum length of 63 characters and contains only letters (`a`-`z`,
 	// `A`-`Z`), digits (`0`-`9`), hyphen (`-`), and underscore (`_`).
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// The plugin's ROM image, given as an image reference string such as
 	// `user/myplugin:latest`.  The platform loads the image, mounts it at
 	// `/uk/plugins/<plugin_name>`, and runs its `init` program when the plugin
 	// starts.
-	Rom string `json:"rom"`
+	Rom string `json:"rom,omitzero"`
 	// (Optional).  Arbitrary JSON configuration that the platform passes to the
 	// plugin's `init` program on `STDIN`.  Any JSON value works, including a
 	// string, a number, or an object.
-	Config *interface{} `json:"config,omitempty"`
+	Config *interface{} `json:"config,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

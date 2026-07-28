@@ -13,7 +13,7 @@ import (
 
 type ListRegionsResponseData struct {
 	// The list of available regions.
-	Regions []Region `json:"regions,omitempty"`
+	Regions []Region `json:"regions,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

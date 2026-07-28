@@ -13,7 +13,7 @@ import (
 
 type GetAutoscaleConfigurationsResponseData struct {
 	// The configuration(s) which were retrieved by the request.
-	ServiceGroups []GetAutoscaleConfigurationsResponseServiceGroup `json:"service_groups,omitempty"`
+	ServiceGroups []GetAutoscaleConfigurationsResponseServiceGroup `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

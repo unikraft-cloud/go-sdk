@@ -12,8 +12,8 @@ import (
 )
 
 type GetImagesRequestTagOrDigest struct {
-	Digest *string `json:"digest,omitempty"`
-	Tag    *string `json:"tag,omitempty"`
+	Digest *string `json:"digest,omitzero"`
+	Tag    *string `json:"tag,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

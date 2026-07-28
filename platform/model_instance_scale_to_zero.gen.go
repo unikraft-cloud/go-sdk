@@ -18,24 +18,24 @@ import (
 // i.e. "stateful".
 type InstanceScaleToZero struct {
 	// Indicates whether scale-to-zero is enabled for the instance.
-	Enabled *bool `json:"enabled,omitempty"`
+	Enabled *bool `json:"enabled,omitzero"`
 	// The specific policy to use for scaling the instance to zero.
-	Policy *InstanceScaleToZeroPolicy `json:"policy,omitempty"`
+	Policy *InstanceScaleToZeroPolicy `json:"policy,omitzero"`
 	// Whether the instance should be stateful when scaled to zero. If set to
 	// true, the instance will retain its state (e.g., RAM contents) when scaled
 	// to zero.  This is useful for instances that need to maintain their state
 	// across scale-to-zero operations.  If set to false, the instance will lose
 	// its state when scaled to zero, and it will be restarted from scratch when
 	// scaled back up.
-	Stateful *bool `json:"stateful,omitempty"`
+	Stateful *bool `json:"stateful,omitzero"`
 	// The cooldown time in milliseconds before the instance can be scaled to
 	// zero again.  This is useful to prevent rapid scaling to zero and back up,
 	// which can lead to performance issues or resource exhaustion.
-	CooldownTimeMs *int32 `json:"cooldown_time_ms,omitempty"`
+	CooldownTimeMs *int32 `json:"cooldown_time_ms,omitzero"`
 	// The notification time in milliseconds before the instance is scaled to
 	// zero. This allows the instance to perform any necessary cleanup or state
 	// saving before being scaled down.
-	NotifyTimeMs *int32 `json:"notify_time_ms,omitempty"`
+	NotifyTimeMs *int32 `json:"notify_time_ms,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

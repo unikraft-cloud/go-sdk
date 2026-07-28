@@ -16,17 +16,17 @@ type CreateInstanceRequestNetworkInterface struct {
 	// The interface name. If omitted, Unikraft Cloud generates one as
 	// <instance-name>-ethX, falling back to eth-<suffix> when the
 	// instance name is too long.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 	// The TAP device to attach the interface to. Provide it together
 	// with ip.
-	TapName *string `json:"tap_name,omitempty"`
+	TapName *string `json:"tap_name,omitzero"`
 	// The interface IP address in CIDR notation. Provide it together
 	// with tap_name to bring your own interface.
-	Ip *string `json:"ip,omitempty"`
+	Ip *string `json:"ip,omitzero"`
 	// Whether the guest configures the interface itself. Defaults to true.
-	Autoconfig *bool `json:"autoconfig,omitempty"`
+	Autoconfig *bool `json:"autoconfig,omitzero"`
 	// Relay configuration for this interface.
-	Relay *NetworkInterfaceRelay `json:"relay,omitempty"`
+	Relay *NetworkInterfaceRelay `json:"relay,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

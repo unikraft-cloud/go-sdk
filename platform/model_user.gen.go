@@ -13,27 +13,27 @@ import (
 
 type User struct {
 	// The UUID of the user.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// The name of the user.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// Authentication token(s) associated with the user.
-	AuthToken []string `json:"auth_token"`
+	AuthToken []string `json:"auth_token,omitzero"`
 	// The permission level of the user.
-	Permissions []UserPermission `json:"permissions,omitempty"`
+	Permissions []UserPermission `json:"permissions,omitzero"`
 	// The user ID (UID) on the host system.
-	Uid *uint32 `json:"uid,omitempty"`
+	Uid *uint32 `json:"uid,omitzero"`
 	// Whether the user account is disabled.
-	Disabled *bool `json:"disabled,omitempty"`
+	Disabled *bool `json:"disabled,omitzero"`
 	// Per-VM Configuration limits for the user.
-	Vmdb *UserVmdb `json:"vmdb,omitempty"`
+	Vmdb *UserVmdb `json:"vmdb,omitzero"`
 	// Network configuration limits for the user.
-	Net *UserNet `json:"net,omitempty"`
+	Net *UserNet `json:"net,omitzero"`
 	// Global VM configuration limits for the user.
-	Vmm *UserVmm `json:"vmm,omitempty"`
+	Vmm *UserVmm `json:"vmm,omitzero"`
 	// Storage configuration limits for the user.
-	Stor *UserStor `json:"stor,omitempty"`
+	Stor *UserStor `json:"stor,omitzero"`
 	// Autoscale configuration limits for the user.
-	Autoscale *UserAutoscale `json:"autoscale,omitempty"`
+	Autoscale *UserAutoscale `json:"autoscale,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

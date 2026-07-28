@@ -13,21 +13,21 @@ import (
 
 type QuotasLimits struct {
 	// Minimum amount of memory assigned to live instances in megabytes
-	MinMemoryMb int64 `json:"min_memory_mb"`
+	MinMemoryMb int64 `json:"min_memory_mb,omitzero"`
 	// Maximum amount of memory assigned to live instances in megabytes
-	MaxMemoryMb int64 `json:"max_memory_mb"`
+	MaxMemoryMb int64 `json:"max_memory_mb,omitzero"`
 	// Minimum size of a volume in megabytes
-	MinVolumeMb int64 `json:"min_volume_mb"`
+	MinVolumeMb int64 `json:"min_volume_mb,omitzero"`
 	// Maximum size of a volume in megabytes
-	MaxVolumeMb int64 `json:"max_volume_mb"`
+	MaxVolumeMb int64 `json:"max_volume_mb,omitzero"`
 	// Minimum size of an autoscale group
-	MinAutoscaleSize int64 `json:"min_autoscale_size"`
+	MinAutoscaleSize int64 `json:"min_autoscale_size,omitzero"`
 	// Maximum size of an autoscale group
-	MaxAutoscaleSize int64 `json:"max_autoscale_size"`
+	MaxAutoscaleSize int64 `json:"max_autoscale_size,omitzero"`
 	// Minimum number of vCPUs
-	MinVcpus int64 `json:"min_vcpus"`
+	MinVcpus int64 `json:"min_vcpus,omitzero"`
 	// Maximum number of vCPUs
-	MaxVcpus int64 `json:"max_vcpus"`
+	MaxVcpus int64 `json:"max_vcpus,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

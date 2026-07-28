@@ -17,11 +17,11 @@ import (
 // history of an instance.
 type CheckpointHistoryEntry struct {
 	// The UUID of the checkpoint.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// The name of the checkpoint.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// The time the checkpoint was created.
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -13,7 +13,7 @@ import (
 
 type DeleteServiceGroupsResponseData struct {
 	// The service group(s) which were deleted by the request.
-	ServiceGroups []DeleteServiceGroupsResponseDeletedServiceGroup `json:"service_groups,omitempty"`
+	ServiceGroups []DeleteServiceGroupsResponseDeletedServiceGroup `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

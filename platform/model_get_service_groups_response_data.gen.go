@@ -13,7 +13,7 @@ import (
 
 type GetServiceGroupsResponseData struct {
 	// The service group(s) which were retrieved by the request.
-	ServiceGroups []ServiceGroup `json:"service_groups,omitempty"`
+	ServiceGroups []ServiceGroup `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

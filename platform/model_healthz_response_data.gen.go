@@ -13,9 +13,9 @@ import (
 
 // Additional data returned by the health check.
 type HealthzResponseData struct {
-	Checks   map[string]string `json:"checks,omitempty"`
-	Versions map[string]string `json:"versions,omitempty"`
-	License  *DataLicense      `json:"license,omitempty"`
+	Checks   map[string]string `json:"checks,omitzero"`
+	Versions map[string]string `json:"versions,omitzero"`
+	License  *DataLicense      `json:"license,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -15,22 +15,22 @@ import (
 type AWSEBSConfig struct {
 	// The device name (e.g., "/dev/sda1", "/dev/xvdf"). Required for
 	// additional volumes.
-	DeviceName *string `json:"device_name,omitempty"`
+	DeviceName *string `json:"device_name,omitzero"`
 	// Size of the volume in GiB.
-	SizeGib uint32 `json:"size_gib"`
+	SizeGib uint32 `json:"size_gib,omitzero"`
 	// The volume type (gp3, gp2, io1, io2, st1, sc1, standard).
-	VolumeType string `json:"volume_type"`
+	VolumeType string `json:"volume_type,omitzero"`
 	// The number of IOPS. Only valid for io1, io2, and gp3 volumes.
-	Iops *uint32 `json:"iops,omitempty"`
+	Iops *uint32 `json:"iops,omitzero"`
 	// The throughput in MiB/s. Only valid for gp3 volumes.
-	ThroughputMibps *uint32 `json:"throughput_mibps,omitempty"`
+	ThroughputMibps *uint32 `json:"throughput_mibps,omitzero"`
 	// Whether the volume should be encrypted.
-	Encrypted bool `json:"encrypted"`
+	Encrypted bool `json:"encrypted,omitzero"`
 	// The KMS key ID for encryption. If encrypted is true and this is not
 	// specified, the default EBS encryption key will be used.
-	KmsKeyId *string `json:"kms_key_id,omitempty"`
+	KmsKeyId *string `json:"kms_key_id,omitzero"`
 	// Whether to delete the volume when the instance is terminated.
-	DeleteOnTermination bool `json:"delete_on_termination"`
+	DeleteOnTermination bool `json:"delete_on_termination,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

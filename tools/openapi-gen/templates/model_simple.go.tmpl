@@ -28,7 +28,7 @@ type {{$schemaName}} struct {
 		{{- $propType = printf "*%s" $propType}}
 	{{- end}}
 {{- end}}
-	{{$propGoName}} {{$propType}} `json:"{{$propName}}{{if not $required}},omitempty{{end}}"`
+	{{$propGoName}} {{$propType}} `json:"{{$propName}},omitzero"`
 {{- end}}
 {{- end}}
 
