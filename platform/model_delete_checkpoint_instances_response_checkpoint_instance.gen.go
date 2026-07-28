@@ -13,17 +13,17 @@ import (
 
 type DeleteCheckpointInstancesResponseCheckpointInstance struct {
 	// The UUID of the checkpoint instance that was deleted.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// The name of the checkpoint instance that was deleted.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// The status of this particular checkpoint instance deletion operation.
-	Status ResponseStatus `json:"status"`
+	Status ResponseStatus `json:"status,omitzero"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
+	Message *string `json:"message,omitzero"`
 	// An optional error code providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

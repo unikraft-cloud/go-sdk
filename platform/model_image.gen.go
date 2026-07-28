@@ -14,15 +14,15 @@ import (
 )
 
 type Image struct {
-	Url string `json:"url"`
+	Url string `json:"url,omitzero"`
 	// The time the volume was created.
-	CreatedAt   time.Time         `json:"created_at"`
-	InitrdOrRom bool              `json:"initrd_or_rom"`
-	SizeInBytes int64             `json:"size_in_bytes"`
-	Args        []string          `json:"args,omitempty"`
-	Env         map[string]string `json:"env,omitempty"`
-	Tags        []string          `json:"tags,omitempty"`
-	Users       []string          `json:"users,omitempty"`
+	CreatedAt   time.Time         `json:"created_at,omitzero"`
+	InitrdOrRom bool              `json:"initrd_or_rom,omitzero"`
+	SizeInBytes int64             `json:"size_in_bytes,omitzero"`
+	Args        []string          `json:"args,omitzero"`
+	Env         map[string]string `json:"env,omitzero"`
+	Tags        []string          `json:"tags,omitzero"`
+	Users       []string          `json:"users,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -13,19 +13,19 @@ import (
 
 type CreateTemplateInstancesResponseTemplateInstance struct {
 	// The status of this particular template instance creation operation.
-	Status ResponseStatus `json:"status"`
+	Status ResponseStatus `json:"status,omitzero"`
 	// The UUID of the template instance that was created.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// The name of the template instance that was created.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// The current state of the instance.
-	State InstanceState `json:"state"`
+	State InstanceState `json:"state,omitzero"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
+	Message *string `json:"message,omitzero"`
 	// An optional error code providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

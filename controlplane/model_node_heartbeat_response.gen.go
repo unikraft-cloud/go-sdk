@@ -14,9 +14,9 @@ import (
 // The response message for a node heartbeat.
 type NodeHeartbeatResponse struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status"`
+	Status ResponseStatus `json:"status,omitzero"`
 	// An optional message providing additional information about the response.
-	Message *string `json:"message,omitempty"`
+	Message *string `json:"message,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

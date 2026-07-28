@@ -16,7 +16,7 @@ type GetInstancesLogsResponseData struct {
 	//
 	// Note: only one instance can be specified in the request, so this will
 	// always contain a single entry.
-	Instances []GetInstancesLogsResponseLoggedInstance `json:"instances,omitempty"`
+	Instances []GetInstancesLogsResponseLoggedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

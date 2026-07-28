@@ -14,12 +14,12 @@ import (
 // An object that routes all traffic through another interface.
 type InstanceNetworkInterfaceRelay struct {
 	// UUID of the relay interface.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// Name of the relay interface.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// Whether DNS traffic is relayed through this interface.
 	// Defaults to true.
-	RelayDns bool `json:"relay_dns"`
+	RelayDns bool `json:"relay_dns,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

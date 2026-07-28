@@ -13,7 +13,7 @@ import (
 
 type QuotasResponseData struct {
 	// The quota(s) which were retrieved by the request.
-	Quotas []Quotas `json:"quotas,omitempty"`
+	Quotas []Quotas `json:"quotas,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

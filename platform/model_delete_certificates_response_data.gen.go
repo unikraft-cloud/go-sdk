@@ -13,7 +13,7 @@ import (
 
 type DeleteCertificatesResponseData struct {
 	// The certificate(s) which were deleted by the request.
-	Certificates []DeleteCertificatesResponseDeletedCertificate `json:"certificates,omitempty"`
+	Certificates []DeleteCertificatesResponseDeletedCertificate `json:"certificates,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -15,7 +15,7 @@ import (
 type ServiceGroupAutokill struct {
 	// Time in milliseconds after the service group becomes empty before it is
 	// deleted. A value of 0 disables autokill.
-	TimeMs *uint64 `json:"time_ms,omitempty"`
+	TimeMs *uint64 `json:"time_ms,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

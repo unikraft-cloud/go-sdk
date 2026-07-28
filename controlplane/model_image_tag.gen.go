@@ -15,13 +15,13 @@ import (
 
 type ImageTag struct {
 	// The tag name.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// The digest for the tag.
-	Digest string `json:"digest"`
+	Digest string `json:"digest,omitzero"`
 	// The size of the image in bytes.
-	Size uint64 `json:"size"`
+	Size uint64 `json:"size,omitzero"`
 	// The push time of the image.
-	PushTime time.Time `json:"push_time"`
+	PushTime time.Time `json:"push_time,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

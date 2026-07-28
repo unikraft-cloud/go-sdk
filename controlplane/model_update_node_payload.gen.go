@@ -14,14 +14,14 @@ import (
 // UpdateNodePayload contains the changes to apply to a node.
 type UpdateNodePayload struct {
 	// The property to update.
-	Property MutableNodeProperty `json:"property"`
+	Property MutableNodeProperty `json:"property,omitzero"`
 	// The operation to perform on the property.
-	Operation MutableNodeOperation `json:"operation"`
+	Operation MutableNodeOperation `json:"operation,omitzero"`
 	// The value for the update operation. The type depends on the property:
 	// - TAGS: google.protobuf.Struct with key-value pairs
 	// - DELETE_LOCK: google.protobuf.Value with boolean
 	// - SSH_KEYS: google.protobuf.ListValue with SSHKey objects
-	Value *string `json:"value,omitempty"`
+	Value *string `json:"value,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

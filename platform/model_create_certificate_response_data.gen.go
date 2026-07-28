@@ -16,7 +16,7 @@ type CreateCertificateResponseData struct {
 	//
 	// Note: only one certificate can be specified in the request, so this
 	// will always contain a single entry.
-	Certificates []Certificate `json:"certificates,omitempty"`
+	Certificates []Certificate `json:"certificates,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

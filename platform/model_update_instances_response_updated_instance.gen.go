@@ -13,19 +13,19 @@ import (
 
 type UpdateInstancesResponseUpdatedInstance struct {
 	// The UUID of the instance that was updated.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// The name of the instance that was updated.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// The status of this particular instance update operation.
-	Status ResponseStatus `json:"status"`
+	Status ResponseStatus `json:"status,omitzero"`
 	// (Optional).  The client-provided ID from the request.
-	Id *string `json:"id,omitempty"`
+	Id *string `json:"id,omitzero"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
+	Message *string `json:"message,omitzero"`
 	// An optional error code providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

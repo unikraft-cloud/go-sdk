@@ -17,16 +17,16 @@ import (
 // time. This is a current limitation of the API design.
 type AutoscalePolicy struct {
 	// The name of the policy.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// If the policy is enabled.
-	Enabled *bool `json:"enabled,omitempty"`
+	Enabled *bool `json:"enabled,omitzero"`
 	// Metric to use for the step policy.
-	Metric *StepPolicyMetric `json:"metric,omitempty"`
+	Metric *StepPolicyMetric `json:"metric,omitzero"`
 	// The type of adjustment to be made in the step policy.
-	AdjustmentType *AdjustmentType `json:"adjustment_type,omitempty"`
+	AdjustmentType *AdjustmentType `json:"adjustment_type,omitzero"`
 	// The steps for the step policy.
 	// Each step defines an adjustment value and optional bounds.
-	Steps []AutoscalePolicyStep `json:"steps,omitempty"`
+	Steps []AutoscalePolicyStep `json:"steps,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

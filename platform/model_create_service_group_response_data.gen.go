@@ -16,7 +16,7 @@ type CreateServiceGroupResponseData struct {
 	//
 	// Note: only one service group can be specified in the request, so this
 	// will always contain a single entry.
-	ServiceGroups []ServiceGroup `json:"service_groups,omitempty"`
+	ServiceGroups []ServiceGroup `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

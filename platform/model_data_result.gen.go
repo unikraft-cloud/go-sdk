@@ -12,8 +12,8 @@ import (
 )
 
 type DataResult struct {
-	Uuid  string `json:"uuid"`
-	Added bool   `json:"added"`
+	Uuid  string `json:"uuid,omitzero"`
+	Added bool   `json:"added,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

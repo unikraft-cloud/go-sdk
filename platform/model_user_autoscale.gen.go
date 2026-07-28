@@ -13,9 +13,9 @@ import (
 
 type UserAutoscale struct {
 	// Minimum size of an autoscale group.
-	MinSize *int32 `json:"min_size,omitempty"`
+	MinSize *int32 `json:"min_size,omitzero"`
 	// Maximum size of an autoscale group.
-	MaxSize *int32 `json:"max_size,omitempty"`
+	MaxSize *int32 `json:"max_size,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

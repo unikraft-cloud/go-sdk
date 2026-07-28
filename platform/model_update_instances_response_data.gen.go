@@ -13,7 +13,7 @@ import (
 
 type UpdateInstancesResponseData struct {
 	// List of instances that were processed during the update operation.
-	Instances []UpdateInstancesResponseUpdatedInstance `json:"instances,omitempty"`
+	Instances []UpdateInstancesResponseUpdatedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

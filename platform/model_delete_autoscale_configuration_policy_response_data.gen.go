@@ -13,7 +13,7 @@ import (
 
 type DeleteAutoscaleConfigurationPolicyResponseData struct {
 	// The policies which were deleted by the request.
-	Policies []DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse `json:"policies,omitempty"`
+	Policies []DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse `json:"policies,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

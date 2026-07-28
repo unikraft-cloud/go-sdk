@@ -14,11 +14,11 @@ import (
 type UpdateInstanceByUUIDRequestBody struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.
-	Id *string `json:"id,omitempty"`
+	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableInstanceProperty `json:"prop"`
+	Prop MutableInstanceProperty `json:"prop,omitzero"`
 	// The operation to perform on the property.
-	Op MutableInstanceOperation `json:"op"`
+	Op MutableInstanceOperation `json:"op,omitzero"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "image": object with image url, credentials, headers and pull policy
 	// - For "args": string or array of strings
@@ -36,7 +36,7 @@ type UpdateInstanceByUUIDRequestBody struct {
 	// - For "plugins": array of plugin objects (with name, rom, and optional config fields) for SET/ADD
 	// - For "dependencies": array of instance identifiers (name or UUID)
 	// - For "sched_priority": SchedPriority enum value ("normal", "medium", "high", "admin")
-	Value *interface{} `json:"value,omitempty"`
+	Value *interface{} `json:"value,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

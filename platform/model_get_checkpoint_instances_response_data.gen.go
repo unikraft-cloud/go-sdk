@@ -13,7 +13,7 @@ import (
 
 type GetCheckpointInstancesResponseData struct {
 	// List of checkpoint instances that were retrieved during the operation.
-	Instances []Instance `json:"instances,omitempty"`
+	Instances []Instance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

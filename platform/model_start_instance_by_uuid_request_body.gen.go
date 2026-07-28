@@ -17,12 +17,12 @@ type StartInstanceByUUIDRequestBody struct {
 	// wait for the instance to reach running state.  If `timeout_s` is
 	// not set, this value is converted by rounding up to the next full
 	// second.  No wait performed for a value of 0.
-	WaitTimeoutMs *int64 `json:"wait_timeout_ms,omitempty"`
+	WaitTimeoutMs *int64 `json:"wait_timeout_ms,omitzero"`
 	// Timeout in seconds to wait for the instance to reach running
 	// state.  If you start your instance, you can wait for it to
 	// finish starting with a blocking API call if you specify a wait
 	// timeout greater than zero.  No wait performed for a value of 0.
-	TimeoutS *int64 `json:"timeout_s,omitempty"`
+	TimeoutS *int64 `json:"timeout_s,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

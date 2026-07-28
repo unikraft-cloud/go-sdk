@@ -13,9 +13,9 @@ import (
 
 type GetInstancesLogsResponseAvailable struct {
 	// The first byte offset that can be retrieved.
-	Start int64 `json:"start"`
+	Start int64 `json:"start,omitzero"`
 	// The last byte offset that can be retrieved.
-	End int64 `json:"end"`
+	End int64 `json:"end,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -13,7 +13,7 @@ import (
 
 type SuspendInstancesResponseData struct {
 	// The instance(s) which were suspended by the request.
-	Instances []SuspendInstancesResponseSuspendedInstance `json:"instances,omitempty"`
+	Instances []SuspendInstancesResponseSuspendedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

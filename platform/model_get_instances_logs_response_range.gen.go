@@ -13,9 +13,9 @@ import (
 
 type GetInstancesLogsResponseRange struct {
 	// The first retrieved byte.
-	Start int64 `json:"start"`
+	Start int64 `json:"start,omitzero"`
 	// The last retrieved byte.
-	End int64 `json:"end"`
+	End int64 `json:"end,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

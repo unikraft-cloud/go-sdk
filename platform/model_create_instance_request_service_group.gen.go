@@ -24,23 +24,23 @@ type CreateInstanceRequestServiceGroup struct {
 	// identifier, a new (ephemeral) service group can be created.  In addition
 	// to the services it must expose, you can specify which domains it should
 	// use too.
-	Domains []CreateInstanceRequestDomain `json:"domains,omitempty"`
+	Domains []CreateInstanceRequestDomain `json:"domains,omitzero"`
 	// If no existing service group identifier is provided, one or more new
 	// (ephemeral, non-persistent) service(s) can be created with the following
 	// definitions.
-	Services []Service `json:"services,omitempty"`
+	Services []Service `json:"services,omitzero"`
 	// The soft limit for the number of services that can be created in this
 	// service group.
-	SoftLimit *uint32 `json:"soft_limit,omitempty"`
+	SoftLimit *uint32 `json:"soft_limit,omitzero"`
 	// The hard limit for the number of services that can be created in this
 	// service group.
-	HardLimit *uint32 `json:"hard_limit,omitempty"`
+	HardLimit *uint32 `json:"hard_limit,omitzero"`
 	// (Optional).  Reference an existing (persistent) service group by its
 	// UUID.  Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid *string `json:"uuid,omitzero"`
 	// (Optional).  Reference an existing (persistent) service group by its
 	// name.  Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

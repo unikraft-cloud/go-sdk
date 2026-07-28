@@ -14,11 +14,11 @@ import (
 // An inline file entry represents a single file within an image.
 type InlineFile struct {
 	// The file path within the image.
-	Path string `json:"path"`
+	Path string `json:"path,omitzero"`
 	// (Optional).  The encoding of the data field.  Defaults to "text".
-	Encoding *InlineDataEncoding `json:"encoding,omitempty"`
+	Encoding *InlineDataEncoding `json:"encoding,omitzero"`
 	// The file data, encoded according to the encoding field.
-	Data string `json:"data"`
+	Data string `json:"data,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

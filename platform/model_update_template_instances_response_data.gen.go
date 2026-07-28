@@ -13,7 +13,7 @@ import (
 
 type UpdateTemplateInstancesResponseData struct {
 	// List of template instances that were processed during the update operation.
-	Instances []UpdateTemplateInstancesResponseTemplateInstance `json:"instances,omitempty"`
+	Instances []UpdateTemplateInstancesResponseTemplateInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

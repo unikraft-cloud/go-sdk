@@ -14,7 +14,7 @@ import (
 type DetachVolumeByUUIDRequestBody struct {
 	// (Optional).  UUID or name of the instance to detach the volume from.
 	// If not specified, the volume is detached from all instances.
-	From *NameOrUUID `json:"from,omitempty"`
+	From *NameOrUUID `json:"from,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -16,13 +16,13 @@ type NetworkInterfaceRelay struct {
 	// Whether the relay forwards DNS requests. Set to false
 	// to let the default DNS server handle them instead.
 	// Defaults to true.
-	RelayDns *bool `json:"relay_dns,omitempty"`
+	RelayDns *bool `json:"relay_dns,omitzero"`
 	// UUID of the existing interface to relay through.
 	// Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid *string `json:"uuid,omitzero"`
 	// Name of the existing interface to relay through.
 	// Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

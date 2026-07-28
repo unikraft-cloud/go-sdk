@@ -14,7 +14,7 @@ import (
 // The request message for a node heartbeat.
 type NodeHeartbeatRequest struct {
 	// The current platform status of the node.
-	PlatformStatus PlatformStatus `json:"platform_status"`
+	PlatformStatus PlatformStatus `json:"platform_status,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

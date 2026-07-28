@@ -13,10 +13,10 @@ import (
 
 type UserVmm struct {
 	// Maximum number of vCPUs the user can have assigned to live instances.
-	MaxVcpus *int32 `json:"max_vcpus,omitempty"`
+	MaxVcpus *int32 `json:"max_vcpus,omitzero"`
 	// Maximum amount of memory in MB the user can have assigned to live
 	// instances.
-	MaxMemoryMb *int32 `json:"max_memory_mb,omitempty"`
+	MaxMemoryMb *int32 `json:"max_memory_mb,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

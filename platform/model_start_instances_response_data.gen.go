@@ -13,7 +13,7 @@ import (
 
 type StartInstancesResponseData struct {
 	// The instance(s) which were started by the request.
-	Instances []StartInstancesResponseStartedInstance `json:"instances,omitempty"`
+	Instances []StartInstancesResponseStartedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -13,7 +13,7 @@ import (
 
 type UpdateNodesResponseData struct {
 	// The updated nodes.
-	Nodes []Node `json:"nodes,omitempty"`
+	Nodes []Node `json:"nodes,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -13,17 +13,17 @@ import (
 
 type UserVmdb struct {
 	// Maximum number of VM instances the user can have at one moment.
-	MaxInstances *int32 `json:"max_instances,omitempty"`
+	MaxInstances *int32 `json:"max_instances,omitzero"`
 	// Minimum amount of memory assigned to a VM in MB.
-	MinMemoryMb *int32 `json:"min_memory_mb,omitempty"`
+	MinMemoryMb *int32 `json:"min_memory_mb,omitzero"`
 	// Default amount of memory assigned to a VM in MB.
-	DefMemoryMb *int32 `json:"def_memory_mb,omitempty"`
+	DefMemoryMb *int32 `json:"def_memory_mb,omitzero"`
 	// Maximum amount of memory assigned to a VM in MB.
-	MaxMemoryMb *int32 `json:"max_memory_mb,omitempty"`
+	MaxMemoryMb *int32 `json:"max_memory_mb,omitzero"`
 	// Minimum number of vCPUs assigned to a VM.
-	MinVcpus *int32 `json:"min_vcpus,omitempty"`
+	MinVcpus *int32 `json:"min_vcpus,omitzero"`
 	// Maximum number of vCPUs assigned to a VM.
-	MaxVcpus *int32 `json:"max_vcpus,omitempty"`
+	MaxVcpus *int32 `json:"max_vcpus,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

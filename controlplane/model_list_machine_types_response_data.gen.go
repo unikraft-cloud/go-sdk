@@ -13,7 +13,7 @@ import (
 
 type ListMachineTypesResponseData struct {
 	// The list of available machine types.
-	MachineTypes []MachineType `json:"machine_types,omitempty"`
+	MachineTypes []MachineType `json:"machine_types,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

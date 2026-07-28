@@ -13,7 +13,7 @@ import (
 
 type AttachVolumesResponseData struct {
 	// The volume(s) which were attached by the request.
-	Volumes []AttachVolumesResponseAttachedVolume `json:"volumes,omitempty"`
+	Volumes []AttachVolumesResponseAttachedVolume `json:"volumes,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -13,7 +13,7 @@ import (
 
 type DeleteInstancesResponseData struct {
 	// The instance(s) which were deleted by the request.
-	Instances []DeleteInstancesResponseInstance `json:"instances,omitempty"`
+	Instances []DeleteInstancesResponseInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

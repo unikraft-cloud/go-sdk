@@ -13,7 +13,7 @@ import (
 
 type GetInstancesResponseData struct {
 	// The instance(s) that were retrieved by the request.
-	Instances []Instance `json:"instances,omitempty"`
+	Instances []Instance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

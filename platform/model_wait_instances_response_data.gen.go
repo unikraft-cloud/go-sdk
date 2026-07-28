@@ -13,7 +13,7 @@ import (
 
 type WaitInstancesResponseData struct {
 	// The instance(s) which this requested waited on.
-	Instances []WaitInstancesResponseWaitedInstance `json:"instances,omitempty"`
+	Instances []WaitInstancesResponseWaitedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

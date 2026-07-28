@@ -13,7 +13,7 @@ import (
 
 type GetCertificatesResponseData struct {
 	// The certificate(s) which were retrieved by the request.
-	Certificates []Certificate `json:"certificates,omitempty"`
+	Certificates []Certificate `json:"certificates,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

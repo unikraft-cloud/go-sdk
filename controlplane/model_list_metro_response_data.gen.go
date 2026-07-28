@@ -13,7 +13,7 @@ import (
 
 type ListMetroResponseData struct {
 	// The list of metros.
-	Metros []Metro `json:"metros,omitempty"`
+	Metros []Metro `json:"metros,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
