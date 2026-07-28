@@ -9,7 +9,8 @@ package controlplane
 type PlatformStatus string
 
 const (
-	PlatformStatusHealthy  PlatformStatus = "healthy"
-	PlatformStatusDegraded PlatformStatus = "degraded"
-	PlatformStatusUnknown  PlatformStatus = "unknown"
+	PlatformStatusHealthy     PlatformStatus = "healthy"
+	PlatformStatusDegraded    PlatformStatus = "degraded"
+	PlatformStatusUnavailable PlatformStatus = "unavailable"
+	PlatformStatusUnknown     PlatformStatus = "unknown"
 )
