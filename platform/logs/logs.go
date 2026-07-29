@@ -174,7 +174,7 @@ func (r *logsReader) readChunk(p []byte, off int64) (actualOffset int64, n int, 
 	if r.id.Uuid != nil {
 		req.Uuid = r.id.Uuid
 	}
-	resp, err := r.client.GetInstanceLogs(r.ctx, []platform.GetInstancesLogsRequestItem{req})
+	resp, err := r.client.GetInstanceLogs(r.ctx, []platform.GetInstancesLogsRequestItem{req}, platform.GetInstanceLogsOpts{})
 	if err != nil {
 		return 0, 0, err
 	}
