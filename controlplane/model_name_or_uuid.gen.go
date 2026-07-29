@@ -13,9 +13,9 @@ import (
 
 // An identifier for a resource.  Either a name or a UUID.
 type NameOrUUID struct {
-	// Mutually exclusive with name.
+	// The UUID of the resource.
 	Uuid *string `json:"uuid,omitzero"`
-	// Mutually exclusive with UUID.
+	// The name of the resource.
 	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
