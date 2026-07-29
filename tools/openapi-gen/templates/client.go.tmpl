@@ -299,8 +299,18 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 	query := make(url.Values)
 {{- range $queryParams}}
 {{- if and .Schema .Schema.Value (eq (getType .Schema.Value) "array")}}
+{{- $itemType := ""}}
+{{- if and .Schema.Value.Items .Schema.Value.Items.Value}}{{$itemType = getType .Schema.Value.Items.Value}}{{end}}
 	for _, v := range opts.{{pascalcase .Name}} {
+{{- if eq $itemType "integer"}}
+		query.Add("{{.Name}}", fmt.Sprintf("%d", v))
+{{- else if eq $itemType "boolean"}}
+		query.Add("{{.Name}}", fmt.Sprintf("%t", v))
+{{- else if eq $itemType "number"}}
+		query.Add("{{.Name}}", fmt.Sprintf("%g", v))
+{{- else}}
 		query.Add("{{.Name}}", string(v))
+{{- end}}
 	}
 {{- else if and .Schema .Schema.Value (eq (getType .Schema.Value) "boolean")}}
 {{- if not .Required}}

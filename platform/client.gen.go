@@ -2069,10 +2069,10 @@ func (c *client) GetInstanceLogs(ctx context.Context, request []GetInstancesLogs
 		query.Add("name", string(v))
 	}
 	for _, v := range opts.Offset {
-		query.Add("offset", string(v))
+		query.Add("offset", fmt.Sprintf("%d", v))
 	}
 	for _, v := range opts.Limit {
-		query.Add("limit", string(v))
+		query.Add("limit", fmt.Sprintf("%d", v))
 	}
 
 	var body []byte
@@ -2491,10 +2491,10 @@ func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesReque
 		query.Add("state", string(v))
 	}
 	for _, v := range opts.TimeoutMs {
-		query.Add("timeout_ms", string(v))
+		query.Add("timeout_ms", fmt.Sprintf("%d", v))
 	}
 	for _, v := range opts.TimeoutS {
-		query.Add("timeout_s", string(v))
+		query.Add("timeout_s", fmt.Sprintf("%d", v))
 	}
 
 	var body []byte
