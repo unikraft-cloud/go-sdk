@@ -163,13 +163,16 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/services/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configurations
-	GetAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error)
+	GetAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, opts GetAutoscaleConfigurationsOpts, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error)
 	// Return the current states and configurations of autoscale configurations
 	// given a service group UUID.
 	//
@@ -441,13 +444,16 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/instances/checkpoints/history
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-checkpoint-history
-	GetCheckpointHistory(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error)
+	GetCheckpointHistory(ctx context.Context, request []NameOrUUID, opts GetCheckpointHistoryOpts, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error)
 	// Get the checkpoint history of a checkpoint instance by its UUID.
 	// Returns the ordered list of checkpoints in the checkpoint's history.
 	//
@@ -512,13 +518,16 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/instances/history
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-history
-	GetInstanceHistory(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error)
+	GetInstanceHistory(ctx context.Context, request []NameOrUUID, opts GetInstanceHistoryOpts, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error)
 	// Get the checkpoint history of an instance by its UUID.
 	// Returns the ordered list of checkpoints associated with the instance.
 	//
@@ -537,13 +546,16 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/instances/log
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-logs
-	GetInstanceLogs(ctx context.Context, request []GetInstancesLogsRequestItem, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error)
+	GetInstanceLogs(ctx context.Context, request []GetInstancesLogsRequestItem, opts GetInstanceLogsOpts, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error)
 	// Retrieve the logs of an instance by its UUID.
 	//
 	// @param `uuid`
@@ -564,13 +576,16 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/instances/metrics
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-metrics
-	GetInstanceMetrics(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error)
+	GetInstanceMetrics(ctx context.Context, request []NameOrUUID, opts GetInstanceMetricsOpts, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error)
 	// Get the metrics of an instance by its UUID.
 	//
 	// @param `uuid`
@@ -834,13 +849,16 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/instances/wait
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#wait-instances
-	WaitInstances(ctx context.Context, request []WaitInstancesRequestItem, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error)
+	WaitInstances(ctx context.Context, request []WaitInstancesRequestItem, opts WaitInstancesOpts, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error)
 	// Return the status of a full-system health check of the node.
 	//
 	// @param `ropts`
@@ -1514,8 +1532,16 @@ func (c *client) GetAutoscaleConfigurationPolicyByName(ctx context.Context, uuid
 	return resp, nil
 }
 
-func (c *client) GetAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error) {
+func (c *client) GetAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, opts GetAutoscaleConfigurationsOpts, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/autoscale"
+
+	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 
 	var body []byte
 	var err error
@@ -1527,7 +1553,7 @@ func (c *client) GetAutoscaleConfigurations(ctx context.Context, request []NameO
 	}
 
 	resp := &Response[GetAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1604,6 +1630,12 @@ func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, opts
 	requestPath := "/v1/certificates"
 
 	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 	if opts.Details != nil {
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
@@ -1873,8 +1905,16 @@ func (c *client) DeleteTemplateInstances(ctx context.Context, request []NameOrUU
 	return resp, nil
 }
 
-func (c *client) GetCheckpointHistory(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error) {
+func (c *client) GetCheckpointHistory(ctx context.Context, request []NameOrUUID, opts GetCheckpointHistoryOpts, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error) {
 	requestPath := "/v1/instances/checkpoints/history"
+
+	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 
 	var body []byte
 	var err error
@@ -1886,7 +1926,7 @@ func (c *client) GetCheckpointHistory(ctx context.Context, request []NameOrUUID,
 	}
 
 	resp := &Response[GetCheckpointHistoryResponseData]{}
-	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1923,6 +1963,12 @@ func (c *client) GetCheckpointInstances(ctx context.Context, request []NameOrUUI
 	requestPath := "/v1/instances/checkpoints"
 
 	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 	if opts.Details != nil {
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
@@ -1974,8 +2020,16 @@ func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, opts GetIns
 	return resp, nil
 }
 
-func (c *client) GetInstanceHistory(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error) {
+func (c *client) GetInstanceHistory(ctx context.Context, request []NameOrUUID, opts GetInstanceHistoryOpts, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error) {
 	requestPath := "/v1/instances/history"
+
+	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 
 	var body []byte
 	var err error
@@ -1987,7 +2041,7 @@ func (c *client) GetInstanceHistory(ctx context.Context, request []NameOrUUID, r
 	}
 
 	resp := &Response[GetCheckpointHistoryResponseData]{}
-	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2004,8 +2058,22 @@ func (c *client) GetInstanceHistoryByUUID(ctx context.Context, uuid string, ropt
 	return resp, nil
 }
 
-func (c *client) GetInstanceLogs(ctx context.Context, request []GetInstancesLogsRequestItem, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error) {
+func (c *client) GetInstanceLogs(ctx context.Context, request []GetInstancesLogsRequestItem, opts GetInstanceLogsOpts, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error) {
 	requestPath := "/v1/instances/log"
+
+	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
+	for _, v := range opts.Offset {
+		query.Add("offset", fmt.Sprintf("%d", v))
+	}
+	for _, v := range opts.Limit {
+		query.Add("limit", fmt.Sprintf("%d", v))
+	}
 
 	var body []byte
 	var err error
@@ -2017,7 +2085,7 @@ func (c *client) GetInstanceLogs(ctx context.Context, request []GetInstancesLogs
 	}
 
 	resp := &Response[GetInstancesLogsResponseData]{}
-	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2039,8 +2107,16 @@ func (c *client) GetInstanceLogsByUUID(ctx context.Context, uuid string, request
 	return resp, nil
 }
 
-func (c *client) GetInstanceMetrics(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error) {
+func (c *client) GetInstanceMetrics(ctx context.Context, request []NameOrUUID, opts GetInstanceMetricsOpts, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error) {
 	requestPath := "/v1/instances/metrics"
+
+	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 
 	var body []byte
 	var err error
@@ -2052,7 +2128,7 @@ func (c *client) GetInstanceMetrics(ctx context.Context, request []NameOrUUID, r
 	}
 
 	resp := &Response[GetInstancesMetricsResponseData]{}
-	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2073,6 +2149,12 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, opts Ge
 	requestPath := "/v1/instances"
 
 	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 	if opts.Details != nil {
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
@@ -2128,6 +2210,12 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 	requestPath := "/v1/instances/templates"
 
 	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 	if opts.Details != nil {
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
@@ -2389,8 +2477,25 @@ func (c *client) WaitInstanceByUUID(ctx context.Context, uuid string, request Wa
 	return resp, nil
 }
 
-func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesRequestItem, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error) {
+func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesRequestItem, opts WaitInstancesOpts, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error) {
 	requestPath := "/v1/instances/wait"
+
+	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
+	for _, v := range opts.State {
+		query.Add("state", string(v))
+	}
+	for _, v := range opts.TimeoutMs {
+		query.Add("timeout_ms", fmt.Sprintf("%d", v))
+	}
+	for _, v := range opts.TimeoutS {
+		query.Add("timeout_s", fmt.Sprintf("%d", v))
+	}
 
 	var body []byte
 	var err error
@@ -2402,7 +2507,7 @@ func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesReque
 	}
 
 	resp := &Response[WaitInstancesResponseData]{}
-	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2483,6 +2588,12 @@ func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, opt
 	requestPath := "/v1/services"
 
 	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 	if opts.Details != nil {
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
@@ -2805,6 +2916,12 @@ func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, o
 	requestPath := "/v1/volumes/templates"
 
 	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 	if opts.Details != nil {
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}
@@ -2860,6 +2977,12 @@ func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, opts GetV
 	requestPath := "/v1/volumes"
 
 	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 	if opts.Details != nil {
 		query.Add("details", fmt.Sprintf("%t", *opts.Details))
 	}

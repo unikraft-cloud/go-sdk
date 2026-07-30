@@ -80,16 +80,6 @@ type Client interface {
 	//
 	// Performs: POST /v1/nodes/activate
 	NodeActivate(ctx context.Context, request NodeActivateRequest, ropts ...RequestOption) (*Response[NodeActivateResponseData], error)
-	// Sends a heartbeat from a node to report its platform status.
-	//
-	// @param `request`
-	// 	The request body for this operation.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
-	// Performs: POST /v1/nodes/heartbeat
-	NodeHeartbeat(ctx context.Context, request NodeHeartbeatRequest, ropts ...RequestOption) (*Response[any], error)
 	// Delete one or more nodes.
 	//
 	// Batch deletion of nodes by their identifiers.
@@ -214,11 +204,14 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
 	// @param `ropts`
 	// 	Optional request modifiers.
 	//
 	// Performs: PATCH /v1/nodes
-	UpdateNodes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error)
+	UpdateNodes(ctx context.Context, request []NameOrUUID, opts UpdateNodesOpts, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error)
 	// Wait for a node to reach a specific state.
 	//
 	// Blocks until the specified node reaches one of the desired states
@@ -406,21 +399,6 @@ func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest, 
 	return resp, nil
 }
 
-func (c *client) NodeHeartbeat(ctx context.Context, request NodeHeartbeatRequest, ropts ...RequestOption) (*Response[any], error) {
-	requestPath := "/v1/nodes/heartbeat"
-
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
-	}
-
-	resp := &Response[any]{}
-	if err := doRequest[any](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return resp, fmt.Errorf("performing the request: %w", err)
-	}
-	return resp, nil
-}
-
 func (c *client) DestroyNode(ctx context.Context, request []NameOrUUID, opts DestroyNodeOpts, ropts ...RequestOption) (*Response[DestroyNodeResponseData], error) {
 	requestPath := "/v1/nodes"
 
@@ -492,6 +470,12 @@ func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListN
 	requestPath := "/v1/nodes"
 
 	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 	if opts.Cloudprovider != nil {
 		query.Add("cloudprovider", string(*opts.Cloudprovider))
 	}
@@ -570,8 +554,19 @@ func (c *client) UpdateNodeByUUID(ctx context.Context, uuid string, request []Up
 	return resp, nil
 }
 
-func (c *client) UpdateNodes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error) {
+func (c *client) UpdateNodes(ctx context.Context, request []NameOrUUID, opts UpdateNodesOpts, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error) {
 	requestPath := "/v1/nodes"
+
+	query := make(url.Values)
+	for _, v := range opts.Property {
+		query.Add("property", string(v))
+	}
+	for _, v := range opts.Operation {
+		query.Add("operation", string(v))
+	}
+	for _, v := range opts.Value {
+		query.Add("value", string(v))
+	}
 
 	var body []byte
 	var err error
@@ -583,7 +578,7 @@ func (c *client) UpdateNodes(ctx context.Context, request []NameOrUUID, ropts ..
 	}
 
 	resp := &Response[UpdateNodesResponseData]{}
-	if err := doRequest[UpdateNodesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateNodesResponseData](ctx, c.request, http.MethodPatch, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -612,6 +607,12 @@ func (c *client) WaitNodes(ctx context.Context, opts WaitNodesOpts, ropts ...Req
 	requestPath := "/v1/nodes/wait"
 
 	query := make(url.Values)
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Name {
+		query.Add("name", string(v))
+	}
 	for _, v := range opts.States {
 		query.Add("states", string(v))
 	}
