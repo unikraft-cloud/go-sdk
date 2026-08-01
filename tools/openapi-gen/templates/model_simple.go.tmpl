@@ -4,9 +4,13 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-{{$schema := .Schema}}
-{{$schemaName := .SchemaName}}
+{{$schema := .Model.Schema}}
+{{$schemaName := .Model.SchemaName}}
 {{$propNames := propertyNamesOrdered $schemaName $schema}}
+{{$fieldUnions := .FieldUnions}}
+{{- /* Members whose type is a union interface, collected while the struct is
+       rendered and decoded separately in UnmarshalJSON below. */ -}}
+{{$unionFields := list}}
 {{- if $schema.Description}}
 // {{$schema.Description | replace "\n" "\n// "}}
 {{- end}}
@@ -21,10 +25,16 @@ type {{$schemaName}} struct {
 {{- $required := getPropertyRequired $schema $propName}}
 {{- $propGoName := pascalcase $propName}}
 {{- $openAPIType := getType $prop}}
+{{- $union := index $fieldUnions (printf "%s.%s" $schemaName $propName)}}
 {{- /* Determine the Go type */}}
 {{- $propType := schemaToGoType $prop }}
-{{- /* Add pointer for optional fields */}}
-{{- if not $required}}
+{{- if $union}}
+	{{- /* A nil interface already means "not set", so union members are never
+	       pointers, required or not. */}}
+	{{- $propType = $union}}
+	{{- $unionFields = append $unionFields (dict "Field" $propGoName "JSON" $propName "Union" $union)}}
+{{- else if not $required}}
+	{{- /* Add pointer for optional fields */}}
 	{{- if and (ne $openAPIType "array") (ne $openAPIType "object")}}
 		{{- $propType = printf "*%s" $propType}}
 	{{- end}}
@@ -45,7 +55,37 @@ type {{$schemaName}} struct {
 {{/* ensure that callers using encoding/json don't break */}}
 func (m *{{$schemaName}}) UnmarshalJSON(data []byte) error {
 	type Alias {{$schemaName}}
+{{- if $unionFields}}
+	// Union members are decoded in a second step: a nil interface cannot be
+	// decoded into directly.  Holding them as raw JSON ahead of the embedded
+	// alias shadows the alias' own members of the same name.  An absent member
+	// leaves the current value in place, whereas an explicit null clears it.
+	aux := struct {
+{{- range $u := $unionFields}}
+		{{$u.Field}} jsontext.Value `json:"{{$u.JSON}},omitzero"`
+{{- end}}
+		*Alias
+	}{Alias: (*Alias)(m)}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+{{- range $u := $unionFields}}
+	if len(aux.{{$u.Field}}) > 0 {
+		if aux.{{$u.Field}}.Kind() == 'n' {
+			m.{{$u.Field}} = nil
+		} else {
+			value, err := Unmarshal{{$u.Union}}(aux.{{$u.Field}})
+			if err != nil {
+				return err
+			}
+			m.{{$u.Field}} = value
+		}
+	}
+{{- end}}
+	return nil
+{{- else}}
 	return json.Unmarshal(data, (*Alias)(m))
+{{- end}}
 }
 
 func (m {{$schemaName}}) MarshalJSON() ([]byte, error) {

@@ -1,0 +1,68 @@
+{{define "model_union" -}}
+{{- $union := .Name -}}
+import (
+	"fmt"
+
+	"github.com/go-json-experiment/json"
+	"github.com/go-json-experiment/json/jsontext"
+)
+
+// {{$union}} is a closed union: exactly one of {{join ", " .TypeNames}}.
+//
+// The zero value (nil) means "not set" and is omitted when marshalling.
+type {{$union}} interface {
+	is{{$union}}()
+}
+
+{{range $v := .Variants}}
+{{- if $v.Declare}}
+{{- if $v.Doc}}
+// {{$v.Doc | replace "\n" "\n// "}}
+{{- end}}
+type {{$v.Type}} {{$v.Underlying}}
+
+{{end}}
+{{- end}}
+{{- range $v := .Variants}}
+func ({{$v.Type}}) is{{$union}}() {}
+{{end}}
+// Unmarshal{{$union}} decodes v into whichever {{$union}} variant matches the
+// kind of the JSON value.
+func Unmarshal{{$union}}(v jsontext.Value) ({{$union}}, error) {
+	// The kind of the JSON value narrows the candidates but does not prove a
+	// match: a failed decode falls through to the variants that share the kind,
+	// and its error is only reported once none of them matched either.
+	var err error
+
+	switch v.Kind() {
+{{- range $v := .Variants}}
+{{- if $v.Kinds}}
+	case {{join ", " $v.Kinds}}:
+		var out {{$v.Type}}
+		if err = json.Unmarshal(v, &out); err == nil {
+			return out, nil
+		}
+{{- end}}
+{{- end}}
+	}
+{{- range $v := .Variants}}
+{{- if not $v.Kinds}}
+
+	// {{$v.Type}} shares its JSON kind with an earlier variant, so it can only
+	// be attempted speculatively.
+	{
+		var out {{$v.Type}}
+		if err := json.Unmarshal(v, &out); err == nil {
+			return out, nil
+		}
+	}
+{{- end}}
+{{- end}}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, fmt.Errorf("cannot unmarshal %v into {{$union}}", v.Kind())
+}
+{{- end}}
