@@ -1,4 +1,24 @@
-{{- range .Models}}
+{{- /*
+	Union properties
+	----------------
+	A property declared as an `anyOf` of two or more distinct shapes has no
+	single Go type.  Instead of degrading it to `interface{}`, "goUnions"
+	collects every such property and describes it as a closed union: a marker
+	interface, a named type per variant that isn't already a named schema, and
+	a kind-dispatching decoder (see "model_union").
+
+	  $unions.Unions  the unions to generate, ordered by name
+	  $unions.Fields  "Schema.prop" -> union name, consumed by "model_simple"
+
+	A union is named "<Base>Union", after the first named branch of the
+	property with a trailing "Spec" dropped.  The overrides below rename one
+	where a better name reads more naturally, or where the default would
+	collide with a schema of the same name: the "string-or-`ImageSpec`" union
+	is named `ImageSource`, since `Image` is already taken by the images
+	resource.
+*/ -}}
+{{- $unions := goUnions (dict "Image" "ImageSource") -}}
+{{range .Models}}
 --- model_{{snakecase .SchemaName}}.gen.go
 {{template "header" .}}
 package {{$.Var "package" ""}}
@@ -8,6 +28,13 @@ package {{$.Var "package" ""}}
 {{if $schema.Enum}}
 {{template "model_enum" .}}
 {{else}}
-{{template "model_simple" .}}
+{{template "model_simple" (dict "Model" . "FieldUnions" $unions.Fields)}}
 {{end}}
+{{- end}}
+{{- range $union := $unions.Unions}}
+--- model_{{snakecase $union.Name}}.gen.go
+{{template "header"}}
+package {{$.Var "package" ""}}
+
+{{template "model_union" $union}}
 {{- end}}
