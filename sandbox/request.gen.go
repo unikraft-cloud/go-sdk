@@ -1,10 +1,16 @@
-{{template "header"}}
-package {{.Var "package" ""}}
+// This file is auto-generated. DO NOT EDIT.
+// SPDX-License-Identifier: BSD-3-Clause
+// Copyright (c) 2025, Unikraft GmbH.
+// Licensed under the BSD-3-Clause License (the "License").
+// You may not use this file except in compliance with the License.
+
+package sandbox
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"mime"
@@ -12,8 +18,8 @@ import (
 	"net/url"
 	"time"
 
-	"unikraft.com/cloud/sdk/pkg/sse"
 	"unikraft.com/cloud/sdk/pkg/httpclient"
+	"unikraft.com/cloud/sdk/pkg/sse"
 )
 
 // Request is the utility structure for performing individual requests to
@@ -40,13 +46,10 @@ func (r *Request) WithEndpoint(e string) *Request {
 	return rcpy
 }
 
-{{- if or (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
-
 // WithMetro returns a Request that uses the given metro in API requests.
 func (r *Request) WithMetro(m string) *Request {
 	return r.WithEndpoint(EndpointForMetro(m))
 }
-{{- end}}
 
 // WithTimeout returns a Request that uses the specified timeout
 // duration in API requests.
@@ -161,11 +164,11 @@ func WithCustomHeaders(headers http.Header) RequestOption {
 // doRequest performs the request and handles the return media type differently
 // depending on the media type:
 //
-// - application/json: hydrates a target type with response body and closes the
-//   body.
-// - text/event-stream: returns a channel of events which will be closed when
-//   the context is done or the connection is closed.  The channel will contain
-//   pointers to Response items, which are decoded from the event data.
+//   - application/json: hydrates a target type with response body and closes the
+//     body.
+//   - text/event-stream: returns a channel of events which will be closed when
+//     the context is done or the connection is closed.  The channel will contain
+//     pointers to Response items, which are decoded from the event data.
 func doRequest[T any](ctx context.Context, req *Request, method, path string, query url.Values, reqBody io.Reader, target *Response[T], ropts ...RequestOption) error {
 	var m string
 	var u *url.URL
@@ -226,11 +229,7 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 			if err := json.Unmarshal(target.body.Bytes(), target); err != nil {
 				return errors.Join(rerr, fmt.Errorf("parsing response: %w", err))
 			}
-{{- if or (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
 			return errors.Join(rerr, NewFromResponse(target))
-{{- else}}
-			return errors.Join(rerr, target)
-{{- end}}
 		}
 
 		target.events = make(chan *Response[T])
@@ -291,11 +290,7 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 			return errors.Join(rerr, fmt.Errorf("parsing response: %w", err))
 		}
 		if target.Status != ResponseStatusSuccess && target.Status != "" {
-{{- if or (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
 			return errors.Join(rerr, NewFromResponse(target))
-{{- else}}
-			return errors.Join(rerr, target)
-{{- end}}
 		}
 		if rerr != nil {
 			return rerr

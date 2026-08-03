@@ -19,7 +19,7 @@ type Client interface {
 {{- range .Operations}}
 {{- template "interface_method" .}}
 {{- end}}
-{{- if eq ($.Var "package" "") "platform"}}
+{{- if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 	// WithMetro sets the metro to use when connecting to the API.
 	WithMetro(string) Client
 {{- else}}
@@ -52,7 +52,7 @@ func NewClient(copts ...ClientOption) Client {
 		options.SetToken(os.Getenv("KRAFTCLOUD_TOKEN"))
 	}
 
-{{if eq ($.Var "package" "") "platform"}}
+{{if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(os.Getenv("UKC_METRO"))
 	}
@@ -83,7 +83,7 @@ func NewClient(copts ...ClientOption) Client {
 type client struct {
 	request *Request
 }
-{{- if eq ($.Var "package" "") "platform"}}
+{{- if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 
 // WithMetro sets the metro to use when connecting to the API.
 func (c *client) WithMetro(m string) Client {

@@ -1,5 +1,10 @@
-{{template "header"}}
-package {{.Var "package" ""}}
+// This file is auto-generated. DO NOT EDIT.
+// SPDX-License-Identifier: BSD-3-Clause
+// Copyright (c) 2025, Unikraft GmbH.
+// Licensed under the BSD-3-Clause License (the "License").
+// You may not use this file except in compliance with the License.
+
+package sandbox
 
 import (
 	"unikraft.com/cloud/sdk/pkg/httpclient"
@@ -27,12 +32,10 @@ func (opts *ClientOptions) SetDefaultEndpoint(endpoint string) {
 	opts.defaultEndpoint = endpoint
 }
 
-{{- if or (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
 // SetDefaultMetro sets the default metro.
 func (opts *ClientOptions) SetDefaultMetro(metro string) {
 	opts.defaultEndpoint = EndpointForMetro(metro)
 }
-{{- end}}
 
 // SetToken sets the token to use for authentication with the API.
 func (opts *ClientOptions) SetToken(token string) {
@@ -83,14 +86,12 @@ func WithDefaultEndpoint(endpoint string) ClientOption {
 	}
 }
 
-{{- if or (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
 // WithDefaultMetro sets the default metro for the client.
 func WithDefaultMetro(metro string) ClientOption {
 	return func(client *ClientOptions) {
 		client.SetDefaultMetro(metro)
 	}
 }
-{{- end}}
 
 // WithToken sets the access token of the client connecting to KraftCloud.
 func WithToken(token string) ClientOption {
