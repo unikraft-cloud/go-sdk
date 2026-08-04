@@ -17,6 +17,9 @@ GOIMPORTS           ?= $(GO) run golang.org/x/tools/cmd/goimports@latest
 all: generate fmt
 
 .PHONY: generate
+# sandbox is deliberately excluded until sandbox.yaml is published on the
+# release channels; until then it 404s and would fail CI.  Run `make sandbox`
+# explicitly to regenerate it, and add it back here once the spec lands.
 generate: platform controlplane
 
 .PHONY: platform
@@ -37,10 +40,20 @@ controlplane: controlplane.yaml
 controlplane.yaml:
 	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/controlplane.yaml
 
+.PHONY: sandbox
+sandbox: sandbox.yaml
+	$(Q)rm -f $(WORKDIR)/sandbox/*.gen.go
+	$(GO) generate ./sandbox
+	ls $(WORKDIR)/sandbox/*.gen.go | xargs $(GOIMPORTS) -l -w
+
+sandbox.yaml:
+	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/sandbox.yaml
+
 .PHONY: fmt
 fmt:
 	ls $(WORKDIR)/platform/*.go | xargs $(GOIMPORTS) -l -w
 	ls $(WORKDIR)/controlplane/*.go | xargs $(GOIMPORTS) -l -w
+	ls $(WORKDIR)/sandbox/*.go | xargs $(GOIMPORTS) -l -w
 
 .PHONY: lint
 lint:
