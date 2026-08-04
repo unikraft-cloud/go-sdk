@@ -15,13 +15,13 @@ import (
 // service.
 type CreateAutoscaleConfigurationPolicyRequest struct {
 	// The Name of the service to add a policy to.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// The policy type to add to the autoscale configuration.
-	Type AutoscalePolicy `json:"type"`
+	Type AutoscalePolicy `json:"type,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateAutoscaleConfigurationPolicyRequest) UnmarshalJSON(data []byte) error {

@@ -13,11 +13,11 @@ import (
 
 type UpdateVolumesResponseData struct {
 	// List of volumes that were processed during the update operation.
-	Volumes []UpdateVolumesResponseUpdatedVolume `json:"volumes,omitempty"`
+	Volumes []UpdateVolumesResponseUpdatedVolume `json:"volumes,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *UpdateVolumesResponseData) UnmarshalJSON(data []byte) error {

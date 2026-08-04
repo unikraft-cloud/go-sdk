@@ -14,24 +14,24 @@ import (
 // Information about an available machine type.
 type MachineType struct {
 	// The machine type identifier (e.g., "m5.xlarge", "n2-standard-4").
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// Human-readable description.
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitzero"`
 	// Number of vCPUs.
-	Vcpus uint32 `json:"vcpus"`
+	Vcpus uint32 `json:"vcpus,omitzero"`
 	// Memory in MiB.
-	MemoryMib uint64 `json:"memory_mib"`
+	MemoryMib uint64 `json:"memory_mib,omitzero"`
 	// Machine category (e.g., "general-purpose", "compute-optimized",
 	// "memory-optimized").
-	Category *string `json:"category,omitempty"`
+	Category *string `json:"category,omitzero"`
 	// Regions where this machine type is available.
-	AvailableRegions []string `json:"available_regions,omitempty"`
+	AvailableRegions []string `json:"available_regions,omitzero"`
 	// Whether this machine type supports nested virtualization.
-	NestedVirtualization bool `json:"nested_virtualization"`
+	NestedVirtualization bool `json:"nested_virtualization,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *MachineType) UnmarshalJSON(data []byte) error {

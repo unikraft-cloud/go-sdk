@@ -15,27 +15,24 @@ import (
 type UpdateCheckpointInstancesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.
-	Id *string `json:"id,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro of the checkpoint instance.
-	Metro *string `json:"metro,omitempty"`
+	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableCheckpointInstanceProperty `json:"prop"`
+	Prop MutableCheckpointInstanceProperty `json:"prop,omitzero"`
 	// The operation to perform on the property.
-	Op MutableCheckpointInstanceOperation `json:"op"`
+	Op MutableCheckpointInstanceOperation `json:"op,omitzero"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean
 	// - For "autokill": object with time_ms field
-	Value *interface{} `json:"value,omitempty"`
+	Value *interface{} `json:"value,omitzero"`
 	// The UUID of the checkpoint instance to update. Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid *string `json:"uuid,omitzero"`
 	// The name of the checkpoint instance to update. Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *UpdateCheckpointInstancesRequestItem) UnmarshalJSON(data []byte) error {

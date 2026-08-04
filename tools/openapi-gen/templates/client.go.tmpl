@@ -19,7 +19,7 @@ type Client interface {
 {{- range .Operations}}
 {{- template "interface_method" .}}
 {{- end}}
-{{- if eq ($.Var "package" "") "platform"}}
+{{- if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 	// WithMetro sets the metro to use when connecting to the API.
 	WithMetro(string) Client
 {{- else}}
@@ -52,7 +52,7 @@ func NewClient(copts ...ClientOption) Client {
 		options.SetToken(os.Getenv("KRAFTCLOUD_TOKEN"))
 	}
 
-{{if eq ($.Var "package" "") "platform"}}
+{{if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(os.Getenv("UKC_METRO"))
 	}
@@ -83,7 +83,7 @@ func NewClient(copts ...ClientOption) Client {
 type client struct {
 	request *Request
 }
-{{- if eq ($.Var "package" "") "platform"}}
+{{- if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 
 // WithMetro sets the metro to use when connecting to the API.
 func (c *client) WithMetro(m string) Client {
@@ -161,6 +161,9 @@ func (c *client) clone() *client {
 {{- $isSSE := false}}
 {{- if $op.Responses}}
 {{- $defaultResp := $op.Responses.Default}}
+{{- if not $defaultResp}}
+{{- $defaultResp = index ($op.Responses.Map) "200"}}
+{{- end}}
 {{- if $defaultResp}}
 {{- if $defaultResp.Value}}
 {{- $respContent := index $defaultResp.Value.Content "application/json"}}
@@ -255,6 +258,9 @@ func (c *client) clone() *client {
 {{- $isSSE := false}}
 {{- if $op.Responses}}
 {{- $defaultResp := $op.Responses.Default}}
+{{- if not $defaultResp}}
+{{- $defaultResp = index ($op.Responses.Map) "200"}}
+{{- end}}
 {{- if $defaultResp}}
 {{- if $defaultResp.Value}}
 {{- $respContent := index $defaultResp.Value.Content "application/json"}}
@@ -293,8 +299,18 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 	query := make(url.Values)
 {{- range $queryParams}}
 {{- if and .Schema .Schema.Value (eq (getType .Schema.Value) "array")}}
+{{- $itemType := ""}}
+{{- if and .Schema.Value.Items .Schema.Value.Items.Value}}{{$itemType = getType .Schema.Value.Items.Value}}{{end}}
 	for _, v := range opts.{{pascalcase .Name}} {
+{{- if eq $itemType "integer"}}
+		query.Add("{{.Name}}", fmt.Sprintf("%d", v))
+{{- else if eq $itemType "boolean"}}
+		query.Add("{{.Name}}", fmt.Sprintf("%t", v))
+{{- else if eq $itemType "number"}}
+		query.Add("{{.Name}}", fmt.Sprintf("%g", v))
+{{- else}}
 		query.Add("{{.Name}}", string(v))
+{{- end}}
 	}
 {{- else if and .Schema .Schema.Value (eq (getType .Schema.Value) "boolean")}}
 {{- if not .Required}}

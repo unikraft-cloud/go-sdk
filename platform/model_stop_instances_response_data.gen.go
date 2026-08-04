@@ -13,11 +13,11 @@ import (
 
 type StopInstancesResponseData struct {
 	// The instance(s) which were stopped by the request.
-	Instances []StopInstancesResponseStoppedInstance `json:"instances,omitempty"`
+	Instances []StopInstancesResponseStoppedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *StopInstancesResponseData) UnmarshalJSON(data []byte) error {

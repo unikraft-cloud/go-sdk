@@ -13,21 +13,21 @@ import (
 
 type UpdateVolumeByUUIDRequestBody struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
-	Id *string `json:"id,omitempty"`
+	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableVolumeProperty `json:"prop"`
+	Prop MutableVolumeProperty `json:"prop,omitzero"`
 	// The operation to perform.
-	Op MutableVolumeOperation `json:"op"`
+	Op MutableVolumeOperation `json:"op,omitzero"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "size_mb": unsigned integer
 	// - For "quota_policy": "static" or "dynamic"
 	// - For "tags": array of Strings
 	// - For "delete_lock": boolean
-	Value *interface{} `json:"value,omitempty"`
+	Value *interface{} `json:"value,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *UpdateVolumeByUUIDRequestBody) UnmarshalJSON(data []byte) error {

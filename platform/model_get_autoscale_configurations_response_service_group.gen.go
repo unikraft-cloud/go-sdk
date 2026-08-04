@@ -13,43 +13,40 @@ import (
 
 type GetAutoscaleConfigurationsResponseServiceGroup struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status"`
+	Status ResponseStatus `json:"status,omitzero"`
 	// The UUID of the service where the configuration was created.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// The name of the service where the configuration was created.
-	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the service group.
-	Metro *string `json:"metro,omitempty"`
+	Name string `json:"name,omitzero"`
 	// If the autoscale configuration is enabled.
-	Enabled bool `json:"enabled"`
+	Enabled bool `json:"enabled,omitzero"`
 	// The minimum number of instances to keep running.
 	// Only if enabled is true.
-	MinSize *int64 `json:"min_size,omitempty"`
+	MinSize *int64 `json:"min_size,omitzero"`
 	// The maximum number of instances to keep running.
 	// Only if enabled is true.
-	MaxSize *int64 `json:"max_size,omitempty"`
+	MaxSize *int64 `json:"max_size,omitzero"`
 	// The warmup time in seconds for new instances.
 	// Only if enabled is true.
-	WarmupTimeMs *int64 `json:"warmup_time_ms,omitempty"`
+	WarmupTimeMs *int64 `json:"warmup_time_ms,omitzero"`
 	// The cooldown time in seconds for the autoscale configuration.
 	// Only if enabled is true.
-	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitempty"`
+	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitzero"`
 	// The instance template used for the autoscale configuration.
 	// Only if enabled is true.
-	Template *ServiceGroupTemplate `json:"template,omitempty"`
+	Template *ServiceGroupTemplate `json:"template,omitzero"`
 	// The policies applied to the autoscale configuration.
-	Policies []AutoscalePolicy `json:"policies,omitempty"`
+	Policies []AutoscalePolicy `json:"policies,omitzero"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
+	Message *string `json:"message,omitzero"`
 	// An optional error code providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *GetAutoscaleConfigurationsResponseServiceGroup) UnmarshalJSON(data []byte) error {

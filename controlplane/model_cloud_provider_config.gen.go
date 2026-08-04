@@ -15,11 +15,11 @@ import (
 // provisioning.
 type CloudProviderConfig struct {
 	// AWS-specific configuration.
-	Aws *AWSConfig `json:"aws,omitempty"`
+	Aws *AWSConfig `json:"aws,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CloudProviderConfig) UnmarshalJSON(data []byte) error {

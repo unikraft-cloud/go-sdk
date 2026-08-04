@@ -14,13 +14,13 @@ import (
 // Reference to the instance to attach the volume to.
 type VolumeInstanceID struct {
 	// The UUID of the instance that the volume is attached to.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// The name of the instance that the volume is attached to.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *VolumeInstanceID) UnmarshalJSON(data []byte) error {

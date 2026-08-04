@@ -29,11 +29,20 @@ type ListMachineTypesOpts struct {
 
 // ListNodesOpts holds query-parameter options for [Client.ListNodes].
 type ListNodesOpts struct {
+	Uuid          []string
+	Name          []string
 	Cloudprovider *CloudProvider
 	State         *NodeState
 	Metro         *string
 	Limit         *uint32
 	Offset        *uint32
+}
+
+// UpdateNodesOpts holds query-parameter options for [Client.UpdateNodes].
+type UpdateNodesOpts struct {
+	Property  []MutableNodeProperty
+	Operation []MutableNodeOperation
+	Value     []string
 }
 
 // WaitNodeByUUIDOpts holds query-parameter options for [Client.WaitNodeByUUID].
@@ -44,6 +53,8 @@ type WaitNodeByUUIDOpts struct {
 
 // WaitNodesOpts holds query-parameter options for [Client.WaitNodes].
 type WaitNodesOpts struct {
+	Uuid      []string
+	Name      []string
 	States    []NodeState
 	TimeoutMs *int64
 }

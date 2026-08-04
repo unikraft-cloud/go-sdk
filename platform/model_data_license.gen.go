@@ -14,15 +14,15 @@ import (
 // License information (admin only).
 type DataLicense struct {
 	// The serial number of the license certificate, hex-encoded.
-	Serial string `json:"serial"`
+	Serial string `json:"serial,omitzero"`
 	// Whether the license is currently valid.
-	Valid bool `json:"valid"`
+	Valid bool `json:"valid,omitzero"`
 	// List of enabled features.
-	Features []string `json:"features,omitempty"`
+	Features []string `json:"features,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *DataLicense) UnmarshalJSON(data []byte) error {

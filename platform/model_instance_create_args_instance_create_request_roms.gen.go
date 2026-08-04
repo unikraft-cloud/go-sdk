@@ -13,18 +13,18 @@ import (
 
 type InstanceCreateArgsInstanceCreateRequestRoms struct {
 	// The name of the ROM to use for the autoscale configuration.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// (Optional).  The image of the ROM to use for the autoscale configuration.
 	// Mutually exclusive with `files`.
-	Image *string `json:"image,omitempty"`
+	Image *string `json:"image,omitzero"`
 	// (Optional).  Inline files to use as the ROM content.  When specified,
 	// the platform creates an EROFS image from the provided files.
 	// Mutually exclusive with `image`.
-	Files []InlineFile `json:"files,omitempty"`
+	Files []InlineFile `json:"files,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *InstanceCreateArgsInstanceCreateRequestRoms) UnmarshalJSON(data []byte) error {

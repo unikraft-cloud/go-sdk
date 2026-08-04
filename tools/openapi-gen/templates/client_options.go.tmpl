@@ -27,7 +27,7 @@ func (opts *ClientOptions) SetDefaultEndpoint(endpoint string) {
 	opts.defaultEndpoint = endpoint
 }
 
-{{- if eq (.Var "package" "") "platform"}}
+{{- if or (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
 // SetDefaultMetro sets the default metro.
 func (opts *ClientOptions) SetDefaultMetro(metro string) {
 	opts.defaultEndpoint = EndpointForMetro(metro)
@@ -83,7 +83,7 @@ func WithDefaultEndpoint(endpoint string) ClientOption {
 	}
 }
 
-{{- if eq (.Var "package" "") "platform"}}
+{{- if or (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
 // WithDefaultMetro sets the default metro for the client.
 func WithDefaultMetro(metro string) ClientOption {
 	return func(client *ClientOptions) {

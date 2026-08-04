@@ -13,19 +13,19 @@ import (
 
 type AttachVolumeByUUIDRequestBody struct {
 	// UUID or name of the instance to attach the volume to.
-	AttachTo NameOrUUID `json:"attach_to"`
+	AttachTo NameOrUUID `json:"attach_to,omitzero"`
 	// Path of the mountpoint.
 	//
 	// The path must be absolute, not contain `.` and `..` components, and not
 	// contain colons (`:`). The path must point to an empty directory. If the
 	// directory does not exist, it is created.
-	At string `json:"at"`
+	At string `json:"at,omitzero"`
 	// Whether the volume should be mounted read-only.
-	Readonly *bool `json:"readonly,omitempty"`
+	Readonly *bool `json:"readonly,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *AttachVolumeByUUIDRequestBody) UnmarshalJSON(data []byte) error {

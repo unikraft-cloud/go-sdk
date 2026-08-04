@@ -17,13 +17,13 @@ import (
 type InstanceRestartAttempt struct {
 	// Current restart attempt number. This is incremented each time the instance
 	// is restarted automatically by the platform.
-	Attempt uint32 `json:"attempt"`
+	Attempt uint32 `json:"attempt,omitzero"`
 	// Timestamp of the next scheduled restart attempt.
-	NextAt *time.Time `json:"next_at,omitempty"`
+	NextAt *time.Time `json:"next_at,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *InstanceRestartAttempt) UnmarshalJSON(data []byte) error {

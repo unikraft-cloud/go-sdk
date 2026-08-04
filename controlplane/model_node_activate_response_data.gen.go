@@ -13,11 +13,11 @@ import (
 
 type NodeActivateResponseData struct {
 	// The issued license certificate in base64 URL encoded PEM format.
-	License string `json:"license"`
+	License string `json:"license,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *NodeActivateResponseData) UnmarshalJSON(data []byte) error {

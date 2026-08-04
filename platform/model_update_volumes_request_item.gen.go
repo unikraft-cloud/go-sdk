@@ -14,28 +14,25 @@ import (
 // A single request item for updating a volume.
 type UpdateVolumesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
-	Id *string `json:"id,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
+	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableVolumeProperty `json:"prop"`
+	Prop MutableVolumeProperty `json:"prop,omitzero"`
 	// The operation to perform.
-	Op MutableVolumeOperation `json:"op"`
+	Op MutableVolumeOperation `json:"op,omitzero"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "size_mb": unsigned integer
 	// - For "quota_policy": "static" or "dynamic"
 	// - For "tags": array of Strings
 	// - For "delete_lock": boolean
-	Value *interface{} `json:"value,omitempty"`
+	Value *interface{} `json:"value,omitzero"`
 	// The UUID of the volume to update.  Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid *string `json:"uuid,omitzero"`
 	// The name of the volume to update.  Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *UpdateVolumesRequestItem) UnmarshalJSON(data []byte) error {

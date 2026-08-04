@@ -13,11 +13,11 @@ import (
 
 type DetachVolumesResponseData struct {
 	// The volume(s) which were detached by the request.
-	Volumes []DetachVolumesResponseDetachedVolume `json:"volumes,omitempty"`
+	Volumes []DetachVolumesResponseDetachedVolume `json:"volumes,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *DetachVolumesResponseData) UnmarshalJSON(data []byte) error {

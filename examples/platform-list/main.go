@@ -33,7 +33,7 @@ func main() {
 	}
 
 	// Check for API-level errors
-	if resp.Status != "success" {
+	if resp.Status != platform.ResponseStatusSuccess {
 		fmt.Fprintf(os.Stderr, "error: %s\n", resp.Message)
 		os.Exit(1)
 	}

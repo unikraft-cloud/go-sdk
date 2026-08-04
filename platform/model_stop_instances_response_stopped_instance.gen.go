@@ -13,28 +13,25 @@ import (
 
 type StopInstancesResponseStoppedInstance struct {
 	// The UUID of the instance.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// The name of the instance.
-	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the instance.
-	Metro *string `json:"metro,omitempty"`
+	Name string `json:"name,omitzero"`
 	// The current state of the instance.
-	State InstanceState `json:"state"`
+	State InstanceState `json:"state,omitzero"`
 	// The previous state of the instance before the stop operation was invoked.
-	PreviousState InstanceState `json:"previous_state"`
+	PreviousState InstanceState `json:"previous_state,omitzero"`
 	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
+	Status *ResponseStatus `json:"status,omitzero"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
+	Message *string `json:"message,omitzero"`
 	// An optional error code providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *StopInstancesResponseStoppedInstance) UnmarshalJSON(data []byte) error {

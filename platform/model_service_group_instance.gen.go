@@ -16,16 +16,16 @@ type ServiceGroupInstance struct {
 	// that is generated when the instance is created.  The UUID is used to
 	// reference the instance in API calls and can be used to identify the
 	// instance in all API calls that require an instance identifier.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// The name of the instance.  This is a human-readable name that can be used
 	// to identify the instance.  The name must be unique within the context of
 	// your account.  If no name is specified, a random name is generated for
 	// you.  The name can also be used to identify the instance in API calls.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *ServiceGroupInstance) UnmarshalJSON(data []byte) error {

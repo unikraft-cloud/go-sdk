@@ -12,11 +12,11 @@ import (
 )
 
 type AddUsersRequest struct {
-	Users []User `json:"users"`
+	Users []User `json:"users,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *AddUsersRequest) UnmarshalJSON(data []byte) error {

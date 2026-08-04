@@ -13,11 +13,11 @@ import (
 
 type CreateAutoscaleConfigurationPolicyResponseData struct {
 	// The policies which were added by the request.
-	Policies []CreateAutoscaleConfigurationPolicyResponsePolicy `json:"policies,omitempty"`
+	Policies []CreateAutoscaleConfigurationPolicyResponsePolicy `json:"policies,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateAutoscaleConfigurationPolicyResponseData) UnmarshalJSON(data []byte) error {

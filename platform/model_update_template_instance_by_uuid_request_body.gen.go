@@ -14,20 +14,20 @@ import (
 type UpdateTemplateInstanceByUUIDRequestBody struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.
-	Id *string `json:"id,omitempty"`
+	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableTemplateInstanceProperty `json:"prop"`
+	Prop MutableTemplateInstanceProperty `json:"prop,omitzero"`
 	// The operation to perform on the property.
-	Op MutableTemplateInstanceOperation `json:"op"`
+	Op MutableTemplateInstanceOperation `json:"op,omitzero"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean
 	// - For "autokill": object with time_ms field
-	Value *interface{} `json:"value,omitempty"`
+	Value *interface{} `json:"value,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *UpdateTemplateInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) error {

@@ -14,20 +14,17 @@ import (
 // A single checkpoint creation request.
 type CreateCheckpointInstancesRequestItem struct {
 	// The source instance to create a checkpoint from (by name or UUID).
-	From NameOrUUID `json:"from"`
+	From NameOrUUID `json:"from,omitzero"`
 	// (Optional).  The name of the checkpoint.
 	// If not provided, a name will be generated.
-	Name *string `json:"name,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
+	Name *string `json:"name,omitzero"`
 	// Timeout in seconds to wait for the checkpoint to be created.
 	// No wait performed for a value of 0.
-	TimeoutS *int64 `json:"timeout_s,omitempty"`
+	TimeoutS *int64 `json:"timeout_s,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateCheckpointInstancesRequestItem) UnmarshalJSON(data []byte) error {

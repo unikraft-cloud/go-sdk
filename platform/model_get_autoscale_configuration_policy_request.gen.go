@@ -14,11 +14,11 @@ import (
 // The request message to get an autoscale configuration policy by name.
 type GetAutoscaleConfigurationPolicyRequest struct {
 	// The Name of the policy to get.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *GetAutoscaleConfigurationPolicyRequest) UnmarshalJSON(data []byte) error {

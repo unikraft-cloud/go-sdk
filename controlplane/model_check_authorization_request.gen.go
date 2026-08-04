@@ -15,11 +15,11 @@ import (
 type CheckAuthorizationRequest struct {
 	// The request ID is a unique identifier for the request.  This is used to
 	// track the request in the system and should be provided by the client.
-	RequestId string `json:"request_id"`
+	RequestId string `json:"request_id,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CheckAuthorizationRequest) UnmarshalJSON(data []byte) error {

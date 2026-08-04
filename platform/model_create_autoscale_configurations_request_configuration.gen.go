@@ -12,31 +12,28 @@ import (
 )
 
 type CreateAutoscaleConfigurationsRequestConfiguration struct {
-	// (Optional, only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
 	// The minimum number of instances to keep running.
-	MinSize *int64 `json:"min_size,omitempty"`
+	MinSize *int64 `json:"min_size,omitzero"`
 	// The maximum number of instances to keep running.
-	MaxSize *int64 `json:"max_size,omitempty"`
+	MaxSize *int64 `json:"max_size,omitzero"`
 	// The warmup time in milliseconds for new instances.
-	WarmupTimeMs *int64 `json:"warmup_time_ms,omitempty"`
+	WarmupTimeMs *int64 `json:"warmup_time_ms,omitzero"`
 	// The cooldown time in milliseconds for the autoscale configuration.
-	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitempty"`
+	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitzero"`
 	// The arguments to use when creating the autoscale configuration.
-	CreateArgs ConfigurationInstanceCreateArgs `json:"create_args"`
+	CreateArgs ConfigurationInstanceCreateArgs `json:"create_args,omitzero"`
 	// The policies to apply to the autoscale configuration.
-	Policies []AutoscalePolicy `json:"policies,omitempty"`
+	Policies []AutoscalePolicy `json:"policies,omitzero"`
 	// The UUID of the service to create a configuration for.
 	// Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid *string `json:"uuid,omitzero"`
 	// The name of the service to create a configuration for.
 	// Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateAutoscaleConfigurationsRequestConfiguration) UnmarshalJSON(data []byte) error {

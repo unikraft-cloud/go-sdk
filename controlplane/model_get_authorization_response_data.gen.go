@@ -13,15 +13,15 @@ import (
 
 type GetAuthorizationResponseData struct {
 	// The organization name the token is associated with.
-	OrganizationName string `json:"organization_name"`
+	OrganizationName string `json:"organization_name,omitzero"`
 	// The display name of the organization the token is associated with.
-	OrganizationDisplayName string `json:"organization_display_name"`
+	OrganizationDisplayName string `json:"organization_display_name,omitzero"`
 	// The global image registry.
-	Registry string `json:"registry"`
+	Registry string `json:"registry,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *GetAuthorizationResponseData) UnmarshalJSON(data []byte) error {

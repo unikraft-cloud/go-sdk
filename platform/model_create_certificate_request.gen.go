@@ -19,27 +19,24 @@ type CreateCertificateRequest struct {
 	// The name must be unique within the context of your account.  If no name is
 	// specified, a random name is generated for you.  The name can also be used
 	// to identify the certificate in API calls.
-	Name *string `json:"name,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
+	Name *string `json:"name,omitzero"`
 	// The common name (CN) of the certificate.
 	//
 	// Deprecated: Use `common_name` instead.
-	Cn *string `json:"cn,omitempty"`
+	Cn *string `json:"cn,omitzero"`
 	// The common name (CN) of the certificate.
 	//
 	// This must be a fully-qualified domain name (FQDN). Exactly one of `cn`
 	// or `common_name` must be specified.
-	CommonName *string `json:"common_name,omitempty"`
+	CommonName *string `json:"common_name,omitzero"`
 	// The chain of the certificate.
-	Chain string `json:"chain"`
+	Chain string `json:"chain,omitzero"`
 	// The private key of the certificate.
-	Pkey string `json:"pkey"`
+	Pkey string `json:"pkey,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateCertificateRequest) UnmarshalJSON(data []byte) error {

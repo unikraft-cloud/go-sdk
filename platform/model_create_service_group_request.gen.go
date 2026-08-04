@@ -17,14 +17,11 @@ type CreateServiceGroupRequest struct {
 	// to identify the service group.  The name must be unique within the context
 	// of your account.  If no name is specified, a random name is generated for
 	// you.  The name can also be used to identify the service group in API calls.
-	Name *string `json:"name,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
+	Name *string `json:"name,omitzero"`
 	// Description of exposed services.
-	Services []Service `json:"services"`
+	Services []Service `json:"services,omitzero"`
 	// Description of domains associated with the service group.
-	Domains []CreateServiceGroupRequestDomain `json:"domains,omitempty"`
+	Domains []CreateServiceGroupRequestDomain `json:"domains,omitzero"`
 	// The soft limit is used by the Unikraft Cloud load balancer to decide when
 	// to wake up another standby instance.
 	//
@@ -35,20 +32,20 @@ type CreateServiceGroupRequest struct {
 	// assigned to each instance will exceed the soft limit.  The load balancer
 	// makes sure that when the number of in-flight requests goes down again,
 	// instances are put into standby as fast as possible.
-	SoftLimit *uint64 `json:"soft_limit,omitempty"`
+	SoftLimit *uint64 `json:"soft_limit,omitzero"`
 	// The hard limit defines the maximum number of concurrent requests that an
 	// instance assigned to the this service can handle.
 	//
 	// The load balancer will never assign more requests to a single instance.  In
 	// case there are no other instances available, excess requests fail (i.e.,
 	// they are blocked and not queued).
-	HardLimit *uint64 `json:"hard_limit,omitempty"`
+	HardLimit *uint64 `json:"hard_limit,omitzero"`
 	// Automatic delete-on-idle configuration.
-	Autokill *CreateServiceGroupRequestAutokill `json:"autokill,omitempty"`
+	Autokill *CreateServiceGroupRequestAutokill `json:"autokill,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateServiceGroupRequest) UnmarshalJSON(data []byte) error {

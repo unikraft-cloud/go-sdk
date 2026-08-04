@@ -15,11 +15,11 @@ type GetInstancesMetricsResponseData struct {
 	// The instance which this requested metrics for.  Note: only one instance
 	// can be specified in the request, so this will always contain a single
 	// entry.
-	Instances []GetInstancesMetricsResponseInstanceMetrics `json:"instances,omitempty"`
+	Instances []GetInstancesMetricsResponseInstanceMetrics `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *GetInstancesMetricsResponseData) UnmarshalJSON(data []byte) error {

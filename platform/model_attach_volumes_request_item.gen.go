@@ -14,28 +14,25 @@ import (
 // A single request item for attaching a volume to an instance.
 type AttachVolumesRequestItem struct {
 	// UUID or name of the instance to attach the volume to.
-	AttachTo NameOrUUID `json:"attach_to"`
+	AttachTo NameOrUUID `json:"attach_to,omitzero"`
 	// Path of the mountpoint.
 	//
 	// The path must be absolute, not contain `.` and `..` components, and not
 	// contain colons (`:`). The path must point to an empty directory. If the
 	// directory does not exist, it is created.
-	At string `json:"at"`
+	At string `json:"at,omitzero"`
 	// Whether the volume should be mounted read-only.
-	Readonly *bool `json:"readonly,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
+	Readonly *bool `json:"readonly,omitzero"`
 	// The UUID of the volume to attach. Mutually exclusive with name.
 	// Exactly one of uuid or name must be provided.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid *string `json:"uuid,omitzero"`
 	// The name of the volume to attach. Mutually exclusive with UUID.
 	// Exactly one of uuid or name must be provided.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *AttachVolumesRequestItem) UnmarshalJSON(data []byte) error {

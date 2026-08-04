@@ -11,21 +11,21 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-type UpdateCertificateResponseData struct {
+type UpdateCertificatesResponseData struct {
 	// The certificate(s) which were updated by the request.
-	Certificates []Certificate `json:"certificates,omitempty"`
+	Certificates []Certificate `json:"certificates,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
-func (m *UpdateCertificateResponseData) UnmarshalJSON(data []byte) error {
-	type Alias UpdateCertificateResponseData
+func (m *UpdateCertificatesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias UpdateCertificatesResponseData
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m UpdateCertificateResponseData) MarshalJSON() ([]byte, error) {
-	type Alias UpdateCertificateResponseData
+func (m UpdateCertificatesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias UpdateCertificatesResponseData
 	return json.Marshal((Alias)(m))
 }

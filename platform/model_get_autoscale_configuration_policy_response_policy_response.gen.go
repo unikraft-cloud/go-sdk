@@ -13,22 +13,19 @@ import (
 
 type GetAutoscaleConfigurationPolicyResponsePolicyResponse struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status"`
+	Status ResponseStatus `json:"status,omitzero"`
 	// The policy which was retrieved by the request.
-	Policy AutoscalePolicy `json:"policy"`
-	// (Only applies when using global control plane).
-	// The metro of the resource.
-	Metro *string `json:"metro,omitempty"`
+	Policy AutoscalePolicy `json:"policy,omitzero"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
+	Message *string `json:"message,omitzero"`
 	// An optional error code providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *GetAutoscaleConfigurationPolicyResponsePolicyResponse) UnmarshalJSON(data []byte) error {

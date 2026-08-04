@@ -13,22 +13,19 @@ import (
 
 // A single request of detaching a volume.
 type DetachVolumesRequestItem struct {
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
 	// (Optional).  UUID or name of the instance to detach the volume from.
 	// If not specified, the volume is detached from all instances.
-	From *NameOrUUID `json:"from,omitempty"`
+	From *NameOrUUID `json:"from,omitzero"`
 	// The UUID of the volume to detach. Mutually exclusive with name.
 	// Exactly one of uuid or name must be provided.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid *string `json:"uuid,omitzero"`
 	// The name of the volume to detach. Mutually exclusive with UUID.
 	// Exactly one of uuid or name must be provided.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *DetachVolumesRequestItem) UnmarshalJSON(data []byte) error {

@@ -14,11 +14,11 @@ import (
 // The snapshot UUID of the instance.
 type InstanceSnapshot struct {
 	// The UUID of the snapshot.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *InstanceSnapshot) UnmarshalJSON(data []byte) error {

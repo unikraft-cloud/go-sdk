@@ -15,14 +15,11 @@ import (
 type UpdateInstancesRequestItem struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.
-	Id *string `json:"id,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
+	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableInstanceProperty `json:"prop"`
+	Prop MutableInstanceProperty `json:"prop,omitzero"`
 	// The operation to perform on the property.
-	Op MutableInstanceOperation `json:"op"`
+	Op MutableInstanceOperation `json:"op,omitzero"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "image": object with image url, credentials, headers and pull policy
 	// - For "args": string or array of strings
@@ -32,22 +29,23 @@ type UpdateInstancesRequestItem struct {
 	// - For "scale_to_zero": object with cooldown_time_ms, policy, and stateful fields
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean
-	// - For "schedules": array of schedule objects (with name, when, action, and optional args fields).
+	// - For "schedules": array of schedule objects (with name, when, action, and optional args fields) for SET/ADD, or array of schedule names for DEL.
 	//   Use action "exec" together with args to execute a command at the scheduled time.
 	// - For "autokill": object with time_ms and num_requests fields
 	// - For "hostname": string (valid DNS label)
 	// - For "roms": array of ROM objects (with name and image fields) for SET/ADD, or array of ROM names for DEL
+	// - For "plugins": array of plugin objects (with name, rom, and optional config fields) for SET/ADD
 	// - For "dependencies": array of instance identifiers (name or UUID)
 	// - For "sched_priority": SchedPriority enum value ("normal", "medium", "high", "admin")
-	Value *interface{} `json:"value,omitempty"`
+	Value *interface{} `json:"value,omitzero"`
 	// The UUID of the instance to update. Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid *string `json:"uuid,omitzero"`
 	// The name of the instance to update. Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *UpdateInstancesRequestItem) UnmarshalJSON(data []byte) error {

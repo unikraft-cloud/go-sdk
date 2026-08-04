@@ -13,11 +13,11 @@ import (
 
 type SuspendInstancesResponseData struct {
 	// The instance(s) which were suspended by the request.
-	Instances []SuspendInstancesResponseSuspendedInstance `json:"instances,omitempty"`
+	Instances []SuspendInstancesResponseSuspendedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *SuspendInstancesResponseData) UnmarshalJSON(data []byte) error {

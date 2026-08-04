@@ -23,9 +23,9 @@ type GetInstancesMetricsResponseInstanceMetrics struct {
 	// memory allocated by the application, which is likely to fluctuate over
 	// the lifetime of the application.  The RSS is not a cumulative metric.
 	// When the instance is stopped rss goes down to 0.
-	RssBytes uint64 `json:"rss_bytes"`
+	RssBytes uint64 `json:"rss_bytes,omitzero"`
 	// Consumed CPU time in milliseconds.
-	CpuTimeMs uint64 `json:"cpu_time_ms"`
+	CpuTimeMs uint64 `json:"cpu_time_ms,omitzero"`
 	// The boot time of the instance in microseconds.  We take a pragmatic
 	// approach is to define the boot time.  We calculate this as the difference
 	// in time between the moment the virtualization toolstack is invoked to
@@ -34,44 +34,41 @@ type GetInstancesMetricsResponseInstanceMetrics struct {
 	// time that a user would experience in a deployment, minus the application
 	// initialization time, which we leave out since it is independent from the
 	// OS.
-	BootTimeUs uint64 `json:"boot_time_us"`
+	BootTimeUs uint64 `json:"boot_time_us,omitzero"`
 	// This is the time it took for the user-level application to start listening
 	// on a non-localhost port measured in microseconds.  This is the time from
 	// when the instance started until it reasonably ready to start responding to
 	// network requests.  This is useful for measuring the time it takes for the
 	// instance to become operationally ready.
-	NetTimeUs uint64 `json:"net_time_us"`
+	NetTimeUs uint64 `json:"net_time_us,omitzero"`
 	// Total amount of bytes received from network.
-	RxBytes uint64 `json:"rx_bytes"`
+	RxBytes uint64 `json:"rx_bytes,omitzero"`
 	// Total count of packets received from network.
-	RxPackets uint64 `json:"rx_packets"`
+	RxPackets uint64 `json:"rx_packets,omitzero"`
 	// Total amount of bytes transmitted over network.
-	TxBytes uint64 `json:"tx_bytes"`
+	TxBytes uint64 `json:"tx_bytes,omitzero"`
 	// Total count of packets transmitted over network.
-	TxPackets uint64 `json:"tx_packets"`
+	TxPackets uint64 `json:"tx_packets,omitzero"`
 	// Number of currently established inbound connections (non-HTTP).
-	Nconns uint64 `json:"nconns"`
+	Nconns uint64 `json:"nconns,omitzero"`
 	// Number of in-flight HTTP requests.
-	Nreqs uint64 `json:"nreqs"`
+	Nreqs uint64 `json:"nreqs,omitzero"`
 	// Number of queued inbound connections and HTTP requests.
-	Nqueued uint64 `json:"nqueued"`
+	Nqueued uint64 `json:"nqueued,omitzero"`
 	// Total number of inbound connections and HTTP requests handled.
-	Ntotal uint64 `json:"ntotal"`
+	Ntotal uint64 `json:"ntotal,omitzero"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
+	Message *string `json:"message,omitzero"`
 	// An optional error code providing additional information about the status.
 	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	Error *int32 `json:"error,omitzero"`
 	// The status of the response.
-	Status *ResponseStatus `json:"status,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro of the instance.
-	Metro *string `json:"metro,omitempty"`
+	Status *ResponseStatus `json:"status,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *GetInstancesMetricsResponseInstanceMetrics) UnmarshalJSON(data []byte) error {

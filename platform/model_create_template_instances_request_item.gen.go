@@ -16,19 +16,19 @@ type CreateTemplateInstancesRequestItem struct {
 	// Timeout in seconds to wait for the template instances to be created.
 	// A value of -1 means to wait indefinitely until the instance reaches the
 	// desired state. No wait performed for a value of 0.
-	TimeoutS *int64 `json:"timeout_s,omitempty"`
+	TimeoutS *int64 `json:"timeout_s,omitzero"`
 	// (Optional). Automatic delete-on-idle configuration for the new template.
-	Autokill *ItemAutokill `json:"autokill,omitempty"`
+	Autokill *ItemAutokill `json:"autokill,omitzero"`
 	// The UUID of the instance to convert into template. Mutually exclusive
 	// with name.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid *string `json:"uuid,omitzero"`
 	// The name of the instance to convert into template. Mutually exclusive
 	// with UUID.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateTemplateInstancesRequestItem) UnmarshalJSON(data []byte) error {

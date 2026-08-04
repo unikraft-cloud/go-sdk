@@ -13,11 +13,11 @@ import (
 
 type DeleteAutoscaleConfigurationsResponseData struct {
 	// The configuration(s) which were deleted by the request.
-	ServiceGroups []DeleteAutoscaleConfigurationsResponseServiceGroup `json:"service_groups,omitempty"`
+	ServiceGroups []DeleteAutoscaleConfigurationsResponseServiceGroup `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *DeleteAutoscaleConfigurationsResponseData) UnmarshalJSON(data []byte) error {

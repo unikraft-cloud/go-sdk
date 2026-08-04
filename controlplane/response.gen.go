@@ -26,7 +26,7 @@ import (
 type Response[T any] struct {
 	// Status contains the top-level information about a server response, and
 	// returns either `success`, `partial_success` or `error`.
-	Status string `json:"status,omitempty"`
+	Status ResponseStatus `json:"status,omitempty"`
 
 	// Message contains the error message either on `partial_success` or `error`.
 	Message string `json:"message,omitempty"`
@@ -37,6 +37,9 @@ type Response[T any] struct {
 	// On a successful response, the data element is returned with relevant
 	// information.
 	Data *T `json:"data,omitempty"`
+
+	// OpTimeUs is the time taken to process the request in microseconds.
+	OpTimeUs uint64 `json:"op_time_us,omitzero"`
 
 	// Buffer holding the raw API response body.
 	body bytes.Buffer
@@ -66,7 +69,7 @@ func (r *Response[T]) Events() (<-chan *Response[T], error) {
 }
 
 func (r *Response[T]) Error() string {
-	if r == nil || r.Status == "success" {
+	if r == nil || r.Status == ResponseStatusSuccess {
 		return ""
 	}
 

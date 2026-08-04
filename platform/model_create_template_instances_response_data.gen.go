@@ -13,11 +13,11 @@ import (
 
 type CreateTemplateInstancesResponseData struct {
 	// List of template instances that were created during the operation.
-	Instances []CreateTemplateInstancesResponseTemplateInstance `json:"instances,omitempty"`
+	Instances []CreateTemplateInstancesResponseTemplateInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateTemplateInstancesResponseData) UnmarshalJSON(data []byte) error {

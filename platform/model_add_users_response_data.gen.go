@@ -13,11 +13,11 @@ import (
 
 type AddUsersResponseData struct {
 	// The status of the operation for each user in the request.
-	Results []DataResult `json:"results,omitempty"`
+	Results []DataResult `json:"results,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *AddUsersResponseData) UnmarshalJSON(data []byte) error {

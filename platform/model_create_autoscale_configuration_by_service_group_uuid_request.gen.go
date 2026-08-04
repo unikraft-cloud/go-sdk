@@ -16,23 +16,23 @@ import (
 type CreateAutoscaleConfigurationByServiceGroupUUIDRequest struct {
 	// The UUID of the service to create a configuration for.
 	// Mutually exclusive with name.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// The minimum number of instances to keep running.
-	MinSize *int64 `json:"min_size,omitempty"`
+	MinSize *int64 `json:"min_size,omitzero"`
 	// The maximum number of instances to keep running.
-	MaxSize *int64 `json:"max_size,omitempty"`
+	MaxSize *int64 `json:"max_size,omitzero"`
 	// The warmup time in milliseconds for new instances.
-	WarmupTimeMs *int64 `json:"warmup_time_ms,omitempty"`
+	WarmupTimeMs *int64 `json:"warmup_time_ms,omitzero"`
 	// The cooldown time in milliseconds for the autoscale configuration.
-	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitempty"`
+	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitzero"`
 	// The arguments to use when creating the autoscale configuration.
-	CreateArgs CreateAutoscaleConfigurationByServiceGroupUUIDRequestInstanceCreateArgs `json:"create_args"`
+	CreateArgs CreateAutoscaleConfigurationByServiceGroupUUIDRequestInstanceCreateArgs `json:"create_args,omitzero"`
 	// The policies to apply to the autoscale configuration.
-	Policies []AutoscalePolicy `json:"policies,omitempty"`
+	Policies []AutoscalePolicy `json:"policies,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateAutoscaleConfigurationByServiceGroupUUIDRequest) UnmarshalJSON(data []byte) error {

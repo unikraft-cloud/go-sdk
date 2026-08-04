@@ -7,6 +7,8 @@
 package platform
 
 import (
+	"time"
+
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
 )
@@ -31,28 +33,28 @@ type Schedule struct {
 	// The name of the schedule.
 	//
 	// Must be unique within an instance.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// The calendar expression specifying when the action should be performed.
 	//
 	// Uses systemd calendar event syntax.
 	// See https://www.man7.org/linux/man-pages/man7/systemd.time.7.html
-	When string `json:"when"`
+	When string `json:"when,omitzero"`
 	// The action to perform at the scheduled time.
-	Action ScheduleAction `json:"action"`
+	Action ScheduleAction `json:"action,omitzero"`
 	// The timestamp of when the next scheduled action will occur.
 	//
 	// This field is populated only in responses (not settable in requests).
 	// Unix timestamp in seconds.  Omitted if no next execution is scheduled.
-	NextAt int64 `json:"next_at"`
+	NextAt *time.Time `json:"next_at,omitzero"`
 	// The command to execute when the action is `exec`.
 	//
 	// Required when `action` is `SCHEDULE_ACTION_EXEC`, ignored otherwise.
 	// Each element is a separate argument; the first element is the executable.
-	Args []string `json:"args,omitempty"`
+	Args []string `json:"args,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *Schedule) UnmarshalJSON(data []byte) error {

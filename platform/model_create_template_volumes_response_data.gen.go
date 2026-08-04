@@ -13,11 +13,11 @@ import (
 
 type CreateTemplateVolumesResponseData struct {
 	// The template volume(s) which were created by the request.
-	Volumes []CreateTemplateVolumesResponseTemplateVolume `json:"volumes,omitempty"`
+	Volumes []CreateTemplateVolumesResponseTemplateVolume `json:"volumes,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateTemplateVolumesResponseData) UnmarshalJSON(data []byte) error {

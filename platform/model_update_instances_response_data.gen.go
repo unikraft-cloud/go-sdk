@@ -13,11 +13,11 @@ import (
 
 type UpdateInstancesResponseData struct {
 	// List of instances that were processed during the update operation.
-	Instances []UpdateInstancesResponseUpdatedInstance `json:"instances,omitempty"`
+	Instances []UpdateInstancesResponseUpdatedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *UpdateInstancesResponseData) UnmarshalJSON(data []byte) error {

@@ -14,21 +14,21 @@ import (
 // Wait parameters.
 type WaitInstanceByUUIDRequestBody struct {
 	// The desired state to wait for.  Default is `running`.
-	State InstanceState `json:"state"`
+	State InstanceState `json:"state,omitzero"`
 	// Deprecated: Use `timeout_s` instead. Timeout in milliseconds to
 	// wait for the instance to reach the desired state.  If `timeout_s` is
 	// not set, this value is converted by rounding up to the next full
 	// second. A value of -1 means to wait indefinitely.
-	TimeoutMs *int64 `json:"timeout_ms,omitempty"`
+	TimeoutMs *int64 `json:"timeout_ms,omitzero"`
 	// Timeout in seconds to wait for the instance to reach the desired
 	// state. If the timeout is reached, the request will fail with an
 	// error. A value of -1 means to wait indefinitely until the instance
 	// reaches the desired state.  No wait performed for a value of 0.
-	TimeoutS *int64 `json:"timeout_s,omitempty"`
+	TimeoutS *int64 `json:"timeout_s,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *WaitInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) error {

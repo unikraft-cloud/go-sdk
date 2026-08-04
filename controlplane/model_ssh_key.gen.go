@@ -14,14 +14,14 @@ import (
 // SSHKey represents an SSH public key for authentication.
 type SSHKey struct {
 	// A name or label for this SSH key.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// The SSH public key in OpenSSH format (e.g., "ssh-rsa AAAA... user@host"
 	// or "ssh-ed25519 AAAA... user@host").
-	PublicKey string `json:"public_key"`
+	PublicKey string `json:"public_key,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *SSHKey) UnmarshalJSON(data []byte) error {

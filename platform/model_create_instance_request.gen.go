@@ -11,35 +11,22 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// Features to enable for the instance.  Features are specific
-// configurations or capabilities that can be enabled for the
-// instance.  The `scale-to-zero` and `delete-on-stop` features are
-// mutually exclusive.
-type CreateInstanceRequestFeatures string
-
-const (
-	CreateInstanceRequestFeaturesDeleteOnStop CreateInstanceRequestFeatures = "delete-on-stop"
-)
-
 // The request message for creating a new instance.
 type CreateInstanceRequest struct {
 	// (Optional).  The name of the instance.
 	//
 	// If not provided, a random name will be generated.  The name must be unique.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 	// (Optional).  The image to use for the instance.
 	//
 	// Either an image or a template must be specified.
-	Image *ImageSpec `json:"image,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
+	Image *ImageSpec `json:"image,omitzero"`
 	// (Optional).  The arguments to pass to the instance when it starts.
-	Args []string `json:"args,omitempty"`
+	Args []string `json:"args,omitzero"`
 	// (Optional).  Environment variables to set for the instance.
-	Env map[string]string `json:"env,omitempty"`
+	Env map[string]string `json:"env,omitzero"`
 	// (Optional).  Memory in MB to allocate for the instance.  Default is 128.
-	MemoryMb *int64 `json:"memory_mb,omitempty"`
+	MemoryMb *int64 `json:"memory_mb,omitzero"`
 	// (Optional).  The service group configuration when creating an instance.
 	//
 	// When creating an instance, either a previously created (persistent) service
@@ -47,7 +34,7 @@ type CreateInstanceRequest struct {
 	// (ephemeral) service group can be created for the instance by specifying the
 	// list of services it should expose and optionally the domains it should use.
 	// Not used by template instances.
-	ServiceGroup *CreateInstanceRequestServiceGroup `json:"service_group,omitempty"`
+	ServiceGroup *CreateInstanceRequestServiceGroup `json:"service_group,omitzero"`
 	// Volumes to attach to the instance.
 	//
 	// This list can contain both existing and new volumes to create as part of
@@ -55,93 +42,106 @@ type CreateInstanceRequest struct {
 	// UUID.  New volumes can be created by specifying a name, size in MiB, and
 	// mount point in the instance.  The mount point is the directory in the
 	// instance where the volume will be mounted.
-	Volumes []CreateInstanceRequestVolume `json:"volumes,omitempty"`
+	Volumes []CreateInstanceRequestVolume `json:"volumes,omitzero"`
 	// Whether the instance should start automatically on creation.
 	// Must be set to true when `timeout_s` is specified.
-	Autostart *bool `json:"autostart,omitempty"`
+	Autostart *bool `json:"autostart,omitzero"`
 	// (Optional).  Number of additional replicas to create.  The total
 	// number of instances created is `replicas + 1`.  Defaults to 0.
-	Replicas *int64 `json:"replicas,omitempty"`
+	Replicas *int64 `json:"replicas,omitzero"`
 	// Restart policy for the instance.  This defines how the instance
 	// should behave when it stops or crashes.  Cannot be combined with
 	// the `delete-on-stop` feature.
-	RestartPolicy *InstanceRestartPolicy `json:"restart_policy,omitempty"`
+	RestartPolicy *InstanceRestartPolicy `json:"restart_policy,omitzero"`
 	// Scale-to-zero configuration for the instance.  Requires
 	// `service_group` to be set.  Cannot be combined with the
 	// `delete-on-stop` feature.
-	ScaleToZero *CreateInstanceScaleToZero `json:"scale_to_zero,omitempty"`
+	ScaleToZero *CreateInstanceScaleToZero `json:"scale_to_zero,omitzero"`
 	// (Optional).  Number of vCPUs to allocate for the instance.
 	// Defaults to 1.
-	Vcpus *int32 `json:"vcpus,omitempty"`
+	Vcpus *int32 `json:"vcpus,omitzero"`
 	// Deprecated: Use `timeout_s` instead.  Timeout in milliseconds to
 	// wait for all new instances to reach running state.  Requires
 	// `autostart` to be set.  If `timeout_s` is not set, this value is
 	// converted by rounding up to the next full second.  No wait
 	// performed for a value of 0.
-	WaitTimeoutMs *int64 `json:"wait_timeout_ms,omitempty"`
+	WaitTimeoutMs *int64 `json:"wait_timeout_ms,omitzero"`
 	// Features to enable for the instance.  Features are specific
 	// configurations or capabilities that can be enabled for the
 	// instance.  The `scale-to-zero` and `delete-on-stop` features are
 	// mutually exclusive.
-	Features []InstanceFeature `json:"features,omitempty"`
+	Features []InstanceFeature `json:"features,omitzero"`
 	// Timeout in seconds to wait for all new instances to reach running
 	// state.  Requires `autostart` to be set.  If you autostart your
 	// new instance, you can wait for it to finish starting with a
 	// blocking API call if you specify a wait timeout greater than
 	// zero.  No wait performed for a value of 0.
-	TimeoutS *int64 `json:"timeout_s,omitempty"`
+	TimeoutS *int64 `json:"timeout_s,omitzero"`
 	// Read-Only Memory (ROM) blobs to attach to the instance.
 	// Unikraft Cloud supports the ability to attach Read-Only Memory (ROM) blobs
 	// to instances. It allows you to create a general-purpose base image and
 	// then customize individual instances by attaching code or data as separate
 	// ROM blobs.
-	Roms []CreateInstanceRequestRom `json:"roms,omitempty"`
+	Roms []CreateInstanceRequestRom `json:"roms,omitzero"`
+	// (Optional).  Plugins to attach to the instance.  Plugins let you attach
+	// small helper programs to an instance and reach each one over a direct,
+	// authenticated HTTP endpoint.  Each plugin loads from its own ROM image,
+	// mounts at `/uk/plugins/<plugin_name>`, and is reachable at
+	// `.../v1/instances/<uuid>/plugins/<plugin_name>/<path>`.  At most 8 plugins
+	// may be attached to an instance.
+	Plugins []CreateInstanceRequestPlugin `json:"plugins,omitzero"`
 	// (Optional).  Tags to associate with the instance.
-	Tags []string `json:"tags,omitempty"`
+	Tags []string `json:"tags,omitzero"`
 	// Template instances.
 	// An existing instance can be saved as a template. This template is then
 	// used to create new instances that inherit the exact configuration and
 	// state the original instance had when the template was created.
-	Template *CreateInstanceRequestTemplate `json:"template,omitempty"`
+	Template *CreateInstanceRequestTemplate `json:"template,omitzero"`
 	// The scheduling priority for the instance. Only settable by
 	// users with scheduling priority override permissions.
-	SchedPriority *SchedPriority `json:"sched_priority,omitempty"`
+	SchedPriority *SchedPriority `json:"sched_priority,omitzero"`
 	// (Optional).  Schedules for the instance.  Scheduled operations let you
 	// automatically start, stop, delete, or exec a command in the instance on
 	// a calendar-based schedule.  For `exec` schedules, set the `args` field
 	// to the command and its arguments.  Each instance stores its own
 	// schedules, and cloning preserves them.
-	Schedules []Schedule `json:"schedules,omitempty"`
+	Schedules []Schedule `json:"schedules,omitzero"`
 	// (Optional).  Automatic delete-on-idle/request-limit configuration.
 	// Not used for template instances.
-	Autokill *CreateInstanceRequestAutokill `json:"autokill,omitempty"`
+	Autokill *CreateInstanceRequestAutokill `json:"autokill,omitzero"`
 	// (Optional).  The hostname of the instance.
 	//
 	// If not provided, the hostname will be set to the instance name.  The
 	// hostname must be a valid DNS label (e.g., "my-instance") and is used for
 	// internal DNS resolution within the Unikraft Cloud network.
-	Hostname *string `json:"hostname,omitempty"`
+	Hostname *string `json:"hostname,omitzero"`
 	// (Optional).  Dependencies of the instance.
 	//
 	// A list of instance identifiers (name or UUID) that this instance depends
 	// on.  Dependencies define startup ordering and can be used to ensure that
 	// prerequisite instances are running before this instance starts.
-	Dependencies []NameOrUUID `json:"dependencies,omitempty"`
+	Dependencies []NameOrUUID `json:"dependencies,omitzero"`
 	// (Optional).  Reference to an existing instance to branch from.
 	// The instance can be running, stopped, or a template.  If the source
 	// instance is running, a snapshot will be taken asynchronously and the
 	// new instance will wait for it to complete before starting.
 	// Mutually exclusive with `image` and `template`.
-	BranchFrom *NameOrUUID `json:"branch_from,omitempty"`
+	BranchFrom *NameOrUUID `json:"branch_from,omitzero"`
 	// (Optional).  Reference to an existing checkpoint to create the instance
 	// from.  The checkpoint must be in the `checkpoint` state.  The new instance
 	// will be created with the same configuration and state as the checkpoint.
 	// Mutually exclusive with `image`, `template`, and `branch_from`.
-	Checkpoint *NameOrUUID `json:"checkpoint,omitempty"`
+	Checkpoint *NameOrUUID `json:"checkpoint,omitzero"`
+	// The default gateway to configure inside the guest.
+	Gateway *string `json:"gateway,omitzero"`
+	// The DNS resolver to configure inside the guest.
+	Nameserver *string `json:"nameserver,omitzero"`
+	// A list of one to four interfaces to attach
+	NetworkInterfaces []CreateInstanceRequestNetworkInterface `json:"network_interfaces,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateInstanceRequest) UnmarshalJSON(data []byte) error {

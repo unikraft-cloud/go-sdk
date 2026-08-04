@@ -13,17 +13,17 @@ import (
 
 type UserStor struct {
 	// Maximum number of volumes the user can have at one moment.
-	MaxVolumes *int32 `json:"max_volumes,omitempty"`
+	MaxVolumes *int32 `json:"max_volumes,omitzero"`
 	// Minimum size of a volume in MB.
-	MinVolumeMb *int32 `json:"min_volume_mb,omitempty"`
+	MinVolumeMb *int32 `json:"min_volume_mb,omitzero"`
 	// Maximum size of a volume in MB.
-	MaxVolumeMb *int32 `json:"max_volume_mb,omitempty"`
+	MaxVolumeMb *int32 `json:"max_volume_mb,omitzero"`
 	// Maximum total size of all volumes in MB.
-	MaxTotalVolumeMb *int32 `json:"max_total_volume_mb,omitempty"`
+	MaxTotalVolumeMb *int32 `json:"max_total_volume_mb,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *UserStor) UnmarshalJSON(data []byte) error {

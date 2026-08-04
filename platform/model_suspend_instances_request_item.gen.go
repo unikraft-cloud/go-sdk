@@ -13,20 +13,17 @@ import (
 
 // A single request item to suspend an instance.
 type SuspendInstancesRequestItem struct {
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
 	// Timeout for draining connections in milliseconds.  No draining
 	// will occur if set to 0.  Use -1 for the largest possible value.
-	DrainTimeoutMs *uint64 `json:"drain_timeout_ms,omitempty"`
+	DrainTimeoutMs *uint64 `json:"drain_timeout_ms,omitzero"`
 	// The UUID of the instance to suspend.  Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
+	Uuid *string `json:"uuid,omitzero"`
 	// The name of the instance to suspend.  Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *SuspendInstancesRequestItem) UnmarshalJSON(data []byte) error {

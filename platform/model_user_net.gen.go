@@ -13,16 +13,16 @@ import (
 
 type UserNet struct {
 	// Maximum number of service groups the user can have at one moment.
-	MaxServiceGroups *int32 `json:"max_service_groups,omitempty"`
+	MaxServiceGroups *int32 `json:"max_service_groups,omitzero"`
 	// Maximum number of services across all service groups the user can have
 	// at one moment.
-	MaxServices *int32 `json:"max_services,omitempty"`
+	MaxServices *int32 `json:"max_services,omitzero"`
 	// Maximum number of TLS certificates the user can have at one moment.
-	MaxCertificates *int32 `json:"max_certificates,omitempty"`
+	MaxCertificates *int32 `json:"max_certificates,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *UserNet) UnmarshalJSON(data []byte) error {

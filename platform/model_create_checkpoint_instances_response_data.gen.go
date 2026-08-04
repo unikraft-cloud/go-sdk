@@ -13,11 +13,11 @@ import (
 
 type CreateCheckpointInstancesResponseData struct {
 	// List of checkpoint instances that were created during the operation.
-	Instances []CreateCheckpointInstancesResponseCheckpointInstance `json:"instances,omitempty"`
+	Instances []CreateCheckpointInstancesResponseCheckpointInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateCheckpointInstancesResponseData) UnmarshalJSON(data []byte) error {

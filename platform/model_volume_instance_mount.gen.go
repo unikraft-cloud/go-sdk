@@ -13,15 +13,15 @@ import (
 
 type VolumeInstanceMount struct {
 	// The UUID of the instance that the volume is mounted in.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// The name of the instance that the volume is mounted in.
-	Name string `json:"name"`
+	Name string `json:"name,omitzero"`
 	// Whether the volume is mounted read-only or read-write.
-	Readonly bool `json:"readonly"`
+	Readonly bool `json:"readonly,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *VolumeInstanceMount) UnmarshalJSON(data []byte) error {

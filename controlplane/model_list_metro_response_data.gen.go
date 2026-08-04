@@ -13,11 +13,11 @@ import (
 
 type ListMetroResponseData struct {
 	// The list of metros.
-	Metros []Metro `json:"metros,omitempty"`
+	Metros []Metro `json:"metros,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *ListMetroResponseData) UnmarshalJSON(data []byte) error {

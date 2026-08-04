@@ -13,15 +13,15 @@ import (
 
 type AutoscalePolicyStep struct {
 	// The adjustment value for the step.
-	Adjustment int64 `json:"adjustment"`
+	Adjustment int64 `json:"adjustment,omitzero"`
 	// Lower bound for the step.
-	LowerBound *int64 `json:"lower_bound,omitempty"`
+	LowerBound *int64 `json:"lower_bound,omitzero"`
 	// Upper bound for the step.
-	UpperBound *int64 `json:"upper_bound,omitempty"`
+	UpperBound *int64 `json:"upper_bound,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *AutoscalePolicyStep) UnmarshalJSON(data []byte) error {

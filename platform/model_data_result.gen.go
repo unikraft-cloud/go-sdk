@@ -12,15 +12,12 @@ import (
 )
 
 type DataResult struct {
-	Uuid string `json:"uuid"`
-	// (Only applies when using global control plane).
-	// The metro of the user.
-	Metro *string `json:"metro,omitempty"`
-	Added bool    `json:"added"`
+	Uuid  string `json:"uuid,omitzero"`
+	Added bool   `json:"added,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *DataResult) UnmarshalJSON(data []byte) error {

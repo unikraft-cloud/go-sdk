@@ -24,4 +24,5 @@ const (
 	MutableInstancePropertyRoms          MutableInstanceProperty = "roms"
 	MutableInstancePropertyDependencies  MutableInstanceProperty = "dependencies"
 	MutableInstancePropertySchedPriority MutableInstanceProperty = "sched_priority"
+	MutableInstancePropertyPlugins       MutableInstanceProperty = "plugins"
 )

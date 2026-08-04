@@ -11,31 +11,23 @@ import (
 	"github.com/go-json-experiment/json/jsontext"
 )
 
-// The status of this update.
-type InstancePendingUpdateStatus string
-
-const (
-	InstancePendingUpdateStatusPending InstancePendingUpdateStatus = "pending"
-	InstancePendingUpdateStatusFailed  InstancePendingUpdateStatus = "failed"
-)
-
 // A queued property change awaiting application (typically on next restart).
 type InstancePendingUpdate struct {
 	// The property being updated.
-	Prop MutableInstanceProperty `json:"prop"`
+	Prop MutableInstanceProperty `json:"prop,omitzero"`
 	// The patch operation type.
-	Op MutableInstanceOperation `json:"op"`
+	Op MutableInstanceOperation `json:"op,omitzero"`
 	// The new value for the property.  Type depends on the property being
 	// updated.
-	Value interface{} `json:"value"`
+	Value interface{} `json:"value,omitzero"`
 	// The status of this update.
-	Status InstancePendingUpdateStatus `json:"status"`
+	Status InstancePendingUpdateStatus `json:"status,omitzero"`
 	// Error message.  Only present when status is "failed".
-	Error *string `json:"error,omitempty"`
+	Error *string `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *InstancePendingUpdate) UnmarshalJSON(data []byte) error {

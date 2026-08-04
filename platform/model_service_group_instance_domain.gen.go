@@ -25,18 +25,18 @@ type ServiceGroupInstanceDomain struct {
 	// If this name ends in a period `.` it must be a valid Full Qualified
 	// Domain Name (FQDN), otherwise it will become a subdomain of the target
 	// metro.
-	Fqdn string `json:"fqdn"`
+	Fqdn string `json:"fqdn,omitzero"`
 	// The certificate associated with the domain.
 	//
 	// The certificate is used to secure the domain with TLS/SSL.  If no
 	// certificate is specified, Unikraft Cloud will automatically generate a
 	// new certificate for the domain based on Let's Encrypt and seek to
 	// accomplish a DNS-01 challenge.
-	Certificate *NameOrUUID `json:"certificate,omitempty"`
+	Certificate *NameOrUUID `json:"certificate,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *ServiceGroupInstanceDomain) UnmarshalJSON(data []byte) error {

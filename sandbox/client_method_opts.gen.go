@@ -4,12 +4,4 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package controlplane
-
-type PlatformStatus string
-
-const (
-	PlatformStatusHealthy     PlatformStatus = "healthy"
-	PlatformStatusDegraded    PlatformStatus = "degraded"
-	PlatformStatusUnavailable PlatformStatus = "unavailable"
-)
+package sandbox

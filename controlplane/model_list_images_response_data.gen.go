@@ -13,11 +13,11 @@ import (
 
 type ListImagesResponseData struct {
 	// The list of images.
-	Images []Image `json:"images,omitempty"`
+	Images []Image `json:"images,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *ListImagesResponseData) UnmarshalJSON(data []byte) error {

@@ -20,36 +20,33 @@ type CreateVolumeRequest struct {
 	// specified, a random name of the form `vol-X` is generated for you, where
 	// `X` is a 5 character long random alphanumeric suffix..  The name can also
 	// be used to identify the volume in API calls.
-	Name *string `json:"name,omitempty"`
-	// (Only applies when using global control plane).
-	// The metro to route the request to.
-	Metro *string `json:"metro,omitempty"`
+	Name *string `json:"name,omitzero"`
 	// Quota policy for the volume.
-	QuotaPolicy *VolumeQuotaPolicy `json:"quota_policy,omitempty"`
+	QuotaPolicy *VolumeQuotaPolicy `json:"quota_policy,omitzero"`
 	// Filesystem type to format or configure.
 	// Without custom configuration, this is either `ext4` or `virtiofs`.
-	Filesystem *string `json:"filesystem,omitempty"`
+	Filesystem *string `json:"filesystem,omitzero"`
 	// Tags to assign to the new volume.
-	Tags []string `json:"tags,omitempty"`
+	Tags []string `json:"tags,omitzero"`
 	// Guest UID for managed volumes (host_path mode only).
-	Uid *uint32 `json:"uid,omitempty"`
+	Uid *uint32 `json:"uid,omitzero"`
 	// Guest GID for managed volumes (host_path mode only).
-	Gid *uint32 `json:"gid,omitempty"`
+	Gid *uint32 `json:"gid,omitzero"`
 	// Script arguments passed to volume initialization scripts.
-	Args map[string]string `json:"args,omitempty"`
+	Args map[string]string `json:"args,omitzero"`
 	// The access mode of the volume, controlling volume sharing behavior.
 	// Defaults to `rwo` if not specified.
-	AccessMode *VolumeAccessMode `json:"access_mode,omitempty"`
+	AccessMode *VolumeAccessMode `json:"access_mode,omitzero"`
 	// The size of the volume in megabytes.
-	SizeMb *uint64 `json:"size_mb,omitempty"`
+	SizeMb *uint64 `json:"size_mb,omitzero"`
 	// A host path to create a managed volume from.
-	HostPath *string `json:"host_path,omitempty"`
+	HostPath *string `json:"host_path,omitzero"`
 	// Source template volume to clone from.
-	Template *NameOrUUID `json:"template,omitempty"`
+	Template *NameOrUUID `json:"template,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *CreateVolumeRequest) UnmarshalJSON(data []byte) error {

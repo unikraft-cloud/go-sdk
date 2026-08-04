@@ -13,17 +13,14 @@ import (
 
 // An identifier for a resource.  Either a name or a UUID.
 type NameOrUUID struct {
-	// (Only applies when using global control plane).
-	// The metro of the resource.
-	Metro *string `json:"metro,omitempty"`
-	// Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitempty"`
-	// Mutually exclusive with UUID.
-	Name *string `json:"name,omitempty"`
+	// The UUID of the resource.
+	Uuid *string `json:"uuid,omitzero"`
+	// The name of the resource.
+	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *NameOrUUID) UnmarshalJSON(data []byte) error {

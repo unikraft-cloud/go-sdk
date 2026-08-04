@@ -13,11 +13,11 @@ import (
 
 type UpdateServiceGroupsResponseData struct {
 	// List of service groups that were processed during the update operation.
-	ServiceGroups []UpdateServiceGroupsResponseUpdatedServiceGroup `json:"service_groups,omitempty"`
+	ServiceGroups []UpdateServiceGroupsResponseUpdatedServiceGroup `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *UpdateServiceGroupsResponseData) UnmarshalJSON(data []byte) error {

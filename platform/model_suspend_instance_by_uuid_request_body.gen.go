@@ -15,11 +15,11 @@ import (
 type SuspendInstanceByUUIDRequestBody struct {
 	// Timeout for draining connections in milliseconds.  No draining
 	// will occur if set to 0.  Use -1 for the largest possible value.
-	DrainTimeoutMs *uint64 `json:"drain_timeout_ms,omitempty"`
+	DrainTimeoutMs *uint64 `json:"drain_timeout_ms,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *SuspendInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) error {

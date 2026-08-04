@@ -13,11 +13,11 @@ import (
 
 type DeleteTemplateInstancesResponseData struct {
 	// List of template instances that were processed during the delete operation.
-	Instances []DeleteTemplateInstancesResponseTemplateInstance `json:"instances,omitempty"`
+	Instances []DeleteTemplateInstancesResponseTemplateInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *DeleteTemplateInstancesResponseData) UnmarshalJSON(data []byte) error {

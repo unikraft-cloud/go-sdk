@@ -14,11 +14,11 @@ import (
 // The error response message for an API request.
 type ResponseError struct {
 	// The HTTP status code of the error.
-	Status uint64 `json:"status"`
+	Status uint64 `json:"status,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *ResponseError) UnmarshalJSON(data []byte) error {

@@ -13,13 +13,13 @@ import (
 
 type ConfigurationInstanceCreateArgs struct {
 	// The ROM to use for the autoscale configuration.
-	Roms *InstanceCreateArgsInstanceCreateRequestRoms `json:"roms,omitempty"`
+	Roms *InstanceCreateArgsInstanceCreateRequestRoms `json:"roms,omitzero"`
 	// The template to use for the autoscale configuration.
-	Template *NameOrUUID `json:"template,omitempty"`
+	Template *NameOrUUID `json:"template,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *ConfigurationInstanceCreateArgs) UnmarshalJSON(data []byte) error {

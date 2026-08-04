@@ -13,28 +13,25 @@ import (
 
 type UpdateServiceGroupsResponseUpdatedServiceGroup struct {
 	// The UUID of the service group that was updated.
-	Uuid string `json:"uuid"`
+	Uuid string `json:"uuid,omitzero"`
 	// The name of the service group that was updated.
-	Name string `json:"name"`
-	// (Only applies when using global control plane).
-	// The metro of the service group.
-	Metro *string `json:"metro,omitempty"`
+	Name string `json:"name,omitzero"`
 	// The status of this particular service group update operation.
-	Status ResponseStatus `json:"status"`
+	Status ResponseStatus `json:"status,omitzero"`
 	// (Optional).  The client-provided ID from the request.
-	Id *string `json:"id,omitempty"`
+	Id *string `json:"id,omitzero"`
 	// An optional message providing additional information about the status.
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.
-	Message *string `json:"message,omitempty"`
+	Message *string `json:"message,omitzero"`
 	// An optional error code providing additional information about the status.
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.
-	Error *int32 `json:"error,omitempty"`
+	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *UpdateServiceGroupsResponseUpdatedServiceGroup) UnmarshalJSON(data []byte) error {

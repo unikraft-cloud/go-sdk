@@ -13,11 +13,11 @@ import (
 
 type DeleteServiceGroupsResponseData struct {
 	// The service group(s) which were deleted by the request.
-	ServiceGroups []DeleteServiceGroupsResponseDeletedServiceGroup `json:"service_groups,omitempty"`
+	ServiceGroups []DeleteServiceGroupsResponseDeletedServiceGroup `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
-	AdditionalProperties map[string]jsontext.Value `json:",inline"`
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
 func (m *DeleteServiceGroupsResponseData) UnmarshalJSON(data []byte) error {
