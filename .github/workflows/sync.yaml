@@ -48,5 +48,5 @@ jobs:
         branch: sync/${{ inputs.channel }}
         committer: Unikraft Bot <monkey@unikraft.io>
         author: Unikraft Bot <monkey@unikraft.io>
-        add-paths: controlplane,platform
+        add-paths: controlplane,platform,sandbox
         signoff: true
