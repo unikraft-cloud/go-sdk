@@ -17,10 +17,7 @@ GOIMPORTS           ?= $(GO) run golang.org/x/tools/cmd/goimports@latest
 all: generate fmt
 
 .PHONY: generate
-# sandbox is deliberately excluded until sandbox.yaml is published on the
-# release channels; until then it 404s and would fail CI.  Run `make sandbox`
-# explicitly to regenerate it, and add it back here once the spec lands.
-generate: platform controlplane
+generate: platform controlplane sandbox
 
 .PHONY: platform
 platform: platform.yaml
