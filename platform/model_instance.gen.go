@@ -296,6 +296,11 @@ type Instance struct {
 	Gateway *string `json:"gateway,omitzero"`
 	// The DNS resolver configured inside the guest.
 	Nameserver *string `json:"nameserver,omitzero"`
+	// The type of virtual machine used to run the instance.
+	Type InstanceType `json:"type,omitzero"`
+	// GPUs attached to the instance.  Only present for instances of type
+	// `full`.
+	Gpus []InstanceGpu `json:"gpus,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
