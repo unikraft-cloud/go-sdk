@@ -13,11 +13,11 @@ import (
 
 // The response message containing the standard output and error logs.
 type CommandLogsResponse struct {
-	Status   ResponseStatus           `json:"status,omitzero"`
+	Status   ResponseStatus           `json:"status"`
 	Message  *string                  `json:"message,omitzero"`
 	Data     *CommandLogsResponseData `json:"data,omitzero"`
 	Errors   []ResponseError          `json:"errors,omitzero"`
-	OpTimeUs uint64                   `json:"op_time_us,omitzero"`
+	OpTimeUs uint64                   `json:"op_time_us"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

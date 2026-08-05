@@ -12,7 +12,7 @@ import (
 )
 
 type CommandResponseData struct {
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

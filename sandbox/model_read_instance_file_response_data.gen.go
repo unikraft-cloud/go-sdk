@@ -12,7 +12,7 @@ import (
 )
 
 type ReadInstanceFileResponseData struct {
-	Contents string `json:"contents,omitzero"`
+	Contents string `json:"contents"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

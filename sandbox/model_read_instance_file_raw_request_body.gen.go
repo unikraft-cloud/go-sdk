@@ -12,7 +12,7 @@ import (
 )
 
 type ReadInstanceFileRawRequestBody struct {
-	Path string `json:"path,omitzero"`
+	Path string `json:"path"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
