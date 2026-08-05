@@ -138,6 +138,21 @@ type CreateInstanceRequest struct {
 	Nameserver *string `json:"nameserver,omitzero"`
 	// A list of one to four interfaces to attach
 	NetworkInterfaces []CreateInstanceRequestNetworkInterface `json:"network_interfaces,omitzero"`
+	// (Optional).  The type of virtual machine to use for the instance.
+	// Defaults to `micro`, which runs on Firecracker.  `full` runs on QEMU
+	// instead and is required for GPU passthrough (see `gpus`) and, in the
+	// future, Windows VMs.  QEMU-backed instances currently do not support
+	// scale-to-zero, templates, branching, or checkpointing, and only
+	// support block-based volumes (no virtiofs).  Requires a plan with full
+	// VM support and cannot be combined with `template`, `branch_from`, or
+	// `checkpoint`.
+	Type *InstanceType `json:"type,omitzero"`
+	// (Optional).  Number of GPUs to attach to the instance.  Currently
+	// restricted to at most 1.  Requires `type` to be `full` and a plan
+	// with GPU support.  A GPU stays assigned to the instance, even while
+	// stopped, until the instance is deleted.  Cannot be combined with
+	// `template`, `branch_from`, or `checkpoint`.
+	Gpus *int32 `json:"gpus,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
