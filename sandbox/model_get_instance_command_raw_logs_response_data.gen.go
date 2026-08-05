@@ -12,7 +12,7 @@ import (
 )
 
 type GetInstanceCommandRawLogsResponseData struct {
-	Output string `json:"output,omitzero"`
+	Output string `json:"output"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

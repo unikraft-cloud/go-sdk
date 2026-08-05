@@ -13,11 +13,11 @@ import (
 
 // The response message containing the UUID of the executed command.
 type CommandResponse struct {
-	Status   ResponseStatus       `json:"status,omitzero"`
+	Status   ResponseStatus       `json:"status"`
 	Message  *string              `json:"message,omitzero"`
 	Data     *CommandResponseData `json:"data,omitzero"`
 	Errors   []ResponseError      `json:"errors,omitzero"`
-	OpTimeUs uint64               `json:"op_time_us,omitzero"`
+	OpTimeUs uint64               `json:"op_time_us"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

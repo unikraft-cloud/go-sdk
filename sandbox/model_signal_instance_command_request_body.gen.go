@@ -12,7 +12,7 @@ import (
 )
 
 type SignalInstanceCommandRequestBody struct {
-	Signal interface{} `json:"signal,omitzero"`
+	Signal interface{} `json:"signal"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

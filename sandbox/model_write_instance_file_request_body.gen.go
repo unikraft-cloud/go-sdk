@@ -12,10 +12,10 @@ import (
 )
 
 type WriteInstanceFileRequestBody struct {
-	Path     string                    `json:"path,omitzero"`
-	Append   bool                      `json:"append,omitzero"`
-	Encoding WriteInstanceFileEncoding `json:"encoding,omitzero"`
-	Data     string                    `json:"data,omitzero"`
+	Path     string                    `json:"path"`
+	Append   bool                      `json:"append"`
+	Encoding WriteInstanceFileEncoding `json:"encoding"`
+	Data     string                    `json:"data"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

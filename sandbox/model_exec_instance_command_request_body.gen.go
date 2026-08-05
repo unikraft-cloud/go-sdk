@@ -12,7 +12,7 @@ import (
 )
 
 type ExecInstanceCommandRequestBody struct {
-	Cmd string `json:"cmd,omitzero"`
+	Cmd string `json:"cmd"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

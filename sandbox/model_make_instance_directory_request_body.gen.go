@@ -12,8 +12,8 @@ import (
 )
 
 type MakeInstanceDirectoryRequestBody struct {
-	Path    string `json:"path,omitzero"`
-	Parents bool   `json:"parents,omitzero"`
+	Path    string `json:"path"`
+	Parents bool   `json:"parents"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
