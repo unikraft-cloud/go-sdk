@@ -59,13 +59,21 @@ func CollectAllSlices[C platform.Client, T any](ctx context.Context, c *Group[C]
 }
 
 // CollectRefs performs the given function fn across all clients in the group
-// distributing the refs across the clients based on the Metro field of each
-// Ref. If a Ref does not have the Metro field set, it is sent to all clients.
+// distributing the refs across the clients based on the Metro and Node fields
+// of each Ref, with the same routing as [DoRefs]: unscoped refs broadcast to
+// all clients, scoped refs go to the most specific clients able to answer
+// for them, falling back to the wildcard clients.
 //
-// Each callback must return the list of Refs that were found on that client.
+// Each callback must return the list of Refs that were found on that client,
+// with the Metro and Node fields set to the true origin of the resource when
+// the callback knows it; empty fields are filled in from the answering
+// client's scope. Callbacks of wildcard clients should always set the Metro
+// field themselves, or scoped requests answered by them will be reported as
+// not found.
+//
 // After all callbacks have completed, CollectRefs checks that all requested
 // Refs were found across the clients, returning an error if any were not found.
-func CollectRefs[C comparableClient, T any](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) (T, Refs, error)) ([]T, error) {
+func CollectRefs[C platform.Client, T any](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) (T, Refs, error)) ([]T, error) {
 	results := make([]T, len(c.clients))
 	err := DoRefs(ctx, c, refs, func(ctx context.Context, client C, refs Refs) (Refs, error) {
 		idx := mustGetIndexCtx(ctx)
@@ -79,7 +87,7 @@ func CollectRefs[C comparableClient, T any](ctx context.Context, c *Group[C], re
 // CollectRefsSlices performs same operation as CollectRefs, but for functions
 // that return slices. The resulting slices from all clients are concatenated
 // into a single slice and returned.
-func CollectRefsSlices[C comparableClient, T any](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) ([]T, Refs, error)) ([]T, error) {
+func CollectRefsSlices[C platform.Client, T any](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) ([]T, Refs, error)) ([]T, error) {
 	slices, err := CollectRefs(ctx, c, refs, fn)
 	return flatten(slices), err
 }

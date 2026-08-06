@@ -16,12 +16,14 @@ import (
 )
 
 // DoMetro performs the given function fn on the client in the group
-// corresponding to the given metro.
+// responsible for the given metro (or "metro/node") name: the exact client
+// if one exists, else the metro's only node client, else a wildcard client.
 func DoMetro[C platform.Client](ctx context.Context, c *Group[C], name string, fn func(context.Context, C) error) error {
-	metroClient, err := c.getByName(name)
+	idx, err := c.resolveMetro(name)
 	if err != nil {
 		return err
 	}
+	metroClient := c.clients[idx].Client
 	logger := log.G(ctx).
 		With().
 		Str("metro", name).
@@ -29,7 +31,7 @@ func DoMetro[C platform.Client](ctx context.Context, c *Group[C], name string, f
 	ctx = log.WithLogger(ctx, &logger)
 	err = fn(ctx, metroClient)
 	if err != nil {
-		return fmt.Errorf("failed on %q client: %w", name, err)
+		return fmt.Errorf("failed on %q client: %w", c.clients[idx].Name, err)
 	}
 	return nil
 }
@@ -61,35 +63,49 @@ func DoAll[C platform.Client](ctx context.Context, c *Group[C], fn func(context.
 }
 
 // DoRefs performs the given function fn across all clients in the group
-// distributing the refs across the clients based on the Metro field of each
-// Ref. If a Ref does not have the Metro field set, it is sent to all clients.
+// distributing the refs across the clients based on the Metro and Node fields
+// of each Ref. If a Ref does not have the Metro field set, it is sent to all
+// clients. A Ref scoped to a metro (and optionally a node) is sent to the
+// most specific clients able to answer for it: the exact node client, else
+// the metro client, else the wildcard clients — with a metro-scoped Ref also
+// fanning out to all of the metro's node clients before falling back to the
+// wildcards.
 //
-// Each callback must return the list of Refs that were found on that client.
+// Each callback must return the list of Refs that were found on that client,
+// with the Metro and Node fields set to the true origin of the resource when
+// the callback knows it (e.g. from the response); empty Metro and Node fields
+// are filled in from the answering client's scope. Callbacks of wildcard
+// clients should always set the Metro field themselves, or scoped requests
+// answered by them will be reported as not found.
+//
 // After all callbacks have completed, DoRefs checks that all requested Refs
-// were found across the clients, returning an error if any were not found.
-func DoRefs[C comparableClient](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) (Refs, error)) error {
-	targets := make(map[C]Refs)
+// were found across the clients, returning an error if any were not found. A
+// node-scoped request is satisfied by a result whose node is unattributed
+// (the serving endpoint is responsible for honoring the node scope), but
+// never by a result attributed to a different node.
+func DoRefs[C platform.Client](ctx context.Context, c *Group[C], refs Refs, fn func(context.Context, C, Refs) (Refs, error)) error {
+	targets := make([]Refs, len(c.clients))
 	for _, ref := range refs {
-		if ref.Metro != "" {
-			client, err := c.getByName(ref.Metro)
-			if err != nil {
-				return err
-			}
-			targets[client] = append(targets[client], ref)
-		} else {
-			for _, client := range c.clients {
-				targets[client.Client] = append(targets[client.Client], ref)
-			}
+		indices, err := c.resolveRef(ref)
+		if err != nil {
+			return err
+		}
+		for _, idx := range indices {
+			targets[idx] = append(targets[idx], ref)
 		}
 	}
 
 	eg := joinerrgroup.Group{}
 	refMap := make(map[Ref]struct{})
+	// nodeless tracks the results whose node could not be attributed (from
+	// neither the response nor the client's scope): only these may satisfy a
+	// node-scoped request without matching its node.
+	nodeless := make(map[Ref]struct{})
 	var mu sync.Mutex
 
 	for idx, client := range c.clients {
-		refs, ok := targets[client.Client]
-		if !ok || len(refs) == 0 {
+		refs := targets[idx]
+		if len(refs) == 0 {
 			continue
 		}
 
@@ -106,14 +122,25 @@ func DoRefs[C comparableClient](ctx context.Context, c *Group[C], refs Refs, fn 
 				return fmt.Errorf("failed on %q client: %w", client.Name, err)
 			}
 
+			metro, node := client.scope()
 			mu.Lock()
 			for _, ref := range refs {
-				// track all possible ref permutations that could have been used to
-				// fetch this resource
-				ref.Metro = client.Name
+				// fill in the origin of the resource from the client's scope
+				// when the callback did not report it
+				if ref.Metro == "" {
+					ref.Metro = metro
+					if ref.Node == "" {
+						ref.Node = node
+					}
+				}
 				ref.Display = ""
-				for _, ref := range ref.variants() {
-					refMap[ref] = struct{}{}
+				// track all possible ref permutations that could have been
+				// used to fetch this resource
+				for _, variant := range ref.variants() {
+					refMap[variant] = struct{}{}
+					if ref.Node == "" {
+						nodeless[variant] = struct{}{}
+					}
 				}
 			}
 			mu.Unlock()
@@ -127,10 +154,20 @@ func DoRefs[C comparableClient](ctx context.Context, c *Group[C], refs Refs, fn 
 
 	notFound := make([]Ref, 0)
 	for _, ref := range refs {
-		ref.Display = ""
-		if _, ok := refMap[ref]; !ok {
-			notFound = append(notFound, ref)
+		lookup := ref
+		lookup.Display = ""
+		if _, ok := refMap[lookup]; ok {
+			continue
 		}
+		// A node-scoped request answered by a client whose response did not
+		// attribute a node still satisfies the request: the serving endpoint
+		// is responsible for honoring the node scope. A result attributed to
+		// a different node never does.
+		lookup.Node = ""
+		if _, ok := nodeless[lookup]; ok {
+			continue
+		}
+		notFound = append(notFound, ref)
 	}
 	if len(notFound) > 0 {
 		return ErrRefNotFound{Refs: notFound}
