@@ -12,8 +12,8 @@ import (
 )
 
 type CommandInspectResponseData struct {
-	Uuid     string `json:"uuid,omitzero"`
-	Cmdline  string `json:"cmdline,omitzero"`
+	Uuid     string `json:"uuid"`
+	Cmdline  string `json:"cmdline"`
 	Exitcode *int32 `json:"exitcode,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

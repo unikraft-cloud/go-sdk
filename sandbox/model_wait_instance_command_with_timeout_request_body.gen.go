@@ -12,7 +12,7 @@ import (
 )
 
 type WaitInstanceCommandWithTimeoutRequestBody struct {
-	TimeoutS float64 `json:"timeout_s,omitzero"`
+	TimeoutS float64 `json:"timeout_s"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

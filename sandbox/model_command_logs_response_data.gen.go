@@ -12,8 +12,8 @@ import (
 )
 
 type CommandLogsResponseData struct {
-	Stdout string `json:"stdout,omitzero"`
-	Stderr string `json:"stderr,omitzero"`
+	Stdout string `json:"stdout"`
+	Stderr string `json:"stderr"`
 	// Total available length of stdout, in bytes.
 	StdoutAvailable *uint64 `json:"stdout_available,omitzero"`
 	// Total available length of stderr, in bytes.

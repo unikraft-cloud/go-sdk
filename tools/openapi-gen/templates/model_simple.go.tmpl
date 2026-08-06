@@ -6,11 +6,12 @@ import (
 
 {{$schema := .Schema}}
 {{$schemaName := .SchemaName}}
+{{$propNames := propertyNamesOrdered $schemaName $schema}}
 {{- if $schema.Description}}
 // {{$schema.Description | replace "\n" "\n// "}}
 {{- end}}
 type {{$schemaName}} struct {
-{{- range $propName := propertyNamesOrdered $schemaName $schema}}
+{{- range $propName := $propNames}}
 {{- $prop := getProperty $schema $propName}}
 {{- if $prop}}
 {{- /* Render description for all properties, including array enums */}}
@@ -28,7 +29,11 @@ type {{$schemaName}} struct {
 		{{- $propType = printf "*%s" $propType}}
 	{{- end}}
 {{- end}}
-	{{$propGoName}} {{$propType}} `json:"{{$propName}},omitzero"`
+{{- $omit := ",omitzero"}}
+{{- if $required}}
+	{{- $omit = ""}}
+{{- end}}
+	{{$propGoName}} {{$propType}} `json:"{{$propName}}{{$omit}}"`
 {{- end}}
 {{- end}}
 

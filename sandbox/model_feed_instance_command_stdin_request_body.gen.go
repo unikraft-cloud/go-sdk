@@ -13,9 +13,9 @@ import (
 
 type FeedInstanceCommandStdinRequestBody struct {
 	// Base64-encoded bytes to feed into the command's standard input.
-	Data string `json:"data,omitzero"`
+	Data string `json:"data"`
 	// If true, closes the standard input stream after injecting the data.
-	Eof bool `json:"eof,omitzero"`
+	Eof bool `json:"eof"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
