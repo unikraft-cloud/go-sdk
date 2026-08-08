@@ -14,7 +14,7 @@ import (
 // ImageSpec describes an image to use for an instance.
 type ImageSpec struct {
 	// The image URL
-	Url string `json:"url,omitzero"`
+	Url string `json:"url"`
 	// Optional credentials for authenticating to an OCI registry.
 	// Only valid for OCI registry URLs; the platform rejects this
 	// field for non-OCI schemes.

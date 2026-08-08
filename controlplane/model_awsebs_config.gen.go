@@ -17,20 +17,20 @@ type AWSEBSConfig struct {
 	// additional volumes.
 	DeviceName *string `json:"device_name,omitzero"`
 	// Size of the volume in GiB.
-	SizeGib uint32 `json:"size_gib,omitzero"`
+	SizeGib uint32 `json:"size_gib"`
 	// The volume type (gp3, gp2, io1, io2, st1, sc1, standard).
-	VolumeType string `json:"volume_type,omitzero"`
+	VolumeType string `json:"volume_type"`
 	// The number of IOPS. Only valid for io1, io2, and gp3 volumes.
 	Iops *uint32 `json:"iops,omitzero"`
 	// The throughput in MiB/s. Only valid for gp3 volumes.
 	ThroughputMibps *uint32 `json:"throughput_mibps,omitzero"`
 	// Whether the volume should be encrypted.
-	Encrypted bool `json:"encrypted,omitzero"`
+	Encrypted bool `json:"encrypted"`
 	// The KMS key ID for encryption. If encrypted is true and this is not
 	// specified, the default EBS encryption key will be used.
 	KmsKeyId *string `json:"kms_key_id,omitzero"`
 	// Whether to delete the volume when the instance is terminated.
-	DeleteOnTermination bool `json:"delete_on_termination,omitzero"`
+	DeleteOnTermination bool `json:"delete_on_termination"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -13,22 +13,22 @@ import (
 
 type QuotasStats struct {
 	// Number of instances
-	Instances int64 `json:"instances,omitzero"`
+	Instances int64 `json:"instances"`
 	// Number of instances that are not in the `stopped` state
-	LiveInstances int64 `json:"live_instances,omitzero"`
+	LiveInstances int64 `json:"live_instances"`
 	// Number of vCPUs
-	LiveVcpus int64 `json:"live_vcpus,omitzero"`
+	LiveVcpus int64 `json:"live_vcpus"`
 	// Amount of memory assigned to instances that are not in the `stopped`
 	// state in megabytes
-	LiveMemoryMb int64 `json:"live_memory_mb,omitzero"`
+	LiveMemoryMb int64 `json:"live_memory_mb"`
 	// Number of services
-	ServiceGroups int64 `json:"service_groups,omitzero"`
+	ServiceGroups int64 `json:"service_groups"`
 	// Number of published network ports over all existing services
-	Services int64 `json:"services,omitzero"`
+	Services int64 `json:"services"`
 	// Number of volumes
-	Volumes int64 `json:"volumes,omitzero"`
+	Volumes int64 `json:"volumes"`
 	// Total size of all volumes in megabytes
-	TotalVolumeMb int64 `json:"total_volume_mb,omitzero"`
+	TotalVolumeMb int64 `json:"total_volume_mb"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

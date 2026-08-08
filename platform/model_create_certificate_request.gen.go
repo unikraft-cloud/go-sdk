@@ -30,9 +30,9 @@ type CreateCertificateRequest struct {
 	// or `common_name` must be specified.
 	CommonName *string `json:"common_name,omitzero"`
 	// The chain of the certificate.
-	Chain string `json:"chain,omitzero"`
+	Chain string `json:"chain"`
 	// The private key of the certificate.
-	Pkey string `json:"pkey,omitzero"`
+	Pkey string `json:"pkey"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

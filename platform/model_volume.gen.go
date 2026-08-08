@@ -21,22 +21,22 @@ type Volume struct {
 	// volume is created.  The UUID is used to reference the volume in
 	// API calls and can be used to identify the volume in all API calls that
 	// require an identifier.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the volume.
 	//
 	// This is a human-readable name that can be used to identify the volume.
 	// The name must be unique within the context of your account.  The name can
 	// also be used to identify the volume in API calls.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The time the volume was created.
-	CreatedAt time.Time `json:"created_at,omitzero"`
+	CreatedAt time.Time `json:"created_at"`
 	// Current state of the volume.
-	State VolumeState `json:"state,omitzero"`
+	State VolumeState `json:"state"`
 	// The size of the volume in megabytes.
-	SizeMb uint64 `json:"size_mb,omitzero"`
+	SizeMb uint64 `json:"size_mb"`
 	// Indicates if the volume will stay alive when the last instance is deleted
 	// that this volume is attached to.
-	Persistent bool `json:"persistent,omitzero"`
+	Persistent bool `json:"persistent"`
 	// List of instances that this volume is attached to.
 	AttachedTo []VolumeInstanceID `json:"attached_to,omitzero"`
 	// List of instances that have this volume mounted.
@@ -57,7 +57,7 @@ type Volume struct {
 	// message, and is useful when the status is not `success`.
 	Error *int32 `json:"error,omitzero"`
 	// Either static or dynamic reservation.
-	QuotaPolicy VolumeQuotaPolicy `json:"quota_policy,omitzero"`
+	QuotaPolicy VolumeQuotaPolicy `json:"quota_policy"`
 	// If set to true, the volume cannot be deleted.
 	DeleteLock *bool `json:"delete_lock,omitzero"`
 	// The amount of free space in the volume in megabytes.

@@ -21,33 +21,33 @@ type Instance struct {
 	// instance is created.  The UUID is used to reference the instance in API
 	// calls and can be used to identify the instance in all API calls that
 	// require an instance identifier.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the instance.
 	//
 	// This is a human-readable name that can be used to identify the instance.
 	// The name must be unique within the context of your account.  The name can
 	// also be used to identify the instance in API calls.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The time the instance was created.
-	CreatedAt time.Time `json:"created_at,omitzero"`
+	CreatedAt time.Time `json:"created_at"`
 	// The state of the instance.  This indicates the current state of the
 	// instance, such as whether it is running, stopped, or in an error state.
-	State InstanceState `json:"state,omitzero"`
+	State InstanceState `json:"state"`
 	// The internal hostname of the instance.  This address can be used privately
 	// within the Unikraft Cloud network to access the instance.  It is not
 	// accessible from the public Internet.
 	PrivateFqdn *string `json:"private_fqdn,omitzero"`
 	// The image used to create the instance.  This is a reference to the
 	// Unikraft image that was used to create the instance.
-	Image string `json:"image,omitzero"`
+	Image string `json:"image"`
 	// The amount of memory in megabytes allocated for the instance.  This is the
 	// total amount of memory that is available to the instance for its
 	// operations.
-	MemoryMb uint64 `json:"memory_mb,omitzero"`
+	MemoryMb uint64 `json:"memory_mb"`
 	// The number of vCPUs allocated for the instance.  This is the total
 	// number of virtual CPUs that are available to the instance for its
 	// operations.
-	Vcpus uint32 `json:"vcpus,omitzero"`
+	Vcpus uint32 `json:"vcpus"`
 	// The arguments passed to the instance when it was started.  This is a
 	// list of command-line arguments that were provided to the instance at
 	// startup.  These arguments can be used to configure the behavior of the
@@ -209,7 +209,7 @@ type Instance struct {
 	//
 	// A manual start or stop of the instance aborts the restart sequence and
 	// resets the back-off delay.
-	RestartPolicy InstanceRestartPolicy `json:"restart_policy,omitzero"`
+	RestartPolicy InstanceRestartPolicy `json:"restart_policy"`
 	// The scale-to-zero configuration for the instance.
 	//
 	// With conventional cloud platforms you need to keep at least one instance
@@ -297,7 +297,7 @@ type Instance struct {
 	// The DNS resolver configured inside the guest.
 	Nameserver *string `json:"nameserver,omitzero"`
 	// The type of virtual machine used to run the instance.
-	Type InstanceType `json:"type,omitzero"`
+	Type InstanceType `json:"type"`
 	// GPUs attached to the instance.  Only present for instances of type
 	// `full`.
 	Gpus []InstanceGpu `json:"gpus,omitzero"`

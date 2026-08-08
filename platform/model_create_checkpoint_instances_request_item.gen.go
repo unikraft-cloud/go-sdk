@@ -14,7 +14,7 @@ import (
 // A single checkpoint creation request.
 type CreateCheckpointInstancesRequestItem struct {
 	// The source instance to create a checkpoint from (by name or UUID).
-	From NameOrUUID `json:"from,omitzero"`
+	From NameOrUUID `json:"from"`
 	// (Optional).  The name of the checkpoint.
 	// If not provided, a name will be generated.
 	Name *string `json:"name,omitzero"`

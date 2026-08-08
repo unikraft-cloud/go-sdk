@@ -14,9 +14,9 @@ import (
 // License information (admin only).
 type DataLicense struct {
 	// The serial number of the license certificate, hex-encoded.
-	Serial string `json:"serial,omitzero"`
+	Serial string `json:"serial"`
 	// Whether the license is currently valid.
-	Valid bool `json:"valid,omitzero"`
+	Valid bool `json:"valid"`
 	// List of enabled features.
 	Features []string `json:"features,omitzero"`
 

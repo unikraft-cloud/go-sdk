@@ -17,7 +17,7 @@ import (
 // time. This is a current limitation of the API design.
 type AutoscalePolicy struct {
 	// The name of the policy.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// If the policy is enabled.
 	Enabled *bool `json:"enabled,omitzero"`
 	// Metric to use for the step policy.

@@ -14,7 +14,7 @@ import (
 // The snapshot UUID of the instance.
 type InstanceSnapshot struct {
 	// The UUID of the snapshot.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -33,14 +33,14 @@ type Schedule struct {
 	// The name of the schedule.
 	//
 	// Must be unique within an instance.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The calendar expression specifying when the action should be performed.
 	//
 	// Uses systemd calendar event syntax.
 	// See https://www.man7.org/linux/man-pages/man7/systemd.time.7.html
-	When string `json:"when,omitzero"`
+	When string `json:"when"`
 	// The action to perform at the scheduled time.
-	Action ScheduleAction `json:"action,omitzero"`
+	Action ScheduleAction `json:"action"`
 	// The timestamp of when the next scheduled action will occur.
 	//
 	// This field is populated only in responses (not settable in requests).

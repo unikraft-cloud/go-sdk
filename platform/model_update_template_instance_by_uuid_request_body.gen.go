@@ -16,9 +16,9 @@ type UpdateTemplateInstanceByUUIDRequestBody struct {
 	// the response.
 	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableTemplateInstanceProperty `json:"prop,omitzero"`
+	Prop MutableTemplateInstanceProperty `json:"prop"`
 	// The operation to perform on the property.
-	Op MutableTemplateInstanceOperation `json:"op,omitzero"`
+	Op MutableTemplateInstanceOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean

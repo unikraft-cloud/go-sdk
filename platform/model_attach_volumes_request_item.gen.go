@@ -14,13 +14,13 @@ import (
 // A single request item for attaching a volume to an instance.
 type AttachVolumesRequestItem struct {
 	// UUID or name of the instance to attach the volume to.
-	AttachTo NameOrUUID `json:"attach_to,omitzero"`
+	AttachTo NameOrUUID `json:"attach_to"`
 	// Path of the mountpoint.
 	//
 	// The path must be absolute, not contain `.` and `..` components, and not
 	// contain colons (`:`). The path must point to an empty directory. If the
 	// directory does not exist, it is created.
-	At string `json:"at,omitzero"`
+	At string `json:"at"`
 	// Whether the volume should be mounted read-only.
 	Readonly *bool `json:"readonly,omitzero"`
 	// The UUID of the volume to attach. Mutually exclusive with name.

@@ -15,13 +15,13 @@ import (
 type DeleteInstancesResponseInstance struct {
 	// Indicates whether the start operation was successful or not for this
 	// instance.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the instance which was deleted.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the instance which was deleted.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The previous state of the instance before it was deleted.
-	PreviousState string `json:"previous_state,omitzero"`
+	PreviousState string `json:"previous_state"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`

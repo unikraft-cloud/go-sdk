@@ -16,9 +16,9 @@ type UpdateInstanceByUUIDRequestBody struct {
 	// the response.
 	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableInstanceProperty `json:"prop,omitzero"`
+	Prop MutableInstanceProperty `json:"prop"`
 	// The operation to perform on the property.
-	Op MutableInstanceOperation `json:"op,omitzero"`
+	Op MutableInstanceOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "image": object with image url, credentials, headers and pull policy
 	// - For "args": string or array of strings

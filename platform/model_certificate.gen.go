@@ -20,20 +20,20 @@ type Certificate struct {
 	// certificate is created.  The UUID is used to reference the certificate in
 	// API calls and can be used to identify the certificate in all API calls that
 	// require an identifier.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the certificate.
 	//
 	// This is a human-readable name that can be used to identify the certificate.
 	// The name must be unique within the context of your account.  The name can
 	// also be used to identify the certificate in API calls.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The time the certificate was created.
-	CreatedAt time.Time `json:"created_at,omitzero"`
+	CreatedAt time.Time `json:"created_at"`
 	// The common name (CN) field from the certificate's subject.
 	//
 	// This is typically the primary domain name that the certificate is issued
 	// for. It represents the main identity that the certificate validates.
-	CommonName string `json:"common_name,omitzero"`
+	CommonName string `json:"common_name"`
 	// The complete subject distinguished name (DN) of the certificate.
 	//
 	// This contains the full subject information from the certificate, including
@@ -73,7 +73,7 @@ type Certificate struct {
 	// This indicates whether the certificate is pending issuance, valid and
 	// ready for use, or in an error state. See CertificateState enum for
 	// detailed state descriptions.
-	State CertificateState `json:"state,omitzero"`
+	State CertificateState `json:"state"`
 	// An optional field representing the status of the request.  This field is
 	// only set when this message object is used as a response message.
 	Status *ResponseStatus `json:"status,omitzero"`

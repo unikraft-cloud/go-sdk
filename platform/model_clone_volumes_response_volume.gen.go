@@ -13,13 +13,13 @@ import (
 
 type CloneVolumesResponseVolume struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the newly cloned volume.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the newly cloned volume.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The state of the volume.
-	State VolumeState `json:"state,omitzero"`
+	State VolumeState `json:"state"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`

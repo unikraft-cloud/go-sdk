@@ -13,11 +13,11 @@ import (
 
 type DeleteVolumesResponseDeletedVolume struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the volume that was deleted.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the volume that was deleted.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`

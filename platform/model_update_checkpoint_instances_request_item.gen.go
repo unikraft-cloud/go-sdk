@@ -17,9 +17,9 @@ type UpdateCheckpointInstancesRequestItem struct {
 	// the response.
 	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableCheckpointInstanceProperty `json:"prop,omitzero"`
+	Prop MutableCheckpointInstanceProperty `json:"prop"`
 	// The operation to perform on the property.
-	Op MutableCheckpointInstanceOperation `json:"op,omitzero"`
+	Op MutableCheckpointInstanceOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean

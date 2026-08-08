@@ -13,7 +13,7 @@ import (
 
 type Image struct {
 	// The canonical name of the image.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The list of tags for the image.  Only populated when details are requested.
 	Tags []ImageTag `json:"tags,omitzero"`
 
