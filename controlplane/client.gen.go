@@ -271,7 +271,7 @@ func NewClient(copts ...ClientOption) Client {
 	}
 
 	if options.AllowInsecure() && options.HTTPClient() == nil {
-		options.SetHTTPClient(httpclient.NewInsecureHTTPClient())
+		options.SetHTTPClient(httpclient.NewHTTPClient(httpclient.WithInsecure()))
 	}
 
 	if options.HTTPClient() == nil {
