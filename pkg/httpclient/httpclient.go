@@ -10,9 +10,6 @@ package httpclient
 import (
 	"crypto/tls"
 	"net/http"
-	"net/url"
-
-	"golang.org/x/net/http/httpproxy"
 )
 
 // HTTPClient interface abstracts a generic HTTP request issuing client.
@@ -24,9 +21,7 @@ type HTTPClient interface {
 func NewHTTPClient() *http.Client {
 	return &http.Client{
 		Transport: &http.Transport{
-			Proxy: func(req *http.Request) (*url.URL, error) {
-				return httpproxy.FromEnvironment().ProxyFunc()(req.URL)
-			},
+			Proxy: http.ProxyFromEnvironment,
 		},
 	}
 }
@@ -36,9 +31,7 @@ func NewHTTPClient() *http.Client {
 func NewInsecureHTTPClient() *http.Client {
 	return &http.Client{
 		Transport: &http.Transport{
-			Proxy: func(req *http.Request) (*url.URL, error) {
-				return httpproxy.FromEnvironment().ProxyFunc()(req.URL)
-			},
+			Proxy: http.ProxyFromEnvironment,
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: true, // Allow insecure connections
 			},
