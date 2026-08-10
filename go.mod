@@ -7,7 +7,6 @@ tool unikraft.com/x/tools/openapi-gen
 require (
 	github.com/go-json-experiment/json v0.0.0-20260623181947-01eb4420fa68
 	github.com/stretchr/testify v1.11.1
-	golang.org/x/net v0.57.0
 	unikraft.com/x/joinerrgroup v0.0.0-20260220150535-dbc51abe4158
 	unikraft.com/x/log v0.0.0-20260126094137-ab6e717e5679
 	unikraft.com/x/ptr v0.0.0-20260126094137-ab6e717e5679
@@ -72,6 +71,7 @@ require (
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	golang.org/x/crypto v0.54.0 // indirect
 	golang.org/x/mod v0.38.0 // indirect
+	golang.org/x/net v0.57.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/text v0.40.0 // indirect
