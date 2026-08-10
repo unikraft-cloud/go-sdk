@@ -22,10 +22,8 @@ type HTTPClient interface {
 
 // NewHTTPClient creates a default Go HTTP client.
 func NewHTTPClient() *http.Client {
-	// We disable KeepAlive due to issues with the proxy in front of the API.
 	return &http.Client{
 		Transport: &http.Transport{
-			DisableKeepAlives: true,
 			Proxy: func(req *http.Request) (*url.URL, error) {
 				return httpproxy.FromEnvironment().ProxyFunc()(req.URL)
 			},
@@ -38,7 +36,6 @@ func NewHTTPClient() *http.Client {
 func NewInsecureHTTPClient() *http.Client {
 	return &http.Client{
 		Transport: &http.Transport{
-			DisableKeepAlives: true,
 			Proxy: func(req *http.Request) (*url.URL, error) {
 				return httpproxy.FromEnvironment().ProxyFunc()(req.URL)
 			},
