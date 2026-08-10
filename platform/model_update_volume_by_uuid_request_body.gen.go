@@ -15,9 +15,9 @@ type UpdateVolumeByUUIDRequestBody struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableVolumeProperty `json:"prop,omitzero"`
+	Prop MutableVolumeProperty `json:"prop"`
 	// The operation to perform.
-	Op MutableVolumeOperation `json:"op,omitzero"`
+	Op MutableVolumeOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "size_mb": unsigned integer
 	// - For "quota_policy": "static" or "dynamic"

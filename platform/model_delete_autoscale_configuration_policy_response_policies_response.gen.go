@@ -13,9 +13,9 @@ import (
 
 type DeleteAutoscaleConfigurationPolicyResponsePoliciesResponse struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// The name of the service of the deleted policy.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`

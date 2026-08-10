@@ -14,11 +14,11 @@ import (
 )
 
 type Image struct {
-	Url string `json:"url,omitzero"`
+	Url string `json:"url"`
 	// The time the volume was created.
-	CreatedAt   time.Time         `json:"created_at,omitzero"`
-	InitrdOrRom bool              `json:"initrd_or_rom,omitzero"`
-	SizeInBytes int64             `json:"size_in_bytes,omitzero"`
+	CreatedAt   time.Time         `json:"created_at"`
+	InitrdOrRom bool              `json:"initrd_or_rom"`
+	SizeInBytes int64             `json:"size_in_bytes"`
 	Args        []string          `json:"args,omitzero"`
 	Env         map[string]string `json:"env,omitzero"`
 	Tags        []string          `json:"tags,omitzero"`

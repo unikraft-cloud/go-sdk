@@ -31,16 +31,16 @@ type AWSConfig struct {
 	AdditionalVolumes []AWSEBSConfig `json:"additional_volumes,omitzero"`
 	// Whether to use a dedicated host. Dedicated hosts provide visibility and
 	// control over how instances are placed on physical servers.
-	DedicatedHost bool `json:"dedicated_host,omitzero"`
+	DedicatedHost bool `json:"dedicated_host"`
 	// Placement group name for the instance. Placement groups influence how
 	// instances are placed on underlying hardware.
 	PlacementGroup *string `json:"placement_group,omitzero"`
 	// The AWS region where the machine is located.
-	Region string `json:"region,omitzero"`
+	Region string `json:"region"`
 	// The AWS machine type. This determines the compute resources
 	// (CPU, memory, etc.) available on the machine. The valid values depend
 	// on the chosen provider.
-	MachineType string `json:"machine_type,omitzero"`
+	MachineType string `json:"machine_type"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

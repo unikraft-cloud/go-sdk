@@ -19,7 +19,7 @@ type ProvisionNodeRequest struct {
 	// The cloud provider where the machine should be provisioned.
 	Cloudprovider *CloudProvider `json:"cloudprovider,omitzero"`
 	// SSH keys for accessing the node. At least one key is required.
-	SshKeys []SSHKey `json:"ssh_keys,omitzero"`
+	SshKeys []SSHKey `json:"ssh_keys"`
 	// Optional user-defined tags.
 	Tags map[string]string `json:"tags,omitzero"`
 	// Optional provider-specific configuration for advanced customization.

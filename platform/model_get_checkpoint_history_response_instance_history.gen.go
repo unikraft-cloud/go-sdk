@@ -14,9 +14,9 @@ import (
 // History for a single instance.
 type GetCheckpointHistoryResponseInstanceHistory struct {
 	// The UUID of the instance.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the instance.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The checkpoint history entries.
 	History []CheckpointHistoryEntry `json:"history,omitzero"`
 	// The status of the response.

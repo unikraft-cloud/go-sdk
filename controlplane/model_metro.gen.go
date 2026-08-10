@@ -13,15 +13,15 @@ import (
 
 type Metro struct {
 	// The UUID of the metro.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The API endpoint for the metro.
-	Endpoint string `json:"endpoint,omitzero"`
+	Endpoint string `json:"endpoint"`
 	// The name of the metro.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The IATA code of the metro.
-	IataCode string `json:"iata_code,omitzero"`
+	IataCode string `json:"iata_code"`
 	// The country where the metro is located.
-	Country string `json:"country,omitzero"`
+	Country string `json:"country"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

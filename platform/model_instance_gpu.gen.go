@@ -14,10 +14,10 @@ import (
 // A GPU attached to the instance.
 type InstanceGpu struct {
 	// The UUID of the GPU.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The GPU model, given as its PCI vendor and device ID in the form
 	// `<vendor>:<device>`.
-	Model string `json:"model,omitzero"`
+	Model string `json:"model"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -19,7 +19,7 @@ type CreateServiceGroupRequest struct {
 	// you.  The name can also be used to identify the service group in API calls.
 	Name *string `json:"name,omitzero"`
 	// Description of exposed services.
-	Services []Service `json:"services,omitzero"`
+	Services []Service `json:"services"`
 	// Description of domains associated with the service group.
 	Domains []CreateServiceGroupRequestDomain `json:"domains,omitzero"`
 	// The soft limit is used by the Unikraft Cloud load balancer to decide when

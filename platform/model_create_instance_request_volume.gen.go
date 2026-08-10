@@ -27,7 +27,7 @@ type CreateInstanceRequestVolume struct {
 	// source (size_mb or host_path).
 	Name *string `json:"name,omitzero"`
 	// The mount point for the volume in the instance.
-	At string `json:"at,omitzero"`
+	At string `json:"at"`
 	// Whether the volume is read-only.
 	//
 	// If this field is set to true, the volume will be mounted as read-only in

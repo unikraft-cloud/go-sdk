@@ -15,11 +15,11 @@ import (
 type DeleteCertificatesResponseDeletedCertificate struct {
 	// Indicates whether the delete operation was successful or not for this
 	// certificate.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the certificate which was deleted.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the certificate which was deleted.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`
