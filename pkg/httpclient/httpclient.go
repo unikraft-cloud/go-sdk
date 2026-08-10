@@ -17,24 +17,75 @@ type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-// NewHTTPClient creates a default Go HTTP client.
-func NewHTTPClient() *http.Client {
-	return &http.Client{
-		Transport: &http.Transport{
-			Proxy: http.ProxyFromEnvironment,
-		},
+// Option configures the HTTP client returned by NewHTTPClient.
+type Option func(*options)
+
+type options struct {
+	insecure  bool
+	userAgent string
+}
+
+// WithInsecure configures the client to skip TLS certificate verification.
+func WithInsecure() Option {
+	return func(o *options) {
+		o.insecure = true
 	}
+}
+
+// WithUserAgent configures the client to set the given User-Agent header on
+// outgoing requests that do not already set one.
+func WithUserAgent(ua string) Option {
+	return func(o *options) {
+		o.userAgent = ua
+	}
+}
+
+// NewHTTPClient creates a default Go HTTP client.
+func NewHTTPClient(opts ...Option) *http.Client {
+	var o options
+	for _, opt := range opts {
+		opt(&o)
+	}
+
+	transport := &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+	}
+	if o.insecure {
+		transport.TLSClientConfig = &tls.Config{
+			InsecureSkipVerify: true, // Allow insecure connections
+		}
+	}
+
+	var rt http.RoundTripper = transport
+	if o.userAgent != "" {
+		rt = &userAgentTransport{
+			userAgent: o.userAgent,
+			next:      transport,
+		}
+	}
+
+	return &http.Client{Transport: rt}
 }
 
 // NewInsecureHTTPClient creates a default Go HTTP client with insecure checks
 // skipped.
-func NewInsecureHTTPClient() *http.Client {
-	return &http.Client{
-		Transport: &http.Transport{
-			Proxy: http.ProxyFromEnvironment,
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true, // Allow insecure connections
-			},
-		},
+//
+// Deprecated: use NewHTTPClient(WithInsecure()) instead.
+func NewInsecureHTTPClient(opts ...Option) *http.Client {
+	return NewHTTPClient(append(opts, WithInsecure())...)
+}
+
+// userAgentTransport sets a default User-Agent header on outgoing requests
+// that do not already have one set.
+type userAgentTransport struct {
+	userAgent string
+	next      http.RoundTripper
+}
+
+func (t *userAgentTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if req.Header.Get("User-Agent") == "" {
+		req = req.Clone(req.Context())
+		req.Header.Set("User-Agent", t.userAgent)
 	}
+	return t.next.RoundTrip(req)
 }
