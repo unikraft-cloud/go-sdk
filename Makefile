@@ -17,7 +17,7 @@ GOIMPORTS           ?= $(GO) run golang.org/x/tools/cmd/goimports@latest
 all: generate fmt
 
 .PHONY: generate
-generate: platform controlplane sandbox
+generate: platform controlplane
 
 .PHONY: platform
 platform: platform.yaml
@@ -37,20 +37,10 @@ controlplane: controlplane.yaml
 controlplane.yaml:
 	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/controlplane.yaml
 
-.PHONY: sandbox
-sandbox: sandbox.yaml
-	$(Q)rm -f $(WORKDIR)/sandbox/*.gen.go
-	$(GO) generate ./sandbox
-	ls $(WORKDIR)/sandbox/*.gen.go | xargs $(GOIMPORTS) -l -w
-
-sandbox.yaml:
-	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/sandbox.yaml
-
 .PHONY: fmt
 fmt:
 	ls $(WORKDIR)/platform/*.go | xargs $(GOIMPORTS) -l -w
 	ls $(WORKDIR)/controlplane/*.go | xargs $(GOIMPORTS) -l -w
-	ls $(WORKDIR)/sandbox/*.go | xargs $(GOIMPORTS) -l -w
 
 .PHONY: lint
 lint:
