@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The request message for creating a new instance.
 type CreateInstanceRequest struct {
@@ -19,8 +22,10 @@ type CreateInstanceRequest struct {
 	Name *string `json:"name,omitzero"`
 	// (Optional).  The image to use for the instance.
 	//
-	// Either an image or a template must be specified.
-	Image *ImageSpec `json:"image,omitzero"`
+	// Either an image or a template must be specified.  Accepts either a plain
+	// image reference string (`"nginx:latest"`) or an object carrying additional
+	// pull configuration (`{"url": "nginx:latest", "pull_policy": "always"}`).
+	Image ImageSource `json:"image,omitzero"`
 	// (Optional).  The arguments to pass to the instance when it starts.
 	Args []string `json:"args,omitzero"`
 	// (Optional).  Environment variables to set for the instance.
@@ -161,7 +166,29 @@ type CreateInstanceRequest struct {
 
 func (m *CreateInstanceRequest) UnmarshalJSON(data []byte) error {
 	type Alias CreateInstanceRequest
-	return json.Unmarshal(data, (*Alias)(m))
+	// Union members are decoded in a second step: a nil interface cannot be
+	// decoded into directly.  Holding them as raw JSON ahead of the embedded
+	// alias shadows the alias' own members of the same name.  An absent member
+	// leaves the current value in place, whereas an explicit null clears it.
+	aux := struct {
+		Image jsontext.Value `json:"image,omitzero"`
+		*Alias
+	}{Alias: (*Alias)(m)}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	if len(aux.Image) > 0 {
+		if aux.Image.Kind() == 'n' {
+			m.Image = nil
+		} else {
+			value, err := UnmarshalImageSource(aux.Image)
+			if err != nil {
+				return err
+			}
+			m.Image = value
+		}
+	}
+	return nil
 }
 
 func (m CreateInstanceRequest) MarshalJSON() ([]byte, error) {

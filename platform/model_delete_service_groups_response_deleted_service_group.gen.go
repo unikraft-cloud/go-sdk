@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // Details of the service group which was deleted by this request.
 type DeleteServiceGroupsResponseDeletedServiceGroup struct {

@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The response message for waiting for one or more instance(s) to reach a
 // certain state given their UUID(s) or name(s).

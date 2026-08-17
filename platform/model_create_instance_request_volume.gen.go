@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // A volume defines a storage volume that can be attached to the instance.
 type CreateInstanceRequestVolume struct {

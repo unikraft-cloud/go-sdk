@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type AttachVolumeByUUIDRequestBody struct {
 	// UUID or name of the instance to attach the volume to.

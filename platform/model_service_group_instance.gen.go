@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type ServiceGroupInstance struct {
 	// The UUID of the instance.  This is a unique identifier for the instance

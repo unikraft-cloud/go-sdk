@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // A helper program attached to the instance and reachable over a direct,
 // authenticated HTTP endpoint.  A plugin runs inside the instance next to the

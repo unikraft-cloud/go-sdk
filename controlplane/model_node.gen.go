@@ -7,11 +7,12 @@
 package controlplane
 
 import (
-	"time"
-
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // Node represents a physical or virtual compute node provisioned on a
 // cloud provider for use as part of the Unikraft Cloud infrastructure.

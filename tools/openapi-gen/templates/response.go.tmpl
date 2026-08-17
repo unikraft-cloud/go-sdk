@@ -4,10 +4,12 @@ package {{.Var "package" ""}}
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"net/http"
+{{- if eq (.Var "package" "") "controlplane"}}
+	"fmt"
 	"reflect"
 	"strings"
+{{- end}}
 )
 
 // The response for an invocation to an API on the Unikraft Cloud Platform.

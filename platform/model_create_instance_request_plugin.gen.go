@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // A helper program attached to the instance and reachable over a direct,
 // authenticated HTTP endpoint.  A plugin runs inside the instance next to the
@@ -21,11 +24,12 @@ type CreateInstanceRequestPlugin struct {
 	// maximum length of 63 characters and contains only letters (`a`-`z`,
 	// `A`-`Z`), digits (`0`-`9`), hyphen (`-`), and underscore (`_`).
 	Name string `json:"name"`
-	// The plugin's ROM image, given as an image reference string such as
-	// `user/myplugin:latest`.  The platform loads the image, mounts it at
+	// The plugin's ROM image.  The platform loads the image, mounts it at
 	// `/uk/plugins/<plugin_name>`, and runs its `init` program when the plugin
-	// starts.
-	Rom string `json:"rom"`
+	// starts.  Accepts either a plain image reference string
+	// (`"user/myplugin:latest"`) or an object carrying additional pull
+	// configuration (`{"url": "user/myplugin:latest", "pull_policy": "always"}`).
+	Rom ImageSource `json:"rom"`
 	// (Optional).  Arbitrary JSON configuration that the platform passes to the
 	// plugin's `init` program on `STDIN`.  Any JSON value works, including a
 	// string, a number, or an object.
@@ -38,7 +42,29 @@ type CreateInstanceRequestPlugin struct {
 
 func (m *CreateInstanceRequestPlugin) UnmarshalJSON(data []byte) error {
 	type Alias CreateInstanceRequestPlugin
-	return json.Unmarshal(data, (*Alias)(m))
+	// Union members are decoded in a second step: a nil interface cannot be
+	// decoded into directly.  Holding them as raw JSON ahead of the embedded
+	// alias shadows the alias' own members of the same name.  An absent member
+	// leaves the current value in place, whereas an explicit null clears it.
+	aux := struct {
+		Rom jsontext.Value `json:"rom,omitzero"`
+		*Alias
+	}{Alias: (*Alias)(m)}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	if len(aux.Rom) > 0 {
+		if aux.Rom.Kind() == 'n' {
+			m.Rom = nil
+		} else {
+			value, err := UnmarshalImageSource(aux.Rom)
+			if err != nil {
+				return err
+			}
+			m.Rom = value
+		}
+	}
+	return nil
 }
 
 func (m CreateInstanceRequestPlugin) MarshalJSON() ([]byte, error) {

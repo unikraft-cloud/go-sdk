@@ -7,11 +7,12 @@
 package controlplane
 
 import (
-	"time"
-
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type ImageTag struct {
 	// The tag name.
