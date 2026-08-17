@@ -9,7 +9,10 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type CheckAuthorizationResponseData struct {
 	// The authorization token which can be used to authenticate requests.

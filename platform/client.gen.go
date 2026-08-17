@@ -313,6 +313,34 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-images
 	GetImages(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
+	// Pull and pin one or more images so they stay cached and are never
+	// evicted, without relying on an on-demand pull to succeed at instance
+	// start.  If a pull fails, the agent's error is returned in the entry's
+	// `message` field.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/images
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/images#pin-images
+	PinImages(ctx context.Context, request []PinImageRequestItem, ropts ...RequestOption) (*Response[PinImagesResponseData], error)
+	// Unpin one or more images by UUID, making them eligible for normal
+	// cache eviction again.  This does not delete the image.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: DELETE /v1/images
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/images#unpin-images
+	UnpinImages(ctx context.Context, request []UnpinImageRequestItem, ropts ...RequestOption) (*Response[UnpinImagesResponseData], error)
 	// Create a checkpoint from an existing instance.  A checkpoint captures the
 	// state of an instance at a specific point in time.  Checkpoints can be
 	// created from running, stopped, or standby instances.
@@ -1739,6 +1767,44 @@ func (c *client) GetImages(ctx context.Context, request []GetImagesRequestTagOrD
 
 	resp := &Response[GetImagesResponseData]{}
 	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) PinImages(ctx context.Context, request []PinImageRequestItem, ropts ...RequestOption) (*Response[PinImagesResponseData], error) {
+	requestPath := "/v1/images"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[PinImagesResponseData]{}
+	if err := doRequest[PinImagesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) UnpinImages(ctx context.Context, request []UnpinImageRequestItem, ropts ...RequestOption) (*Response[UnpinImagesResponseData], error) {
+	requestPath := "/v1/images"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[UnpinImagesResponseData]{}
+	if err := doRequest[UnpinImagesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, err
 	}
 	return resp, nil

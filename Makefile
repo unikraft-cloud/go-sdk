@@ -11,7 +11,6 @@ CHANNEL             ?= prod-stable
 # Tools
 GO                  ?= go
 CURL                ?= curl
-GOIMPORTS           ?= $(GO) run golang.org/x/tools/cmd/goimports@latest
 
 .PHONY: all
 all: generate fmt
@@ -23,7 +22,6 @@ generate: platform controlplane
 platform: platform.yaml
 	$(Q)rm -f $(WORKDIR)/platform/*.gen.go
 	$(GO) generate ./platform
-	ls $(WORKDIR)/platform/*.gen.go | xargs $(GOIMPORTS) -l -w
 
 platform.yaml:
 	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/platform.yaml
@@ -32,15 +30,14 @@ platform.yaml:
 controlplane: controlplane.yaml
 	$(Q)rm -f $(WORKDIR)/controlplane/*.gen.go
 	$(GO) generate ./controlplane
-	ls $(WORKDIR)/controlplane/*.gen.go | xargs $(GOIMPORTS) -l -w
 
 controlplane.yaml:
 	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/controlplane.yaml
 
 .PHONY: fmt
 fmt:
-	ls $(WORKDIR)/platform/*.go | xargs $(GOIMPORTS) -l -w
-	ls $(WORKDIR)/controlplane/*.go | xargs $(GOIMPORTS) -l -w
+	go fmt $(WORKDIR)/platform/*.go
+	go fmt $(WORKDIR)/controlplane/*.go
 
 .PHONY: lint
 lint:

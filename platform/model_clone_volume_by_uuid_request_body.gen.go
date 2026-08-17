@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type CloneVolumeByUUIDRequestBody struct {
 	// The name of the new cloned volume.  If not provided, a random name

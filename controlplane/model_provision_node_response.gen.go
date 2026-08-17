@@ -9,7 +9,10 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // Response message for creating a node.
 type ProvisionNodeResponse struct {

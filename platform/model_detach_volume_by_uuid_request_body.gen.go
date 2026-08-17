@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type DetachVolumeByUUIDRequestBody struct {
 	// (Optional).  UUID or name of the instance to detach the volume from.

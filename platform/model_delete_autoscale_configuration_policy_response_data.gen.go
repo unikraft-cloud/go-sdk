@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type DeleteAutoscaleConfigurationPolicyResponseData struct {
 	// The policies which were deleted by the request.

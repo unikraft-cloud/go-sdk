@@ -9,7 +9,10 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // SSHKey represents an SSH public key for authentication.
 type SSHKey struct {

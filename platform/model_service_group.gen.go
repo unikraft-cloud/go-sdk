@@ -7,11 +7,12 @@
 package platform
 
 import (
-	"time"
-
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // A service group on Unikraft Cloud is used to describe how your application
 // exposes its functionality to the outside world.  Once defined, assigning an

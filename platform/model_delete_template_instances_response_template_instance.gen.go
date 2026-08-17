@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type DeleteTemplateInstancesResponseTemplateInstance struct {
 	// The UUID of the template instance that was deleted.

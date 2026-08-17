@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The response message for deleting one or more checkpoint instances.
 type DeleteCheckpointInstancesResponse struct {

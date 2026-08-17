@@ -7,11 +7,12 @@
 package platform
 
 import (
-	"time"
-
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type Image struct {
 	Url string `json:"url"`
@@ -23,6 +24,10 @@ type Image struct {
 	Env         map[string]string `json:"env,omitzero"`
 	Tags        []string          `json:"tags,omitzero"`
 	Users       []string          `json:"users,omitzero"`
+	// Whether the image is pinned and exempt from cache eviction.  Only
+	// populated (and only ever `true`) for callers with image manager
+	// permissions; omitted otherwise, including when the image is not pinned.
+	Persistent *bool `json:"persistent,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

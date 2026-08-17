@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type GetInstanceLogsByUUIDRequestBody struct {
 	// The byte offset of the log output to receive.  A negative sign makes the
