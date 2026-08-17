@@ -11,30 +11,30 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"unikraft.com/cloud/sdk/platform"
+	"unikraft.com/cloud/sdk/platform/gen"
 )
 
 // timedOutResponse builds the response a metro returns when a create call was
 // accepted but the wait for the target state ran out
-func timedOutResponse(instances ...platform.Instance) *platform.Response[platform.CreateInstanceResponseData] {
-	return &platform.Response[platform.CreateInstanceResponseData]{
-		Status:  platform.ResponseStatusError,
+func timedOutResponse(instances ...gen.Instance) *gen.Response[gen.CreateInstanceResponseData] {
+	return &gen.Response[gen.CreateInstanceResponseData]{
+		Status:  gen.ResponseStatusError,
 		Message: "Operation timed out",
-		Data:    &platform.CreateInstanceResponseData{Instances: instances},
+		Data:    &gen.CreateInstanceResponseData{Instances: instances},
 	}
 }
 
 // rejectedResponse builds the response a metro returns when it refused the
 // operation outright.
-func rejectedResponse(code platform.APIHTTPError, message string) *platform.Response[platform.CreateInstanceResponseData] {
-	return &platform.Response[platform.CreateInstanceResponseData]{
-		Status:  platform.ResponseStatusError,
+func rejectedResponse(code gen.APIHTTPError, message string) *gen.Response[gen.CreateInstanceResponseData] {
+	return &gen.Response[gen.CreateInstanceResponseData]{
+		Status:  gen.ResponseStatusError,
 		Message: "Failed to perform all operations",
-		Data: &platform.CreateInstanceResponseData{
-			Instances: []platform.Instance{{
+		Data: &gen.CreateInstanceResponseData{
+			Instances: []gen.Instance{{
 				Uuid:    "4a1f0c9e-0000-0000-0000-000000000001",
 				Name:    "demo",
-				Status:  new(platform.ResponseStatusError),
+				Status:  new(gen.ResponseStatusError),
 				Message: &message,
 				Error:   new(int32(code)),
 			}},
@@ -45,37 +45,37 @@ func rejectedResponse(code platform.APIHTTPError, message string) *platform.Resp
 // TestTolerateOnlyClearsTimeouts is the guard against a real failure being
 // reported as a success with a warning.
 func TestTolerateOnlyClearsTimeouts(t *testing.T) {
-	timedOut := timedOutResponse(platform.Instance{
+	timedOut := timedOutResponse(gen.Instance{
 		Uuid:   "4a1f0c9e-0000-0000-0000-000000000001",
 		Name:   "demo",
-		State:  platform.InstanceStateStarting,
-		Status: new(platform.ResponseStatusError),
+		State:  gen.InstanceStateStarting,
+		Status: new(gen.ResponseStatusError),
 	})
-	rejected := rejectedResponse(platform.APIHTTPErrorNotAllowed,
+	rejected := rejectedResponse(gen.APIHTTPErrorNotAllowed,
 		"Deletion protection enabled")
 
 	for _, tt := range []struct {
 		name string
-		resp *platform.Response[platform.CreateInstanceResponseData]
+		resp *gen.Response[gen.CreateInstanceResponseData]
 		err  error
 		want bool
 	}{
 		{
 			name: "timeout",
 			resp: timedOut,
-			err:  platform.NewFromResponse(timedOut),
+			err:  gen.NewFromResponse(timedOut),
 			want: true,
 		},
 		{
 			name: "rejected operation",
 			resp: rejected,
-			err:  platform.NewFromResponse(rejected),
+			err:  gen.NewFromResponse(rejected),
 		},
 		{
 			name: "no error",
-			resp: &platform.Response[platform.CreateInstanceResponseData]{
-				Status: platform.ResponseStatusSuccess,
-				Data:   &platform.CreateInstanceResponseData{},
+			resp: &gen.Response[gen.CreateInstanceResponseData]{
+				Status: gen.ResponseStatusSuccess,
+				Data:   &gen.CreateInstanceResponseData{},
 			},
 		},
 	} {
@@ -94,12 +94,12 @@ func TestTolerateOnlyClearsTimeouts(t *testing.T) {
 // TestDowngrade pins the field names the compatibility retry reaches by
 // reflection.
 func TestDowngrade(t *testing.T) {
-	create := platform.CreateInstanceRequest{TimeoutS: new(int64(-1))}
+	create := gen.CreateInstanceRequest{TimeoutS: new(int64(-1))}
 	assert.True(t, downgrade(reflect.ValueOf(&create).Elem()))
 	assert.Nil(t, create.TimeoutS)
 	assert.Equal(t, new(int64(-1)), create.WaitTimeoutMs) //nolint:staticcheck // The deprecated field is what is being set.
 
-	starts := []platform.StartInstancesRequestItem{
+	starts := []gen.StartInstancesRequestItem{
 		{TimeoutS: new(int64(-1))},
 		{TimeoutS: new(int64(-1))},
 	}
@@ -109,7 +109,7 @@ func TestDowngrade(t *testing.T) {
 		assert.Equal(t, new(int64(-1)), start.WaitTimeoutMs, "item %d", i) //nolint:staticcheck // The deprecated field is what is being set.
 	}
 
-	mixed := []platform.StartInstancesRequestItem{
+	mixed := []gen.StartInstancesRequestItem{
 		{TimeoutS: new(int64(5))},
 		{},
 	}
@@ -117,28 +117,28 @@ func TestDowngrade(t *testing.T) {
 	assert.Equal(t, new(int64(5000)), mixed[0].WaitTimeoutMs, "seconds become milliseconds") //nolint:staticcheck // The deprecated field is what is being set.
 	assert.Nil(t, mixed[1].WaitTimeoutMs, "an unset wait stays unset")                       //nolint:staticcheck // The deprecated field is what is being set.
 
-	deletes := []platform.DeleteInstanceRequestItem{{TimeoutS: new(int64(-1))}}
+	deletes := []gen.DeleteInstanceRequestItem{{TimeoutS: new(int64(-1))}}
 	assert.True(t, downgrade(reflect.ValueOf(&deletes).Elem()))
 	assert.Nil(t, deletes[0].TimeoutS)
 
-	templates := []platform.CreateTemplateInstancesRequestItem{{TimeoutS: new(int64(-1))}}
+	templates := []gen.CreateTemplateInstancesRequestItem{{TimeoutS: new(int64(-1))}}
 	assert.True(t, downgrade(reflect.ValueOf(&templates).Elem()))
 	assert.Nil(t, templates[0].TimeoutS)
 
-	checkpoints := []platform.CreateCheckpointInstancesRequestItem{{TimeoutS: new(int64(-1))}}
+	checkpoints := []gen.CreateCheckpointInstancesRequestItem{{TimeoutS: new(int64(-1))}}
 	assert.True(t, downgrade(reflect.ValueOf(&checkpoints).Elem()))
 	assert.Nil(t, checkpoints[0].TimeoutS)
 
-	wait := platform.WaitInstanceByUUIDRequestBody{TimeoutS: new(int64(-1))}
+	wait := gen.WaitInstanceByUUIDRequestBody{TimeoutS: new(int64(-1))}
 	assert.True(t, downgrade(reflect.ValueOf(&wait).Elem()))
 	assert.Nil(t, wait.TimeoutS)
 	assert.Equal(t, new(int64(-1)), wait.TimeoutMs) //nolint:staticcheck // The deprecated field is what is being set.
 
-	del := platform.DeleteInstanceByUUIDRequestBody{TimeoutS: new(int64(-1))}
+	del := gen.DeleteInstanceByUUIDRequestBody{TimeoutS: new(int64(-1))}
 	assert.True(t, downgrade(reflect.ValueOf(&del).Elem()), "a body with no deprecated field just drops timeout_s")
 	assert.Nil(t, del.TimeoutS)
 
-	stops := []platform.StopInstancesRequestItem{{}}
+	stops := []gen.StopInstancesRequestItem{{}}
 	assert.False(t, downgrade(reflect.ValueOf(&stops).Elem()))
 	assert.False(t, downgrade(reflect.ValueOf(new("not a request")).Elem()))
 }

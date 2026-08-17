@@ -11,22 +11,22 @@ import (
 	"reflect"
 	"strings"
 
-	"unikraft.com/cloud/sdk/platform"
+	"unikraft.com/cloud/sdk/platform/gen"
 	"unikraft.com/x/log"
 )
 
 // Tolerate reports whether a call failed only because its wait ran out. If it
 // did, it warns with msg and returns no error, because the operation goes on.
 // Every other error is returned as it is.
-func Tolerate[T any](ctx context.Context, resp *platform.Response[T], err error, msg string) (bool, error) {
+func Tolerate[T any](ctx context.Context, resp *gen.Response[T], err error, msg string) (bool, error) {
 	if err == nil || resp == nil || resp.Data == nil {
 		return false, err
 	}
 	// The platform puts this text at the top level of a response when a wait
 	// ran out.
-	if !platform.ErrorContains(err, platform.APIHTTPErrorTimedOut) &&
+	if !gen.ErrorContains(err, gen.APIHTTPErrorTimedOut) &&
 		(resp.Message != "Operation timed out" ||
-			!platform.ErrorContainsOnly(err, platform.APIHTTPErrorUnknownError)) {
+			!gen.ErrorContainsOnly(err, gen.APIHTTPErrorUnknownError)) {
 		return false, err
 	}
 	log.G(ctx).Warn().Str("reason", resp.Message).Msg(msg)
@@ -42,8 +42,8 @@ func Tolerate[T any](ctx context.Context, resp *platform.Response[T], err error,
 func TryWithFallback[Req, Resp any](
 	ctx context.Context,
 	req Req,
-	call func(context.Context, Req) (*platform.Response[Resp], error),
-) (*platform.Response[Resp], error) {
+	call func(context.Context, Req) (*gen.Response[Resp], error),
+) (*gen.Response[Resp], error) {
 	resp, err := call(ctx, req)
 	if err == nil ||
 		!strings.Contains(err.Error(), "timeout_s") ||

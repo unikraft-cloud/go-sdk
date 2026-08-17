@@ -21,23 +21,15 @@ func main() {
 
 	// Create a new client. The token + default metro is automatically read
 	// from environment variables (UKC_TOKEN + UKC_METRO).
-	client := platform.NewClientFromEnv()
+	client := platform.NewClient()
 
 	// List all instances with full details
-	resp, err := client.GetInstances(ctx, nil, platform.GetInstancesOpts{
-		Details: new(true),
-	})
+	instances, err := client.Instances(ctx, nil, platform.WithDetails())
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Check for API-level errors
-	if resp.Status != platform.ResponseStatusSuccess {
-		fmt.Fprintf(os.Stderr, "error: %s\n", resp.Message)
-		os.Exit(1)
-	}
-	instances := resp.Data.Instances
 	if len(instances) == 0 {
 		fmt.Println("No instances found.")
 		return

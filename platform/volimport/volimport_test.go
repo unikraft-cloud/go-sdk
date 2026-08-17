@@ -10,35 +10,35 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"unikraft.com/cloud/sdk/platform"
+	"unikraft.com/cloud/sdk/platform/gen"
 )
 
 // fakeClient gives instance on create, and records the instances that it
 // deletes.
 type fakeClient struct {
-	platform.Client
-	instance platform.Instance
-	created  platform.CreateInstanceRequest
+	gen.Client
+	instance gen.Instance
+	created  gen.CreateInstanceRequest
 	deleted  []string
 }
 
-func (c *fakeClient) CreateInstance(_ context.Context, req platform.CreateInstanceRequest) (*platform.Response[platform.CreateInstanceResponseData], error) {
+func (c *fakeClient) CreateInstance(_ context.Context, req gen.CreateInstanceRequest) (*gen.Response[gen.CreateInstanceResponseData], error) {
 	c.created = req
-	return &platform.Response[platform.CreateInstanceResponseData]{
-		Data: &platform.CreateInstanceResponseData{Instances: []platform.Instance{c.instance}},
+	return &gen.Response[gen.CreateInstanceResponseData]{
+		Data: &gen.CreateInstanceResponseData{Instances: []gen.Instance{c.instance}},
 	}, nil
 }
 
-func (c *fakeClient) DeleteInstanceByUUID(_ context.Context, uuid string, _ platform.DeleteInstanceByUUIDRequestBody) (*platform.Response[platform.DeleteInstancesResponseData], error) {
+func (c *fakeClient) DeleteInstanceByUUID(_ context.Context, uuid string, _ gen.DeleteInstanceByUUIDRequestBody) (*gen.Response[gen.DeleteInstancesResponseData], error) {
 	c.deleted = append(c.deleted, uuid)
-	return &platform.Response[platform.DeleteInstancesResponseData]{}, nil
+	return &gen.Response[gen.DeleteInstancesResponseData]{}, nil
 }
 
 func TestStart(t *testing.T) {
-	c := &fakeClient{instance: platform.Instance{
+	c := &fakeClient{instance: gen.Instance{
 		Uuid: "inst-uuid",
-		ServiceGroup: &platform.InstanceServiceGroup{
-			Domains: []platform.ServiceGroupInstanceDomain{{Fqdn: "import.example.com."}},
+		ServiceGroup: &gen.InstanceServiceGroup{
+			Domains: []gen.ServiceGroupInstanceDomain{{Fqdn: "import.example.com."}},
 		},
 	}}
 
@@ -49,9 +49,9 @@ func TestStart(t *testing.T) {
 	require.Empty(t, c.deleted)
 
 	req := c.created
-	require.Equal(t, &platform.ImageSpec{Url: DefaultImage}, req.Image)
+	require.Equal(t, &gen.ImageSpec{Url: DefaultImage}, req.Image)
 	require.Equal(t, []string{"volimport", "-p", "42069", "-a", testAuth, "-t", "10"}, req.Args)
-	require.Equal(t, []platform.InstanceFeature{platform.InstanceFeatureDeleteOnStop}, req.Features)
+	require.Equal(t, []gen.InstanceFeature{gen.InstanceFeatureDeleteOnStop}, req.Features)
 	require.Len(t, req.Volumes, 1)
 	require.Equal(t, "vol-uuid", *req.Volumes[0].Uuid)
 	require.Equal(t, "/mnt", req.Volumes[0].At)
@@ -59,11 +59,11 @@ func TestStart(t *testing.T) {
 	svc := req.ServiceGroup.Services[0]
 	require.Equal(t, uint32(DefaultPort), svc.Port)
 	require.Equal(t, internalPort, *svc.DestinationPort)
-	require.Equal(t, []platform.ConnectionHandler{platform.ConnectionHandlerTls}, svc.Handlers)
+	require.Equal(t, []gen.ConnectionHandler{gen.ConnectionHandlerTls}, svc.Handlers)
 }
 
 func TestStartNoDomain(t *testing.T) {
-	c := &fakeClient{instance: platform.Instance{Uuid: "inst-uuid"}}
+	c := &fakeClient{instance: gen.Instance{Uuid: "inst-uuid"}}
 
 	_, _, err := Start(t.Context(), c, DefaultImage, "vol-uuid", testAuth, 10, DefaultPort)
 	require.EqualError(t, err, "import instance has no service group domain")

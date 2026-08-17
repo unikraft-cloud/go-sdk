@@ -14,15 +14,15 @@ import (
 	"strconv"
 	"strings"
 
-	"unikraft.com/cloud/sdk/platform"
+	"unikraft.com/cloud/sdk/platform/gen"
 	"unikraft.com/cloud/sdk/platform/timeouts"
 	"unikraft.com/x/log"
 )
 
-func deleteInstanceByUUID(ctx context.Context, c platform.Client, instUUID string) error {
-	req := platform.DeleteInstanceByUUIDRequestBody{TimeoutS: new(int64(-1))}
+func deleteInstanceByUUID(ctx context.Context, c gen.Client, instUUID string) error {
+	req := gen.DeleteInstanceByUUIDRequestBody{TimeoutS: new(int64(-1))}
 	_, err := timeouts.TryWithFallback(ctx, req,
-		func(ctx context.Context, req platform.DeleteInstanceByUUIDRequestBody) (*platform.Response[platform.DeleteInstancesResponseData], error) {
+		func(ctx context.Context, req gen.DeleteInstanceByUUIDRequestBody) (*gen.Response[gen.DeleteInstancesResponseData], error) {
 			return c.DeleteInstanceByUUID(ctx, instUUID, req)
 		})
 	return err
@@ -44,7 +44,7 @@ const (
 // Start creates a short-lived Unikraft Cloud instance running the
 // volimport service with the given volume attached at /mnt, and returns the
 // instance UUID and the public FQDN on which the import service listens.
-func Start(ctx context.Context, c platform.Client, image, volUUID, authStr string, timeoutS uint64, servicePort int) (instUUID, fqdn string, err error) {
+func Start(ctx context.Context, c gen.Client, image, volUUID, authStr string, timeoutS uint64, servicePort int) (instUUID, fqdn string, err error) {
 	args := []string{
 		"volimport",
 		"-p", strconv.FormatUint(uint64(internalPort), 10),
@@ -52,23 +52,23 @@ func Start(ctx context.Context, c platform.Client, image, volUUID, authStr strin
 		"-t", strconv.FormatUint(timeoutS, 10),
 	}
 	destPort := internalPort
-	req := platform.CreateInstanceRequest{
-		Image:         &platform.ImageSpec{Url: image},
+	req := gen.CreateInstanceRequest{
+		Image:         &gen.ImageSpec{Url: image},
 		MemoryMb:      new(memoryMB),
 		Args:          args,
 		Autostart:     new(true),
 		TimeoutS:      new(int64(-1)),
-		RestartPolicy: new(platform.InstanceRestartPolicyNever),
-		Features:      []platform.InstanceFeature{platform.InstanceFeatureDeleteOnStop},
-		Volumes: []platform.CreateInstanceRequestVolume{{
+		RestartPolicy: new(gen.InstanceRestartPolicyNever),
+		Features:      []gen.InstanceFeature{gen.InstanceFeatureDeleteOnStop},
+		Volumes: []gen.CreateInstanceRequestVolume{{
 			Uuid: &volUUID,
 			At:   "/mnt",
 		}},
-		ServiceGroup: &platform.CreateInstanceRequestServiceGroup{
-			Services: []platform.Service{{
+		ServiceGroup: &gen.CreateInstanceRequestServiceGroup{
+			Services: []gen.Service{{
 				Port:            uint32(servicePort),
 				DestinationPort: &destPort,
-				Handlers:        []platform.ConnectionHandler{platform.ConnectionHandlerTls},
+				Handlers:        []gen.ConnectionHandler{gen.ConnectionHandlerTls},
 			}},
 		},
 	}
@@ -108,26 +108,26 @@ func Start(ctx context.Context, c platform.Client, image, volUUID, authStr strin
 }
 
 // Terminate deletes the given instance, ignoring "not found" errors.
-func Terminate(ctx context.Context, c platform.Client, instUUID string) error {
+func Terminate(ctx context.Context, c gen.Client, instUUID string) error {
 	log.G(ctx).Trace().Str("uuid", instUUID).Msg("deleting volume data import instance")
 	err := deleteInstanceByUUID(ctx, c, instUUID)
-	if err != nil && !platform.ErrorContainsOnly(err, platform.APIHTTPErrorNotFound) {
+	if err != nil && !gen.ErrorContainsOnly(err, gen.APIHTTPErrorNotFound) {
 		return fmt.Errorf("deleting volume data import instance: %w", err)
 	}
 	return nil
 }
 
 // Wait waits for the given instance to reach the stopped state.
-func Wait(ctx context.Context, c platform.Client, instUUID string) error {
-	req := platform.WaitInstanceByUUIDRequestBody{
-		State:    new(platform.InstanceStateStopped),
+func Wait(ctx context.Context, c gen.Client, instUUID string) error {
+	req := gen.WaitInstanceByUUIDRequestBody{
+		State:    new(gen.InstanceStateStopped),
 		TimeoutS: new(int64(-1)),
 	}
 	_, err := timeouts.TryWithFallback(ctx, req,
-		func(ctx context.Context, req platform.WaitInstanceByUUIDRequestBody) (*platform.Response[platform.WaitInstancesResponseData], error) {
+		func(ctx context.Context, req gen.WaitInstanceByUUIDRequestBody) (*gen.Response[gen.WaitInstancesResponseData], error) {
 			return c.WaitInstanceByUUID(ctx, instUUID, req)
 		})
-	if err != nil && !platform.ErrorContainsOnly(err, platform.APIHTTPErrorNotFound) {
+	if err != nil && !gen.ErrorContainsOnly(err, gen.APIHTTPErrorNotFound) {
 		return fmt.Errorf("waiting for import instance to stop: %w", err)
 	}
 	return nil

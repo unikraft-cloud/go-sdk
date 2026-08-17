@@ -41,7 +41,7 @@ func (r *Request) WithEndpoint(e string) *Request {
 	return rcpy
 }
 
-{{- if or (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
+{{- if or (eq (.Var "api" "") "platform") (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
 
 // WithMetro returns a Request that uses the given metro in API requests.
 func (r *Request) WithMetro(m string) *Request {
@@ -216,7 +216,7 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 			if err := json.Unmarshal(target.body.Bytes(), target); err != nil {
 				return errors.Join(rerr, fmt.Errorf("parsing response: %w", err))
 			}
-{{- if or (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
+{{- if or (eq (.Var "api" "") "platform") (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
 			return errors.Join(rerr, NewFromResponse(target))
 {{- else}}
 			return errors.Join(rerr, target)
@@ -303,7 +303,7 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 			return errors.Join(rerr, fmt.Errorf("parsing response: %w", err))
 		}
 		if target.Status != ResponseStatusSuccess && target.Status != "" {
-{{- if or (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
+{{- if or (eq (.Var "api" "") "platform") (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
 			return errors.Join(rerr, NewFromResponse(target))
 {{- else}}
 			return errors.Join(rerr, target)

@@ -22,6 +22,7 @@ import (
 	"os"
 
 	"unikraft.com/cloud/sdk/platform"
+	"unikraft.com/cloud/sdk/platform/gen"
 )
 
 func main() {
@@ -32,19 +33,13 @@ func main() {
 	client := platform.NewClientFromEnv()
 
 	// List all instances
-	resp, err := client.GetInstances(ctx, nil, nil)
+	instances, err := client.Instances(ctx, nil, gen.GetInstancesOpts{})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Check for API-level errors
-	if resp.Status != platform.ResponseStatusSuccess {
-		fmt.Fprintf(os.Stderr, "error: %s\n", resp.Message)
-		os.Exit(1)
-	}
-
-	for _, inst := range resp.Data.Instances {
+	for _, inst := range instances {
 		fmt.Printf("Name:  %s\n", inst.Name)
 		fmt.Printf("UUID:  %s\n", inst.Uuid)
 		fmt.Printf("State: %s\n", inst.State)
@@ -55,6 +50,22 @@ func main() {
 ```
 
 See the [examples/platform-list](examples/platform-list/main.go) for a complete example.
+
+If you also need the control plane API alongside platform, use the `cloud`
+package to share a single set of credentials between both:
+
+```go
+import "unikraft.com/cloud/sdk/cloud"
+
+c := cloud.NewClient(cloud.WithToken("your-api-token"))
+
+pc := c.Platform("fra")  // platform.Client scoped to the fra metro
+cp := c.ControlPlane()   // controlplane.Client
+```
+
+Anything not (yet) covered by the rich `platform.Client`/`controlplane.Client`
+accessors is available via `client.Raw()`, which returns the full generated
+client for that API.
 
 ## Configuration
 

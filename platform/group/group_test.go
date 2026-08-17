@@ -1,89 +1,61 @@
 // SPDX-License-Identifier: BSD-3-Clause
-// Copyright (c) 2026, Unikraft GmbH and The Unikraft CLI Authors.
+// Copyright (c) 2026, Unikraft GmbH.
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package group_test
+package group
 
 import (
-	"context"
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"unikraft.com/cloud/sdk/platform"
-	"unikraft.com/cloud/sdk/platform/group"
 )
 
-type fakeClient struct {
-	platform.Client
-	name string
+func TestGroupWithClientAndNames(t *testing.T) {
+	g := New[fakeClient]().
+		WithClient("fra", fakeClient{id: "fra"}).
+		WithClient("waw", fakeClient{id: "waw"})
+
+	assert.Equal(t, []string{"fra", "waw"}, g.Names())
 }
 
-type notFoundErr struct {
-	err group.ErrRefNotFound
+func TestGroupGetByName(t *testing.T) {
+	g := New[fakeClient]().WithClient("fra", fakeClient{id: "fra"})
+
+	client, err := g.getByName("fra")
+	require.NoError(t, err)
+	assert.Equal(t, "fra", client.id)
+
+	_, err = g.getByName("missing")
+	assert.ErrorContains(t, err, "missing")
 }
 
-func (e notFoundErr) Error() string { return "custom: " + e.err.Error() }
-func (e notFoundErr) Unwrap() error { return e.err }
+func TestGroupFilterKeepsOnlyRequestedNames(t *testing.T) {
+	g := New[fakeClient]().
+		WithClient("fra", fakeClient{id: "fra"}).
+		WithClient("waw", fakeClient{id: "waw"}).
+		WithClient("ams", fakeClient{id: "ams"})
 
-func newGroup() *group.Group[fakeClient] {
-	return group.New[fakeClient]().
-		WithClient("fra", fakeClient{name: "fra"}).
-		WithClient("sfo", fakeClient{name: "sfo"})
+	filtered := g.Filter([]string{"ams", "fra"})
+	assert.Equal(t, []string{"ams", "fra"}, filtered.Names())
 }
 
-func findOnly(names ...string) func(context.Context, fakeClient, group.Refs) (group.Refs, error) {
-	return func(ctx context.Context, c fakeClient, refs group.Refs) (group.Refs, error) {
-		var found group.Refs
-		for _, ref := range refs {
-			for _, name := range names {
-				if ref.Name == name {
-					found = append(found, ref)
-				}
-			}
-		}
-		return found, nil
-	}
+func TestGroupFilterIgnoresUnknownNames(t *testing.T) {
+	g := New[fakeClient]().WithClient("fra", fakeClient{id: "fra"})
+
+	filtered := g.Filter([]string{"fra", "does-not-exist"})
+	assert.Equal(t, []string{"fra"}, filtered.Names())
 }
 
-func TestDoRefsNotFound(t *testing.T) {
-	refs := group.Refs{{Name: "a"}, {Name: "b"}}
+func TestGroupFilterEmpty(t *testing.T) {
+	g := New[fakeClient]().WithClient("fra", fakeClient{id: "fra"})
 
-	err := group.DoRefs(t.Context(), newGroup(), refs, findOnly("a"))
-	notFound, ok := errors.AsType[group.ErrRefNotFound](err)
-	require.True(t, ok)
-	assert.Equal(t, group.Refs{{Name: "b"}}, notFound.Refs)
-
-	require.NoError(t, group.DoRefs(t.Context(), newGroup(), refs, findOnly("a", "b")))
+	filtered := g.Filter(nil)
+	assert.Empty(t, filtered.Names())
 }
 
-func TestDoRefsWithNotFound(t *testing.T) {
-	refs := group.Refs{{Name: "a"}, {Name: "b"}}
-	g := newGroup().WithNotFound(func(err group.ErrRefNotFound) error {
-		return notFoundErr{err: err}
-	})
-
-	for name, g := range map[string]*group.Group[fakeClient]{
-		"group":    g,
-		"filtered": g.Filter([]string{"fra"}),
-	} {
-		t.Run(name, func(t *testing.T) {
-			err := group.DoRefs(t.Context(), g, refs, findOnly("a"))
-			custom, ok := errors.AsType[notFoundErr](err)
-			require.True(t, ok)
-			assert.Equal(t, group.Refs{{Name: "b"}}, custom.err.Refs)
-			_, ok = errors.AsType[group.ErrRefNotFound](err)
-			assert.True(t, ok)
-
-			_, err = group.CollectRefs(t.Context(), g, refs, func(ctx context.Context, c fakeClient, refs group.Refs) (string, group.Refs, error) {
-				found, err := findOnly("a")(ctx, c, refs)
-				return c.name, found, err
-			})
-			_, ok = errors.AsType[notFoundErr](err)
-			assert.True(t, ok)
-		})
-	}
+func TestNewGroupIsEmpty(t *testing.T) {
+	g := New[fakeClient]()
+	assert.Empty(t, g.Names())
 }

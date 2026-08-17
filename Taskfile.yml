@@ -48,7 +48,7 @@ tasks:
       vars: [spec]
     cmds:
     - test -f {{.spec}}.yaml || {{.curl_bin}} -f -o {{.spec}}.yaml https://raw.githubusercontent.com/unikraft-cloud/openapi/{{.channel}}/{{.spec}}.yaml
-    - rm -f ./{{.spec}}/*.gen.go
+    - rm -f ./{{.spec}}/*.gen.go ./{{.spec}}/gen/*.gen.go
     - task: go:generate
       vars: { package: "./{{.spec}}" }
 
