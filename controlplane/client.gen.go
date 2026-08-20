@@ -72,6 +72,13 @@ type Client interface {
 	// activation, a secret must be provided. For renewal, the CSR self-signature
 	// is used as proof of key possession and the secret is omitted.
 	//
+	// A renewal request may optionally also carry an HTTP message signature
+	// (RFC 9421) made with the node's current stable private key. When present
+	// and valid, it authorizes the CSR's public key to become the node's new
+	// stable identity even if it differs from the current one -- i.e. key
+	// rotation: prove who you are with the old key, then switch to the new one
+	// named in the CSR.
+	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
@@ -80,6 +87,21 @@ type Client interface {
 	//
 	// Performs: POST /v1/nodes/activate
 	NodeActivate(ctx context.Context, request NodeActivateRequest, ropts ...RequestOption) (*Response[NodeActivateResponseData], error)
+	// Deactivates a node's license so it can no longer renew. The node's
+	// issued certificate remains valid until it naturally expires -- this
+	// only prevents renewal. The request must carry an HTTP message signature
+	// (RFC 9421) made with the node's stable private key; the node is
+	// identified by the signature, the same mechanism used by the private
+	// node-facing APIs (e.g. NodeHeartbeat).
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// @param `ropts`
+	// 	Optional request modifiers.
+	//
+	// Performs: POST /v1/nodes/deactivate
+	NodeDeactivate(ctx context.Context, request NodeDeactivateRequest, ropts ...RequestOption) (*Response[any], error)
 	// Delete one or more nodes.
 	//
 	// Batch deletion of nodes by their identifiers.
@@ -394,6 +416,21 @@ func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest, 
 
 	resp := &Response[NodeActivateResponseData]{}
 	if err := doRequest[NodeActivateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+		return resp, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) NodeDeactivate(ctx context.Context, request NodeDeactivateRequest, ropts ...RequestOption) (*Response[any], error) {
+	requestPath := "/v1/nodes/deactivate"
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[any]{}
+	if err := doRequest[any](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
