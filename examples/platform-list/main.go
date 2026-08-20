@@ -21,7 +21,7 @@ func main() {
 
 	// Create a new client. The token + default metro is automatically read
 	// from environment variables (UKC_TOKEN + UKC_METRO).
-	client := platform.NewClient()
+	client := platform.NewClientFromEnv()
 
 	// List all instances with full details
 	resp, err := client.GetInstances(ctx, nil, platform.GetInstancesOpts{

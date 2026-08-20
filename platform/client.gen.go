@@ -1337,8 +1337,23 @@ type Client interface {
 	WithHTTPClient(httpclient.HTTPClient) Client
 }
 
-// NewClient creates a new client for the API.
+// NewClient creates a new client for the API, configured only by the given
+// options. Use [NewClientFromEnv] to also take configuration from the
+// environment.
 func NewClient(copts ...ClientOption) Client {
+	options := ClientOptions{}
+
+	for _, opt := range copts {
+		opt(&options)
+	}
+
+	return newClient(&options)
+}
+
+// NewClientFromEnv creates a new client for the API, filling in whatever the
+// given options leave unset from the environment: the token from UKC_TOKEN,
+// UNIKRAFT_CLOUD_TOKEN or KRAFTCLOUD_TOKEN, and the metro from UKC_METRO.
+func NewClientFromEnv(copts ...ClientOption) Client {
 	options := ClientOptions{}
 
 	for _, opt := range copts {
@@ -1360,6 +1375,13 @@ func NewClient(copts ...ClientOption) Client {
 	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(os.Getenv("UKC_METRO"))
 	}
+
+	return newClient(&options)
+}
+
+// newClient applies the defaults for anything options leaves unset, and
+// returns a client backed by them.
+func newClient(options *ClientOptions) Client {
 	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(DefaultMetro)
 	}
@@ -1374,7 +1396,7 @@ func NewClient(copts ...ClientOption) Client {
 
 	return &client{
 		request: &Request{
-			copts: &options,
+			copts: options,
 		},
 	}
 }
