@@ -37,19 +37,19 @@ func (sr StopReason) Origin() string {
 // Format: "FUPAK", using '-' for absent bits.
 func (sr StopReason) OriginCode() string {
 	code := [5]byte{'-', '-', '-', '-', '-'}
-	if sr&(StopReasonForced) != 0 {
+	if sr&StopReasonForced != 0 {
 		code[0] = 'F'
 	}
-	if sr&(StopReasonUser) != 0 {
+	if sr&StopReasonUser != 0 {
 		code[1] = 'U'
 	}
-	if sr&(StopReasonPlatform) != 0 {
+	if sr&StopReasonPlatform != 0 {
 		code[2] = 'P'
 	}
-	if sr&(StopReasonApplication) != 0 {
+	if sr&StopReasonApplication != 0 {
 		code[3] = 'A'
 	}
-	if sr&(StopReasonKernel) != 0 {
+	if sr&StopReasonKernel != 0 {
 		code[4] = 'K'
 	}
 	return string(code[:])

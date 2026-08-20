@@ -4,45 +4,28 @@
 # You may not use this file except in compliance with the License.
 
 # Prelude
-WORKDIR             ?= $(CURDIR)
-Q                   ?= @
-CHANNEL             ?= prod-stable
+SHELL         := bash
+.DELETE_ON_ERROR:
+.SHELLFLAGS   := -eu -o pipefail -c
+Q             ?= @
+GO            ?= go
 
-# Tools
-GO                  ?= go
-CURL                ?= curl
+ifeq ($(shell command -v task >/dev/null 2>&1 && echo yes),)
+TASK          ?= $(GO) run -v github.com/go-task/task/v3/cmd/task@v3.48.0 --yes
+else
+TASK          ?= task --yes
+endif
+ifeq ($(Q),)
+TASK          := $(TASK) --verbose
+endif
 
-.PHONY: all
-all: generate fmt
+export TASK_X_REMOTE_TASKFILES=1
 
-.PHONY: generate
-generate: platform controlplane
+.DEFAULT_GOAL := help
+.PHONY: help
 
-.PHONY: platform
-platform: platform.yaml
-	$(Q)rm -f $(WORKDIR)/platform/*.gen.go
-	$(GO) generate ./platform
+help:
+	$(Q)$(TASK) -l
 
-platform.yaml:
-	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/platform.yaml
-
-.PHONY: controlplane
-controlplane: controlplane.yaml
-	$(Q)rm -f $(WORKDIR)/controlplane/*.gen.go
-	$(GO) generate ./controlplane
-
-controlplane.yaml:
-	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/controlplane.yaml
-
-.PHONY: fmt
-fmt:
-	go fmt $(WORKDIR)/platform/*.go
-	go fmt $(WORKDIR)/controlplane/*.go
-
-.PHONY: lint
-lint:
-	golangci-lint run ./...
-
-.PHONY: test
-test:
-	$(GO) test ./...
+%:
+	$(Q)$(TASK) $(MAKECMDGOALS)

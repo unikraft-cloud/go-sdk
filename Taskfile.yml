@@ -1,0 +1,83 @@
+# https://taskfile.dev
+version: 3
+
+includes:
+  go:
+    taskfile: https://github.com/unikraft-cloud/x.git//Taskfile.go.yml?ref=prod-staging
+    vars:
+      # HACK: staticcheck panics analyzing github.com/getsentry/sentry-go.
+      # https://github.com/dominikh/go-tools/issues/1725
+      golangci_version: v2.12.0
+
+vars:
+  go_bin:
+    ref: .go_bin | default "go"
+  curl_bin:
+    ref: .curl_bin | default "curl"
+
+  channel:
+    ref: .channel | default (default "prod-stable" .CHANNEL)
+
+tasks:
+  default:
+    cmds:
+    - task: generate
+
+  generate:
+    desc: Generate the SDK from the OpenAPI specifications.
+    cmds:
+    - task: generate:spec
+      vars: { spec: platform }
+    - task: generate:spec
+      vars: { spec: controlplane }
+    - task: fmt
+
+  generate:spec:
+    internal: true
+    requires:
+      vars: [spec]
+    cmds:
+    - test -f {{.spec}}.yaml || {{.curl_bin}} -f -o {{.spec}}.yaml https://raw.githubusercontent.com/unikraft-cloud/openapi/{{.channel}}/{{.spec}}.yaml
+    - rm -f ./{{.spec}}/*.gen.go
+    - task: go:generate
+      vars: { package: "./{{.spec}}" }
+
+  fmt:
+    desc: Format the project.
+    cmd: >-
+      {{.go_bin}} fmt ./...
+
+  lint:
+    desc: Lint the project.
+    cmds:
+    - task: go:lint
+
+  license:
+    desc: Check the project licensing.
+    cmds:
+    - task: go:license
+
+  test:
+    aliases: [unit]
+    desc: Run unit tests.
+    cmds:
+    - task: go:test
+
+  clean:
+    desc: Remove build artifacts.
+    cmds:
+    - rm -rf dist
+
+  # ci tasks
+
+  ci/check:
+  - task: go:ci/check
+
+  ci/test:
+  - task: go:ci/test
+
+  ci/generate:
+    desc: "Tasks for CI generate job: check the SDK is in sync with the specifications"
+    cmds:
+    - task: generate
+    - git diff --exit-code

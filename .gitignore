@@ -1,2 +1,9 @@
 platform.yaml
 controlplane.yaml
+
+dist/
+.task/
+
+# JUnit reports written by the `ci/check` and `ci/test` tasks.
+lint-results.xml
+test-results.xml
