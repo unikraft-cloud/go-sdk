@@ -15,6 +15,7 @@ concurrency:
 
 env:
   GOPRIVATE: github.com/unikraft-cloud/x
+  TASK_X_REMOTE_TASKFILES: 1
 
 jobs:
   generate:
@@ -26,6 +27,8 @@ jobs:
         shell: bash
         run: |
           git config --global url."https://${{ secrets.GH_PAT }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+
+      - uses: go-task/setup-task@v2
 
       - uses: actions/setup-go@v5
         with:
@@ -50,14 +53,9 @@ jobs:
           restore-keys: |
             ${{ github.job }}-${{ runner.os }}-go-
 
-      - name: Run make generate
+      - name: Check that generated files are in sync
+        shell: bash
         env:
           CHANNEL: prod-staging
-        run: make generate && make fmt
-
-      - name: Check for uncommitted changes
         run: |
-          git diff --exit-code || {
-            echo "::error::Generated files are out of sync. Please run 'make generate CHANNEL=prod-staging' and commit the changes."
-            exit 1
-          }
+          task --yes ci/generate
