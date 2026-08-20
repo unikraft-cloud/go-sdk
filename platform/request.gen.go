@@ -192,10 +192,14 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 		return fmt.Errorf("error creating the request: %w", err)
 	}
 
-	httpReq.Header.Set("Authorization", req.GetBearerToken())
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Accept", "application/json")
-	httpReq.Header.Set("User-Agent", req.GetUserAgent())
+	if req.GetToken() != "" {
+		httpReq.Header.Set("Authorization", req.GetBearerToken())
+	}
+	if req.GetUserAgent() != "" {
+		httpReq.Header.Set("User-Agent", req.GetUserAgent())
+	}
 
 	hc := req.copts.HTTPClient()
 	if req.httpClient != nil {
