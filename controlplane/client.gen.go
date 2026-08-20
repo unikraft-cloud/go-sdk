@@ -28,46 +28,31 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/auth/check
-	CheckAuthorization(ctx context.Context, request CheckAuthorizationRequest, ropts ...RequestOption) (<-chan *Response[CheckAuthorizationResponseData], error)
+	CheckAuthorization(ctx context.Context, request CheckAuthorizationRequest) (<-chan *Response[CheckAuthorizationResponseData], error)
 	// Get authorization details for a token.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/auth
-	GetAuthorization(ctx context.Context, ropts ...RequestOption) (*Response[GetAuthorizationResponseData], error)
+	GetAuthorization(ctx context.Context) (*Response[GetAuthorizationResponseData], error)
 	// Initiate the sign-in process and return an authorization URL.  The user
 	// should be redirected to this URL to complete the sign-in.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/auth/signin
-	RequestSignin(ctx context.Context, request RequestSigninRequest, ropts ...RequestOption) (*Response[RequestSigninResponseData], error)
+	RequestSignin(ctx context.Context, request RequestSigninRequest) (*Response[RequestSigninResponseData], error)
 	// ListImages lists all images for the authenticated user.
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/images
-	ListImages(ctx context.Context, opts ListImagesOpts, ropts ...RequestOption) (*Response[ListImagesResponseData], error)
+	ListImages(ctx context.Context, opts ListImagesOpts) (*Response[ListImagesResponseData], error)
 	// ListMetros lists all available metros.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/metros
-	ListMetros(ctx context.Context, ropts ...RequestOption) (*Response[ListMetroResponseData], error)
+	ListMetros(ctx context.Context) (*Response[ListMetroResponseData], error)
 	// Activates a new node, or renews an existing node's license. For first-time
 	// activation, a secret must be provided. For renewal, the CSR self-signature
 	// is used as proof of key possession and the secret is omitted.
@@ -82,11 +67,8 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/nodes/activate
-	NodeActivate(ctx context.Context, request NodeActivateRequest, ropts ...RequestOption) (*Response[NodeActivateResponseData], error)
+	NodeActivate(ctx context.Context, request NodeActivateRequest) (*Response[NodeActivateResponseData], error)
 	// Deactivates a node's license so it can no longer renew. The node's
 	// issued certificate remains valid until it naturally expires -- this
 	// only prevents renewal. The request must carry an HTTP message signature
@@ -97,11 +79,8 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/nodes/deactivate
-	NodeDeactivate(ctx context.Context, request NodeDeactivateRequest, ropts ...RequestOption) (*Response[any], error)
+	NodeDeactivate(ctx context.Context, request NodeDeactivateRequest) (*Response[any], error)
 	// Delete one or more nodes.
 	//
 	// Batch deletion of nodes by their identifiers.
@@ -112,11 +91,8 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/nodes
-	DestroyNode(ctx context.Context, request []NameOrUUID, opts DestroyNodeOpts, ropts ...RequestOption) (*Response[DestroyNodeResponseData], error)
+	DestroyNode(ctx context.Context, request []NameOrUUID, opts DestroyNodeOpts) (*Response[DestroyNodeResponseData], error)
 	// Destroy (delete) a node by its UUID.
 	//
 	// Deprovisions and deletes the node. The node will transition to
@@ -129,21 +105,15 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/nodes/{uuid}
-	DestroyNodeByUUID(ctx context.Context, uuid string, opts DestroyNodeByUUIDOpts, ropts ...RequestOption) (*Response[DestroyNodeResponseData], error)
+	DestroyNodeByUUID(ctx context.Context, uuid string, opts DestroyNodeByUUIDOpts) (*Response[DestroyNodeResponseData], error)
 	// Get a single node by its UUID.
 	//
 	// @param `uuid`
 	// 	The UUID of the node to retrieve.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/nodes/{uuid}
-	GetNodeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[ListNodesResponseData], error)
+	GetNodeByUUID(ctx context.Context, uuid string) (*Response[ListNodesResponseData], error)
 	// List available machine types for a provider.
 	//
 	// Returns the machine types (instance types) available for provisioning
@@ -155,11 +125,8 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/nodes/providers/{cloudprovider}/types
-	ListMachineTypes(ctx context.Context, cloudprovider CloudProvider, opts ListMachineTypesOpts, ropts ...RequestOption) (*Response[ListMachineTypesResponseData], error)
+	ListMachineTypes(ctx context.Context, cloudprovider CloudProvider, opts ListMachineTypesOpts) (*Response[ListMachineTypesResponseData], error)
 	// Get one or more nodes.
 	//
 	// Returns nodes matching the specified filters. If no filters are
@@ -171,11 +138,8 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/nodes
-	ListNodes(ctx context.Context, request []NameOrUUID, opts ListNodesOpts, ropts ...RequestOption) (*Response[ListNodesResponseData], error)
+	ListNodes(ctx context.Context, request []NameOrUUID, opts ListNodesOpts) (*Response[ListNodesResponseData], error)
 	// List available regions for a provider.
 	//
 	// Returns the regions available for provisioning on the specified cloud
@@ -184,11 +148,8 @@ type Client interface {
 	// @param `cloudprovider`
 	// 	The cloud provider to list regions for.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/nodes/providers/{cloudprovider}/regions
-	ListRegions(ctx context.Context, cloudprovider CloudProvider, ropts ...RequestOption) (*Response[ListRegionsResponseData], error)
+	ListRegions(ctx context.Context, cloudprovider CloudProvider) (*Response[ListRegionsResponseData], error)
 	// Create a new node.
 	//
 	// Creates a new compute node on the specified cloud provider. The node
@@ -198,11 +159,8 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/nodes
-	ProvisionNode(ctx context.Context, request ProvisionNodeRequest, ropts ...RequestOption) (*Response[ProvisionNodeResponseData], error)
+	ProvisionNode(ctx context.Context, request ProvisionNodeRequest) (*Response[ProvisionNodeResponseData], error)
 	// Update a node by its UUID.
 	//
 	// Updates mutable properties of a node such as tags, delete lock,
@@ -214,11 +172,8 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/nodes/{uuid}
-	UpdateNodeByUUID(ctx context.Context, uuid string, request []UpdateNodePayload, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error)
+	UpdateNodeByUUID(ctx context.Context, uuid string, request []UpdateNodePayload) (*Response[UpdateNodesResponseData], error)
 	// Update one or more nodes.
 	//
 	// Batch update of mutable properties for multiple nodes.
@@ -229,11 +184,8 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/nodes
-	UpdateNodes(ctx context.Context, request []NameOrUUID, opts UpdateNodesOpts, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error)
+	UpdateNodes(ctx context.Context, request []NameOrUUID, opts UpdateNodesOpts) (*Response[UpdateNodesResponseData], error)
 	// Wait for a node to reach a specific state.
 	//
 	// Blocks until the specified node reaches one of the desired states
@@ -245,21 +197,15 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/nodes/{uuid}/wait
-	WaitNodeByUUID(ctx context.Context, uuid string, opts WaitNodeByUUIDOpts, ropts ...RequestOption) (*Response[WaitNodesResponseData], error)
+	WaitNodeByUUID(ctx context.Context, uuid string, opts WaitNodeByUUIDOpts) (*Response[WaitNodesResponseData], error)
 	// Wait for multiple nodes to reach specific states.
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/nodes/wait
-	WaitNodes(ctx context.Context, opts WaitNodesOpts, ropts ...RequestOption) (*Response[WaitNodesResponseData], error)
+	WaitNodes(ctx context.Context, opts WaitNodesOpts) (*Response[WaitNodesResponseData], error)
 	// WithEndpoint sets the endpoint to use when connecting to the API.
 	WithEndpoint(string) Client
 	// WithTimeout sets the timeout when making the request.
@@ -338,7 +284,7 @@ func (c *client) clone() *client {
 	return &ccpy
 }
 
-func (c *client) CheckAuthorization(ctx context.Context, request CheckAuthorizationRequest, ropts ...RequestOption) (<-chan *Response[CheckAuthorizationResponseData], error) {
+func (c *client) CheckAuthorization(ctx context.Context, request CheckAuthorizationRequest) (<-chan *Response[CheckAuthorizationResponseData], error) {
 	requestPath := "/v1/auth/check"
 
 	body, err := json.Marshal(request)
@@ -347,23 +293,23 @@ func (c *client) CheckAuthorization(ctx context.Context, request CheckAuthorizat
 	}
 
 	resp := &Response[CheckAuthorizationResponseData]{}
-	if err := doRequest[CheckAuthorizationResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CheckAuthorizationResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp.Events()
 }
 
-func (c *client) GetAuthorization(ctx context.Context, ropts ...RequestOption) (*Response[GetAuthorizationResponseData], error) {
+func (c *client) GetAuthorization(ctx context.Context) (*Response[GetAuthorizationResponseData], error) {
 	requestPath := "/v1/auth"
 
 	resp := &Response[GetAuthorizationResponseData]{}
-	if err := doRequest[GetAuthorizationResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetAuthorizationResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) RequestSignin(ctx context.Context, request RequestSigninRequest, ropts ...RequestOption) (*Response[RequestSigninResponseData], error) {
+func (c *client) RequestSignin(ctx context.Context, request RequestSigninRequest) (*Response[RequestSigninResponseData], error) {
 	requestPath := "/v1/auth/signin"
 
 	body, err := json.Marshal(request)
@@ -372,13 +318,13 @@ func (c *client) RequestSignin(ctx context.Context, request RequestSigninRequest
 	}
 
 	resp := &Response[RequestSigninResponseData]{}
-	if err := doRequest[RequestSigninResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[RequestSigninResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) ListImages(ctx context.Context, opts ListImagesOpts, ropts ...RequestOption) (*Response[ListImagesResponseData], error) {
+func (c *client) ListImages(ctx context.Context, opts ListImagesOpts) (*Response[ListImagesResponseData], error) {
 	requestPath := "/v1/images"
 
 	query := make(url.Values)
@@ -390,23 +336,23 @@ func (c *client) ListImages(ctx context.Context, opts ListImagesOpts, ropts ...R
 	}
 
 	resp := &Response[ListImagesResponseData]{}
-	if err := doRequest[ListImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[ListImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) ListMetros(ctx context.Context, ropts ...RequestOption) (*Response[ListMetroResponseData], error) {
+func (c *client) ListMetros(ctx context.Context) (*Response[ListMetroResponseData], error) {
 	requestPath := "/v1/metros"
 
 	resp := &Response[ListMetroResponseData]{}
-	if err := doRequest[ListMetroResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[ListMetroResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest, ropts ...RequestOption) (*Response[NodeActivateResponseData], error) {
+func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest) (*Response[NodeActivateResponseData], error) {
 	requestPath := "/v1/nodes/activate"
 
 	body, err := json.Marshal(request)
@@ -415,13 +361,13 @@ func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest, 
 	}
 
 	resp := &Response[NodeActivateResponseData]{}
-	if err := doRequest[NodeActivateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[NodeActivateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) NodeDeactivate(ctx context.Context, request NodeDeactivateRequest, ropts ...RequestOption) (*Response[any], error) {
+func (c *client) NodeDeactivate(ctx context.Context, request NodeDeactivateRequest) (*Response[any], error) {
 	requestPath := "/v1/nodes/deactivate"
 
 	body, err := json.Marshal(request)
@@ -430,13 +376,13 @@ func (c *client) NodeDeactivate(ctx context.Context, request NodeDeactivateReque
 	}
 
 	resp := &Response[any]{}
-	if err := doRequest[any](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[any](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) DestroyNode(ctx context.Context, request []NameOrUUID, opts DestroyNodeOpts, ropts ...RequestOption) (*Response[DestroyNodeResponseData], error) {
+func (c *client) DestroyNode(ctx context.Context, request []NameOrUUID, opts DestroyNodeOpts) (*Response[DestroyNodeResponseData], error) {
 	requestPath := "/v1/nodes"
 
 	query := make(url.Values)
@@ -454,13 +400,13 @@ func (c *client) DestroyNode(ctx context.Context, request []NameOrUUID, opts Des
 	}
 
 	resp := &Response[DestroyNodeResponseData]{}
-	if err := doRequest[DestroyNodeResponseData](ctx, c.request, http.MethodDelete, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DestroyNodeResponseData](ctx, c.request, http.MethodDelete, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) DestroyNodeByUUID(ctx context.Context, uuid string, opts DestroyNodeByUUIDOpts, ropts ...RequestOption) (*Response[DestroyNodeResponseData], error) {
+func (c *client) DestroyNodeByUUID(ctx context.Context, uuid string, opts DestroyNodeByUUIDOpts) (*Response[DestroyNodeResponseData], error) {
 	requestPath := "/v1/nodes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -470,24 +416,24 @@ func (c *client) DestroyNodeByUUID(ctx context.Context, uuid string, opts Destro
 	}
 
 	resp := &Response[DestroyNodeResponseData]{}
-	if err := doRequest[DestroyNodeResponseData](ctx, c.request, http.MethodDelete, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[DestroyNodeResponseData](ctx, c.request, http.MethodDelete, requestPath, query, nil, resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) GetNodeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[ListNodesResponseData], error) {
+func (c *client) GetNodeByUUID(ctx context.Context, uuid string) (*Response[ListNodesResponseData], error) {
 	requestPath := "/v1/nodes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[ListNodesResponseData]{}
-	if err := doRequest[ListNodesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[ListNodesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) ListMachineTypes(ctx context.Context, cloudprovider CloudProvider, opts ListMachineTypesOpts, ropts ...RequestOption) (*Response[ListMachineTypesResponseData], error) {
+func (c *client) ListMachineTypes(ctx context.Context, cloudprovider CloudProvider, opts ListMachineTypesOpts) (*Response[ListMachineTypesResponseData], error) {
 	requestPath := "/v1/nodes/providers/{cloudprovider}/types"
 	requestPath = strings.ReplaceAll(requestPath, "{cloudprovider}", url.PathEscape(string(cloudprovider)))
 
@@ -497,13 +443,13 @@ func (c *client) ListMachineTypes(ctx context.Context, cloudprovider CloudProvid
 	}
 
 	resp := &Response[ListMachineTypesResponseData]{}
-	if err := doRequest[ListMachineTypesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[ListMachineTypesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListNodesOpts, ropts ...RequestOption) (*Response[ListNodesResponseData], error) {
+func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListNodesOpts) (*Response[ListNodesResponseData], error) {
 	requestPath := "/v1/nodes"
 
 	query := make(url.Values)
@@ -539,24 +485,24 @@ func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListN
 	}
 
 	resp := &Response[ListNodesResponseData]{}
-	if err := doRequest[ListNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[ListNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) ListRegions(ctx context.Context, cloudprovider CloudProvider, ropts ...RequestOption) (*Response[ListRegionsResponseData], error) {
+func (c *client) ListRegions(ctx context.Context, cloudprovider CloudProvider) (*Response[ListRegionsResponseData], error) {
 	requestPath := "/v1/nodes/providers/{cloudprovider}/regions"
 	requestPath = strings.ReplaceAll(requestPath, "{cloudprovider}", url.PathEscape(string(cloudprovider)))
 
 	resp := &Response[ListRegionsResponseData]{}
-	if err := doRequest[ListRegionsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[ListRegionsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) ProvisionNode(ctx context.Context, request ProvisionNodeRequest, ropts ...RequestOption) (*Response[ProvisionNodeResponseData], error) {
+func (c *client) ProvisionNode(ctx context.Context, request ProvisionNodeRequest) (*Response[ProvisionNodeResponseData], error) {
 	requestPath := "/v1/nodes"
 
 	body, err := json.Marshal(request)
@@ -565,13 +511,13 @@ func (c *client) ProvisionNode(ctx context.Context, request ProvisionNodeRequest
 	}
 
 	resp := &Response[ProvisionNodeResponseData]{}
-	if err := doRequest[ProvisionNodeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[ProvisionNodeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateNodeByUUID(ctx context.Context, uuid string, request []UpdateNodePayload, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error) {
+func (c *client) UpdateNodeByUUID(ctx context.Context, uuid string, request []UpdateNodePayload) (*Response[UpdateNodesResponseData], error) {
 	requestPath := "/v1/nodes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -585,13 +531,13 @@ func (c *client) UpdateNodeByUUID(ctx context.Context, uuid string, request []Up
 	}
 
 	resp := &Response[UpdateNodesResponseData]{}
-	if err := doRequest[UpdateNodesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateNodesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateNodes(ctx context.Context, request []NameOrUUID, opts UpdateNodesOpts, ropts ...RequestOption) (*Response[UpdateNodesResponseData], error) {
+func (c *client) UpdateNodes(ctx context.Context, request []NameOrUUID, opts UpdateNodesOpts) (*Response[UpdateNodesResponseData], error) {
 	requestPath := "/v1/nodes"
 
 	query := make(url.Values)
@@ -615,13 +561,13 @@ func (c *client) UpdateNodes(ctx context.Context, request []NameOrUUID, opts Upd
 	}
 
 	resp := &Response[UpdateNodesResponseData]{}
-	if err := doRequest[UpdateNodesResponseData](ctx, c.request, http.MethodPatch, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateNodesResponseData](ctx, c.request, http.MethodPatch, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) WaitNodeByUUID(ctx context.Context, uuid string, opts WaitNodeByUUIDOpts, ropts ...RequestOption) (*Response[WaitNodesResponseData], error) {
+func (c *client) WaitNodeByUUID(ctx context.Context, uuid string, opts WaitNodeByUUIDOpts) (*Response[WaitNodesResponseData], error) {
 	requestPath := "/v1/nodes/{uuid}/wait"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -634,13 +580,13 @@ func (c *client) WaitNodeByUUID(ctx context.Context, uuid string, opts WaitNodeB
 	}
 
 	resp := &Response[WaitNodesResponseData]{}
-	if err := doRequest[WaitNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[WaitNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
 }
 
-func (c *client) WaitNodes(ctx context.Context, opts WaitNodesOpts, ropts ...RequestOption) (*Response[WaitNodesResponseData], error) {
+func (c *client) WaitNodes(ctx context.Context, opts WaitNodesOpts) (*Response[WaitNodesResponseData], error) {
 	requestPath := "/v1/nodes/wait"
 
 	query := make(url.Values)
@@ -658,7 +604,7 @@ func (c *client) WaitNodes(ctx context.Context, opts WaitNodesOpts, ropts ...Req
 	}
 
 	resp := &Response[WaitNodesResponseData]{}
-	if err := doRequest[WaitNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[WaitNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
