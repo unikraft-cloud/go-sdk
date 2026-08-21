@@ -47,9 +47,7 @@ func NewHTTPClient(opts ...Option) *http.Client {
 		opt(&o)
 	}
 
-	transport := &http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-	}
+	transport := http.DefaultTransport.(*http.Transport).Clone()
 	if o.insecure {
 		transport.TLSClientConfig = &tls.Config{
 			InsecureSkipVerify: true, // Allow insecure connections
