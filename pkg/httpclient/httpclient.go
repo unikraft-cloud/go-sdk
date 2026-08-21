@@ -23,6 +23,7 @@ type Option func(*options)
 type options struct {
 	insecure  bool
 	userAgent string
+	transport *http.Transport
 }
 
 // WithInsecure configures the client to skip TLS certificate verification.
@@ -40,6 +41,16 @@ func WithUserAgent(ua string) Option {
 	}
 }
 
+// WithTransport configures the client to use transport instead of the defaults
+// from http.DefaultTransport, which is how a caller sets its own connection
+// pool limits.  A clone is taken, so the returned client owns its pool and
+// WithInsecure does not modify the given transport.
+func WithTransport(transport *http.Transport) Option {
+	return func(o *options) {
+		o.transport = transport
+	}
+}
+
 // NewHTTPClient creates a default Go HTTP client.
 func NewHTTPClient(opts ...Option) *http.Client {
 	var o options
@@ -47,11 +58,17 @@ func NewHTTPClient(opts ...Option) *http.Client {
 		opt(&o)
 	}
 
-	transport := http.DefaultTransport.(*http.Transport).Clone()
+	base := o.transport
+	if base == nil {
+		base = http.DefaultTransport.(*http.Transport)
+	}
+
+	transport := base.Clone()
 	if o.insecure {
-		transport.TLSClientConfig = &tls.Config{
-			InsecureSkipVerify: true, // Allow insecure connections
+		if transport.TLSClientConfig == nil {
+			transport.TLSClientConfig = &tls.Config{}
 		}
+		transport.TLSClientConfig.InsecureSkipVerify = true //nolint:gosec // explicit opt-in via WithInsecure
 	}
 
 	var rt http.RoundTripper = transport
