@@ -9,7 +9,9 @@ package httpclient
 
 import (
 	"crypto/tls"
+	"net"
 	"net/http"
+	"time"
 )
 
 // HTTPClient interface abstracts a generic HTTP request issuing client.
@@ -60,7 +62,22 @@ func NewHTTPClient(opts ...Option) *http.Client {
 
 	base := o.transport
 	if base == nil {
-		base = http.DefaultTransport.(*http.Transport)
+		// TODO: move these hardcoded values to configurable env variables.
+		dialer := &net.Dialer{
+			Timeout:   10 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}
+
+		base = &http.Transport{
+			Proxy:                 http.ProxyFromEnvironment,
+			DialContext:           dialer.DialContext,
+			ForceAttemptHTTP2:     true,
+			MaxIdleConns:          500,
+			MaxIdleConnsPerHost:   100,
+			IdleConnTimeout:       90 * time.Second,
+			TLSHandshakeTimeout:   10 * time.Second,
+			ExpectContinueTimeout: 1 * time.Second,
+		}
 	}
 
 	transport := base.Clone()
@@ -79,7 +96,10 @@ func NewHTTPClient(opts ...Option) *http.Client {
 		}
 	}
 
-	return &http.Client{Transport: rt}
+	return &http.Client{
+		Transport: rt,
+		Timeout:   30 * time.Second,
+	}
 }
 
 // NewInsecureHTTPClient creates a default Go HTTP client with insecure checks
