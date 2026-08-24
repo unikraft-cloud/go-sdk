@@ -24,6 +24,11 @@ type CreateCheckpointInstancesRequestItem struct {
 	// Timeout in seconds to wait for the checkpoint to be created.
 	// No wait performed for a value of 0.
 	TimeoutS *int64 `json:"timeout_s,omitzero"`
+	// (Optional).  Tags to associate with the checkpoint.
+	Tags []string `json:"tags,omitzero"`
+	// (Optional). Automatic delete-on-idle configuration for the new
+	// checkpoint.
+	Autokill *ItemCheckpointAutokill `json:"autokill,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
