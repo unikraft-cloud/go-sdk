@@ -235,9 +235,6 @@ func (c *client) clone() *client {
 	// 	Optional query parameters for this operation.
 {{- end}}
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: {{$method}} {{$path}}
 {{- if and $op.Tags (eq ($.Var "package" "") "platform")}}
 	//
@@ -246,7 +243,7 @@ func (c *client) clone() *client {
 	{{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error)
+{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error)
 {{- end}}
 
 {{- define "impl_method"}}
@@ -316,7 +313,7 @@ func (c *client) clone() *client {
 func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error) {
+{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error) {
 	requestPath := "{{$path}}"
 {{- range $pathParams}}
 	requestPath = strings.ReplaceAll(requestPath, "{{"{"}}{{.Name}}{{"}"}}", url.PathEscape(string({{camelcase .Name}})))
@@ -397,7 +394,7 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- end}}
 
 	resp := &Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}]{}
-	if err := doRequest[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}](ctx, c.request, http.Method{{title (lower $method)}}, requestPath, {{if $queryParams}}query{{else}}nil{{end}}, {{if $hasRequestBody}}bytes.NewReader(body){{else}}nil{{end}}, resp, ropts...); err != nil {
+	if err := doRequest[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}](ctx, c.request, http.Method{{title (lower $method)}}, requestPath, {{if $queryParams}}query{{else}}nil{{end}}, {{if $hasRequestBody}}bytes.NewReader(body){{else}}nil{{end}}, resp); err != nil {
 {{- if $isSSE}}
 		return nil, fmt.Errorf("performing the request: %w", err)
 {{- else}}
