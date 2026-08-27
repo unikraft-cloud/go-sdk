@@ -239,6 +239,17 @@ type Instance struct {
 	NetworkInterfaces []InstanceNetworkInterface `json:"network_interfaces,omitzero"`
 	// The tags associated with the instance.
 	Tags []string `json:"tags,omitzero"`
+	// The annotations associated with the instance.
+	//
+	// Keys follow the Kubernetes annotation key syntax, `[<prefix>/]<name>`: the
+	// optional prefix is a non-wildcard DNS subdomain of at most 253 characters,
+	// and the name is at most 63 characters of `[-_.a-zA-Z0-9]` starting and
+	// ending with an alphanumeric.  Values are unconstrained apart from ASCII
+	// control characters, which are rejected because they would corrupt the
+	// console log output annotations can be forwarded to.
+	//
+	// An instance holds at most 256 annotations.
+	Annotations map[string]string `json:"annotations,omitzero"`
 	// An optional field representing the status of the request.  This field is
 	// only set when this message object is used as a response message.
 	Status *ResponseStatus `json:"status,omitzero"`
