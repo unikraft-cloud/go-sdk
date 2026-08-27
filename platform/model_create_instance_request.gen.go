@@ -97,6 +97,22 @@ type CreateInstanceRequest struct {
 	Plugins []CreateInstanceRequestPlugin `json:"plugins,omitzero"`
 	// (Optional).  Tags to associate with the instance.
 	Tags []string `json:"tags,omitzero"`
+	// (Optional).  Annotations to associate with the instance.
+	//
+	// Unlike tags, annotations also reach the guest: they are included in the
+	// instance's startdata, and selected keys can be injected into the console
+	// log output.
+	//
+	// Keys follow the Kubernetes annotation key syntax, `[<prefix>/]<name>`: the
+	// optional prefix is a non-wildcard DNS subdomain of at most 253 characters,
+	// and the name is at most 63 characters of `[-_.a-zA-Z0-9]` starting and
+	// ending with an alphanumeric.  Values are unconstrained apart from ASCII
+	// control characters.  An instance holds at most 256 annotations.
+	//
+	// When the instance inherits annotations from a template, branch, or
+	// checkpoint, the given annotations are merged into them rather than
+	// replacing them.  On a key clash the value given here wins.
+	Annotations map[string]string `json:"annotations,omitzero"`
 	// Template instances.
 	// An existing instance can be saved as a template. This template is then
 	// used to create new instances that inherit the exact configuration and

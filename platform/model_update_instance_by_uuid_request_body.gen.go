@@ -40,6 +40,7 @@ type UpdateInstanceByUUIDRequestBody struct {
 	// - For "plugins": array of plugin objects (with name, rom, and optional config fields) for SET/ADD
 	// - For "dependencies": array of instance identifiers (name or UUID)
 	// - For "sched_priority": SchedPriority enum value ("normal", "medium", "high", "admin")
+	// - For "annotations": object (for SET/ADD) or string/array of strings (for DEL)
 	Value *interface{} `json:"value,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

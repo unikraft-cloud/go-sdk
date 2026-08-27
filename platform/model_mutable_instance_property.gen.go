@@ -25,4 +25,5 @@ const (
 	MutableInstancePropertyDependencies  MutableInstanceProperty = "dependencies"
 	MutableInstancePropertySchedPriority MutableInstanceProperty = "sched_priority"
 	MutableInstancePropertyPlugins       MutableInstanceProperty = "plugins"
+	MutableInstancePropertyAnnotations   MutableInstanceProperty = "annotations"
 )

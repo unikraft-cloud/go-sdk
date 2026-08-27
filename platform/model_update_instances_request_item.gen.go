@@ -41,6 +41,7 @@ type UpdateInstancesRequestItem struct {
 	// - For "plugins": array of plugin objects (with name, rom, and optional config fields) for SET/ADD
 	// - For "dependencies": array of instance identifiers (name or UUID)
 	// - For "sched_priority": SchedPriority enum value ("normal", "medium", "high", "admin")
+	// - For "annotations": object (for SET/ADD) or string/array of strings (for DEL)
 	Value *interface{} `json:"value,omitzero"`
 	// The UUID of the instance to update. Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitzero"`
