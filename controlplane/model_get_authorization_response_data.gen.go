@@ -21,6 +21,8 @@ type GetAuthorizationResponseData struct {
 	OrganizationDisplayName string `json:"organization_display_name"`
 	// The global image registry.
 	Registry string `json:"registry"`
+	// The UUID of the organization the token is associated with.
+	OrganizationUuid string `json:"organization_uuid"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
