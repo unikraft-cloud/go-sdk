@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // AutoscalePolicy defines the autoscale policy for a service.
 // Right now it contains fields from both the `ondemand` and `step` policies.
@@ -17,7 +20,7 @@ import (
 // time. This is a current limitation of the API design.
 type AutoscalePolicy struct {
 	// The name of the policy.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// If the policy is enabled.
 	Enabled *bool `json:"enabled,omitzero"`
 	// Metric to use for the step policy.

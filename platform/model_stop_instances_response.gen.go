@@ -9,13 +9,16 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The response message for stopping one or more instance(s) given their UUID(s)
 // or name(s).
 type StopInstancesResponse struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`
@@ -25,7 +28,7 @@ type StopInstancesResponse struct {
 	Errors []ResponseError `json:"errors,omitzero"`
 	// The operation time in microseconds.  This is the time it took to process
 	// the request and generate the response.
-	OpTimeUs uint64 `json:"op_time_us,omitzero"`
+	OpTimeUs uint64 `json:"op_time_us"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

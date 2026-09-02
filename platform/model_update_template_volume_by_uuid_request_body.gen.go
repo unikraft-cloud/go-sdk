@@ -9,16 +9,19 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type UpdateTemplateVolumeByUUIDRequestBody struct {
 	// (Optional).  A client-provided identifier for tracking this operation in
 	// the response.
 	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableTemplateVolumeProperty `json:"prop,omitzero"`
+	Prop MutableTemplateVolumeProperty `json:"prop"`
 	// The operation to perform.
-	Op MutableTemplateVolumeOperation `json:"op,omitzero"`
+	Op MutableTemplateVolumeOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "tags": array of Strings
 	// - For "delete_lock": boolean

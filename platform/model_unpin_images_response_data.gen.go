@@ -4,26 +4,31 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package sandbox
+package platform
 
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
 
-type PluginEmptyResponseData struct {
+var _ time.Time
+
+type UnpinImagesResponseData struct {
+	// The result of unpinning each requested image.
+	Images []UnpinImagesResponseImage `json:"images,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
-func (m *PluginEmptyResponseData) UnmarshalJSON(data []byte) error {
-	type Alias PluginEmptyResponseData
+func (m *UnpinImagesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias UnpinImagesResponseData
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m PluginEmptyResponseData) MarshalJSON() ([]byte, error) {
-	type Alias PluginEmptyResponseData
+func (m UnpinImagesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias UnpinImagesResponseData
 	return json.Marshal((Alias)(m))
 }

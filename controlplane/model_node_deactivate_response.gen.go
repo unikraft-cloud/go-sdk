@@ -4,38 +4,38 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package platform
+package controlplane
 
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
 
-type AddUsersResponse struct {
+var _ time.Time
+
+// The response message for license deactivation.
+type NodeDeactivateResponse struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status,omitzero"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
+	Status ResponseStatus `json:"status"`
+	// An optional message providing additional information about the response.
 	Message *string `json:"message,omitzero"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitzero"`
-	// The response data for this request.
-	Data AddUsersResponseData `json:"data,omitzero"`
-	// The operation time in microseconds.  This is the time it took to process
-	// the request and generate the response.
-	OpTimeUs uint64 `json:"op_time_us,omitzero"`
+	// The operation time in microseconds.
+	OpTimeUs uint64 `json:"op_time_us"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
-func (m *AddUsersResponse) UnmarshalJSON(data []byte) error {
-	type Alias AddUsersResponse
+func (m *NodeDeactivateResponse) UnmarshalJSON(data []byte) error {
+	type Alias NodeDeactivateResponse
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m AddUsersResponse) MarshalJSON() ([]byte, error) {
-	type Alias AddUsersResponse
+func (m NodeDeactivateResponse) MarshalJSON() ([]byte, error) {
+	type Alias NodeDeactivateResponse
 	return json.Marshal((Alias)(m))
 }

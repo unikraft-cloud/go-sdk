@@ -7,21 +7,22 @@
 package controlplane
 
 import (
-	"time"
-
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type ImageTag struct {
 	// The tag name.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The digest for the tag.
-	Digest string `json:"digest,omitzero"`
+	Digest string `json:"digest"`
 	// The size of the image in bytes.
-	Size uint64 `json:"size,omitzero"`
+	Size uint64 `json:"size"`
 	// The push time of the image.
-	PushTime time.Time `json:"push_time,omitzero"`
+	PushTime time.Time `json:"push_time"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

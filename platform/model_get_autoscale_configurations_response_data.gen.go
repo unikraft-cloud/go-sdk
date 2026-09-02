@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type GetAutoscaleConfigurationsResponseData struct {
 	// The configuration(s) which were retrieved by the request.

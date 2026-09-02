@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // Scale-to-zero defines the configuration for scaling the instance to zero.
 // When an instance is scaled-to-zero it can be either stopped (and fully

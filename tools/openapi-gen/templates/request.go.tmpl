@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"mime"
@@ -93,71 +94,6 @@ func (r *Request) clone() *Request {
 	return &rcpy
 }
 
-type (
-	// RequestCallback is a function that can be used to modify the request
-	// before it is sent.
-	RequestCallback func(*http.Request)
-
-	// ResponseCallback is a function that can be used to modify the response
-	// after it is received.
-	ResponseCallback func(*http.Request, *http.Response)
-)
-
-// requestModifiers contains headers, callbacks, etc. that will be added to
-// each request
-type requestModifiers struct {
-	headers http.Header
-
-	requestCallbacks  []RequestCallback
-	responseCallbacks []ResponseCallback
-
-	// additionalQueryParameters, if specified will be appended to the list of
-	// query parameters included with the request.
-	additionalQueryParameters url.Values
-}
-
-// RequestOption is a functional parameter used to modify a request
-type RequestOption func(*requestModifiers) error
-
-// WithRequestCallbacks sets callbacks which will be invoked before the next
-// request; these callbacks will be appended to the list of the callbacks set at
-// the client-level.
-func WithRequestCallbacks(callbacks ...RequestCallback) RequestOption {
-	return func(m *requestModifiers) error {
-		m.requestCallbacks = callbacks
-		return nil
-	}
-}
-
-// WithResponseCallbacks sets callbacks which will be invoked after a successful
-// response within the next request; these callbacks will be appended to the
-// list of the callbacks set at the client-level.
-func WithResponseCallbacks(callbacks ...ResponseCallback) RequestOption {
-	return func(m *requestModifiers) error {
-		m.responseCallbacks = callbacks
-		return nil
-	}
-}
-
-// WithQueryParameters appends the given list of query parameters to the
-// request. This is primarily intended to be used with client.Read,
-// client.ReadRaw, client.List, and client.Delete methods.
-func WithQueryParameters(parameters url.Values) RequestOption {
-	return func(m *requestModifiers) error {
-		m.additionalQueryParameters = parameters
-		return nil
-	}
-}
-
-// WithCustomHeaders sets custom headers for the next request; these headers
-// will be appended to any custom headers set at the client level.
-func WithCustomHeaders(headers http.Header) RequestOption {
-	return func(m *requestModifiers) error {
-		m.headers = headers
-		return nil
-	}
-}
-
 // doRequest performs the request and handles the return media type differently
 // depending on the media type:
 //
@@ -166,7 +102,7 @@ func WithCustomHeaders(headers http.Header) RequestOption {
 // - text/event-stream: returns a channel of events which will be closed when
 //   the context is done or the connection is closed.  The channel will contain
 //   pointers to Response items, which are decoded from the event data.
-func doRequest[T any](ctx context.Context, req *Request, method, path string, query url.Values, reqBody io.Reader, target *Response[T], ropts ...RequestOption) error {
+func doRequest[T any](ctx context.Context, req *Request, method, path string, query url.Values, reqBody io.Reader, target *Response[T]) error {
 	var m string
 	var u *url.URL
 	var err error
@@ -189,10 +125,14 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 		return fmt.Errorf("error creating the request: %w", err)
 	}
 
-	httpReq.Header.Set("Authorization", req.GetBearerToken())
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Accept", "application/json")
-	httpReq.Header.Set("User-Agent", req.GetUserAgent())
+	if req.GetToken() != "" {
+		httpReq.Header.Set("Authorization", req.GetBearerToken())
+	}
+	if req.GetUserAgent() != "" {
+		httpReq.Header.Set("User-Agent", req.GetUserAgent())
+	}
 
 	hc := req.copts.HTTPClient()
 	if req.httpClient != nil {

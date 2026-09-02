@@ -9,15 +9,18 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // SSHKey represents an SSH public key for authentication.
 type SSHKey struct {
 	// A name or label for this SSH key.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The SSH public key in OpenSSH format (e.g., "ssh-rsa AAAA... user@host"
 	// or "ssh-ed25519 AAAA... user@host").
-	PublicKey string `json:"public_key,omitzero"`
+	PublicKey string `json:"public_key"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

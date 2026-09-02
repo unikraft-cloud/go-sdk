@@ -9,11 +9,14 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type NodeActivateResponseData struct {
 	// The issued license certificate in base64 URL encoded PEM format.
-	License string `json:"license,omitzero"`
+	License string `json:"license"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

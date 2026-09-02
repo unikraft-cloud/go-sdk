@@ -9,15 +9,18 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type UpdateServiceGroupByUUIDRequestBody struct {
 	// (Optional).  A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableServiceGroupProperty `json:"prop,omitzero"`
+	Prop MutableServiceGroupProperty `json:"prop"`
 	// The operation to perform.
-	Op MutableServiceGroupOperation `json:"op,omitzero"`
+	Op MutableServiceGroupOperation `json:"op"`
 	// The value for the update operation:
 	// - For "services": array of Service objects (same as for creation)
 	// - For "domains": array of Domain objects (same as for creation)

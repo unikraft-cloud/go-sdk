@@ -9,13 +9,16 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type GetInstancesLogsResponseAvailable struct {
 	// The first byte offset that can be retrieved.
-	Start int64 `json:"start,omitzero"`
+	Start int64 `json:"start"`
 	// The last byte offset that can be retrieved.
-	End int64 `json:"end,omitzero"`
+	End int64 `json:"end"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

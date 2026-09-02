@@ -31,13 +31,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/services/{uuid}/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configuration-by-service-group-uuid
-	CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error)
+	CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest) (*Response[CreateAutoscaleConfigurationsResponseData], error)
 	// Add a new autoscale policy to an autoscale configuration given a service
 	// group UUID.
 	//
@@ -46,26 +43,20 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/services/{uuid}/autoscale/policies
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configuration-policy
-	CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error)
+	CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error)
 	// Create one or more autoscale configurations for the specified service groups
 	// given their UUIDs or names.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/services/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configurations
-	CreateAutoscaleConfigurations(ctx context.Context, request []CreateAutoscaleConfigurationsRequestConfiguration, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error)
+	CreateAutoscaleConfigurations(ctx context.Context, request []CreateAutoscaleConfigurationsRequestConfiguration) (*Response[CreateAutoscaleConfigurationsResponseData], error)
 	// Delete one or more autoscale policies for a given service group.
 	//
 	// @param `uuid`
@@ -73,13 +64,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/services/{uuid}/autoscale/policies
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configuration-policies
-	DeleteAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request DeletePolicyRequest, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error)
+	DeleteAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request DeletePolicyRequest) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error)
 	// Delete an autoscale policy by name given the service group UUID.
 	//
 	// @param `uuid`
@@ -88,26 +76,20 @@ type Client interface {
 	// @param `name`
 	// 	The name of the policy to delete.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/services/{uuid}/autoscale/policies/{name}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configuration-policy-by-name
-	DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error)
+	DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error)
 	// Delete autoscale configuration for a given set of service groups given
 	// their UUIDs or names.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/services/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configurations
-	DeleteAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationsResponseData], error)
+	DeleteAutoscaleConfigurations(ctx context.Context, request []NameOrUUID) (*Response[DeleteAutoscaleConfigurationsResponseData], error)
 	// Delete the autoscale configuration for the service group given its UUID.
 	//
 	// Unikraft Cloud will immediately drain all connections from all instances
@@ -120,13 +102,10 @@ type Client interface {
 	// @param `uuid`
 	// 	The UUID of the service group.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/services/{uuid}/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configurations-by-service-group-uuid
-	DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationsResponseData], error)
+	DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string) (*Response[DeleteAutoscaleConfigurationsResponseData], error)
 	// List the autoscale policies for a given service group given its UUID.
 	//
 	// @param `uuid`
@@ -134,13 +113,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/services/{uuid}/autoscale/policies
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configuration-policies
-	GetAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request GetAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationPolicyResponseData], error)
+	GetAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request GetAutoscaleConfigurationPolicyRequest) (*Response[GetAutoscaleConfigurationPolicyResponseData], error)
 	// Return the current state and configuration of an autoscale policy given
 	// the service group UUID and the name of the policy.
 	//
@@ -150,13 +126,10 @@ type Client interface {
 	// @param `name`
 	// 	The name of the policy to get.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/services/{uuid}/autoscale/policies/{name}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configuration-policy-by-name
-	GetAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationPolicyResponseData], error)
+	GetAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string) (*Response[GetAutoscaleConfigurationPolicyResponseData], error)
 	// Return the current states and configurations of autoscale configurations
 	// for a given set of service groups given their UUIDs or names.
 	//
@@ -166,76 +139,58 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/services/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configurations
-	GetAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, opts GetAutoscaleConfigurationsOpts, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error)
+	GetAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, opts GetAutoscaleConfigurationsOpts) (*Response[GetAutoscaleConfigurationsResponseData], error)
 	// Return the current states and configurations of autoscale configurations
 	// given a service group UUID.
 	//
 	// @param `uuid`
 	// 	The UUID of the service group.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/services/{uuid}/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configurations-by-service-group-uuid
-	GetAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error)
+	GetAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string) (*Response[GetAutoscaleConfigurationsResponseData], error)
 	// Upload a new certificate with the given configuration.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/certificates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#create-certificate
-	CreateCertificate(ctx context.Context, request CreateCertificateRequest, ropts ...RequestOption) (*Response[CreateCertificateResponseData], error)
+	CreateCertificate(ctx context.Context, request CreateCertificateRequest) (*Response[CreateCertificateResponseData], error)
 	// Delete a specified certificate by its UUID.  After this call the UUID of
 	// the certificate are no longer valid.
 	//
 	// @param `uuid`
 	// 	The UUID of the certificate to delete.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/certificates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#delete-certificate-by-uuid
-	DeleteCertificateByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteCertificatesResponseData], error)
+	DeleteCertificateByUUID(ctx context.Context, uuid string) (*Response[DeleteCertificatesResponseData], error)
 	// Delete the specified certificate(s).  After this call the name of the
 	// certificate(s) are no longer valid.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/certificates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#delete-certificates
-	DeleteCertificates(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteCertificatesResponseData], error)
+	DeleteCertificates(ctx context.Context, request []NameOrUUID) (*Response[DeleteCertificatesResponseData], error)
 	// Get a specified certificate by its UUID.
 	//
 	// @param `uuid`
 	// 	The UUID of the certificate.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/certificates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#get-certificate-by-uuid
-	GetCertificateByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error)
+	GetCertificateByUUID(ctx context.Context, uuid string) (*Response[GetCertificatesResponseData], error)
 	// Get one or many certificates with their current status and configuration.
 	// It's possible to filter this list by name or UUID.
 	//
@@ -245,13 +200,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/certificates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#get-certificates
-	GetCertificates(ctx context.Context, request []NameOrUUID, opts GetCertificatesOpts, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error)
+	GetCertificates(ctx context.Context, request []NameOrUUID, opts GetCertificatesOpts) (*Response[GetCertificatesResponseData], error)
 	// Update a specified certificate by its UUID with a new certificate chain
 	// and private key.
 	//
@@ -261,13 +213,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PUT /v1/certificates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#update-certificate-by-uuid
-	UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateCertificatesResponseData], error)
+	UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequestBody) (*Response[UpdateCertificatesResponseData], error)
 	// Update the specified certificate(s) with new certificate chain(s) and private
 	// key(s). Only user-uploaded certificates can be updated; system-managed
 	// certificates cannot be modified. The new certificate(s) must have the same
@@ -276,13 +225,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PUT /v1/certificates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#update-certificates
-	UpdateCertificates(ctx context.Context, request []UpdateCertificatesRequestItem, ropts ...RequestOption) (*Response[UpdateCertificatesResponseData], error)
+	UpdateCertificates(ctx context.Context, request []UpdateCertificatesRequestItem) (*Response[UpdateCertificatesResponseData], error)
 	// Retrieve all images.
 	//
 	// @param `request`
@@ -290,14 +236,11 @@ type Client interface {
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/image-store
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-image-store
-	GetImageStore(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImageStoreOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
+	GetImageStore(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImageStoreOpts) (*Response[GetImagesResponseData], error)
 	// Retrieve all images.
 	//
 	// @param `request`
@@ -306,13 +249,32 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/images
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-images
-	GetImages(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error)
+	GetImages(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImagesOpts) (*Response[GetImagesResponseData], error)
+	// Pull and pin one or more images so they stay cached and are never
+	// evicted, without relying on an on-demand pull to succeed at instance
+	// start.  If a pull fails, the agent's error is returned in the entry's
+	// `message` field.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// Performs: POST /v1/images
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/images#pin-images
+	PinImages(ctx context.Context, request []PinImageRequestItem) (*Response[PinImagesResponseData], error)
+	// Unpin one or more images by UUID, making them eligible for normal
+	// cache eviction again.  This does not delete the image.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// Performs: DELETE /v1/images
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/images#unpin-images
+	UnpinImages(ctx context.Context, request []UnpinImageRequestItem) (*Response[UnpinImagesResponseData], error)
 	// Create a checkpoint from an existing instance.  A checkpoint captures the
 	// state of an instance at a specific point in time.  Checkpoints can be
 	// created from running, stopped, or standby instances.
@@ -320,25 +282,19 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/instances/checkpoints
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#create-checkpoint-instances
-	CreateCheckpointInstances(ctx context.Context, request []CreateCheckpointInstancesRequestItem, ropts ...RequestOption) (*Response[CreateCheckpointInstancesResponseData], error)
+	CreateCheckpointInstances(ctx context.Context, request []CreateCheckpointInstancesRequestItem) (*Response[CreateCheckpointInstancesResponseData], error)
 	// Create an instance in Unikraft Cloud.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#create-instance
-	CreateInstance(ctx context.Context, request CreateInstanceRequest, ropts ...RequestOption) (*Response[CreateInstanceResponseData], error)
+	CreateInstance(ctx context.Context, request CreateInstanceRequest) (*Response[CreateInstanceResponseData], error)
 	// Convert one or more existing instances by their UUID(s) or name(s) into
 	// template instances that can be used to create new instances.
 	//
@@ -348,39 +304,30 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#create-template-instances
-	CreateTemplateInstances(ctx context.Context, request []CreateTemplateInstancesRequestItem, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error)
+	CreateTemplateInstances(ctx context.Context, request []CreateTemplateInstancesRequestItem) (*Response[CreateTemplateInstancesResponseData], error)
 	// Delete a specified checkpoint instance by its UUID.  After this call the
 	// UUID of the checkpoint instance is no longer valid.
 	//
 	// @param `uuid`
 	// 	The UUID of the checkpoint instance to delete.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/instances/checkpoints/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-checkpoint-instance-by-uuid
-	DeleteCheckpointInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteCheckpointInstancesResponseData], error)
+	DeleteCheckpointInstanceByUUID(ctx context.Context, uuid string) (*Response[DeleteCheckpointInstancesResponseData], error)
 	// Delete the specified checkpoint instance(s) by ID(s) (name or UUID).
 	// After this call the IDs of the checkpoint instances are no longer valid.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/instances/checkpoints
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-checkpoint-instances
-	DeleteCheckpointInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteCheckpointInstancesResponseData], error)
+	DeleteCheckpointInstances(ctx context.Context, request []NameOrUUID) (*Response[DeleteCheckpointInstancesResponseData], error)
 	// Delete a specified instance by its UUID.  After this call the UUID of the
 	// instance is no longer valid.  If the instance is currently running,
 	// it is force-stopped.
@@ -391,13 +338,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/instances/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instance-by-uuid
-	DeleteInstanceByUUID(ctx context.Context, uuid string, request DeleteInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
+	DeleteInstanceByUUID(ctx context.Context, uuid string, request DeleteInstanceByUUIDRequestBody) (*Response[DeleteInstancesResponseData], error)
 	// Delete the specified instance(s) by ID(s) (name or UUID).  After this call
 	// the IDs of the instances are no longer valid.  If the instances are
 	// currently running, they are force-stopped.
@@ -405,39 +349,30 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instances
-	DeleteInstances(ctx context.Context, request []DeleteInstanceRequestItem, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error)
+	DeleteInstances(ctx context.Context, request []DeleteInstanceRequestItem) (*Response[DeleteInstancesResponseData], error)
 	// Delete a specified template instance by its UUID.  After this call the UUID
 	// of the template instance is no longer valid.
 	//
 	// @param `uuid`
 	// 	The UUID of the template instance to delete.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/instances/templates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-template-instance-by-uuid
-	DeleteTemplateInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteTemplateInstancesResponseData], error)
+	DeleteTemplateInstanceByUUID(ctx context.Context, uuid string) (*Response[DeleteTemplateInstancesResponseData], error)
 	// Delete the specified template instance(s) by ID(s) (name or UUID).  After
 	// this call the IDs of the template instances are no longer valid.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-template-instances
-	DeleteTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteTemplateInstancesResponseData], error)
+	DeleteTemplateInstances(ctx context.Context, request []NameOrUUID) (*Response[DeleteTemplateInstancesResponseData], error)
 	// Get the checkpoint history of one or more checkpoint instances.
 	// Returns the ordered list of checkpoints in each checkpoint's history.
 	//
@@ -447,26 +382,20 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/checkpoints/history
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-checkpoint-history
-	GetCheckpointHistory(ctx context.Context, request []NameOrUUID, opts GetCheckpointHistoryOpts, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error)
+	GetCheckpointHistory(ctx context.Context, request []NameOrUUID, opts GetCheckpointHistoryOpts) (*Response[GetCheckpointHistoryResponseData], error)
 	// Get the checkpoint history of a checkpoint instance by its UUID.
 	// Returns the ordered list of checkpoints in the checkpoint's history.
 	//
 	// @param `uuid`
 	// 	The UUID of the instance or checkpoint to retrieve history for.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/checkpoints/{uuid}/history
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-checkpoint-history-by-uuid
-	GetCheckpointHistoryByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error)
+	GetCheckpointHistoryByUUID(ctx context.Context, uuid string) (*Response[GetCheckpointHistoryResponseData], error)
 	// Get a single checkpoint instance by its UUID.
 	//
 	// @param `uuid`
@@ -475,13 +404,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/checkpoints/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-checkpoint-instance-by-uuid
-	GetCheckpointInstanceByUUID(ctx context.Context, uuid string, opts GetCheckpointInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetCheckpointInstancesResponseData], error)
+	GetCheckpointInstanceByUUID(ctx context.Context, uuid string, opts GetCheckpointInstanceByUUIDOpts) (*Response[GetCheckpointInstancesResponseData], error)
 	// Get one or more checkpoint instances by their UUID(s) or name(s).
 	//
 	// @param `request`
@@ -490,13 +416,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/checkpoints
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-checkpoint-instances
-	GetCheckpointInstances(ctx context.Context, request []NameOrUUID, opts GetCheckpointInstancesOpts, ropts ...RequestOption) (*Response[GetCheckpointInstancesResponseData], error)
+	GetCheckpointInstances(ctx context.Context, request []NameOrUUID, opts GetCheckpointInstancesOpts) (*Response[GetCheckpointInstancesResponseData], error)
 	// Get a single instance by its UUID.
 	//
 	// @param `uuid`
@@ -505,13 +428,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-by-uuid
-	GetInstanceByUUID(ctx context.Context, uuid string, opts GetInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	GetInstanceByUUID(ctx context.Context, uuid string, opts GetInstanceByUUIDOpts) (*Response[GetInstancesResponseData], error)
 	// Get the checkpoint history of one or more instances.
 	// Returns the ordered list of checkpoints associated with each instance.
 	//
@@ -521,26 +441,20 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/history
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-history
-	GetInstanceHistory(ctx context.Context, request []NameOrUUID, opts GetInstanceHistoryOpts, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error)
+	GetInstanceHistory(ctx context.Context, request []NameOrUUID, opts GetInstanceHistoryOpts) (*Response[GetCheckpointHistoryResponseData], error)
 	// Get the checkpoint history of an instance by its UUID.
 	// Returns the ordered list of checkpoints associated with the instance.
 	//
 	// @param `uuid`
 	// 	The UUID of the instance or checkpoint to retrieve history for.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/{uuid}/history
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-history-by-uuid
-	GetInstanceHistoryByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error)
+	GetInstanceHistoryByUUID(ctx context.Context, uuid string) (*Response[GetCheckpointHistoryResponseData], error)
 	// Retrieve the logs of one or more instances by ID(s) (name or UUID).
 	//
 	// @param `request`
@@ -549,13 +463,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/log
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-logs
-	GetInstanceLogs(ctx context.Context, request []GetInstancesLogsRequestItem, opts GetInstanceLogsOpts, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error)
+	GetInstanceLogs(ctx context.Context, request []GetInstancesLogsRequestItem, opts GetInstanceLogsOpts) (*Response[GetInstancesLogsResponseData], error)
 	// Retrieve the logs of an instance by its UUID.
 	//
 	// @param `uuid`
@@ -564,13 +475,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/{uuid}/log
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-logs-by-uuid
-	GetInstanceLogsByUUID(ctx context.Context, uuid string, request GetInstanceLogsByUUIDRequestBody, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error)
+	GetInstanceLogsByUUID(ctx context.Context, uuid string, request GetInstanceLogsByUUIDRequestBody) (*Response[GetInstancesLogsResponseData], error)
 	// Get the metrics of one or more instances by their ID(s) (name or UUID).
 	//
 	// @param `request`
@@ -579,25 +487,19 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/metrics
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-metrics
-	GetInstanceMetrics(ctx context.Context, request []NameOrUUID, opts GetInstanceMetricsOpts, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error)
+	GetInstanceMetrics(ctx context.Context, request []NameOrUUID, opts GetInstanceMetricsOpts) (*Response[GetInstancesMetricsResponseData], error)
 	// Get the metrics of an instance by its UUID.
 	//
 	// @param `uuid`
 	// 	The UUID of the instance to retrieve metrics for.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/{uuid}/metrics
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-metrics-by-uuid
-	GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error)
+	GetInstanceMetricsByUUID(ctx context.Context, uuid string) (*Response[GetInstancesMetricsResponseData], error)
 	// Get one or many instances with their current status and configuration.
 	// It's possible to filter this list by ID(s) (name or UUID).
 	//
@@ -607,13 +509,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instances
-	GetInstances(ctx context.Context, request []NameOrUUID, opts GetInstancesOpts, ropts ...RequestOption) (*Response[GetInstancesResponseData], error)
+	GetInstances(ctx context.Context, request []NameOrUUID, opts GetInstancesOpts) (*Response[GetInstancesResponseData], error)
 	// Get a single template instance by its UUID.
 	//
 	// @param `uuid`
@@ -622,13 +521,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/templates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instance-by-uuid
-	GetTemplateInstanceByUUID(ctx context.Context, uuid string, opts GetTemplateInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
+	GetTemplateInstanceByUUID(ctx context.Context, uuid string, opts GetTemplateInstanceByUUIDOpts) (*Response[GetTemplateInstancesResponseData], error)
 	// Get one or more template instances by their UUID(s) or name(s).
 	//
 	// @param `request`
@@ -637,13 +533,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instances
-	GetTemplateInstances(ctx context.Context, request []NameOrUUID, opts GetTemplateInstancesOpts, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error)
+	GetTemplateInstances(ctx context.Context, request []NameOrUUID, opts GetTemplateInstancesOpts) (*Response[GetTemplateInstancesResponseData], error)
 	// Start a previously stopped instance by its UUID or do nothing if the
 	// instance is already running.
 	//
@@ -653,26 +546,20 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PUT /v1/instances/{uuid}/start
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instance-by-uuid
-	StartInstanceByUUID(ctx context.Context, uuid string, request StartInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
+	StartInstanceByUUID(ctx context.Context, uuid string, request StartInstanceByUUIDRequestBody) (*Response[StartInstancesResponseData], error)
 	// Start previously stopped instances by ID(s) (name or UUID) or do
 	// nothing if the instances are already running.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PUT /v1/instances/start
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instances
-	StartInstances(ctx context.Context, request []StartInstancesRequestItem, ropts ...RequestOption) (*Response[StartInstancesResponseData], error)
+	StartInstances(ctx context.Context, request []StartInstancesRequestItem) (*Response[StartInstancesResponseData], error)
 	// Stop a running instance by its UUID or do nothing if the instance is
 	// already stopped.
 	//
@@ -682,26 +569,20 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PUT /v1/instances/{uuid}/stop
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instance-by-uuid
-	StopInstanceByUUID(ctx context.Context, uuid string, request StopInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StopInstancesResponseData], error)
+	StopInstanceByUUID(ctx context.Context, uuid string, request StopInstanceByUUIDRequestBody) (*Response[StopInstancesResponseData], error)
 	// Stop one or more running instance by ID(s) (name or UUID) or do
 	// nothing if the instances are already stopped.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PUT /v1/instances/stop
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instances
-	StopInstances(ctx context.Context, request []StopInstancesRequestItem, ropts ...RequestOption) (*Response[StopInstancesResponseData], error)
+	StopInstances(ctx context.Context, request []StopInstancesRequestItem) (*Response[StopInstancesResponseData], error)
 	// Suspend a running instance by its UUID or do nothing if the instance is
 	// already suspended.
 	//
@@ -711,26 +592,20 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PUT /v1/instances/{uuid}/suspend
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#suspend-instance-by-uuid
-	SuspendInstanceByUUID(ctx context.Context, uuid string, request SuspendInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error)
+	SuspendInstanceByUUID(ctx context.Context, uuid string, request SuspendInstanceByUUIDRequestBody) (*Response[SuspendInstancesResponseData], error)
 	// Suspend one or more running instances by ID(s) (name or UUID) or do
 	// nothing if the instances are already suspended.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PUT /v1/instances/suspend
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#suspend-instances
-	SuspendInstances(ctx context.Context, request []SuspendInstancesRequestItem, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error)
+	SuspendInstances(ctx context.Context, request []SuspendInstancesRequestItem) (*Response[SuspendInstancesResponseData], error)
 	// Update (modify) a checkpoint instance by its UUID.
 	//
 	// @param `uuid`
@@ -739,25 +614,19 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/instances/checkpoints/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-checkpoint-instance-by-uuid
-	UpdateCheckpointInstanceByUUID(ctx context.Context, uuid string, request UpdateCheckpointInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateCheckpointInstancesResponseData], error)
+	UpdateCheckpointInstanceByUUID(ctx context.Context, uuid string, request UpdateCheckpointInstanceByUUIDRequestBody) (*Response[UpdateCheckpointInstancesResponseData], error)
 	// Update (modify) one or more checkpoint instances by ID(s) (name or UUID).
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/instances/checkpoints
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-checkpoint-instances
-	UpdateCheckpointInstances(ctx context.Context, request []UpdateCheckpointInstancesRequestItem, ropts ...RequestOption) (*Response[UpdateCheckpointInstancesResponseData], error)
+	UpdateCheckpointInstances(ctx context.Context, request []UpdateCheckpointInstancesRequestItem) (*Response[UpdateCheckpointInstancesResponseData], error)
 	// Update (modify) an instance by its UUID.  The instance must be in a stopped
 	// state for most update operations.
 	//
@@ -767,26 +636,20 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/instances/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-instance-by-uuid
-	UpdateInstanceByUUID(ctx context.Context, uuid string, request UpdateInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error)
+	UpdateInstanceByUUID(ctx context.Context, uuid string, request UpdateInstanceByUUIDRequestBody) (*Response[UpdateInstancesResponseData], error)
 	// Update (modify) one or more instances by ID(s) (name or UUID).  The
 	// instances must be in a stopped state for most update operations.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/instances
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-instances
-	UpdateInstances(ctx context.Context, request []UpdateInstancesRequestItem, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error)
+	UpdateInstances(ctx context.Context, request []UpdateInstancesRequestItem) (*Response[UpdateInstancesResponseData], error)
 	// Update (modify) a template instance by its UUID.
 	//
 	// @param `uuid`
@@ -795,25 +658,19 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/instances/templates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-template-instance-by-uuid
-	UpdateTemplateInstanceByUUID(ctx context.Context, uuid string, request UpdateTemplateInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateTemplateInstancesResponseData], error)
+	UpdateTemplateInstanceByUUID(ctx context.Context, uuid string, request UpdateTemplateInstanceByUUIDRequestBody) (*Response[UpdateTemplateInstancesResponseData], error)
 	// Update (modify) one or more template instances by ID(s) (name or UUID).
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/instances/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-template-instances
-	UpdateTemplateInstances(ctx context.Context, request []UpdateTemplateInstancesRequestItem, ropts ...RequestOption) (*Response[UpdateTemplateInstancesResponseData], error)
+	UpdateTemplateInstances(ctx context.Context, request []UpdateTemplateInstancesRequestItem) (*Response[UpdateTemplateInstancesResponseData], error)
 	// Wait for an instance to reach a certain state, by its UUID.
 	//
 	// If the instance is already in the desired state, the request will return
@@ -829,13 +686,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/{uuid}/wait
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#wait-instance-by-uuid
-	WaitInstanceByUUID(ctx context.Context, uuid string, request WaitInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error)
+	WaitInstanceByUUID(ctx context.Context, uuid string, request WaitInstanceByUUIDRequestBody) (*Response[WaitInstancesResponseData], error)
 	// Wait for one or more instances to reach certain states by ID(s)
 	// (name or UUID).
 	//
@@ -852,22 +706,16 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/instances/wait
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#wait-instances
-	WaitInstances(ctx context.Context, request []WaitInstancesRequestItem, opts WaitInstancesOpts, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error)
+	WaitInstances(ctx context.Context, request []WaitInstancesRequestItem, opts WaitInstancesOpts) (*Response[WaitInstancesResponseData], error)
 	// Return the status of a full-system health check of the node.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/healthz
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node#healthz
-	Healthz(ctx context.Context, ropts ...RequestOption) (*Response[HealthzResponseData], error)
+	Healthz(ctx context.Context) (*Response[HealthzResponseData], error)
 	// Create a new service with the given configuration.
 	//
 	// Note that the service properties like published ports can only be defined
@@ -878,39 +726,30 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/services
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#create-service-group
-	CreateServiceGroup(ctx context.Context, request CreateServiceGroupRequest, ropts ...RequestOption) (*Response[CreateServiceGroupResponseData], error)
+	CreateServiceGroup(ctx context.Context, request CreateServiceGroupRequest) (*Response[CreateServiceGroupResponseData], error)
 	// Delete a specified service group by its UUID.  After this call the UUID of
 	// the service group is no longer valid.
 	//
 	// @param `uuid`
 	// 	The UUID of the service group to delete.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/services/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#delete-service-group-by-uuid
-	DeleteServiceGroupByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteServiceGroupsResponseData], error)
+	DeleteServiceGroupByUUID(ctx context.Context, uuid string) (*Response[DeleteServiceGroupsResponseData], error)
 	// Delete the specified service group(s).  After this call the name of the
 	// service group(s) are no longer valid.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/services
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#delete-service-groups
-	DeleteServiceGroups(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteServiceGroupsResponseData], error)
+	DeleteServiceGroups(ctx context.Context, request []NameOrUUID) (*Response[DeleteServiceGroupsResponseData], error)
 	// Get a specified service group by its UUID.
 	//
 	// @param `uuid`
@@ -919,13 +758,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/services/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#get-service-group-by-uuid
-	GetServiceGroupByUUID(ctx context.Context, uuid string, opts GetServiceGroupByUUIDOpts, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
+	GetServiceGroupByUUID(ctx context.Context, uuid string, opts GetServiceGroupByUUIDOpts) (*Response[GetServiceGroupsResponseData], error)
 	// Get one or many service groups with their current status and configuration.
 	// It's possible to filter this list by name or UUID.
 	//
@@ -935,13 +771,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/services
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#get-service-groups
-	GetServiceGroups(ctx context.Context, request []NameOrUUID, opts GetServiceGroupsOpts, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error)
+	GetServiceGroups(ctx context.Context, request []NameOrUUID, opts GetServiceGroupsOpts) (*Response[GetServiceGroupsResponseData], error)
 	// Update a service group by its UUID.
 	//
 	// @param `uuid`
@@ -950,61 +783,36 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/services/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#update-service-group-by-uuid
-	UpdateServiceGroupByUUID(ctx context.Context, uuid string, request UpdateServiceGroupByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateServiceGroupsResponseData], error)
+	UpdateServiceGroupByUUID(ctx context.Context, uuid string, request UpdateServiceGroupByUUIDRequestBody) (*Response[UpdateServiceGroupsResponseData], error)
 	// Update one or more service groups.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/services
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/service-groups#update-service-groups
-	UpdateServiceGroups(ctx context.Context, request []UpdateServiceGroupsRequestItem, ropts ...RequestOption) (*Response[UpdateServiceGroupsResponseData], error)
-	// Create new user accounts. This will return 409 Conflict when any of the
-	// requested users already existed on the target.
-	//
-	// @param `request`
-	// 	The request body for this operation.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
-	// Performs: POST /v1/users
-	//
-	// See: https://unikraft.com/docs/api/platform/v1/users#add-users
-	AddUsers(ctx context.Context, request AddUsersRequest, ropts ...RequestOption) (*Response[AddUsersResponseData], error)
+	UpdateServiceGroups(ctx context.Context, request []UpdateServiceGroupsRequestItem) (*Response[UpdateServiceGroupsResponseData], error)
 	// List quota usage and limits of your user account.
 	// Limits are hard limits that cannot be exceeded.
-	//
-	// @param `ropts`
-	// 	Optional request modifiers.
 	//
 	// Performs: GET /v1/users/quotas
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/users#get-user
-	GetUser(ctx context.Context, ropts ...RequestOption) (*Response[QuotasResponseData], error)
+	GetUser(ctx context.Context) (*Response[QuotasResponseData], error)
 	// List quota usage and limits of a user account by UUID.
 	// Limits are hard limits that cannot be exceeded.
 	//
 	// @param `uuid`
 	// 	The UUID of the user to retrieve quotas for.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/users/{uuid}/quotas
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/users#get-user-by-uuid
-	GetUserByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[QuotasResponseData], error)
+	GetUserByUUID(ctx context.Context, uuid string) (*Response[QuotasResponseData], error)
 	// Attach a volume by UUID to an instance so that the volume is mounted when
 	// the instance starts.  The volume needs to be in `available` state and the
 	// instance must be in `stopped` state.
@@ -1015,13 +823,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PUT /v1/volumes/{uuid}/attach
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#attach-volume-by-uuid
-	AttachVolumeByUUID(ctx context.Context, uuid string, request AttachVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error)
+	AttachVolumeByUUID(ctx context.Context, uuid string, request AttachVolumeByUUIDRequestBody) (*Response[AttachVolumesResponseData], error)
 	// Attach one or more volumes specified by ID(s) (name or UUID) to instances
 	// so that the volumes are mounted when the instances start.  The volumes need
 	// to be in `available` state and the instances must be in `stopped` state.
@@ -1029,13 +834,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PUT /v1/volumes/attach
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#attach-volumes
-	AttachVolumes(ctx context.Context, request []AttachVolumesRequestItem, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error)
+	AttachVolumes(ctx context.Context, request []AttachVolumesRequestItem) (*Response[AttachVolumesResponseData], error)
 	// Clone a volume given by its UUID.  The volume to be cloned must not be
 	// mounted to any instance or only mounted as read-only.  It also needs to not
 	// be busy or in an error state.  This operation is most useful when cloning
@@ -1047,13 +849,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/volumes/{uuid}/clone
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#clone-volume-by-uuid
-	CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error)
+	CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody) (*Response[CloneVolumesResponseData], error)
 	// Clone one or more volumes given by their ID(s) (name or UUID).  The
 	// volumes to be cloned must not be mounted to any instance or only mounted
 	// as read-only.  They also need to not be busy or in an error state.  This
@@ -1062,13 +861,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/volumes/clone
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#clone-volumes
-	CloneVolumes(ctx context.Context, request []CloneVolumesRequestItem, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error)
+	CloneVolumes(ctx context.Context, request []CloneVolumesRequestItem) (*Response[CloneVolumesResponseData], error)
 	// Converts one or more existing volumes given by their ID(s) (name or UUID)
 	// into template volumes.  This operation is irreversible in the sense that a
 	// template volume cannot be converted back into a regular volume.
@@ -1079,13 +875,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/volumes/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#create-template-volume
-	CreateTemplateVolume(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error)
+	CreateTemplateVolume(ctx context.Context, request []NameOrUUID) (*Response[CreateTemplateVolumesResponseData], error)
 	// Create a volume given the specified configuration parameters.
 	// The volume is automatically initialized with an empty file system.
 	// After initialization, the volume is in the `available` state and can be
@@ -1095,39 +888,30 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: POST /v1/volumes
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#create-volume
-	CreateVolume(ctx context.Context, request CreateVolumeRequest, ropts ...RequestOption) (*Response[CreateVolumeResponseData], error)
+	CreateVolume(ctx context.Context, request CreateVolumeRequest) (*Response[CreateVolumeResponseData], error)
 	// Delete the specified template volume by its UUID.  After this call, the IDs
 	// associated with the template volume are no longer valid.
 	//
 	// @param `uuid`
 	// 	The UUID of the template volume to delete.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/volumes/templates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-template-volume-by-uuid
-	DeleteTemplateVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error)
+	DeleteTemplateVolumeByUUID(ctx context.Context, uuid string) (*Response[DeleteTemplateVolumesResponseData], error)
 	// Delete one or more template volumes by their UUID(s) or name(s).  After this
 	// call, the IDs associated with the template volumes are no longer valid.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/volumes/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-template-volumes
-	DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error)
+	DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID) (*Response[DeleteTemplateVolumesResponseData], error)
 	// Delete the specified volume by its UUID.  If the volume is still attached
 	// to an instance, the operation fails.  After this call, the IDs associated
 	// with the volume are no longer valid.
@@ -1135,13 +919,10 @@ type Client interface {
 	// @param `uuid`
 	// 	The UUID of the volume to delete.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/volumes/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-volume-by-uuid
-	DeleteVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error)
+	DeleteVolumeByUUID(ctx context.Context, uuid string) (*Response[DeleteVolumesResponseData], error)
 	// Delete one or more volumes by their UUID(s) or name(s).  If the volumes are
 	// still attached to an instance, the operation fails.  After this call, the
 	// IDs associated with the volumes are no longer valid.
@@ -1149,13 +930,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: DELETE /v1/volumes
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-volumes
-	DeleteVolumes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error)
+	DeleteVolumes(ctx context.Context, request []NameOrUUID) (*Response[DeleteVolumesResponseData], error)
 	// Detach a volume by UUID from instances.  If no particular instance is
 	// specified the volume is detached from all instances.  The instances from
 	// which to detach must not have the volume mounted.  The API returns an error
@@ -1169,13 +947,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PUT /v1/volumes/{uuid}/detach
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#detach-volume-by-uuid
-	DetachVolumeByUUID(ctx context.Context, uuid string, request DetachVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error)
+	DetachVolumeByUUID(ctx context.Context, uuid string, request DetachVolumeByUUIDRequestBody) (*Response[DetachVolumesResponseData], error)
 	// Detach volumes specified by ID(s) (name or UUID) from instances.  If no
 	// particular instance is specified the volume is detached from all instances.
 	// The instances from which to detach must not have the volumes mounted.  The
@@ -1187,13 +962,10 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PUT /v1/volumes/detach
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#detach-volumes
-	DetachVolumes(ctx context.Context, request []DetachVolumesRequestItem, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error)
+	DetachVolumes(ctx context.Context, request []DetachVolumesRequestItem) (*Response[DetachVolumesResponseData], error)
 	// Return the current status and the configuration of a particular template
 	// volume by its UUID.
 	//
@@ -1203,13 +975,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/volumes/templates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-template-volume-by-uuid
-	GetTemplateVolumeByUUID(ctx context.Context, uuid string, opts GetTemplateVolumeByUUIDOpts, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error)
+	GetTemplateVolumeByUUID(ctx context.Context, uuid string, opts GetTemplateVolumeByUUIDOpts) (*Response[GetTemplateVolumesResponseData], error)
 	// Return the current status and the configuration of one or more template
 	// volumes specified by either UUID(s) or name(s).  If no identifier is
 	// provided, all template volumes are returned.
@@ -1220,13 +989,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/volumes/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-template-volumes
-	GetTemplateVolumes(ctx context.Context, request []NameOrUUID, opts GetTemplateVolumesOpts, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error)
+	GetTemplateVolumes(ctx context.Context, request []NameOrUUID, opts GetTemplateVolumesOpts) (*Response[GetTemplateVolumesResponseData], error)
 	// Return the current status and the configuration of a particular volume by
 	// its UUID.
 	//
@@ -1236,13 +1002,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/volumes/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volume-by-uuid
-	GetVolumeByUUID(ctx context.Context, uuid string, opts GetVolumeByUUIDOpts, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
+	GetVolumeByUUID(ctx context.Context, uuid string, opts GetVolumeByUUIDOpts) (*Response[GetVolumesResponseData], error)
 	// Return the current status and the configuration of one or more volumes
 	// specified by either UUID(s) or name(s).  If no identifier is provided,
 	// all volumes are returned.
@@ -1253,13 +1016,10 @@ type Client interface {
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: GET /v1/volumes
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volumes
-	GetVolumes(ctx context.Context, request []NameOrUUID, opts GetVolumesOpts, ropts ...RequestOption) (*Response[GetVolumesResponseData], error)
+	GetVolumes(ctx context.Context, request []NameOrUUID, opts GetVolumesOpts) (*Response[GetVolumesResponseData], error)
 	// Update the specified template volume by its UUID.
 	//
 	// @param `uuid`
@@ -1268,25 +1028,19 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/volumes/templates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-template-volume-by-uuid
-	UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, request UpdateTemplateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error)
+	UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, request UpdateTemplateVolumeByUUIDRequestBody) (*Response[UpdateTemplateVolumesResponseData], error)
 	// Update one or more template volumes specified by either UUID(s) or name(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/volumes/templates
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-template-volumes
-	UpdateTemplateVolumes(ctx context.Context, request []UpdateTemplateVolumesRequestItem, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error)
+	UpdateTemplateVolumes(ctx context.Context, request []UpdateTemplateVolumesRequestItem) (*Response[UpdateTemplateVolumesResponseData], error)
 	// Update the specified volume by its UUID.
 	//
 	// @param `uuid`
@@ -1295,25 +1049,19 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/volumes/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-volume-by-uuid
-	UpdateVolumeByUUID(ctx context.Context, uuid string, request UpdateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateVolumesResponseData], error)
+	UpdateVolumeByUUID(ctx context.Context, uuid string, request UpdateVolumeByUUIDRequestBody) (*Response[UpdateVolumesResponseData], error)
 	// Update one or more volumes specified by either UUID(s) or name(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: PATCH /v1/volumes
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-volumes
-	UpdateVolumes(ctx context.Context, request []UpdateVolumesRequestItem, ropts ...RequestOption) (*Response[UpdateVolumesResponseData], error)
+	UpdateVolumes(ctx context.Context, request []UpdateVolumesRequestItem) (*Response[UpdateVolumesResponseData], error)
 	// WithMetro sets the metro to use when connecting to the API.
 	WithMetro(string) Client
 	// WithTimeout sets the timeout when making the request.
@@ -1322,8 +1070,23 @@ type Client interface {
 	WithHTTPClient(httpclient.HTTPClient) Client
 }
 
-// NewClient creates a new client for the API.
+// NewClient creates a new client for the API, configured only by the given
+// options. Use [NewClientFromEnv] to also take configuration from the
+// environment.
 func NewClient(copts ...ClientOption) Client {
+	options := ClientOptions{}
+
+	for _, opt := range copts {
+		opt(&options)
+	}
+
+	return newClient(&options)
+}
+
+// NewClientFromEnv creates a new client for the API, filling in whatever the
+// given options leave unset from the environment: the token from UKC_TOKEN,
+// UNIKRAFT_CLOUD_TOKEN or KRAFTCLOUD_TOKEN, and the metro from UKC_METRO.
+func NewClientFromEnv(copts ...ClientOption) Client {
 	options := ClientOptions{}
 
 	for _, opt := range copts {
@@ -1345,12 +1108,19 @@ func NewClient(copts ...ClientOption) Client {
 	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(os.Getenv("UKC_METRO"))
 	}
+
+	return newClient(&options)
+}
+
+// newClient applies the defaults for anything options leaves unset, and
+// returns a client backed by them.
+func newClient(options *ClientOptions) Client {
 	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(DefaultMetro)
 	}
 
 	if options.AllowInsecure() && options.HTTPClient() == nil {
-		options.SetHTTPClient(httpclient.NewInsecureHTTPClient())
+		options.SetHTTPClient(httpclient.NewHTTPClient(httpclient.WithInsecure()))
 	}
 
 	if options.HTTPClient() == nil {
@@ -1359,7 +1129,7 @@ func NewClient(copts ...ClientOption) Client {
 
 	return &client{
 		request: &Request{
-			copts: &options,
+			copts: options,
 		},
 	}
 }
@@ -1395,7 +1165,7 @@ func (c *client) clone() *client {
 	return &ccpy
 }
 
-func (c *client) CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
+func (c *client) CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -1405,13 +1175,13 @@ func (c *client) CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Cont
 	}
 
 	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error) {
+func (c *client) CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -1421,13 +1191,13 @@ func (c *client) CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid st
 	}
 
 	resp := &Response[CreateAutoscaleConfigurationPolicyResponseData]{}
-	if err := doRequest[CreateAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CreateAutoscaleConfigurations(ctx context.Context, request []CreateAutoscaleConfigurationsRequestConfiguration, ropts ...RequestOption) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
+func (c *client) CreateAutoscaleConfigurations(ctx context.Context, request []CreateAutoscaleConfigurationsRequestConfiguration) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/autoscale"
 
 	var body []byte
@@ -1440,13 +1210,13 @@ func (c *client) CreateAutoscaleConfigurations(ctx context.Context, request []Cr
 	}
 
 	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request DeletePolicyRequest, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error) {
+func (c *client) DeleteAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request DeletePolicyRequest) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -1456,25 +1226,25 @@ func (c *client) DeleteAutoscaleConfigurationPolicies(ctx context.Context, uuid 
 	}
 
 	resp := &Response[DeleteAutoscaleConfigurationPolicyResponseData]{}
-	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error) {
+func (c *client) DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies/{name}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 	requestPath = strings.ReplaceAll(requestPath, "{name}", url.PathEscape(string(name)))
 
 	resp := &Response[DeleteAutoscaleConfigurationPolicyResponseData]{}
-	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationsResponseData], error) {
+func (c *client) DeleteAutoscaleConfigurations(ctx context.Context, request []NameOrUUID) (*Response[DeleteAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/autoscale"
 
 	var body []byte
@@ -1487,24 +1257,24 @@ func (c *client) DeleteAutoscaleConfigurations(ctx context.Context, request []Na
 	}
 
 	resp := &Response[DeleteAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteAutoscaleConfigurationsResponseData], error) {
+func (c *client) DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string) (*Response[DeleteAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request GetAutoscaleConfigurationPolicyRequest, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationPolicyResponseData], error) {
+func (c *client) GetAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request GetAutoscaleConfigurationPolicyRequest) (*Response[GetAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -1514,25 +1284,25 @@ func (c *client) GetAutoscaleConfigurationPolicies(ctx context.Context, uuid str
 	}
 
 	resp := &Response[GetAutoscaleConfigurationPolicyResponseData]{}
-	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationPolicyResponseData], error) {
+func (c *client) GetAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string) (*Response[GetAutoscaleConfigurationPolicyResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale/policies/{name}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 	requestPath = strings.ReplaceAll(requestPath, "{name}", url.PathEscape(string(name)))
 
 	resp := &Response[GetAutoscaleConfigurationPolicyResponseData]{}
-	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, opts GetAutoscaleConfigurationsOpts, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error) {
+func (c *client) GetAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, opts GetAutoscaleConfigurationsOpts) (*Response[GetAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/autoscale"
 
 	query := make(url.Values)
@@ -1553,24 +1323,24 @@ func (c *client) GetAutoscaleConfigurations(ctx context.Context, request []NameO
 	}
 
 	resp := &Response[GetAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetAutoscaleConfigurationsResponseData], error) {
+func (c *client) GetAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string) (*Response[GetAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CreateCertificate(ctx context.Context, request CreateCertificateRequest, ropts ...RequestOption) (*Response[CreateCertificateResponseData], error) {
+func (c *client) CreateCertificate(ctx context.Context, request CreateCertificateRequest) (*Response[CreateCertificateResponseData], error) {
 	requestPath := "/v1/certificates"
 
 	body, err := json.Marshal(request)
@@ -1579,24 +1349,24 @@ func (c *client) CreateCertificate(ctx context.Context, request CreateCertificat
 	}
 
 	resp := &Response[CreateCertificateResponseData]{}
-	if err := doRequest[CreateCertificateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateCertificateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteCertificateByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteCertificatesResponseData], error) {
+func (c *client) DeleteCertificateByUUID(ctx context.Context, uuid string) (*Response[DeleteCertificatesResponseData], error) {
 	requestPath := "/v1/certificates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteCertificatesResponseData]{}
-	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteCertificates(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteCertificatesResponseData], error) {
+func (c *client) DeleteCertificates(ctx context.Context, request []NameOrUUID) (*Response[DeleteCertificatesResponseData], error) {
 	requestPath := "/v1/certificates"
 
 	var body []byte
@@ -1609,24 +1379,24 @@ func (c *client) DeleteCertificates(ctx context.Context, request []NameOrUUID, r
 	}
 
 	resp := &Response[DeleteCertificatesResponseData]{}
-	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetCertificateByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error) {
+func (c *client) GetCertificateByUUID(ctx context.Context, uuid string) (*Response[GetCertificatesResponseData], error) {
 	requestPath := "/v1/certificates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetCertificatesResponseData]{}
-	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, opts GetCertificatesOpts, ropts ...RequestOption) (*Response[GetCertificatesResponseData], error) {
+func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, opts GetCertificatesOpts) (*Response[GetCertificatesResponseData], error) {
 	requestPath := "/v1/certificates"
 
 	query := make(url.Values)
@@ -1662,13 +1432,13 @@ func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, opts
 	}
 
 	resp := &Response[GetCertificatesResponseData]{}
-	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateCertificatesResponseData], error) {
+func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequestBody) (*Response[UpdateCertificatesResponseData], error) {
 	requestPath := "/v1/certificates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -1678,13 +1448,13 @@ func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, reque
 	}
 
 	resp := &Response[UpdateCertificatesResponseData]{}
-	if err := doRequest[UpdateCertificatesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateCertificatesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateCertificates(ctx context.Context, request []UpdateCertificatesRequestItem, ropts ...RequestOption) (*Response[UpdateCertificatesResponseData], error) {
+func (c *client) UpdateCertificates(ctx context.Context, request []UpdateCertificatesRequestItem) (*Response[UpdateCertificatesResponseData], error) {
 	requestPath := "/v1/certificates"
 
 	var body []byte
@@ -1697,13 +1467,13 @@ func (c *client) UpdateCertificates(ctx context.Context, request []UpdateCertifi
 	}
 
 	resp := &Response[UpdateCertificatesResponseData]{}
-	if err := doRequest[UpdateCertificatesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateCertificatesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImageStoreOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
+func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImageStoreOpts) (*Response[GetImagesResponseData], error) {
 	requestPath := "/v1/image-store"
 
 	query := make(url.Values)
@@ -1724,13 +1494,13 @@ func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTa
 	}
 
 	resp := &Response[GetImagesResponseData]{}
-	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetImages(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImagesOpts, ropts ...RequestOption) (*Response[GetImagesResponseData], error) {
+func (c *client) GetImages(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImagesOpts) (*Response[GetImagesResponseData], error) {
 	requestPath := "/v1/images"
 
 	query := make(url.Values)
@@ -1751,13 +1521,51 @@ func (c *client) GetImages(ctx context.Context, request []GetImagesRequestTagOrD
 	}
 
 	resp := &Response[GetImagesResponseData]{}
-	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CreateCheckpointInstances(ctx context.Context, request []CreateCheckpointInstancesRequestItem, ropts ...RequestOption) (*Response[CreateCheckpointInstancesResponseData], error) {
+func (c *client) PinImages(ctx context.Context, request []PinImageRequestItem) (*Response[PinImagesResponseData], error) {
+	requestPath := "/v1/images"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[PinImagesResponseData]{}
+	if err := doRequest[PinImagesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) UnpinImages(ctx context.Context, request []UnpinImageRequestItem) (*Response[UnpinImagesResponseData], error) {
+	requestPath := "/v1/images"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[UnpinImagesResponseData]{}
+	if err := doRequest[UnpinImagesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) CreateCheckpointInstances(ctx context.Context, request []CreateCheckpointInstancesRequestItem) (*Response[CreateCheckpointInstancesResponseData], error) {
 	requestPath := "/v1/instances/checkpoints"
 
 	var body []byte
@@ -1770,13 +1578,13 @@ func (c *client) CreateCheckpointInstances(ctx context.Context, request []Create
 	}
 
 	resp := &Response[CreateCheckpointInstancesResponseData]{}
-	if err := doRequest[CreateCheckpointInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateCheckpointInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CreateInstance(ctx context.Context, request CreateInstanceRequest, ropts ...RequestOption) (*Response[CreateInstanceResponseData], error) {
+func (c *client) CreateInstance(ctx context.Context, request CreateInstanceRequest) (*Response[CreateInstanceResponseData], error) {
 	requestPath := "/v1/instances"
 
 	body, err := json.Marshal(request)
@@ -1785,13 +1593,13 @@ func (c *client) CreateInstance(ctx context.Context, request CreateInstanceReque
 	}
 
 	resp := &Response[CreateInstanceResponseData]{}
-	if err := doRequest[CreateInstanceResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateInstanceResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CreateTemplateInstances(ctx context.Context, request []CreateTemplateInstancesRequestItem, ropts ...RequestOption) (*Response[CreateTemplateInstancesResponseData], error) {
+func (c *client) CreateTemplateInstances(ctx context.Context, request []CreateTemplateInstancesRequestItem) (*Response[CreateTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
 
 	var body []byte
@@ -1804,24 +1612,24 @@ func (c *client) CreateTemplateInstances(ctx context.Context, request []CreateTe
 	}
 
 	resp := &Response[CreateTemplateInstancesResponseData]{}
-	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteCheckpointInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteCheckpointInstancesResponseData], error) {
+func (c *client) DeleteCheckpointInstanceByUUID(ctx context.Context, uuid string) (*Response[DeleteCheckpointInstancesResponseData], error) {
 	requestPath := "/v1/instances/checkpoints/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteCheckpointInstancesResponseData]{}
-	if err := doRequest[DeleteCheckpointInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[DeleteCheckpointInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteCheckpointInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteCheckpointInstancesResponseData], error) {
+func (c *client) DeleteCheckpointInstances(ctx context.Context, request []NameOrUUID) (*Response[DeleteCheckpointInstancesResponseData], error) {
 	requestPath := "/v1/instances/checkpoints"
 
 	var body []byte
@@ -1834,13 +1642,13 @@ func (c *client) DeleteCheckpointInstances(ctx context.Context, request []NameOr
 	}
 
 	resp := &Response[DeleteCheckpointInstancesResponseData]{}
-	if err := doRequest[DeleteCheckpointInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteCheckpointInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, request DeleteInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
+func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, request DeleteInstanceByUUIDRequestBody) (*Response[DeleteInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -1850,13 +1658,13 @@ func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, request 
 	}
 
 	resp := &Response[DeleteInstancesResponseData]{}
-	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteInstances(ctx context.Context, request []DeleteInstanceRequestItem, ropts ...RequestOption) (*Response[DeleteInstancesResponseData], error) {
+func (c *client) DeleteInstances(ctx context.Context, request []DeleteInstanceRequestItem) (*Response[DeleteInstancesResponseData], error) {
 	requestPath := "/v1/instances"
 
 	var body []byte
@@ -1869,24 +1677,24 @@ func (c *client) DeleteInstances(ctx context.Context, request []DeleteInstanceRe
 	}
 
 	resp := &Response[DeleteInstancesResponseData]{}
-	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteTemplateInstanceByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteTemplateInstancesResponseData], error) {
+func (c *client) DeleteTemplateInstanceByUUID(ctx context.Context, uuid string) (*Response[DeleteTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteTemplateInstancesResponseData]{}
-	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteTemplateInstances(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteTemplateInstancesResponseData], error) {
+func (c *client) DeleteTemplateInstances(ctx context.Context, request []NameOrUUID) (*Response[DeleteTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
 
 	var body []byte
@@ -1899,13 +1707,13 @@ func (c *client) DeleteTemplateInstances(ctx context.Context, request []NameOrUU
 	}
 
 	resp := &Response[DeleteTemplateInstancesResponseData]{}
-	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetCheckpointHistory(ctx context.Context, request []NameOrUUID, opts GetCheckpointHistoryOpts, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error) {
+func (c *client) GetCheckpointHistory(ctx context.Context, request []NameOrUUID, opts GetCheckpointHistoryOpts) (*Response[GetCheckpointHistoryResponseData], error) {
 	requestPath := "/v1/instances/checkpoints/history"
 
 	query := make(url.Values)
@@ -1926,24 +1734,24 @@ func (c *client) GetCheckpointHistory(ctx context.Context, request []NameOrUUID,
 	}
 
 	resp := &Response[GetCheckpointHistoryResponseData]{}
-	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetCheckpointHistoryByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error) {
+func (c *client) GetCheckpointHistoryByUUID(ctx context.Context, uuid string) (*Response[GetCheckpointHistoryResponseData], error) {
 	requestPath := "/v1/instances/checkpoints/{uuid}/history"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetCheckpointHistoryResponseData]{}
-	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetCheckpointInstanceByUUID(ctx context.Context, uuid string, opts GetCheckpointInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetCheckpointInstancesResponseData], error) {
+func (c *client) GetCheckpointInstanceByUUID(ctx context.Context, uuid string, opts GetCheckpointInstanceByUUIDOpts) (*Response[GetCheckpointInstancesResponseData], error) {
 	requestPath := "/v1/instances/checkpoints/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -1953,13 +1761,13 @@ func (c *client) GetCheckpointInstanceByUUID(ctx context.Context, uuid string, o
 	}
 
 	resp := &Response[GetCheckpointInstancesResponseData]{}
-	if err := doRequest[GetCheckpointInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetCheckpointInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetCheckpointInstances(ctx context.Context, request []NameOrUUID, opts GetCheckpointInstancesOpts, ropts ...RequestOption) (*Response[GetCheckpointInstancesResponseData], error) {
+func (c *client) GetCheckpointInstances(ctx context.Context, request []NameOrUUID, opts GetCheckpointInstancesOpts) (*Response[GetCheckpointInstancesResponseData], error) {
 	requestPath := "/v1/instances/checkpoints"
 
 	query := make(url.Values)
@@ -1998,13 +1806,13 @@ func (c *client) GetCheckpointInstances(ctx context.Context, request []NameOrUUI
 	}
 
 	resp := &Response[GetCheckpointInstancesResponseData]{}
-	if err := doRequest[GetCheckpointInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetCheckpointInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, opts GetInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
+func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, opts GetInstanceByUUIDOpts) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2014,13 +1822,13 @@ func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, opts GetIns
 	}
 
 	resp := &Response[GetInstancesResponseData]{}
-	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetInstanceHistory(ctx context.Context, request []NameOrUUID, opts GetInstanceHistoryOpts, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error) {
+func (c *client) GetInstanceHistory(ctx context.Context, request []NameOrUUID, opts GetInstanceHistoryOpts) (*Response[GetCheckpointHistoryResponseData], error) {
 	requestPath := "/v1/instances/history"
 
 	query := make(url.Values)
@@ -2041,24 +1849,24 @@ func (c *client) GetInstanceHistory(ctx context.Context, request []NameOrUUID, o
 	}
 
 	resp := &Response[GetCheckpointHistoryResponseData]{}
-	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetInstanceHistoryByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetCheckpointHistoryResponseData], error) {
+func (c *client) GetInstanceHistoryByUUID(ctx context.Context, uuid string) (*Response[GetCheckpointHistoryResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/history"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetCheckpointHistoryResponseData]{}
-	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetInstanceLogs(ctx context.Context, request []GetInstancesLogsRequestItem, opts GetInstanceLogsOpts, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error) {
+func (c *client) GetInstanceLogs(ctx context.Context, request []GetInstancesLogsRequestItem, opts GetInstanceLogsOpts) (*Response[GetInstancesLogsResponseData], error) {
 	requestPath := "/v1/instances/log"
 
 	query := make(url.Values)
@@ -2085,13 +1893,13 @@ func (c *client) GetInstanceLogs(ctx context.Context, request []GetInstancesLogs
 	}
 
 	resp := &Response[GetInstancesLogsResponseData]{}
-	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetInstanceLogsByUUID(ctx context.Context, uuid string, request GetInstanceLogsByUUIDRequestBody, ropts ...RequestOption) (*Response[GetInstancesLogsResponseData], error) {
+func (c *client) GetInstanceLogsByUUID(ctx context.Context, uuid string, request GetInstanceLogsByUUIDRequestBody) (*Response[GetInstancesLogsResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/log"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2101,13 +1909,13 @@ func (c *client) GetInstanceLogsByUUID(ctx context.Context, uuid string, request
 	}
 
 	resp := &Response[GetInstancesLogsResponseData]{}
-	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetInstanceMetrics(ctx context.Context, request []NameOrUUID, opts GetInstanceMetricsOpts, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error) {
+func (c *client) GetInstanceMetrics(ctx context.Context, request []NameOrUUID, opts GetInstanceMetricsOpts) (*Response[GetInstancesMetricsResponseData], error) {
 	requestPath := "/v1/instances/metrics"
 
 	query := make(url.Values)
@@ -2128,24 +1936,24 @@ func (c *client) GetInstanceMetrics(ctx context.Context, request []NameOrUUID, o
 	}
 
 	resp := &Response[GetInstancesMetricsResponseData]{}
-	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[GetInstancesMetricsResponseData], error) {
+func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string) (*Response[GetInstancesMetricsResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/metrics"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetInstancesMetricsResponseData]{}
-	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, opts GetInstancesOpts, ropts ...RequestOption) (*Response[GetInstancesResponseData], error) {
+func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, opts GetInstancesOpts) (*Response[GetInstancesResponseData], error) {
 	requestPath := "/v1/instances"
 
 	query := make(url.Values)
@@ -2184,13 +1992,13 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, opts Ge
 	}
 
 	resp := &Response[GetInstancesResponseData]{}
-	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, opts GetTemplateInstanceByUUIDOpts, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
+func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, opts GetTemplateInstanceByUUIDOpts) (*Response[GetTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2200,13 +2008,13 @@ func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, opt
 	}
 
 	resp := &Response[GetTemplateInstancesResponseData]{}
-	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID, opts GetTemplateInstancesOpts, ropts ...RequestOption) (*Response[GetTemplateInstancesResponseData], error) {
+func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID, opts GetTemplateInstancesOpts) (*Response[GetTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
 
 	query := make(url.Values)
@@ -2245,13 +2053,13 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 	}
 
 	resp := &Response[GetTemplateInstancesResponseData]{}
-	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, request StartInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
+func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, request StartInstanceByUUIDRequestBody) (*Response[StartInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/start"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2261,13 +2069,13 @@ func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, request S
 	}
 
 	resp := &Response[StartInstancesResponseData]{}
-	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) StartInstances(ctx context.Context, request []StartInstancesRequestItem, ropts ...RequestOption) (*Response[StartInstancesResponseData], error) {
+func (c *client) StartInstances(ctx context.Context, request []StartInstancesRequestItem) (*Response[StartInstancesResponseData], error) {
 	requestPath := "/v1/instances/start"
 
 	var body []byte
@@ -2280,13 +2088,13 @@ func (c *client) StartInstances(ctx context.Context, request []StartInstancesReq
 	}
 
 	resp := &Response[StartInstancesResponseData]{}
-	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, request StopInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[StopInstancesResponseData], error) {
+func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, request StopInstanceByUUIDRequestBody) (*Response[StopInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/stop"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2296,13 +2104,13 @@ func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, request St
 	}
 
 	resp := &Response[StopInstancesResponseData]{}
-	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) StopInstances(ctx context.Context, request []StopInstancesRequestItem, ropts ...RequestOption) (*Response[StopInstancesResponseData], error) {
+func (c *client) StopInstances(ctx context.Context, request []StopInstancesRequestItem) (*Response[StopInstancesResponseData], error) {
 	requestPath := "/v1/instances/stop"
 
 	var body []byte
@@ -2315,13 +2123,13 @@ func (c *client) StopInstances(ctx context.Context, request []StopInstancesReque
 	}
 
 	resp := &Response[StopInstancesResponseData]{}
-	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) SuspendInstanceByUUID(ctx context.Context, uuid string, request SuspendInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error) {
+func (c *client) SuspendInstanceByUUID(ctx context.Context, uuid string, request SuspendInstanceByUUIDRequestBody) (*Response[SuspendInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/suspend"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2331,13 +2139,13 @@ func (c *client) SuspendInstanceByUUID(ctx context.Context, uuid string, request
 	}
 
 	resp := &Response[SuspendInstancesResponseData]{}
-	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) SuspendInstances(ctx context.Context, request []SuspendInstancesRequestItem, ropts ...RequestOption) (*Response[SuspendInstancesResponseData], error) {
+func (c *client) SuspendInstances(ctx context.Context, request []SuspendInstancesRequestItem) (*Response[SuspendInstancesResponseData], error) {
 	requestPath := "/v1/instances/suspend"
 
 	var body []byte
@@ -2350,13 +2158,13 @@ func (c *client) SuspendInstances(ctx context.Context, request []SuspendInstance
 	}
 
 	resp := &Response[SuspendInstancesResponseData]{}
-	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateCheckpointInstanceByUUID(ctx context.Context, uuid string, request UpdateCheckpointInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateCheckpointInstancesResponseData], error) {
+func (c *client) UpdateCheckpointInstanceByUUID(ctx context.Context, uuid string, request UpdateCheckpointInstanceByUUIDRequestBody) (*Response[UpdateCheckpointInstancesResponseData], error) {
 	requestPath := "/v1/instances/checkpoints/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2366,13 +2174,13 @@ func (c *client) UpdateCheckpointInstanceByUUID(ctx context.Context, uuid string
 	}
 
 	resp := &Response[UpdateCheckpointInstancesResponseData]{}
-	if err := doRequest[UpdateCheckpointInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateCheckpointInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateCheckpointInstances(ctx context.Context, request []UpdateCheckpointInstancesRequestItem, ropts ...RequestOption) (*Response[UpdateCheckpointInstancesResponseData], error) {
+func (c *client) UpdateCheckpointInstances(ctx context.Context, request []UpdateCheckpointInstancesRequestItem) (*Response[UpdateCheckpointInstancesResponseData], error) {
 	requestPath := "/v1/instances/checkpoints"
 
 	var body []byte
@@ -2385,13 +2193,13 @@ func (c *client) UpdateCheckpointInstances(ctx context.Context, request []Update
 	}
 
 	resp := &Response[UpdateCheckpointInstancesResponseData]{}
-	if err := doRequest[UpdateCheckpointInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateCheckpointInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateInstanceByUUID(ctx context.Context, uuid string, request UpdateInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error) {
+func (c *client) UpdateInstanceByUUID(ctx context.Context, uuid string, request UpdateInstanceByUUIDRequestBody) (*Response[UpdateInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2401,13 +2209,13 @@ func (c *client) UpdateInstanceByUUID(ctx context.Context, uuid string, request 
 	}
 
 	resp := &Response[UpdateInstancesResponseData]{}
-	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateInstances(ctx context.Context, request []UpdateInstancesRequestItem, ropts ...RequestOption) (*Response[UpdateInstancesResponseData], error) {
+func (c *client) UpdateInstances(ctx context.Context, request []UpdateInstancesRequestItem) (*Response[UpdateInstancesResponseData], error) {
 	requestPath := "/v1/instances"
 
 	var body []byte
@@ -2420,13 +2228,13 @@ func (c *client) UpdateInstances(ctx context.Context, request []UpdateInstancesR
 	}
 
 	resp := &Response[UpdateInstancesResponseData]{}
-	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateTemplateInstanceByUUID(ctx context.Context, uuid string, request UpdateTemplateInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateTemplateInstancesResponseData], error) {
+func (c *client) UpdateTemplateInstanceByUUID(ctx context.Context, uuid string, request UpdateTemplateInstanceByUUIDRequestBody) (*Response[UpdateTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2436,13 +2244,13 @@ func (c *client) UpdateTemplateInstanceByUUID(ctx context.Context, uuid string, 
 	}
 
 	resp := &Response[UpdateTemplateInstancesResponseData]{}
-	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateTemplateInstances(ctx context.Context, request []UpdateTemplateInstancesRequestItem, ropts ...RequestOption) (*Response[UpdateTemplateInstancesResponseData], error) {
+func (c *client) UpdateTemplateInstances(ctx context.Context, request []UpdateTemplateInstancesRequestItem) (*Response[UpdateTemplateInstancesResponseData], error) {
 	requestPath := "/v1/instances/templates"
 
 	var body []byte
@@ -2455,13 +2263,13 @@ func (c *client) UpdateTemplateInstances(ctx context.Context, request []UpdateTe
 	}
 
 	resp := &Response[UpdateTemplateInstancesResponseData]{}
-	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) WaitInstanceByUUID(ctx context.Context, uuid string, request WaitInstanceByUUIDRequestBody, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error) {
+func (c *client) WaitInstanceByUUID(ctx context.Context, uuid string, request WaitInstanceByUUIDRequestBody) (*Response[WaitInstancesResponseData], error) {
 	requestPath := "/v1/instances/{uuid}/wait"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2471,13 +2279,13 @@ func (c *client) WaitInstanceByUUID(ctx context.Context, uuid string, request Wa
 	}
 
 	resp := &Response[WaitInstancesResponseData]{}
-	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesRequestItem, opts WaitInstancesOpts, ropts ...RequestOption) (*Response[WaitInstancesResponseData], error) {
+func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesRequestItem, opts WaitInstancesOpts) (*Response[WaitInstancesResponseData], error) {
 	requestPath := "/v1/instances/wait"
 
 	query := make(url.Values)
@@ -2507,23 +2315,23 @@ func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesReque
 	}
 
 	resp := &Response[WaitInstancesResponseData]{}
-	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) Healthz(ctx context.Context, ropts ...RequestOption) (*Response[HealthzResponseData], error) {
+func (c *client) Healthz(ctx context.Context) (*Response[HealthzResponseData], error) {
 	requestPath := "/v1/healthz"
 
 	resp := &Response[HealthzResponseData]{}
-	if err := doRequest[HealthzResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[HealthzResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CreateServiceGroup(ctx context.Context, request CreateServiceGroupRequest, ropts ...RequestOption) (*Response[CreateServiceGroupResponseData], error) {
+func (c *client) CreateServiceGroup(ctx context.Context, request CreateServiceGroupRequest) (*Response[CreateServiceGroupResponseData], error) {
 	requestPath := "/v1/services"
 
 	body, err := json.Marshal(request)
@@ -2532,24 +2340,24 @@ func (c *client) CreateServiceGroup(ctx context.Context, request CreateServiceGr
 	}
 
 	resp := &Response[CreateServiceGroupResponseData]{}
-	if err := doRequest[CreateServiceGroupResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateServiceGroupResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteServiceGroupByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteServiceGroupsResponseData], error) {
+func (c *client) DeleteServiceGroupByUUID(ctx context.Context, uuid string) (*Response[DeleteServiceGroupsResponseData], error) {
 	requestPath := "/v1/services/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteServiceGroupsResponseData]{}
-	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteServiceGroups(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteServiceGroupsResponseData], error) {
+func (c *client) DeleteServiceGroups(ctx context.Context, request []NameOrUUID) (*Response[DeleteServiceGroupsResponseData], error) {
 	requestPath := "/v1/services"
 
 	var body []byte
@@ -2562,13 +2370,13 @@ func (c *client) DeleteServiceGroups(ctx context.Context, request []NameOrUUID, 
 	}
 
 	resp := &Response[DeleteServiceGroupsResponseData]{}
-	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, opts GetServiceGroupByUUIDOpts, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
+func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, opts GetServiceGroupByUUIDOpts) (*Response[GetServiceGroupsResponseData], error) {
 	requestPath := "/v1/services/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2578,13 +2386,13 @@ func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, opts Ge
 	}
 
 	resp := &Response[GetServiceGroupsResponseData]{}
-	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, opts GetServiceGroupsOpts, ropts ...RequestOption) (*Response[GetServiceGroupsResponseData], error) {
+func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, opts GetServiceGroupsOpts) (*Response[GetServiceGroupsResponseData], error) {
 	requestPath := "/v1/services"
 
 	query := make(url.Values)
@@ -2620,13 +2428,13 @@ func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, opt
 	}
 
 	resp := &Response[GetServiceGroupsResponseData]{}
-	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateServiceGroupByUUID(ctx context.Context, uuid string, request UpdateServiceGroupByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateServiceGroupsResponseData], error) {
+func (c *client) UpdateServiceGroupByUUID(ctx context.Context, uuid string, request UpdateServiceGroupByUUIDRequestBody) (*Response[UpdateServiceGroupsResponseData], error) {
 	requestPath := "/v1/services/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2636,13 +2444,13 @@ func (c *client) UpdateServiceGroupByUUID(ctx context.Context, uuid string, requ
 	}
 
 	resp := &Response[UpdateServiceGroupsResponseData]{}
-	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateServiceGroups(ctx context.Context, request []UpdateServiceGroupsRequestItem, ropts ...RequestOption) (*Response[UpdateServiceGroupsResponseData], error) {
+func (c *client) UpdateServiceGroups(ctx context.Context, request []UpdateServiceGroupsRequestItem) (*Response[UpdateServiceGroupsResponseData], error) {
 	requestPath := "/v1/services"
 
 	var body []byte
@@ -2655,49 +2463,34 @@ func (c *client) UpdateServiceGroups(ctx context.Context, request []UpdateServic
 	}
 
 	resp := &Response[UpdateServiceGroupsResponseData]{}
-	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) AddUsers(ctx context.Context, request AddUsersRequest, ropts ...RequestOption) (*Response[AddUsersResponseData], error) {
-	requestPath := "/v1/users"
-
-	body, err := json.Marshal(request)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling request body: %w", err)
-	}
-
-	resp := &Response[AddUsersResponseData]{}
-	if err := doRequest[AddUsersResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
-		return resp, err
-	}
-	return resp, nil
-}
-
-func (c *client) GetUser(ctx context.Context, ropts ...RequestOption) (*Response[QuotasResponseData], error) {
+func (c *client) GetUser(ctx context.Context) (*Response[QuotasResponseData], error) {
 	requestPath := "/v1/users/quotas"
 
 	resp := &Response[QuotasResponseData]{}
-	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetUserByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[QuotasResponseData], error) {
+func (c *client) GetUserByUUID(ctx context.Context, uuid string) (*Response[QuotasResponseData], error) {
 	requestPath := "/v1/users/{uuid}/quotas"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[QuotasResponseData]{}
-	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) AttachVolumeByUUID(ctx context.Context, uuid string, request AttachVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error) {
+func (c *client) AttachVolumeByUUID(ctx context.Context, uuid string, request AttachVolumeByUUIDRequestBody) (*Response[AttachVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}/attach"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2707,13 +2500,13 @@ func (c *client) AttachVolumeByUUID(ctx context.Context, uuid string, request At
 	}
 
 	resp := &Response[AttachVolumesResponseData]{}
-	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) AttachVolumes(ctx context.Context, request []AttachVolumesRequestItem, ropts ...RequestOption) (*Response[AttachVolumesResponseData], error) {
+func (c *client) AttachVolumes(ctx context.Context, request []AttachVolumesRequestItem) (*Response[AttachVolumesResponseData], error) {
 	requestPath := "/v1/volumes/attach"
 
 	var body []byte
@@ -2726,13 +2519,13 @@ func (c *client) AttachVolumes(ctx context.Context, request []AttachVolumesReque
 	}
 
 	resp := &Response[AttachVolumesResponseData]{}
-	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error) {
+func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody) (*Response[CloneVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}/clone"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2742,13 +2535,13 @@ func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request Clo
 	}
 
 	resp := &Response[CloneVolumesResponseData]{}
-	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CloneVolumes(ctx context.Context, request []CloneVolumesRequestItem, ropts ...RequestOption) (*Response[CloneVolumesResponseData], error) {
+func (c *client) CloneVolumes(ctx context.Context, request []CloneVolumesRequestItem) (*Response[CloneVolumesResponseData], error) {
 	requestPath := "/v1/volumes/clone"
 
 	var body []byte
@@ -2761,13 +2554,13 @@ func (c *client) CloneVolumes(ctx context.Context, request []CloneVolumesRequest
 	}
 
 	resp := &Response[CloneVolumesResponseData]{}
-	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CreateTemplateVolume(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[CreateTemplateVolumesResponseData], error) {
+func (c *client) CreateTemplateVolume(ctx context.Context, request []NameOrUUID) (*Response[CreateTemplateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/templates"
 
 	var body []byte
@@ -2780,13 +2573,13 @@ func (c *client) CreateTemplateVolume(ctx context.Context, request []NameOrUUID,
 	}
 
 	resp := &Response[CreateTemplateVolumesResponseData]{}
-	if err := doRequest[CreateTemplateVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateTemplateVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) CreateVolume(ctx context.Context, request CreateVolumeRequest, ropts ...RequestOption) (*Response[CreateVolumeResponseData], error) {
+func (c *client) CreateVolume(ctx context.Context, request CreateVolumeRequest) (*Response[CreateVolumeResponseData], error) {
 	requestPath := "/v1/volumes"
 
 	body, err := json.Marshal(request)
@@ -2795,24 +2588,24 @@ func (c *client) CreateVolume(ctx context.Context, request CreateVolumeRequest, 
 	}
 
 	resp := &Response[CreateVolumeResponseData]{}
-	if err := doRequest[CreateVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[CreateVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteTemplateVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error) {
+func (c *client) DeleteTemplateVolumeByUUID(ctx context.Context, uuid string) (*Response[DeleteTemplateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/templates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteTemplateVolumesResponseData]{}
-	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteTemplateVolumesResponseData], error) {
+func (c *client) DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID) (*Response[DeleteTemplateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/templates"
 
 	var body []byte
@@ -2825,24 +2618,24 @@ func (c *client) DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID
 	}
 
 	resp := &Response[DeleteTemplateVolumesResponseData]{}
-	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteVolumeByUUID(ctx context.Context, uuid string, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error) {
+func (c *client) DeleteVolumeByUUID(ctx context.Context, uuid string) (*Response[DeleteVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteVolumesResponseData]{}
-	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, ropts...); err != nil {
+	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DeleteVolumes(ctx context.Context, request []NameOrUUID, ropts ...RequestOption) (*Response[DeleteVolumesResponseData], error) {
+func (c *client) DeleteVolumes(ctx context.Context, request []NameOrUUID) (*Response[DeleteVolumesResponseData], error) {
 	requestPath := "/v1/volumes"
 
 	var body []byte
@@ -2855,13 +2648,13 @@ func (c *client) DeleteVolumes(ctx context.Context, request []NameOrUUID, ropts 
 	}
 
 	resp := &Response[DeleteVolumesResponseData]{}
-	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DetachVolumeByUUID(ctx context.Context, uuid string, request DetachVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error) {
+func (c *client) DetachVolumeByUUID(ctx context.Context, uuid string, request DetachVolumeByUUIDRequestBody) (*Response[DetachVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}/detach"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2871,13 +2664,13 @@ func (c *client) DetachVolumeByUUID(ctx context.Context, uuid string, request De
 	}
 
 	resp := &Response[DetachVolumesResponseData]{}
-	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) DetachVolumes(ctx context.Context, request []DetachVolumesRequestItem, ropts ...RequestOption) (*Response[DetachVolumesResponseData], error) {
+func (c *client) DetachVolumes(ctx context.Context, request []DetachVolumesRequestItem) (*Response[DetachVolumesResponseData], error) {
 	requestPath := "/v1/volumes/detach"
 
 	var body []byte
@@ -2890,13 +2683,13 @@ func (c *client) DetachVolumes(ctx context.Context, request []DetachVolumesReque
 	}
 
 	resp := &Response[DetachVolumesResponseData]{}
-	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetTemplateVolumeByUUID(ctx context.Context, uuid string, opts GetTemplateVolumeByUUIDOpts, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error) {
+func (c *client) GetTemplateVolumeByUUID(ctx context.Context, uuid string, opts GetTemplateVolumeByUUIDOpts) (*Response[GetTemplateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/templates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2906,13 +2699,13 @@ func (c *client) GetTemplateVolumeByUUID(ctx context.Context, uuid string, opts 
 	}
 
 	resp := &Response[GetTemplateVolumesResponseData]{}
-	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, opts GetTemplateVolumesOpts, ropts ...RequestOption) (*Response[GetTemplateVolumesResponseData], error) {
+func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, opts GetTemplateVolumesOpts) (*Response[GetTemplateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/templates"
 
 	query := make(url.Values)
@@ -2951,13 +2744,13 @@ func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, o
 	}
 
 	resp := &Response[GetTemplateVolumesResponseData]{}
-	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, opts GetVolumeByUUIDOpts, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
+func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, opts GetVolumeByUUIDOpts) (*Response[GetVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -2967,13 +2760,13 @@ func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, opts GetVolum
 	}
 
 	resp := &Response[GetVolumesResponseData]{}
-	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, ropts...); err != nil {
+	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, opts GetVolumesOpts, ropts ...RequestOption) (*Response[GetVolumesResponseData], error) {
+func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, opts GetVolumesOpts) (*Response[GetVolumesResponseData], error) {
 	requestPath := "/v1/volumes"
 
 	query := make(url.Values)
@@ -3012,13 +2805,13 @@ func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, opts GetV
 	}
 
 	resp := &Response[GetVolumesResponseData]{}
-	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, request UpdateTemplateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error) {
+func (c *client) UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, request UpdateTemplateVolumeByUUIDRequestBody) (*Response[UpdateTemplateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/templates/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -3028,13 +2821,13 @@ func (c *client) UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, re
 	}
 
 	resp := &Response[UpdateTemplateVolumesResponseData]{}
-	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateTemplateVolumes(ctx context.Context, request []UpdateTemplateVolumesRequestItem, ropts ...RequestOption) (*Response[UpdateTemplateVolumesResponseData], error) {
+func (c *client) UpdateTemplateVolumes(ctx context.Context, request []UpdateTemplateVolumesRequestItem) (*Response[UpdateTemplateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/templates"
 
 	var body []byte
@@ -3047,13 +2840,13 @@ func (c *client) UpdateTemplateVolumes(ctx context.Context, request []UpdateTemp
 	}
 
 	resp := &Response[UpdateTemplateVolumesResponseData]{}
-	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateVolumeByUUID(ctx context.Context, uuid string, request UpdateVolumeByUUIDRequestBody, ropts ...RequestOption) (*Response[UpdateVolumesResponseData], error) {
+func (c *client) UpdateVolumeByUUID(ctx context.Context, uuid string, request UpdateVolumeByUUIDRequestBody) (*Response[UpdateVolumesResponseData], error) {
 	requestPath := "/v1/volumes/{uuid}"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
@@ -3063,13 +2856,13 @@ func (c *client) UpdateVolumeByUUID(ctx context.Context, uuid string, request Up
 	}
 
 	resp := &Response[UpdateVolumesResponseData]{}
-	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (c *client) UpdateVolumes(ctx context.Context, request []UpdateVolumesRequestItem, ropts ...RequestOption) (*Response[UpdateVolumesResponseData], error) {
+func (c *client) UpdateVolumes(ctx context.Context, request []UpdateVolumesRequestItem) (*Response[UpdateVolumesResponseData], error) {
 	requestPath := "/v1/volumes"
 
 	var body []byte
@@ -3082,7 +2875,7 @@ func (c *client) UpdateVolumes(ctx context.Context, request []UpdateVolumesReque
 	}
 
 	resp := &Response[UpdateVolumesResponseData]{}
-	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, ropts...); err != nil {
+	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
 		return resp, err
 	}
 	return resp, nil

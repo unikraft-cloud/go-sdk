@@ -9,19 +9,22 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // An instance network interface.
 type InstanceNetworkInterface struct {
 	// The UUID of the network interface. This is a unique identifier for the
 	// network interface that is generated when the instance is created.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The private IP address of the network interface. This is the internal IP
 	// address that is used for communication between instances within the same
 	// network.
-	PrivateIp string `json:"private_ip,omitzero"`
+	PrivateIp string `json:"private_ip"`
 	// The MAC address of the network interface.
-	Mac string `json:"mac,omitzero"`
+	Mac string `json:"mac"`
 	// The interface name. If omitted, Unikraft Cloud generates one as
 	// <instance-name>-ethX, falling back to eth-<suffix> when the
 	// instance name is too long.

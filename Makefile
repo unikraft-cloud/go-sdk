@@ -4,61 +4,28 @@
 # You may not use this file except in compliance with the License.
 
 # Prelude
-WORKDIR             ?= $(CURDIR)
-Q                   ?= @
-CHANNEL             ?= prod-stable
+SHELL         := bash
+.DELETE_ON_ERROR:
+.SHELLFLAGS   := -eu -o pipefail -c
+Q             ?= @
+GO            ?= go
 
-# Tools
-GO                  ?= go
-CURL                ?= curl
-GOIMPORTS           ?= $(GO) run golang.org/x/tools/cmd/goimports@latest
+ifeq ($(shell command -v task >/dev/null 2>&1 && echo yes),)
+TASK          ?= $(GO) run -v github.com/go-task/task/v3/cmd/task@v3.48.0 --yes
+else
+TASK          ?= task --yes
+endif
+ifeq ($(Q),)
+TASK          := $(TASK) --verbose
+endif
 
-.PHONY: all
-all: generate fmt
+export TASK_X_REMOTE_TASKFILES=1
 
-.PHONY: generate
-# sandbox is deliberately excluded until sandbox.yaml is published on the
-# release channels; until then it 404s and would fail CI.  Run `make sandbox`
-# explicitly to regenerate it, and add it back here once the spec lands.
-generate: platform controlplane
+.DEFAULT_GOAL := help
+.PHONY: help
 
-.PHONY: platform
-platform: platform.yaml
-	$(Q)rm -f $(WORKDIR)/platform/*.gen.go
-	$(GO) generate ./platform
-	ls $(WORKDIR)/platform/*.gen.go | xargs $(GOIMPORTS) -l -w
+help:
+	$(Q)$(TASK) -l
 
-platform.yaml:
-	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/platform.yaml
-
-.PHONY: controlplane
-controlplane: controlplane.yaml
-	$(Q)rm -f $(WORKDIR)/controlplane/*.gen.go
-	$(GO) generate ./controlplane
-	ls $(WORKDIR)/controlplane/*.gen.go | xargs $(GOIMPORTS) -l -w
-
-controlplane.yaml:
-	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/controlplane.yaml
-
-.PHONY: sandbox
-sandbox: sandbox.yaml
-	$(Q)rm -f $(WORKDIR)/sandbox/*.gen.go
-	$(GO) generate ./sandbox
-	ls $(WORKDIR)/sandbox/*.gen.go | xargs $(GOIMPORTS) -l -w
-
-sandbox.yaml:
-	$(Q)$(CURL) -f -o $@ https://raw.githubusercontent.com/unikraft-cloud/openapi/$(CHANNEL)/sandbox.yaml
-
-.PHONY: fmt
-fmt:
-	ls $(WORKDIR)/platform/*.go | xargs $(GOIMPORTS) -l -w
-	ls $(WORKDIR)/controlplane/*.go | xargs $(GOIMPORTS) -l -w
-	ls $(WORKDIR)/sandbox/*.go | xargs $(GOIMPORTS) -l -w
-
-.PHONY: lint
-lint:
-	golangci-lint run ./...
-
-.PHONY: test
-test:
-	$(GO) test ./...
+%:
+	$(Q)$(TASK) $(MAKECMDGOALS)

@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // A single update operation to be applied to a template volume.
 type UpdateTemplateVolumesRequestItem struct {
@@ -17,9 +20,9 @@ type UpdateTemplateVolumesRequestItem struct {
 	// the response.
 	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableTemplateVolumeProperty `json:"prop,omitzero"`
+	Prop MutableTemplateVolumeProperty `json:"prop"`
 	// The operation to perform.
-	Op MutableTemplateVolumeOperation `json:"op,omitzero"`
+	Op MutableTemplateVolumeOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "tags": array of Strings
 	// - For "delete_lock": boolean

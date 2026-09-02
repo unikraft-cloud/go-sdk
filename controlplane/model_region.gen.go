@@ -9,14 +9,17 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // Information about an available region.
 type Region struct {
 	// The region identifier (e.g., "us-east-1", "us-central1").
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The IATA code for the region.
-	Iata string `json:"iata,omitzero"`
+	Iata string `json:"iata"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

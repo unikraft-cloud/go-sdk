@@ -9,17 +9,20 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // An object that routes all traffic through another interface.
 type InstanceNetworkInterfaceRelay struct {
 	// UUID of the relay interface.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// Name of the relay interface.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// Whether DNS traffic is relayed through this interface.
 	// Defaults to true.
-	RelayDns bool `json:"relay_dns,omitzero"`
+	RelayDns bool `json:"relay_dns"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

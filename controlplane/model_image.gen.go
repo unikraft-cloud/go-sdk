@@ -9,11 +9,14 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type Image struct {
 	// The canonical name of the image.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The list of tags for the image.  Only populated when details are requested.
 	Tags []ImageTag `json:"tags,omitzero"`
 

@@ -9,13 +9,16 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The request message for certificate activation.
 type NodeActivateRequest struct {
 	// The certificate signing request (CSR) for the license which is base64
 	// encoded.
-	Csr string `json:"csr,omitzero"`
+	Csr string `json:"csr"`
 	// An opaque secret for first-time activation. On renewal (where the node's
 	// public key is already known), this field is omitted and the CSR
 	// self-signature is used as proof of key possession.

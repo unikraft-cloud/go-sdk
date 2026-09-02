@@ -9,17 +9,20 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // Details of the service group which was deleted by this request.
 type DeleteServiceGroupsResponseDeletedServiceGroup struct {
 	// Indicates whether the delete operation was successful or not for this
 	// service group.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the service group which was deleted.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the service group which was deleted.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// An optional message providing additional information about the status.
 	// This field is only set when this message object is used as a response
 	// message, and is useful when the status is not `success`.

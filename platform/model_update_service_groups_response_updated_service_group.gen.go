@@ -9,15 +9,18 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type UpdateServiceGroupsResponseUpdatedServiceGroup struct {
 	// The UUID of the service group that was updated.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the service group that was updated.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The status of this particular service group update operation.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// (Optional).  The client-provided ID from the request.
 	Id *string `json:"id,omitzero"`
 	// An optional message providing additional information about the status.

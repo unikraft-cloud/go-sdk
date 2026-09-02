@@ -2,10 +2,14 @@
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 {{$schema := .Model.Schema}}
 {{$schemaName := .Model.SchemaName}}
+{{$propNames := propertyNamesOrdered $schemaName $schema}}
 {{$fieldUnions := .FieldUnions}}
 {{- /* Members whose type is a union interface, collected while the struct is
        rendered and decoded separately in UnmarshalJSON below. */ -}}
@@ -14,7 +18,7 @@ import (
 // {{$schema.Description | replace "\n" "\n// "}}
 {{- end}}
 type {{$schemaName}} struct {
-{{- range $propName := propertyNamesOrdered $schemaName $schema}}
+{{- range $propName := $propNames}}
 {{- $prop := getProperty $schema $propName}}
 {{- if $prop}}
 {{- /* Render description for all properties, including array enums */}}
@@ -38,7 +42,11 @@ type {{$schemaName}} struct {
 		{{- $propType = printf "*%s" $propType}}
 	{{- end}}
 {{- end}}
-	{{$propGoName}} {{$propType}} `json:"{{$propName}},omitzero"`
+{{- $omit := ",omitzero"}}
+{{- if $required}}
+	{{- $omit = ""}}
+{{- end}}
+	{{$propGoName}} {{$propType}} `json:"{{$propName}}{{$omit}}"`
 {{- end}}
 {{- end}}
 

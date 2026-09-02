@@ -7,11 +7,12 @@
 package controlplane
 
 import (
-	"time"
-
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // Node represents a physical or virtual compute node provisioned on a
 // cloud provider for use as part of the Unikraft Cloud infrastructure.
@@ -26,28 +27,28 @@ type Node struct {
 	// machine is created. The UUID is used to reference the machine in API calls and
 	// can be used to identify the machine in all API calls that require a machine
 	// identifier.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the machine.
 	//
 	// This is a human-readable name that can be used to identify the machine.
 	// The name must be unique within the context of your account. The name can
 	// also be used to identify the machine in API calls.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The time the machine was created.
-	CreatedAt time.Time `json:"created_at,omitzero"`
+	CreatedAt time.Time `json:"created_at"`
 	// The time the machine was last updated.
 	UpdatedAt *time.Time `json:"updated_at,omitzero"`
 	// The current state of the machine.
-	State NodeState `json:"state,omitzero"`
+	State NodeState `json:"state"`
 	// An optional message providing additional information about the current
 	// state, particularly useful for error states.
 	StateMessage *string `json:"state_message,omitzero"`
 	// The cloud provider where this machine is provisioned.
 	Cloudprovider *CloudProvider `json:"cloudprovider,omitzero"`
 	// The number of vCPUs available on this machine.
-	Vcpus uint32 `json:"vcpus,omitzero"`
+	Vcpus uint32 `json:"vcpus"`
 	// The amount of memory in MiB available on this machine.
-	MemoryMib uint64 `json:"memory_mib,omitzero"`
+	MemoryMib uint64 `json:"memory_mib"`
 	// The SSH keys configured for access to this machine.
 	SshKeys []SSHKey `json:"ssh_keys,omitzero"`
 	// The public IPv4 address of the machine, if assigned.
@@ -67,10 +68,10 @@ type Node struct {
 	// The time when the machine became ready (entered READY state).
 	ReadyAt *time.Time `json:"ready_at,omitzero"`
 	// The total uptime of the machine in seconds since it became ready.
-	UptimeSeconds uint64 `json:"uptime_seconds,omitzero"`
+	UptimeSeconds uint64 `json:"uptime_seconds"`
 	// Whether the machine is protected from deletion. When true, delete operations
 	// will fail until this is set to false.
-	DeleteLock bool `json:"delete_lock,omitzero"`
+	DeleteLock bool `json:"delete_lock"`
 	// The API endpoint for the node, used to connect to the node's platform SDK.
 	ApiEndpoint *string `json:"api_endpoint,omitzero"`
 

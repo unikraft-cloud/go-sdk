@@ -9,12 +9,15 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The error response message for an API request.
 type ResponseError struct {
 	// The HTTP status code of the error.
-	Status uint64 `json:"status,omitzero"`
+	Status uint64 `json:"status"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type CreateInstanceScaleToZero struct {
 	// The specific policy to use for scaling the instance to zero.

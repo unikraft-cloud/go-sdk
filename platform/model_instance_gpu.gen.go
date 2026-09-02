@@ -4,29 +4,35 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package sandbox
+package platform
 
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
 
-type CommandInspectResponseData struct {
-	Uuid     string `json:"uuid,omitzero"`
-	Cmdline  string `json:"cmdline,omitzero"`
-	Exitcode *int32 `json:"exitcode,omitzero"`
+var _ time.Time
+
+// A GPU attached to the instance.
+type InstanceGpu struct {
+	// The UUID of the GPU.
+	Uuid string `json:"uuid"`
+	// The GPU model, given as its PCI vendor and device ID in the form
+	// `<vendor>:<device>`.
+	Model string `json:"model"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
-func (m *CommandInspectResponseData) UnmarshalJSON(data []byte) error {
-	type Alias CommandInspectResponseData
+func (m *InstanceGpu) UnmarshalJSON(data []byte) error {
+	type Alias InstanceGpu
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m CommandInspectResponseData) MarshalJSON() ([]byte, error) {
-	type Alias CommandInspectResponseData
+func (m InstanceGpu) MarshalJSON() ([]byte, error) {
+	type Alias InstanceGpu
 	return json.Marshal((Alias)(m))
 }

@@ -9,15 +9,18 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type DeleteCheckpointInstancesResponseCheckpointInstance struct {
 	// The UUID of the checkpoint instance that was deleted.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the checkpoint instance that was deleted.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The status of this particular checkpoint instance deletion operation.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`

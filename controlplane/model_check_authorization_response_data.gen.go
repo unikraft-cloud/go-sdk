@@ -9,17 +9,24 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type CheckAuthorizationResponseData struct {
 	// The authorization token which can be used to authenticate requests.
-	Token string `json:"token,omitzero"`
+	Token string `json:"token"`
 	// The organization name the token is associated with.
-	OrganizationName string `json:"organization_name,omitzero"`
+	OrganizationName string `json:"organization_name"`
 	// The display name of the organization the token is associated with.
-	OrganizationDisplayName string `json:"organization_display_name,omitzero"`
+	OrganizationDisplayName string `json:"organization_display_name"`
 	// The global image registry.
-	Registry string `json:"registry,omitzero"`
+	Registry string `json:"registry"`
+	// The UUID of the organization the token is associated with.
+	OrganizationUuid string `json:"organization_uuid"`
+	// The UUID of the user who approved the login.
+	UserUuid string `json:"user_uuid"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

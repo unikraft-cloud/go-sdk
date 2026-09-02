@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // A service connects a public-facing port to an internal destination port on
 // which an application instance listens on.  Additional handlers can be defined
@@ -20,7 +23,7 @@ import (
 type Service struct {
 	// This is the public-facing port that the service will be accessible from
 	// on the Internet.
-	Port uint32 `json:"port,omitzero"`
+	Port uint32 `json:"port"`
 	// The port number that the instance is listening on.  This is the internal
 	// port which Unikraft Cloud will forward traffic to.
 	DestinationPort *uint32 `json:"destination_port,omitzero"`

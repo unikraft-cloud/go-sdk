@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The request message for creating a new instance.
 type CreateInstanceRequest struct {
@@ -19,8 +22,10 @@ type CreateInstanceRequest struct {
 	Name *string `json:"name,omitzero"`
 	// (Optional).  The image to use for the instance.
 	//
-	// Either an image or a template must be specified.
-	Image *ImageSpec `json:"image,omitzero"`
+	// Either an image or a template must be specified.  Accepts either a plain
+	// image reference string (`"nginx:latest"`) or an object carrying additional
+	// pull configuration (`{"url": "nginx:latest", "pull_policy": "always"}`).
+	Image ImageSource `json:"image,omitzero"`
 	// (Optional).  The arguments to pass to the instance when it starts.
 	Args []string `json:"args,omitzero"`
 	// (Optional).  Environment variables to set for the instance.
@@ -92,6 +97,22 @@ type CreateInstanceRequest struct {
 	Plugins []CreateInstanceRequestPlugin `json:"plugins,omitzero"`
 	// (Optional).  Tags to associate with the instance.
 	Tags []string `json:"tags,omitzero"`
+	// (Optional).  Annotations to associate with the instance.
+	//
+	// Unlike tags, annotations also reach the guest: they are included in the
+	// instance's startdata, and selected keys can be injected into the console
+	// log output.
+	//
+	// Keys follow the Kubernetes annotation key syntax, `[<prefix>/]<name>`: the
+	// optional prefix is a non-wildcard DNS subdomain of at most 253 characters,
+	// and the name is at most 63 characters of `[-_.a-zA-Z0-9]` starting and
+	// ending with an alphanumeric.  Values are unconstrained apart from ASCII
+	// control characters.  An instance holds at most 256 annotations.
+	//
+	// When the instance inherits annotations from a template, branch, or
+	// checkpoint, the given annotations are merged into them rather than
+	// replacing them.  On a key clash the value given here wins.
+	Annotations map[string]string `json:"annotations,omitzero"`
 	// Template instances.
 	// An existing instance can be saved as a template. This template is then
 	// used to create new instances that inherit the exact configuration and
@@ -122,7 +143,7 @@ type CreateInstanceRequest struct {
 	// prerequisite instances are running before this instance starts.
 	Dependencies []NameOrUUID `json:"dependencies,omitzero"`
 	// (Optional).  Reference to an existing instance to branch from.
-	// The instance can be running, stopped, or a template.  If the source
+	// The instance can be running or stopped, If the source
 	// instance is running, a snapshot will be taken asynchronously and the
 	// new instance will wait for it to complete before starting.
 	// Mutually exclusive with `image` and `template`.
@@ -138,6 +159,21 @@ type CreateInstanceRequest struct {
 	Nameserver *string `json:"nameserver,omitzero"`
 	// A list of one to four interfaces to attach
 	NetworkInterfaces []CreateInstanceRequestNetworkInterface `json:"network_interfaces,omitzero"`
+	// (Optional).  The type of virtual machine to use for the instance.
+	// Defaults to `micro`, which runs on Firecracker.  `full` runs on QEMU
+	// instead and is required for GPU passthrough (see `gpus`) and, in the
+	// future, Windows VMs.  QEMU-backed instances currently do not support
+	// scale-to-zero, templates, branching, or checkpointing, and only
+	// support block-based volumes (no virtiofs).  Requires a plan with full
+	// VM support and cannot be combined with `template`, `branch_from`, or
+	// `checkpoint`.
+	Type *InstanceType `json:"type,omitzero"`
+	// (Optional).  Number of GPUs to attach to the instance.  Currently
+	// restricted to at most 1.  Requires `type` to be `full` and a plan
+	// with GPU support.  A GPU stays assigned to the instance, even while
+	// stopped, until the instance is deleted.  Cannot be combined with
+	// `template`, `branch_from`, or `checkpoint`.
+	Gpus *int32 `json:"gpus,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
@@ -146,7 +182,29 @@ type CreateInstanceRequest struct {
 
 func (m *CreateInstanceRequest) UnmarshalJSON(data []byte) error {
 	type Alias CreateInstanceRequest
-	return json.Unmarshal(data, (*Alias)(m))
+	// Union members are decoded in a second step: a nil interface cannot be
+	// decoded into directly.  Holding them as raw JSON ahead of the embedded
+	// alias shadows the alias' own members of the same name.  An absent member
+	// leaves the current value in place, whereas an explicit null clears it.
+	aux := struct {
+		Image jsontext.Value `json:"image,omitzero"`
+		*Alias
+	}{Alias: (*Alias)(m)}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	if len(aux.Image) > 0 {
+		if aux.Image.Kind() == 'n' {
+			m.Image = nil
+		} else {
+			value, err := UnmarshalImageSource(aux.Image)
+			if err != nil {
+				return err
+			}
+			m.Image = value
+		}
+	}
+	return nil
 }
 
 func (m CreateInstanceRequest) MarshalJSON() ([]byte, error) {

@@ -9,17 +9,20 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type CreateTemplateInstancesResponseTemplateInstance struct {
 	// The status of this particular template instance creation operation.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the template instance that was created.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the template instance that was created.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The current state of the instance.
-	State InstanceState `json:"state,omitzero"`
+	State InstanceState `json:"state"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`

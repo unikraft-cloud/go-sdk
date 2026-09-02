@@ -9,25 +9,28 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
 
-type UserAutoscale struct {
-	// Minimum size of an autoscale group.
-	MinSize *int32 `json:"min_size,omitzero"`
-	// Maximum size of an autoscale group.
-	MaxSize *int32 `json:"max_size,omitzero"`
+var _ time.Time
+
+// The request item for unpinning a single image.
+type UnpinImageRequestItem struct {
+	// The UUID of the image to unpin.  Only UUID is supported; name, URL,
+	// tag, and digest are not.
+	Uuid string `json:"uuid"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
-func (m *UserAutoscale) UnmarshalJSON(data []byte) error {
-	type Alias UserAutoscale
+func (m *UnpinImageRequestItem) UnmarshalJSON(data []byte) error {
+	type Alias UnpinImageRequestItem
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m UserAutoscale) MarshalJSON() ([]byte, error) {
-	type Alias UserAutoscale
+func (m UnpinImageRequestItem) MarshalJSON() ([]byte, error) {
+	type Alias UnpinImageRequestItem
 	return json.Marshal((Alias)(m))
 }

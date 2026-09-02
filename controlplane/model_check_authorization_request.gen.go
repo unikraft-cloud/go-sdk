@@ -9,13 +9,16 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The request message for checking authorization given a request ID.
 type CheckAuthorizationRequest struct {
 	// The request ID is a unique identifier for the request.  This is used to
 	// track the request in the system and should be provided by the client.
-	RequestId string `json:"request_id,omitzero"`
+	RequestId string `json:"request_id"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

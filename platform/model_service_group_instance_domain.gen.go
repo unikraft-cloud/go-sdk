@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The domain configuration for the service group.
 //
@@ -25,7 +28,7 @@ type ServiceGroupInstanceDomain struct {
 	// If this name ends in a period `.` it must be a valid Full Qualified
 	// Domain Name (FQDN), otherwise it will become a subdomain of the target
 	// metro.
-	Fqdn string `json:"fqdn,omitzero"`
+	Fqdn string `json:"fqdn"`
 	// The certificate associated with the domain.
 	//
 	// The certificate is used to secure the domain with TLS/SSL.  If no

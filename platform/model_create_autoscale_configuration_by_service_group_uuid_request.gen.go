@@ -9,14 +9,17 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The request message to create an autoscale configuration for a service group
 // based on its UUID.
 type CreateAutoscaleConfigurationByServiceGroupUUIDRequest struct {
 	// The UUID of the service to create a configuration for.
 	// Mutually exclusive with name.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The minimum number of instances to keep running.
 	MinSize *int64 `json:"min_size,omitzero"`
 	// The maximum number of instances to keep running.
@@ -26,7 +29,7 @@ type CreateAutoscaleConfigurationByServiceGroupUUIDRequest struct {
 	// The cooldown time in milliseconds for the autoscale configuration.
 	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitzero"`
 	// The arguments to use when creating the autoscale configuration.
-	CreateArgs CreateAutoscaleConfigurationByServiceGroupUUIDRequestInstanceCreateArgs `json:"create_args,omitzero"`
+	CreateArgs CreateAutoscaleConfigurationByServiceGroupUUIDRequestInstanceCreateArgs `json:"create_args"`
 	// The policies to apply to the autoscale configuration.
 	Policies []AutoscalePolicy `json:"policies,omitzero"`
 

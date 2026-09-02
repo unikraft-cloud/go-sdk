@@ -9,12 +9,15 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // Wait parameters.
 type WaitInstanceByUUIDRequestBody struct {
 	// The desired state to wait for.  Default is `running`.
-	State InstanceState `json:"state,omitzero"`
+	State InstanceState `json:"state"`
 	// Deprecated: Use `timeout_s` instead. Timeout in milliseconds to
 	// wait for the instance to reach the desired state.  If `timeout_s` is
 	// not set, this value is converted by rounding up to the next full

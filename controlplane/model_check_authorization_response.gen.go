@@ -9,12 +9,15 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The response message for checking authorization.
 type CheckAuthorizationResponse struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the response.
 	Message *string `json:"message,omitzero"`
 	// The response data for this request.
@@ -23,7 +26,7 @@ type CheckAuthorizationResponse struct {
 	Errors []ResponseError `json:"errors,omitzero"`
 	// The operation time in microseconds.  This is the time it took to process
 	// the request and generate the response.
-	OpTimeUs uint64 `json:"op_time_us,omitzero"`
+	OpTimeUs uint64 `json:"op_time_us"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

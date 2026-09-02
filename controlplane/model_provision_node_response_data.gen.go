@@ -9,11 +9,14 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type ProvisionNodeResponseData struct {
 	// The created node.
-	Node Node `json:"node,omitzero"`
+	Node Node `json:"node"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

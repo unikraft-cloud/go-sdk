@@ -9,11 +9,14 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type AutoscalePolicyStep struct {
 	// The adjustment value for the step.
-	Adjustment int64 `json:"adjustment,omitzero"`
+	Adjustment int64 `json:"adjustment"`
 	// Lower bound for the step.
 	LowerBound *int64 `json:"lower_bound,omitzero"`
 	// Upper bound for the step.

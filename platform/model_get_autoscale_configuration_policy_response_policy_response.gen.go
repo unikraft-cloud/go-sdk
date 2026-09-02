@@ -9,13 +9,16 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type GetAutoscaleConfigurationPolicyResponsePolicyResponse struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// The policy which was retrieved by the request.
-	Policy AutoscalePolicy `json:"policy,omitzero"`
+	Policy AutoscalePolicy `json:"policy"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`

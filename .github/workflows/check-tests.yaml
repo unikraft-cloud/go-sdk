@@ -17,6 +17,7 @@ concurrency:
 
 env:
   GOPRIVATE: github.com/unikraft-cloud/x
+  TASK_X_REMOTE_TASKFILES: 1
 
 jobs:
   test:
@@ -28,6 +29,8 @@ jobs:
         shell: bash
         run: |
           git config --global url."https://${{ secrets.GH_PAT }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+
+      - uses: go-task/setup-task@v2
 
       - uses: actions/setup-go@v5
         with:
@@ -53,4 +56,6 @@ jobs:
             ${{ github.job }}-${{ runner.os }}-go-
 
       - name: Run regression tests
-        run: make test
+        shell: bash
+        run: |
+          task --yes ci/test

@@ -7,21 +7,22 @@
 package platform
 
 import (
-	"time"
-
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // A checkpoint history entry, representing a single checkpoint in the
 // history of an instance.
 type CheckpointHistoryEntry struct {
 	// The UUID of the checkpoint.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the checkpoint.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The time the checkpoint was created.
-	CreatedAt time.Time `json:"created_at,omitzero"`
+	CreatedAt time.Time `json:"created_at"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

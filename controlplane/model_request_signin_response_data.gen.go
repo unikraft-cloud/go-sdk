@@ -9,14 +9,17 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type RequestSigninResponseData struct {
 	// The full URL which can be used to remotely confirm the signin.
-	AuthorizationUrl string `json:"authorization_url,omitzero"`
+	AuthorizationUrl string `json:"authorization_url"`
 	// A unique identifier for the request.  This can be used to track the
 	// request in the system.
-	RequestId string `json:"request_id,omitzero"`
+	RequestId string `json:"request_id"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

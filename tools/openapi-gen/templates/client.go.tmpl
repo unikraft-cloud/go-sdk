@@ -32,8 +32,27 @@ type Client interface {
 	WithHTTPClient(httpclient.HTTPClient) Client
 }
 
-// NewClient creates a new client for the API.
+// NewClient creates a new client for the API, configured only by the given
+// options. Use [NewClientFromEnv] to also take configuration from the
+// environment.
 func NewClient(copts ...ClientOption) Client {
+	options := ClientOptions{}
+
+	for _, opt := range copts {
+		opt(&options)
+	}
+
+	return newClient(&options)
+}
+
+// NewClientFromEnv creates a new client for the API, filling in whatever the
+// given options leave unset from the environment: the token from UKC_TOKEN,
+{{- if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
+// UNIKRAFT_CLOUD_TOKEN or KRAFTCLOUD_TOKEN, and the metro from UKC_METRO.
+{{- else}}
+// UNIKRAFT_CLOUD_TOKEN or KRAFTCLOUD_TOKEN.
+{{- end}}
+func NewClientFromEnv(copts ...ClientOption) Client {
 	options := ClientOptions{}
 
 	for _, opt := range copts {
@@ -51,11 +70,20 @@ func NewClient(copts ...ClientOption) Client {
 	if options.Token() == "" {
 		options.SetToken(os.Getenv("KRAFTCLOUD_TOKEN"))
 	}
+{{- if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 
-{{if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(os.Getenv("UKC_METRO"))
 	}
+{{- end}}
+
+	return newClient(&options)
+}
+
+// newClient applies the defaults for anything options leaves unset, and
+// returns a client backed by them.
+func newClient(options *ClientOptions) Client {
+{{- if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(DefaultMetro)
 	}
@@ -66,7 +94,7 @@ func NewClient(copts ...ClientOption) Client {
 {{- end}}
 
 	if options.AllowInsecure() && options.HTTPClient() == nil {
-		options.SetHTTPClient(httpclient.NewInsecureHTTPClient())
+		options.SetHTTPClient(httpclient.NewHTTPClient(httpclient.WithInsecure()))
 	}
 
 	if options.HTTPClient() == nil {
@@ -75,7 +103,7 @@ func NewClient(copts ...ClientOption) Client {
 
 	return &client{
 		request: &Request{
-			copts: &options,
+			copts: options,
 		},
 	}
 }
@@ -207,9 +235,6 @@ func (c *client) clone() *client {
 	// 	Optional query parameters for this operation.
 {{- end}}
 	//
-	// @param `ropts`
-	// 	Optional request modifiers.
-	//
 	// Performs: {{$method}} {{$path}}
 {{- if and $op.Tags (eq ($.Var "package" "") "platform")}}
 	//
@@ -218,7 +243,7 @@ func (c *client) clone() *client {
 	{{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error)
+{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error)
 {{- end}}
 
 {{- define "impl_method"}}
@@ -288,7 +313,7 @@ func (c *client) clone() *client {
 func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}, ropts ...RequestOption) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error) {
+{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error) {
 	requestPath := "{{$path}}"
 {{- range $pathParams}}
 	requestPath = strings.ReplaceAll(requestPath, "{{"{"}}{{.Name}}{{"}"}}", url.PathEscape(string({{camelcase .Name}})))
@@ -369,7 +394,7 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- end}}
 
 	resp := &Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}]{}
-	if err := doRequest[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}](ctx, c.request, http.Method{{title (lower $method)}}, requestPath, {{if $queryParams}}query{{else}}nil{{end}}, {{if $hasRequestBody}}bytes.NewReader(body){{else}}nil{{end}}, resp, ropts...); err != nil {
+	if err := doRequest[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}](ctx, c.request, http.Method{{title (lower $method)}}, requestPath, {{if $queryParams}}query{{else}}nil{{end}}, {{if $hasRequestBody}}bytes.NewReader(body){{else}}nil{{end}}, resp); err != nil {
 {{- if $isSSE}}
 		return nil, fmt.Errorf("performing the request: %w", err)
 {{- else}}

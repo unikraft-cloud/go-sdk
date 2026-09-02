@@ -9,15 +9,18 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type UpdateVolumesResponseUpdatedVolume struct {
 	// The UUID of the volume that was updated.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the volume that was updated.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The status of this particular volume update operation.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// (Optional).  The client-provided ID from the request.
 	Id *string `json:"id,omitzero"`
 	// An optional message providing additional information about the status.

@@ -4,30 +4,31 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package sandbox
+package platform
 
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
 
-type GetInstanceCommandLogsRequestBody struct {
-	// Range request for stdout.
-	Stdout *BodyStreamRange `json:"stdout,omitzero"`
-	// Range request for stderr.
-	Stderr *BodyStreamRange `json:"stderr,omitzero"`
+var _ time.Time
+
+type PinImagesResponseData struct {
+	// The result of pinning each requested image.
+	Images []PinImagesResponseImage `json:"images,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
-func (m *GetInstanceCommandLogsRequestBody) UnmarshalJSON(data []byte) error {
-	type Alias GetInstanceCommandLogsRequestBody
+func (m *PinImagesResponseData) UnmarshalJSON(data []byte) error {
+	type Alias PinImagesResponseData
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m GetInstanceCommandLogsRequestBody) MarshalJSON() ([]byte, error) {
-	type Alias GetInstanceCommandLogsRequestBody
+func (m PinImagesResponseData) MarshalJSON() ([]byte, error) {
+	type Alias PinImagesResponseData
 	return json.Marshal((Alias)(m))
 }

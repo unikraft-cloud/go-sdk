@@ -9,22 +9,25 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type GetInstancesLogsResponseLoggedInstance struct {
 	// The UUID of the instance.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the instance.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// Base64 encoded log output of the instance.
-	Output string `json:"output,omitzero"`
+	Output string `json:"output"`
 	// Description of the log availability.
-	Available GetInstancesLogsResponseAvailable `json:"available,omitzero"`
+	Available GetInstancesLogsResponseAvailable `json:"available"`
 	// Description of the range that was returned.  Useful for requests with
 	// offset relative to end.
-	Range GetInstancesLogsResponseRange `json:"range,omitzero"`
+	Range GetInstancesLogsResponseRange `json:"range"`
 	// State of the instance when the logs were retrieved.
-	State InstanceState `json:"state,omitzero"`
+	State InstanceState `json:"state"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`

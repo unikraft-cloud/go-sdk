@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The domain configuration for the service group.
 //
@@ -28,7 +31,7 @@ type CreateInstanceRequestDomain struct {
 	// Domain Name (FQDN), e.g. `example.com.`; otherwise it will become a
 	// subdomain of the target metro, e.g. `example` becomes
 	// `example.fra0.unikraft.app`.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// A reference to an existing certificate which can be used for the
 	// specified domain.  If unspecified, Unikraft Cloud will
 	// automatically generate a new certificate for the domain based on Let's

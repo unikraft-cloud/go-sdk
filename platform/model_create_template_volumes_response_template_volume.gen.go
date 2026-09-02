@@ -9,17 +9,20 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type CreateTemplateVolumesResponseTemplateVolume struct {
 	// The status of the response.
-	Status ResponseStatus `json:"status,omitzero"`
+	Status ResponseStatus `json:"status"`
 	// The UUID of the volume converted into a template.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the volume converted into a template.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The state of the volume.
-	State VolumeState `json:"state,omitzero"`
+	State VolumeState `json:"state"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`

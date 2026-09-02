@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type GetInstancesMetricsResponseInstanceMetrics struct {
 	// Resident set size of the VMM in bytes.
@@ -23,9 +26,9 @@ type GetInstancesMetricsResponseInstanceMetrics struct {
 	// memory allocated by the application, which is likely to fluctuate over
 	// the lifetime of the application.  The RSS is not a cumulative metric.
 	// When the instance is stopped rss goes down to 0.
-	RssBytes uint64 `json:"rss_bytes,omitzero"`
+	RssBytes uint64 `json:"rss_bytes"`
 	// Consumed CPU time in milliseconds.
-	CpuTimeMs uint64 `json:"cpu_time_ms,omitzero"`
+	CpuTimeMs uint64 `json:"cpu_time_ms"`
 	// The boot time of the instance in microseconds.  We take a pragmatic
 	// approach is to define the boot time.  We calculate this as the difference
 	// in time between the moment the virtualization toolstack is invoked to
@@ -34,29 +37,29 @@ type GetInstancesMetricsResponseInstanceMetrics struct {
 	// time that a user would experience in a deployment, minus the application
 	// initialization time, which we leave out since it is independent from the
 	// OS.
-	BootTimeUs uint64 `json:"boot_time_us,omitzero"`
+	BootTimeUs uint64 `json:"boot_time_us"`
 	// This is the time it took for the user-level application to start listening
 	// on a non-localhost port measured in microseconds.  This is the time from
 	// when the instance started until it reasonably ready to start responding to
 	// network requests.  This is useful for measuring the time it takes for the
 	// instance to become operationally ready.
-	NetTimeUs uint64 `json:"net_time_us,omitzero"`
+	NetTimeUs uint64 `json:"net_time_us"`
 	// Total amount of bytes received from network.
-	RxBytes uint64 `json:"rx_bytes,omitzero"`
+	RxBytes uint64 `json:"rx_bytes"`
 	// Total count of packets received from network.
-	RxPackets uint64 `json:"rx_packets,omitzero"`
+	RxPackets uint64 `json:"rx_packets"`
 	// Total amount of bytes transmitted over network.
-	TxBytes uint64 `json:"tx_bytes,omitzero"`
+	TxBytes uint64 `json:"tx_bytes"`
 	// Total count of packets transmitted over network.
-	TxPackets uint64 `json:"tx_packets,omitzero"`
+	TxPackets uint64 `json:"tx_packets"`
 	// Number of currently established inbound connections (non-HTTP).
-	Nconns uint64 `json:"nconns,omitzero"`
+	Nconns uint64 `json:"nconns"`
 	// Number of in-flight HTTP requests.
-	Nreqs uint64 `json:"nreqs,omitzero"`
+	Nreqs uint64 `json:"nreqs"`
 	// Number of queued inbound connections and HTTP requests.
-	Nqueued uint64 `json:"nqueued,omitzero"`
+	Nqueued uint64 `json:"nqueued"`
 	// Total number of inbound connections and HTTP requests handled.
-	Ntotal uint64 `json:"ntotal,omitzero"`
+	Ntotal uint64 `json:"ntotal"`
 	// An optional message providing additional information about the status.
 	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`

@@ -9,15 +9,18 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The request message to create an autoscale configuration policy for a
 // service.
 type CreateAutoscaleConfigurationPolicyRequest struct {
 	// The Name of the service to add a policy to.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The policy type to add to the autoscale configuration.
-	Type AutoscalePolicy `json:"type,omitzero"`
+	Type AutoscalePolicy `json:"type"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -9,12 +9,15 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // Read-Only Memory (ROM) blob to attach to the instance.
 type InstanceRom struct {
 	// The name of the ROM to use for the instance configuration.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// (Optional).  The image of the ROM to use for the instance configuration.
 	// Mutually exclusive with `files`.
 	Image *string `json:"image,omitzero"`

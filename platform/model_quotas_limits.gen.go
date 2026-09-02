@@ -9,25 +9,28 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type QuotasLimits struct {
 	// Minimum amount of memory assigned to live instances in megabytes
-	MinMemoryMb int64 `json:"min_memory_mb,omitzero"`
+	MinMemoryMb int64 `json:"min_memory_mb"`
 	// Maximum amount of memory assigned to live instances in megabytes
-	MaxMemoryMb int64 `json:"max_memory_mb,omitzero"`
+	MaxMemoryMb int64 `json:"max_memory_mb"`
 	// Minimum size of a volume in megabytes
-	MinVolumeMb int64 `json:"min_volume_mb,omitzero"`
+	MinVolumeMb int64 `json:"min_volume_mb"`
 	// Maximum size of a volume in megabytes
-	MaxVolumeMb int64 `json:"max_volume_mb,omitzero"`
+	MaxVolumeMb int64 `json:"max_volume_mb"`
 	// Minimum size of an autoscale group
-	MinAutoscaleSize int64 `json:"min_autoscale_size,omitzero"`
+	MinAutoscaleSize int64 `json:"min_autoscale_size"`
 	// Maximum size of an autoscale group
-	MaxAutoscaleSize int64 `json:"max_autoscale_size,omitzero"`
+	MaxAutoscaleSize int64 `json:"max_autoscale_size"`
 	// Minimum number of vCPUs
-	MinVcpus int64 `json:"min_vcpus,omitzero"`
+	MinVcpus int64 `json:"min_vcpus"`
 	// Maximum number of vCPUs
-	MaxVcpus int64 `json:"max_vcpus,omitzero"`
+	MaxVcpus int64 `json:"max_vcpus"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

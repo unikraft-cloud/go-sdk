@@ -9,17 +9,20 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type Quotas struct {
 	// The UUID of the quota.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// Used quota
-	Used QuotasStats `json:"used,omitzero"`
+	Used QuotasStats `json:"used"`
 	// Configured quota limits
-	Hard QuotasStats `json:"hard,omitzero"`
+	Hard QuotasStats `json:"hard"`
 	// Additional limits
-	Limits QuotasLimits `json:"limits,omitzero"`
+	Limits QuotasLimits `json:"limits"`
 	// An optional field representing the status of the request.  This field is
 	// only set when this message object is used as a response message.
 	Status *ResponseStatus `json:"status,omitzero"`

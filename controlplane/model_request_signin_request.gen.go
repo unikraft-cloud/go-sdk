@@ -9,13 +9,16 @@ package controlplane
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // The request message for a sign-in request.
 type RequestSigninRequest struct {
 	// The hostname is the name of the machine making the request.  This is
 	// mandatory as it consitutes a unique identifier for the machine.
-	Hostname string `json:"hostname,omitzero"`
+	Hostname string `json:"hostname"`
 	// The operating system of the machine making the request.
 	Os *string `json:"os,omitzero"`
 	// The version of the operating system of the machine making the request, if

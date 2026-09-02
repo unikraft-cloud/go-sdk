@@ -29,7 +29,7 @@ func main() {
 
 	// Create a new client. The token and default metro are automatically
 	// read from environment variables (UKC_TOKEN and UKC_METRO).
-	client := platform.NewClient()
+	client := platform.NewClientFromEnv()
 
 	// List all instances
 	resp, err := client.GetInstances(ctx, nil, nil)
@@ -58,12 +58,21 @@ See the [examples/platform-list](examples/platform-list/main.go) for a complete 
 
 ## Configuration
 
-The SDK automatically reads configuration from environment variables:
+`NewClientFromEnv()` reads configuration from environment variables:
 
 - `UKC_TOKEN` - Your Unikraft Cloud API token
 - `UKC_METRO` - The default metro/region to use (e.g., `fra`/`sfo`/`dal`/etc)
 
-You can also configure the client programmatically using options:
+Options passed to it take precedence over the environment:
+
+```go
+client := platform.NewClientFromEnv(
+	platform.WithDefaultMetro("fra"),
+)
+```
+
+`NewClient()` reads no environment variables at all, so the client is
+configured entirely by the options it is given:
 
 ```go
 client := platform.NewClient(
@@ -71,5 +80,3 @@ client := platform.NewClient(
 	platform.WithDefaultMetro("fra"),
 )
 ```
-
-Options passed to `NewClient()` will override environment variables.

@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // (Optional). Automatic delete-on-idle configuration for the template
 // instance. Only applies when `prepare` is set.

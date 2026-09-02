@@ -9,17 +9,20 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type StopInstancesResponseStoppedInstance struct {
 	// The UUID of the instance.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the instance.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// The current state of the instance.
-	State InstanceState `json:"state,omitzero"`
+	State InstanceState `json:"state"`
 	// The previous state of the instance before the stop operation was invoked.
-	PreviousState InstanceState `json:"previous_state,omitzero"`
+	PreviousState InstanceState `json:"previous_state"`
 	// The status of the response.
 	Status *ResponseStatus `json:"status,omitzero"`
 	// An optional message providing additional information about the status.

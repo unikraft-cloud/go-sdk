@@ -9,13 +9,21 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // Additional data returned by the health check.
 type HealthzResponseData struct {
-	Checks   map[string]string `json:"checks,omitzero"`
-	Versions map[string]string `json:"versions,omitzero"`
-	License  *DataLicense      `json:"license,omitzero"`
+	// The health state of each registered checker, keyed by checker name.
+	// Valid keys are "images", "systemd", and "user-defined"; a checker's
+	// key is only present if it is enabled. Checkers report only their
+	// aggregate state; per-check detail (e.g. which default image is
+	// missing, or which user-defined script failed) is not exposed here.
+	Checks   map[string]HealthState `json:"checks,omitzero"`
+	Versions map[string]string      `json:"versions,omitzero"`
+	License  *DataLicense           `json:"license,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

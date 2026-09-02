@@ -4,4 +4,13 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-package sandbox
+package platform
+
+// The health state reported by a single health checker.
+type HealthState string
+
+const (
+	HealthStateUnknown  HealthState = "unknown"
+	HealthStateHealthy  HealthState = "healthy"
+	HealthStateDegraded HealthState = "degraded"
+)

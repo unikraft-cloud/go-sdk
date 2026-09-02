@@ -9,15 +9,18 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type VolumeInstanceMount struct {
 	// The UUID of the instance that the volume is mounted in.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the instance that the volume is mounted in.
-	Name string `json:"name,omitzero"`
+	Name string `json:"name"`
 	// Whether the volume is mounted read-only or read-write.
-	Readonly bool `json:"readonly,omitzero"`
+	Readonly bool `json:"readonly"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

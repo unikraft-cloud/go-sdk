@@ -9,14 +9,20 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 type InstanceCreateArgsInstanceCreateRequestRoms struct {
 	// The name of the ROM to use for the autoscale configuration.
-	Name string `json:"name,omitzero"`
-	// (Optional).  The image of the ROM to use for the autoscale configuration.
-	// Mutually exclusive with `files`.
-	Image *string `json:"image,omitzero"`
+	Name string `json:"name"`
+	// (Optional).  The image of the ROM to use for the autoscale
+	// configuration.  Mutually exclusive with `files`.  Accepts either a
+	// plain image reference string (`"nginx:latest"`) or an object carrying
+	// additional pull configuration
+	// (`{"url": "nginx:latest", "pull_policy": "always"}`).
+	Image ImageSource `json:"image,omitzero"`
 	// (Optional).  Inline files to use as the ROM content.  When specified,
 	// the platform creates an EROFS image from the provided files.
 	// Mutually exclusive with `image`.
@@ -29,7 +35,29 @@ type InstanceCreateArgsInstanceCreateRequestRoms struct {
 
 func (m *InstanceCreateArgsInstanceCreateRequestRoms) UnmarshalJSON(data []byte) error {
 	type Alias InstanceCreateArgsInstanceCreateRequestRoms
-	return json.Unmarshal(data, (*Alias)(m))
+	// Union members are decoded in a second step: a nil interface cannot be
+	// decoded into directly.  Holding them as raw JSON ahead of the embedded
+	// alias shadows the alias' own members of the same name.  An absent member
+	// leaves the current value in place, whereas an explicit null clears it.
+	aux := struct {
+		Image jsontext.Value `json:"image,omitzero"`
+		*Alias
+	}{Alias: (*Alias)(m)}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	if len(aux.Image) > 0 {
+		if aux.Image.Kind() == 'n' {
+			m.Image = nil
+		} else {
+			value, err := UnmarshalImageSource(aux.Image)
+			if err != nil {
+				return err
+			}
+			m.Image = value
+		}
+	}
+	return nil
 }
 
 func (m InstanceCreateArgsInstanceCreateRequestRoms) MarshalJSON() ([]byte, error) {

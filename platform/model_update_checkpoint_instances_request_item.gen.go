@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // A single update operation to be applied to a checkpoint instance.
 type UpdateCheckpointInstancesRequestItem struct {
@@ -17,9 +20,9 @@ type UpdateCheckpointInstancesRequestItem struct {
 	// the response.
 	Id *string `json:"id,omitzero"`
 	// The property to modify.
-	Prop MutableCheckpointInstanceProperty `json:"prop,omitzero"`
+	Prop MutableCheckpointInstanceProperty `json:"prop"`
 	// The operation to perform on the property.
-	Op MutableCheckpointInstanceOperation `json:"op,omitzero"`
+	Op MutableCheckpointInstanceOperation `json:"op"`
 	// The value for the update operation. The type depends on the property and operation:
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean

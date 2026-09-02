@@ -9,19 +9,22 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // A queued property change awaiting application (typically on next restart).
 type InstancePendingUpdate struct {
 	// The property being updated.
-	Prop MutableInstanceProperty `json:"prop,omitzero"`
+	Prop MutableInstanceProperty `json:"prop"`
 	// The patch operation type.
-	Op MutableInstanceOperation `json:"op,omitzero"`
+	Op MutableInstanceOperation `json:"op"`
 	// The new value for the property.  Type depends on the property being
 	// updated.
-	Value interface{} `json:"value,omitzero"`
+	Value interface{} `json:"value"`
 	// The status of this update.
-	Status InstancePendingUpdateStatus `json:"status,omitzero"`
+	Status InstancePendingUpdateStatus `json:"status"`
 	// Error message.  Only present when status is "failed".
 	Error *string `json:"error,omitzero"`
 

@@ -9,7 +9,10 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // A single update operation to be applied to a certificate.
 type UpdateCertificatesRequestItem struct {
@@ -17,12 +20,12 @@ type UpdateCertificatesRequestItem struct {
 	//
 	// This is the public chain of the certificate in PEM format. The chain
 	// should include the certificate and any intermediate certificates.
-	Chain string `json:"chain,omitzero"`
+	Chain string `json:"chain"`
 	// The new private key.
 	//
 	// This is the private key of the certificate in PEM format. The private
 	// key must match the public key in the certificate chain.
-	Pkey string `json:"pkey,omitzero"`
+	Pkey string `json:"pkey"`
 	// The UUID of the certificate to update. Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitzero"`
 	// The name of the certificate to update. Mutually exclusive with UUID.

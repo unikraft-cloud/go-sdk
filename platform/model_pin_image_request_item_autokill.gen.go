@@ -9,23 +9,27 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
 
-type AddUsersResponseData struct {
-	// The status of the operation for each user in the request.
-	Results []DataResult `json:"results,omitzero"`
+var _ time.Time
+
+type PinImageRequestItemAutokill struct {
+	// Automatically unpin the image after this many milliseconds of
+	// inactivity.  `0` (the default) disables this.
+	TimeMs uint64 `json:"time_ms"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
-func (m *AddUsersResponseData) UnmarshalJSON(data []byte) error {
-	type Alias AddUsersResponseData
+func (m *PinImageRequestItemAutokill) UnmarshalJSON(data []byte) error {
+	type Alias PinImageRequestItemAutokill
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m AddUsersResponseData) MarshalJSON() ([]byte, error) {
-	type Alias AddUsersResponseData
+func (m PinImageRequestItemAutokill) MarshalJSON() ([]byte, error) {
+	type Alias PinImageRequestItemAutokill
 	return json.Marshal((Alias)(m))
 }

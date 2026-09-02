@@ -9,12 +9,15 @@ package platform
 import (
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
+	"time"
 )
+
+var _ time.Time
 
 // Reference to the instance to attach the volume to.
 type VolumeInstanceID struct {
 	// The UUID of the instance that the volume is attached to.
-	Uuid string `json:"uuid,omitzero"`
+	Uuid string `json:"uuid"`
 	// The name of the instance that the volume is attached to.
 	Name *string `json:"name,omitzero"`
 
