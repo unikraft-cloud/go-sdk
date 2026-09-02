@@ -143,7 +143,7 @@ type CreateInstanceRequest struct {
 	// prerequisite instances are running before this instance starts.
 	Dependencies []NameOrUUID `json:"dependencies,omitzero"`
 	// (Optional).  Reference to an existing instance to branch from.
-	// The instance can be running, stopped, or a template.  If the source
+	// The instance can be running or stopped, If the source
 	// instance is running, a snapshot will be taken asynchronously and the
 	// new instance will wait for it to complete before starting.
 	// Mutually exclusive with `image` and `template`.
