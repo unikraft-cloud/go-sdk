@@ -14,21 +14,24 @@ import (
 
 var _ time.Time
 
-// The response data for this request.
-type DeleteTemplateInstancesResponseData struct {
-	Instances []DeleteTemplateInstancesResponseTemplateInstance `json:"instances,omitzero"`
+// Validation status for a pending certificate.
+type CertificateValidation struct {
+	// The current validation attempt number.
+	Attempt int32 `json:"attempt"`
+	// The next validation attempt time.
+	Next time.Time `json:"next"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
-func (m *DeleteTemplateInstancesResponseData) UnmarshalJSON(data []byte) error {
-	type Alias DeleteTemplateInstancesResponseData
+func (m *CertificateValidation) UnmarshalJSON(data []byte) error {
+	type Alias CertificateValidation
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m DeleteTemplateInstancesResponseData) MarshalJSON() ([]byte, error) {
-	type Alias DeleteTemplateInstancesResponseData
+func (m CertificateValidation) MarshalJSON() ([]byte, error) {
+	type Alias CertificateValidation
 	return json.Marshal((Alias)(m))
 }

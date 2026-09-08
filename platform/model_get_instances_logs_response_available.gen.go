@@ -14,6 +14,7 @@ import (
 
 var _ time.Time
 
+// Per-item result for a get instances logs operation.
 type GetInstancesLogsResponseAvailable struct {
 	// The first byte offset that can be retrieved.
 	Start int64 `json:"start"`

@@ -14,21 +14,20 @@ import (
 
 var _ time.Time
 
+// Per-item result for a create volume operation.
 type CreateVolumeResponseVolume struct {
-	// The status of the response.
+	// Indicates whether the operation was successful for this item.
 	Status ResponseStatus `json:"status"`
-	// UUID of the newly created volume.
+	// An optional message providing additional information.
+	Message *string `json:"message,omitzero"`
+	// An optional error code.
+	Error *int32 `json:"error,omitzero"`
+	// The UUID of the resource.
 	Uuid string `json:"uuid"`
-	// The name of the newly created volume.
+	// The human-readable name of the resource.
 	Name string `json:"name"`
 	// The state of the volume.
 	State VolumeState `json:"state"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitzero"`
-	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

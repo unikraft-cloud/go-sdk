@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type GetAutoscaleConfigurationsResponseData struct {
-	// The configuration(s) which were retrieved by the request.
 	ServiceGroups []GetAutoscaleConfigurationsResponseServiceGroup `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

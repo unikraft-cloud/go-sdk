@@ -16,20 +16,18 @@ var _ time.Time
 
 // A single update operation to be applied to a certificate.
 type UpdateCertificatesRequestItem struct {
-	// The new certificate chain.
-	//
-	// This is the public chain of the certificate in PEM format. The chain
-	// should include the certificate and any intermediate certificates.
-	Chain string `json:"chain"`
-	// The new private key.
-	//
-	// This is the private key of the certificate in PEM format. The private
-	// key must match the public key in the certificate chain.
-	Pkey string `json:"pkey"`
-	// The UUID of the certificate to update. Mutually exclusive with name.
+	// The UUID of the resource.
 	Uuid *string `json:"uuid,omitzero"`
-	// The name of the certificate to update. Mutually exclusive with UUID.
+	// The name of the resource.
 	Name *string `json:"name,omitzero"`
+	// The new certificate chain. This is the public chain of the certificate in
+	// PEM format. The chain should include the certificate and any intermediate
+	// certificates.
+	Chain string `json:"chain"`
+	// The new private key. This is the private key of the certificate in PEM
+	// format. The private key must match the public key in the certificate
+	// chain.
+	Pkey string `json:"pkey"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

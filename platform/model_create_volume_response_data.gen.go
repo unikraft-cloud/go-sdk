@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type CreateVolumeResponseData struct {
-	// The volume(s) which were created by the request.
 	Volumes []CreateVolumeResponseVolume `json:"volumes,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

@@ -14,34 +14,45 @@ import (
 
 var _ time.Time
 
+// Per-item result for a get instances metrics operation.
 type GetInstancesMetricsResponseInstanceMetrics struct {
+	// Indicates whether the operation was successful for this item.
+	Status *ResponseStatus `json:"status,omitzero"`
+	// An optional message providing additional information.
+	Message *string `json:"message,omitzero"`
+	// An optional error code.
+	Error *int32 `json:"error,omitzero"`
+	// The UUID of the resource.
+	Uuid string `json:"uuid"`
+	// The human-readable name of the resource.
+	Name string `json:"name"`
 	// Resident set size of the VMM in bytes.
 	//
 	// The resident set size (RSS) specifies the amount of physical memory that
 	// has been touched by the instance and is currently reserved for the
-	// instance on the Unikraft Cloud server.  The RSS grows until the instance
+	// instance on the Unikraft Cloud server. The RSS grows until the instance
 	// has touched all memory assigned to it via the memory_mb setting and may
 	// also exceed this value as supporting services running outside the
-	// instance acquire memory.  The RSS is different from the current amount of
+	// instance acquire memory. The RSS is different from the current amount of
 	// memory allocated by the application, which is likely to fluctuate over
-	// the lifetime of the application.  The RSS is not a cumulative metric.
+	// the lifetime of the application. The RSS is not a cumulative metric.
 	// When the instance is stopped rss goes down to 0.
 	RssBytes uint64 `json:"rss_bytes"`
 	// Consumed CPU time in milliseconds.
 	CpuTimeMs uint64 `json:"cpu_time_ms"`
-	// The boot time of the instance in microseconds.  We take a pragmatic
-	// approach is to define the boot time.  We calculate this as the difference
+	// The boot time of the instance in microseconds. We take a pragmatic
+	// approach is to define the boot time. We calculate this as the difference
 	// in time between the moment the virtualization toolstack is invoked to
 	// respond to a VM boot request and the moment the OS starts executing user
-	// code (i.e., the end of the guest OS boot process).  This is essentially the
+	// code (i.e., the end of the guest OS boot process). This is essentially the
 	// time that a user would experience in a deployment, minus the application
 	// initialization time, which we leave out since it is independent from the
 	// OS.
 	BootTimeUs uint64 `json:"boot_time_us"`
 	// This is the time it took for the user-level application to start listening
-	// on a non-localhost port measured in microseconds.  This is the time from
+	// on a non-localhost port measured in microseconds. This is the time from
 	// when the instance started until it reasonably ready to start responding to
-	// network requests.  This is useful for measuring the time it takes for the
+	// network requests. This is useful for measuring the time it takes for the
 	// instance to become operationally ready.
 	NetTimeUs uint64 `json:"net_time_us"`
 	// Total amount of bytes received from network.
@@ -60,14 +71,6 @@ type GetInstancesMetricsResponseInstanceMetrics struct {
 	Nqueued uint64 `json:"nqueued"`
 	// Total number of inbound connections and HTTP requests handled.
 	Ntotal uint64 `json:"ntotal"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitzero"`
-	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitzero"`
-	// The status of the response.
-	Status *ResponseStatus `json:"status,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

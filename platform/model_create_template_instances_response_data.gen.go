@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type CreateTemplateInstancesResponseData struct {
-	// List of template instances that were created during the operation.
 	Instances []CreateTemplateInstancesResponseTemplateInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

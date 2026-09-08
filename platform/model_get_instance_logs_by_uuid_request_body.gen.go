@@ -15,7 +15,7 @@ import (
 var _ time.Time
 
 type GetInstanceLogsByUUIDRequestBody struct {
-	// The byte offset of the log output to receive.  A negative sign makes the
+	// The byte offset of the log output to receive. A negative sign makes the
 	// offset relative to the end of the log.
 	Offset *int64 `json:"offset,omitzero"`
 	// The amount of bytes to return at most.

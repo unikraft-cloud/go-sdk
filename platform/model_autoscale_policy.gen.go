@@ -14,21 +14,21 @@ import (
 
 var _ time.Time
 
-// AutoscalePolicy defines the autoscale policy for a service.
-// Right now it contains fields from both the `ondemand` and `step` policies.
-// They are marked both as optional, so only one of them should be set at a
-// time. This is a current limitation of the API design.
+// AutoscalePolicy defines the autoscale policy for a service. Right now it
+// contains fields from both the `ondemand` and `step` policies. They are
+// marked both as optional, so only one of them should be set at a time. This
+// is a current limitation of the API design.
 type AutoscalePolicy struct {
 	// The name of the policy.
 	Name string `json:"name"`
-	// If the policy is enabled.
+	// Whether the policy is enabled.
 	Enabled *bool `json:"enabled,omitzero"`
-	// Metric to use for the step policy.
+	// Metric to use for the step policy (only for step policies).
 	Metric *StepPolicyMetric `json:"metric,omitzero"`
-	// The type of adjustment to be made in the step policy.
+	// The type of adjustment to be made in the step policy (only for step policies).
 	AdjustmentType *AdjustmentType `json:"adjustment_type,omitzero"`
-	// The steps for the step policy.
-	// Each step defines an adjustment value and optional bounds.
+	// The steps for the step policy. Each step defines an adjustment value and
+	// optional bounds.
 	Steps []AutoscalePolicyStep `json:"steps,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

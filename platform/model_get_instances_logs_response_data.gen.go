@@ -14,11 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type GetInstancesLogsResponseData struct {
-	// The instance which this requested waited on.
-	//
-	// Note: only one instance can be specified in the request, so this will
-	// always contain a single entry.
 	Instances []GetInstancesLogsResponseLoggedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

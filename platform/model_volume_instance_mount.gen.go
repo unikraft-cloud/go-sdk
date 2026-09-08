@@ -14,6 +14,7 @@ import (
 
 var _ time.Time
 
+// An instance mount of a volume.
 type VolumeInstanceMount struct {
 	// The UUID of the instance that the volume is mounted in.
 	Uuid string `json:"uuid"`

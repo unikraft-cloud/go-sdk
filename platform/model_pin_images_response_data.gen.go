@@ -14,6 +14,7 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type PinImagesResponseData struct {
 	// The result of pinning each requested image.
 	Images []PinImagesResponseImage `json:"images,omitzero"`

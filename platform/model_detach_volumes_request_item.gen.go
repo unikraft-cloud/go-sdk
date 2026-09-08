@@ -14,17 +14,15 @@ import (
 
 var _ time.Time
 
-// A single request of detaching a volume.
+// A single request item to detach a volume from an instance.
 type DetachVolumesRequestItem struct {
-	// (Optional).  UUID or name of the instance to detach the volume from.
-	// If not specified, the volume is detached from all instances.
-	From *NameOrUUID `json:"from,omitzero"`
-	// The UUID of the volume to detach. Mutually exclusive with name.
-	// Exactly one of uuid or name must be provided.
+	// The UUID of the resource.
 	Uuid *string `json:"uuid,omitzero"`
-	// The name of the volume to detach. Mutually exclusive with UUID.
-	// Exactly one of uuid or name must be provided.
+	// The name of the resource.
 	Name *string `json:"name,omitzero"`
+	// UUID or name of the instance to detach the volume from. If not specified,
+	// the volume is detached from all instances.
+	From *NameOrUUID `json:"from,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

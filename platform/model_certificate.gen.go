@@ -14,19 +14,17 @@ import (
 
 var _ time.Time
 
+// Certificate with per-item response envelope fields merged in.
 type Certificate struct {
-	// The UUID of the certificate.
-	//
-	// This is a unique identifier for the certificate that is generated when the
-	// certificate is created.  The UUID is used to reference the certificate in
-	// API calls and can be used to identify the certificate in all API calls that
-	// require an identifier.
+	// Indicates whether the operation was successful for this item.
+	Status *ResponseStatus `json:"status,omitzero"`
+	// An optional message providing additional information.
+	Message *string `json:"message,omitzero"`
+	// An optional error code.
+	Error *int32 `json:"error,omitzero"`
+	// The UUID of the resource.
 	Uuid string `json:"uuid"`
-	// The name of the certificate.
-	//
-	// This is a human-readable name that can be used to identify the certificate.
-	// The name must be unique within the context of your account.  The name can
-	// also be used to identify the certificate in API calls.
+	// The human-readable name of the resource.
 	Name string `json:"name"`
 	// The time the certificate was created.
 	CreatedAt time.Time `json:"created_at"`
@@ -75,17 +73,10 @@ type Certificate struct {
 	// ready for use, or in an error state. See CertificateState enum for
 	// detailed state descriptions.
 	State CertificateState `json:"state"`
-	// An optional field representing the status of the request.  This field is
-	// only set when this message object is used as a response message.
-	Status *ResponseStatus `json:"status,omitzero"`
-	// An optional message providing additional information about the status.
-	// This field is only set when this message object is used as a response
-	// message, and is useful when the status is not `success`.
-	Message *string `json:"message,omitzero"`
-	// An optional error code providing additional information about the status.
-	// This field is only set when this message object is used as a response
-	// message, and is useful when the status is not `success`.
-	Error *int32 `json:"error,omitzero"`
+	// Validation status when state is pending.
+	Validation *CertificateValidation `json:"validation,omitzero"`
+	// Service groups using this certificate.
+	ServiceGroups []ID `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

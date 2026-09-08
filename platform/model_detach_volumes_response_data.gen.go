@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type DetachVolumesResponseData struct {
-	// The volume(s) which were detached by the request.
 	Volumes []DetachVolumesResponseDetachedVolume `json:"volumes,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

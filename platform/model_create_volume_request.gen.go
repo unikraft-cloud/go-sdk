@@ -16,36 +16,17 @@ var _ time.Time
 
 // The request message for creating a volume.
 type CreateVolumeRequest struct {
-	// The name of the volume.
-	//
-	// This is a human-readable name that can be used to identify the volume.
-	// The name must be unique within the context of your account.  If no name is
-	// specified, a random name of the form `vol-X` is generated for you, where
-	// `X` is a 5 character long random alphanumeric suffix..  The name can also
-	// be used to identify the volume in API calls.
-	Name *string `json:"name,omitzero"`
-	// Quota policy for the volume.
+	Name        *string            `json:"name,omitzero"`
+	SizeMb      *uint64            `json:"size_mb,omitzero"`
+	HostPath    *string            `json:"host_path,omitzero"`
+	Template    *NameOrUUID        `json:"template,omitzero"`
 	QuotaPolicy *VolumeQuotaPolicy `json:"quota_policy,omitzero"`
-	// Filesystem type to format or configure.
-	// Without custom configuration, this is either `ext4` or `virtiofs`.
-	Filesystem *string `json:"filesystem,omitzero"`
-	// Tags to assign to the new volume.
-	Tags []string `json:"tags,omitzero"`
-	// Guest UID for managed volumes (host_path mode only).
-	Uid *uint32 `json:"uid,omitzero"`
-	// Guest GID for managed volumes (host_path mode only).
-	Gid *uint32 `json:"gid,omitzero"`
-	// Script arguments passed to volume initialization scripts.
-	Args map[string]string `json:"args,omitzero"`
-	// The access mode of the volume, controlling volume sharing behavior.
-	// Defaults to `rwo` if not specified.
-	AccessMode *VolumeAccessMode `json:"access_mode,omitzero"`
-	// The size of the volume in megabytes.
-	SizeMb *uint64 `json:"size_mb,omitzero"`
-	// A host path to create a managed volume from.
-	HostPath *string `json:"host_path,omitzero"`
-	// Source template volume to clone from.
-	Template *NameOrUUID `json:"template,omitzero"`
+	Filesystem  *string            `json:"filesystem,omitzero"`
+	Tags        []string           `json:"tags,omitzero"`
+	Uid         *uint32            `json:"uid,omitzero"`
+	Gid         *uint32            `json:"gid,omitzero"`
+	AccessMode  *VolumeAccessMode  `json:"access_mode,omitzero"`
+	Args        map[string]string  `json:"args,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

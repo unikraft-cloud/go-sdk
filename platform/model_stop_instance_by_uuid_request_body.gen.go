@@ -19,18 +19,18 @@ type StopInstanceByUUIDRequestBody struct {
 	// Whether to immediately force stop the instance.
 	Force *bool `json:"force,omitzero"`
 	// Timeout for draining connections in milliseconds.
-	// No draining will occur if set to 0.  The instance
+	// No draining will occur if set to 0. The instance
 	// does not receive new connections in the draining
-	// phase.  The instance is stopped when the last
+	// phase. The instance is stopped when the last
 	// connection has been closed or the timeout expired.
-	// The maximum timeout may vary.  Use -1 for the
-	// largest possible value.  Ignored if force is set.
+	// The maximum timeout may vary. Use -1 for the
+	// largest possible value. Ignored if force is set.
 	//
-	// Note: This endpoint does not block.  Use the wait
+	// Note: This endpoint does not block. Use the wait
 	// endpoint for the instance to reach the stopped
 	// state.
 	DrainTimeoutMs *uint64 `json:"drain_timeout_ms,omitzero"`
-	// Whether to perform a quick shutdown.  This flag is
+	// Whether to perform a quick shutdown. This flag is
 	// overridden by force.
 	Quick *bool `json:"quick,omitzero"`
 	// Only stop the instance if it is in this state.

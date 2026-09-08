@@ -14,11 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type CreateCertificateResponseData struct {
-	// The certificate which was created by this request.
-	//
-	// Note: only one certificate can be specified in the request, so this
-	// will always contain a single entry.
 	Certificates []Certificate `json:"certificates,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

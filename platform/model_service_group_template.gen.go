@@ -14,11 +14,12 @@ import (
 
 var _ time.Time
 
+// The instance template used for an autoscale configuration.
 type ServiceGroupTemplate struct {
-	// The name of the template used for the autoscale configuration.
-	Name string `json:"name"`
 	// The UUID of the template used for the autoscale configuration.
 	Uuid string `json:"uuid"`
+	// The name of the template used for the autoscale configuration.
+	Name string `json:"name"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

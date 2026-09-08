@@ -14,21 +14,24 @@ import (
 
 var _ time.Time
 
-// The response data for this request.
-type DeleteTemplateInstancesResponseData struct {
-	Instances []DeleteTemplateInstancesResponseTemplateInstance `json:"instances,omitzero"`
+// Common identity fields for a resource.
+type ID struct {
+	// The UUID of the resource.
+	Uuid string `json:"uuid"`
+	// The human-readable name of the resource.
+	Name string `json:"name"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
-func (m *DeleteTemplateInstancesResponseData) UnmarshalJSON(data []byte) error {
-	type Alias DeleteTemplateInstancesResponseData
+func (m *ID) UnmarshalJSON(data []byte) error {
+	type Alias ID
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m DeleteTemplateInstancesResponseData) MarshalJSON() ([]byte, error) {
-	type Alias DeleteTemplateInstancesResponseData
+func (m ID) MarshalJSON() ([]byte, error) {
+	type Alias ID
 	return json.Marshal((Alias)(m))
 }

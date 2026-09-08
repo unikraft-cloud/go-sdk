@@ -15,6 +15,10 @@ import (
 var _ time.Time
 
 type CreateAutoscaleConfigurationsRequestConfiguration struct {
+	// The UUID of the resource.
+	Uuid *string `json:"uuid,omitzero"`
+	// The name of the resource.
+	Name *string `json:"name,omitzero"`
 	// The minimum number of instances to keep running.
 	MinSize *int64 `json:"min_size,omitzero"`
 	// The maximum number of instances to keep running.
@@ -23,16 +27,10 @@ type CreateAutoscaleConfigurationsRequestConfiguration struct {
 	WarmupTimeMs *int64 `json:"warmup_time_ms,omitzero"`
 	// The cooldown time in milliseconds for the autoscale configuration.
 	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitzero"`
-	// The arguments to use when creating the autoscale configuration.
+	// The arguments to use when creating instances.
 	CreateArgs ConfigurationInstanceCreateArgs `json:"create_args"`
 	// The policies to apply to the autoscale configuration.
 	Policies []AutoscalePolicy `json:"policies,omitzero"`
-	// The UUID of the service to create a configuration for.
-	// Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitzero"`
-	// The name of the service to create a configuration for.
-	// Mutually exclusive with UUID.
-	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

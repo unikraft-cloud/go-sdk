@@ -14,10 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type GetInstancesMetricsResponseData struct {
-	// The instance which this requested metrics for.  Note: only one instance
-	// can be specified in the request, so this will always contain a single
-	// entry.
 	Instances []GetInstancesMetricsResponseInstanceMetrics `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

@@ -14,7 +14,7 @@ import (
 
 var _ time.Time
 
-// An identifier for a resource.  Either a name or a UUID.
+// An identifier for a resource — either a name or a UUID, but not both.
 type NameOrUUID struct {
 	// The UUID of the resource.
 	Uuid *string `json:"uuid,omitzero"`

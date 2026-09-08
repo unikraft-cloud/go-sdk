@@ -14,6 +14,7 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type UnpinImagesResponseData struct {
 	// The result of unpinning each requested image.
 	Images []UnpinImagesResponseImage `json:"images,omitzero"`

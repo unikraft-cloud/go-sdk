@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type QuotasResponseData struct {
-	// The quota(s) which were retrieved by the request.
 	Quotas []Quotas `json:"quotas,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

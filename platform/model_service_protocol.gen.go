@@ -6,10 +6,10 @@
 
 package platform
 
-// Mutable template volume properties.
-type MutableTemplateVolumeProperty string
+// Protocol for a service.
+type ServiceProtocol string
 
 const (
-	MutableTemplateVolumePropertyTags       MutableTemplateVolumeProperty = "tags"
-	MutableTemplateVolumePropertyDeleteLock MutableTemplateVolumeProperty = "delete_lock"
+	ServiceProtocolTcp ServiceProtocol = "tcp"
+	ServiceProtocolUdp ServiceProtocol = "udp"
 )

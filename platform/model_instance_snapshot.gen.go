@@ -14,9 +14,8 @@ import (
 
 var _ time.Time
 
-// The snapshot UUID of the instance.
+// A snapshot reference for an instance.
 type InstanceSnapshot struct {
-	// The UUID of the snapshot.
 	Uuid string `json:"uuid"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

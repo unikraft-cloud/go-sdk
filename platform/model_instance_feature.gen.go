@@ -11,9 +11,9 @@ package platform
 //
 // The list of available features to enable for the instance:
 //
-// | Feature          | Description |
-// |------------------|-------------|
-// | `delete_on_stop` | The instance will be deleted when it is stopped. This is useful for instances that are not needed after they are stopped, such as temporary or ephemeral instances. |
+// | Feature            | Description |
+// |--------------------|-------------|
+// | `delete-on-stop`   | The instance will be deleted when it is stopped. This is useful for instances that are not needed after they are stopped, such as temporary or ephemeral instances. |
 type InstanceFeature string
 
 const (

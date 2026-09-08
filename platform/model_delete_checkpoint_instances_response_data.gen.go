@@ -14,6 +14,7 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type DeleteCheckpointInstancesResponseData struct {
 	// List of checkpoint instances that were processed during the delete operation.
 	Instances []DeleteCheckpointInstancesResponseCheckpointInstance `json:"instances,omitzero"`
