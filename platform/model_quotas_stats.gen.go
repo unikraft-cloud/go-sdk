@@ -7,30 +7,31 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// Quota statistics for resource usage.
 type QuotasStats struct {
-	// Number of instances
+	// Number of instances.
 	Instances int64 `json:"instances"`
-	// Number of instances that are not in the `stopped` state
+	// Number of instances that are not in the stopped state.
 	LiveInstances int64 `json:"live_instances"`
-	// Number of vCPUs
+	// Number of vCPUs.
 	LiveVcpus int64 `json:"live_vcpus"`
-	// Amount of memory assigned to instances that are not in the `stopped`
-	// state in megabytes
+	// Amount of memory assigned to instances that are not in the `stopped` state
+	// in megabytes.
 	LiveMemoryMb int64 `json:"live_memory_mb"`
-	// Number of services
+	// Number of service groups.
 	ServiceGroups int64 `json:"service_groups"`
-	// Number of published network ports over all existing services
+	// Number of published network ports over all existing services.
 	Services int64 `json:"services"`
-	// Number of volumes
+	// Number of volumes.
 	Volumes int64 `json:"volumes"`
-	// Total size of all volumes in megabytes
+	// Total size of all volumes in megabytes.
 	TotalVolumeMb int64 `json:"total_volume_mb"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

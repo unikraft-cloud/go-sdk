@@ -7,13 +7,14 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// A single step in a step autoscaling policy.
 type AutoscalePolicyStep struct {
 	// The adjustment value for the step.
 	Adjustment int64 `json:"adjustment"`

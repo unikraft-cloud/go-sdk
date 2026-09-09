@@ -7,26 +7,24 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
-// A single item in the request.
+// A single request item to get an instance's logs.
 type GetInstancesLogsRequestItem struct {
-	// The byte offset of the log output to receive.  A negative sign makes the
+	// The UUID of the resource.
+	Uuid *string `json:"uuid,omitzero"`
+	// The name of the resource.
+	Name *string `json:"name,omitzero"`
+	// The byte offset of the log output to receive. A negative sign makes the
 	// offset relative to the end of the log.
 	Offset *int64 `json:"offset,omitzero"`
 	// The amount of bytes to return at most.
 	Limit *int64 `json:"limit,omitzero"`
-	// The UUID of the instance to retrieve logs for.  Mutually exclusive with
-	// name.
-	Uuid *string `json:"uuid,omitzero"`
-	// The name of the instance to retrieve logs for.  Mutually exclusive with
-	// UUID.
-	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

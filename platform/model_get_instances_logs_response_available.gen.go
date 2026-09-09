@@ -7,13 +7,14 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// Per-item result for a get instances logs operation.
 type GetInstancesLogsResponseAvailable struct {
 	// The first byte offset that can be retrieved.
 	Start int64 `json:"start"`

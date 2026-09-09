@@ -7,8 +7,8 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
@@ -17,7 +17,7 @@ var _ time.Time
 // The request message to create an autoscale configuration policy for a
 // service.
 type CreateAutoscaleConfigurationPolicyRequest struct {
-	// The Name of the service to add a policy to.
+	// The name of the policy.
 	Name string `json:"name"`
 	// The policy type to add to the autoscale configuration.
 	Type AutoscalePolicy `json:"type"`

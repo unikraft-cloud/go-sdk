@@ -6,7 +6,7 @@
 
 package platform
 
-// The mutable properties of a template volume.
+// Mutable template volume properties.
 type MutableTemplateVolumeProperty string
 
 const (

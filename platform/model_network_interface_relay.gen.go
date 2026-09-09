@@ -7,8 +7,8 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
@@ -20,11 +20,9 @@ type NetworkInterfaceRelay struct {
 	// to let the default DNS server handle them instead.
 	// Defaults to true.
 	RelayDns *bool `json:"relay_dns,omitzero"`
-	// UUID of the existing interface to relay through.
-	// Mutually exclusive with name.
+	// The UUID of the resource.
 	Uuid *string `json:"uuid,omitzero"`
-	// Name of the existing interface to relay through.
-	// Mutually exclusive with UUID.
+	// The name of the resource.
 	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

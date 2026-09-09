@@ -6,7 +6,7 @@
 
 package platform
 
-// The operations available on a volume's properties.
+// Mutable volume operations.
 type MutableVolumeOperation string
 
 const (

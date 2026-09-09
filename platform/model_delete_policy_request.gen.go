@@ -7,8 +7,8 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
@@ -16,7 +16,7 @@ var _ time.Time
 
 // The request message to delete an autoscale configuration policy by name.
 type DeletePolicyRequest struct {
-	// The Name of the policy to delete.
+	// The name of the policy to delete.
 	Name string `json:"name"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

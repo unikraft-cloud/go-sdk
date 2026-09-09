@@ -52,10 +52,10 @@ type GetCheckpointInstancesOpts struct {
 	Name    []string
 	Details *bool
 	Count   *uint32
-	Tags    []string
 	From    *string
 	Order   *PaginationOrder
 	Sortby  *PaginationSortBy
+	Tags    []string
 }
 
 // GetInstanceByUUIDOpts holds query-parameter options for [Client.GetInstanceByUUID].
@@ -90,9 +90,9 @@ type GetInstancesOpts struct {
 	Details *bool
 	Count   *uint32
 	From    *string
-	Tags    []string
 	Order   *PaginationOrder
 	Sortby  *PaginationSortBy
+	Tags    []string
 }
 
 // GetTemplateInstanceByUUIDOpts holds query-parameter options for [Client.GetTemplateInstanceByUUID].
@@ -106,10 +106,10 @@ type GetTemplateInstancesOpts struct {
 	Name    []string
 	Details *bool
 	Count   *uint32
-	Tags    []string
 	From    *string
 	Order   *PaginationOrder
 	Sortby  *PaginationSortBy
+	Tags    []string
 }
 
 // WaitInstancesOpts holds query-parameter options for [Client.WaitInstances].
@@ -149,9 +149,9 @@ type GetTemplateVolumesOpts struct {
 	Details *bool
 	Count   *uint32
 	From    *string
-	Tags    []string
 	Order   *PaginationOrder
 	Sortby  *PaginationSortBy
+	Tags    []string
 }
 
 // GetVolumeByUUIDOpts holds query-parameter options for [Client.GetVolumeByUUID].
@@ -166,7 +166,7 @@ type GetVolumesOpts struct {
 	Details *bool
 	Count   *uint32
 	From    *string
-	Tags    []string
 	Order   *PaginationOrder
 	Sortby  *PaginationSortBy
+	Tags    []string
 }

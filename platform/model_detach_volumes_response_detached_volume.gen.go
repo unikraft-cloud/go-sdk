@@ -7,26 +7,25 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// Per-item result for a detach volumes operation.
 type DetachVolumesResponseDetachedVolume struct {
-	// The status of the response.
+	// Indicates whether the operation was successful for this item.
 	Status ResponseStatus `json:"status"`
-	// The UUID of the volume that was detached.
-	Uuid string `json:"uuid"`
-	// The name of the volume that was detached.
-	Name string `json:"name"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
+	// An optional message providing additional information.
 	Message *string `json:"message,omitzero"`
-	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
+	// An optional error code.
 	Error *int32 `json:"error,omitzero"`
+	// The UUID of the resource.
+	Uuid string `json:"uuid"`
+	// The human-readable name of the resource.
+	Name string `json:"name"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

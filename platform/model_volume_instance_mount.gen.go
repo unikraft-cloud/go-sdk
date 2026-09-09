@@ -7,13 +7,14 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// An instance mount of a volume.
 type VolumeInstanceMount struct {
 	// The UUID of the instance that the volume is mounted in.
 	Uuid string `json:"uuid"`

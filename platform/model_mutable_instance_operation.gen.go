@@ -6,7 +6,7 @@
 
 package platform
 
-// The operations available on an instance's properties.
+// Mutable instance operations.
 type MutableInstanceOperation string
 
 const (

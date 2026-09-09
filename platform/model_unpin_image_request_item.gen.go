@@ -7,8 +7,8 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
@@ -16,7 +16,7 @@ var _ time.Time
 
 // The request item for unpinning a single image.
 type UnpinImageRequestItem struct {
-	// The UUID of the image to unpin.  Only UUID is supported; name, URL,
+	// The UUID of the image to unpin. Only UUID is supported; name, URL,
 	// tag, and digest are not.
 	Uuid string `json:"uuid"`
 

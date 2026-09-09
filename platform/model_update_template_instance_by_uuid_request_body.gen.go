@@ -7,22 +7,22 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
 type UpdateTemplateInstanceByUUIDRequestBody struct {
-	// (Optional).  A client-provided identifier for tracking this operation in
-	// the response.
+	// A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitzero"`
 	// The property to modify.
 	Prop MutableTemplateInstanceProperty `json:"prop"`
-	// The operation to perform on the property.
+	// The operation to perform.
 	Op MutableTemplateInstanceOperation `json:"op"`
-	// The value for the update operation. The type depends on the property and operation:
+	// The value for the update operation. The type depends on the property and
+	// operation:
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean
 	// - For "autokill": object with time_ms field

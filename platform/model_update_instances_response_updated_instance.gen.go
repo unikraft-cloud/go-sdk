@@ -7,28 +7,27 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// Per-item result for an update instances operation.
 type UpdateInstancesResponseUpdatedInstance struct {
-	// The UUID of the instance that was updated.
-	Uuid string `json:"uuid"`
-	// The name of the instance that was updated.
-	Name string `json:"name"`
-	// The status of this particular instance update operation.
+	// Indicates whether the operation was successful for this item.
 	Status ResponseStatus `json:"status"`
-	// (Optional).  The client-provided ID from the request.
-	Id *string `json:"id,omitzero"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
+	// An optional message providing additional information.
 	Message *string `json:"message,omitzero"`
-	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
+	// An optional error code.
 	Error *int32 `json:"error,omitzero"`
+	// The UUID of the resource.
+	Uuid string `json:"uuid"`
+	// The human-readable name of the resource.
+	Name string `json:"name"`
+	// The client-provided ID from the request.
+	Id *string `json:"id,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

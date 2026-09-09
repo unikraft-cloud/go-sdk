@@ -7,14 +7,14 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
-// Automatic delete-on-idle configuration for template instances.
+// Autokill configuration for a template instance.
 type InstanceTemplateAutokill struct {
 	// Time in milliseconds after the template was last used for cloning before
 	// it is deleted. A value of 0 disables template autokill.

@@ -1,11 +1,10 @@
 module unikraft.com/cloud/sdk
 
-go 1.26.1
+go 1.27.0
 
 tool unikraft.com/x/tools/openapi-gen
 
 require (
-	github.com/go-json-experiment/json v0.0.0-20260623181947-01eb4420fa68
 	github.com/stretchr/testify v1.11.1
 	unikraft.com/x/joinerrgroup v0.0.0-20260220150535-dbc51abe4158
 	unikraft.com/x/log v0.0.0-20260126094137-ab6e717e5679

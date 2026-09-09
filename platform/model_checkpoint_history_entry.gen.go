@@ -7,15 +7,14 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
-// A checkpoint history entry, representing a single checkpoint in the
-// history of an instance.
+// A checkpoint history entry, representing a single checkpoint in the history of an instance.
 type CheckpointHistoryEntry struct {
 	// The UUID of the checkpoint.
 	Uuid string `json:"uuid"`

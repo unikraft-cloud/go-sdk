@@ -10,8 +10,8 @@ package platform
 //
 // | Type    | Description |
 // |---------|-------------|
-// | `micro` | A lightweight microVM (default).  Boots in milliseconds and is suitable for most workloads. |
-// | `full`  | A full virtual machine with broader hardware support, such as GPU passthrough.  Requires a plan with full VM support. |
+// | `micro` | A lightweight microVM (default). Boots in milliseconds and is suitable for most workloads. |
+// | `full`  | A full virtual machine with broader hardware support, such as GPU passthrough. Requires a plan with full VM support. |
 type InstanceType string
 
 const (

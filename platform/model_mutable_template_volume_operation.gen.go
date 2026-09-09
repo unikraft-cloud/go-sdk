@@ -6,7 +6,7 @@
 
 package platform
 
-// The operations available on a template volume's properties.
+// Mutable template volume operations.
 type MutableTemplateVolumeOperation string
 
 const (

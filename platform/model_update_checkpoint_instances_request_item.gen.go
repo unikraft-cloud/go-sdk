@@ -7,8 +7,8 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
@@ -16,8 +16,11 @@ var _ time.Time
 
 // A single update operation to be applied to a checkpoint instance.
 type UpdateCheckpointInstancesRequestItem struct {
-	// (Optional).  A client-provided identifier for tracking this operation in
-	// the response.
+	// The UUID of the resource.
+	Uuid *string `json:"uuid,omitzero"`
+	// The name of the resource.
+	Name *string `json:"name,omitzero"`
+	// A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitzero"`
 	// The property to modify.
 	Prop MutableCheckpointInstanceProperty `json:"prop"`
@@ -28,10 +31,6 @@ type UpdateCheckpointInstancesRequestItem struct {
 	// - For "delete_lock": boolean
 	// - For "autokill": object with time_ms field
 	Value *interface{} `json:"value,omitzero"`
-	// The UUID of the checkpoint instance to update. Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitzero"`
-	// The name of the checkpoint instance to update. Mutually exclusive with UUID.
-	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
