@@ -12,11 +12,15 @@ import (
 )
 
 // Ref represents a resource that may be identified by name or UUID,
-// optionally scoped to a metro.
+// optionally scoped to a metro and a node within that metro.
 type Ref struct {
 	// Metro is the metro in which to look for the resource. If empty, the
 	// resource will be looked for in all metros.
 	Metro string
+
+	// Node is the node within Metro on which to look for the resource. It is
+	// only meaningful when Metro is set.
+	Node string
 
 	// Name is the name of the resource, from the platform API. It is not
 	// guaranteed to be unique across metros.
@@ -53,27 +57,31 @@ func (r Ref) String() string {
 	return r.UUID
 }
 
+// variants returns all ref shapes that could have been used to request the
+// resource identified by r: every combination of the identifiers present
+// (name, UUID, or both) across every scope level (metro/node, metro-only,
+// unscoped).
 func (r Ref) variants() []Ref {
-	var rs []Ref
-	if r.Metro != "" {
-		if r.Name != "" {
-			rs = append(rs, Ref{Metro: r.Metro, Name: r.Name})
-		}
-		if r.UUID != "" {
-			rs = append(rs, Ref{Metro: r.Metro, UUID: r.UUID})
-		}
-		if r.Name != "" && r.UUID != "" {
-			rs = append(rs, Ref{Metro: r.Metro, Name: r.Name, UUID: r.UUID})
-		}
-	}
+	ids := make([]Ref, 0, 3)
 	if r.Name != "" {
-		rs = append(rs, Ref{Name: r.Name})
+		ids = append(ids, Ref{Name: r.Name})
 	}
 	if r.UUID != "" {
-		rs = append(rs, Ref{UUID: r.UUID})
+		ids = append(ids, Ref{UUID: r.UUID})
 	}
 	if r.Name != "" && r.UUID != "" {
-		rs = append(rs, Ref{Name: r.Name, UUID: r.UUID})
+		ids = append(ids, Ref{Name: r.Name, UUID: r.UUID})
+	}
+
+	var rs []Ref
+	for _, id := range ids {
+		if r.Metro != "" && r.Node != "" {
+			rs = append(rs, Ref{Metro: r.Metro, Node: r.Node, Name: id.Name, UUID: id.UUID})
+		}
+		if r.Metro != "" {
+			rs = append(rs, Ref{Metro: r.Metro, Name: id.Name, UUID: id.UUID})
+		}
+		rs = append(rs, id)
 	}
 	return rs
 }
