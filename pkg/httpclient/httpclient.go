@@ -63,21 +63,16 @@ func NewHTTPClient(opts ...Option) *http.Client {
 	base := o.transport
 	if base == nil {
 		// TODO: move these hardcoded values to configurable env variables.
-		dialer := &net.Dialer{
+		base = http.DefaultTransport.(*http.Transport).Clone()
+		// Stdlib default is 30s; fail faster on an unreachable peer.
+		base.DialContext = (&net.Dialer{
 			Timeout:   10 * time.Second,
 			KeepAlive: 30 * time.Second,
-		}
-
-		base = &http.Transport{
-			Proxy:                 http.ProxyFromEnvironment,
-			DialContext:           dialer.DialContext,
-			ForceAttemptHTTP2:     true,
-			MaxIdleConns:          500,
-			MaxIdleConnsPerHost:   100,
-			IdleConnTimeout:       90 * time.Second,
-			TLSHandshakeTimeout:   10 * time.Second,
-			ExpectContinueTimeout: 1 * time.Second,
-		}
+		}).DialContext
+		// Stdlib default is 100; this client talks to many hosts at once.
+		base.MaxIdleConns = 500
+		// Stdlib default is 2; keep more idle connections per host open.
+		base.MaxIdleConnsPerHost = 100
 	}
 
 	transport := base.Clone()
