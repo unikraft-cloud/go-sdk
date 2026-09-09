@@ -15,7 +15,7 @@ import (
 var _ time.Time
 
 // Automatic delete-on-idle configuration for the checkpoint instance.
-type ItemCheckpointAutokill struct {
+type CheckpointAutokill struct {
 	// Time in milliseconds after the checkpoint was last used for restoring
 	// before it is deleted. A value of 0 disables checkpoint autokill.
 	TimeMs *uint64 `json:"time_ms,omitzero"`
@@ -25,12 +25,12 @@ type ItemCheckpointAutokill struct {
 	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
-func (m *ItemCheckpointAutokill) UnmarshalJSON(data []byte) error {
-	type Alias ItemCheckpointAutokill
+func (m *CheckpointAutokill) UnmarshalJSON(data []byte) error {
+	type Alias CheckpointAutokill
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m ItemCheckpointAutokill) MarshalJSON() ([]byte, error) {
-	type Alias ItemCheckpointAutokill
+func (m CheckpointAutokill) MarshalJSON() ([]byte, error) {
+	type Alias CheckpointAutokill
 	return json.Marshal((Alias)(m))
 }

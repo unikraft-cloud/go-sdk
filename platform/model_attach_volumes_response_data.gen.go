@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type AttachVolumesResponseData struct {
-	// The volume(s) which were attached by the request.
 	Volumes []AttachVolumesResponseAttachedVolume `json:"volumes,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

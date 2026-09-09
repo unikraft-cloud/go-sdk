@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type DeleteInstancesResponseData struct {
-	// The instance(s) which were deleted by the request.
 	Instances []DeleteInstancesResponseInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

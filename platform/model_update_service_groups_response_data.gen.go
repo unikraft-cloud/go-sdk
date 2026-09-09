@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type UpdateServiceGroupsResponseData struct {
-	// List of service groups that were processed during the update operation.
 	ServiceGroups []UpdateServiceGroupsResponseUpdatedServiceGroup `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

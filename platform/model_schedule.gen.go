@@ -19,9 +19,12 @@ var _ time.Time
 // Each schedule specifies a name, a calendar expression following systemd
 // calendar event syntax, and an action (start, stop, delete, or exec).
 //
-// Calendar expressions format: [weekday] [[year-]month-day] [hour:minute[:second]]
+// Calendar expressions format:
+//
+// [weekday] [[year-]month-day] [hour:minute[:second]]
 //
 // Supported syntax:
+//
 // - `*` - Any value
 // - `5` - Exact value
 // - `1..5` - Range
@@ -45,7 +48,7 @@ type Schedule struct {
 	// The timestamp of when the next scheduled action will occur.
 	//
 	// This field is populated only in responses (not settable in requests).
-	// Unix timestamp in seconds.  Omitted if no next execution is scheduled.
+	// Omitted if no next execution is scheduled.
 	NextAt *time.Time `json:"next_at,omitzero"`
 	// The command to execute when the action is `exec`.
 	//

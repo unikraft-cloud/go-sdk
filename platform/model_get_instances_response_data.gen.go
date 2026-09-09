@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type GetInstancesResponseData struct {
-	// The instance(s) that were retrieved by the request.
 	Instances []Instance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

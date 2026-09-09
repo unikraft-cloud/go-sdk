@@ -18,15 +18,13 @@ var _ time.Time
 type PinImagesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`
-	// An optional message providing additional information about the response.
-	// This field is useful when the status is not `success`.
+	// An optional message providing additional information about the status.
 	Message *string `json:"message,omitzero"`
 	// The response data for this request.
 	Data *PinImagesResponseData `json:"data,omitzero"`
 	// A list of errors which may have occurred during the request.
 	Errors []ResponseError `json:"errors,omitzero"`
-	// The operation time in microseconds.  This is the time it took to process
-	// the request and generate the response.
+	// The operation time in microseconds.
 	OpTimeUs uint64 `json:"op_time_us"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

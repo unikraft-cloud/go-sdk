@@ -14,17 +14,25 @@ import (
 
 var _ time.Time
 
+// An image representing a VM which can be deployed on Unikraft Cloud.
 type Image struct {
+	// The image URL.
 	Url string `json:"url"`
-	// The time the volume was created.
-	CreatedAt   time.Time         `json:"created_at"`
-	InitrdOrRom bool              `json:"initrd_or_rom"`
-	SizeInBytes int64             `json:"size_in_bytes"`
-	Args        []string          `json:"args,omitzero"`
-	Env         map[string]string `json:"env,omitzero"`
-	Tags        []string          `json:"tags,omitzero"`
-	Users       []string          `json:"users,omitzero"`
-	// Whether the image is pinned and exempt from cache eviction.  Only
+	// The time the image was created.
+	CreatedAt time.Time `json:"created_at"`
+	// Whether the image is an initrd or ROM.
+	InitrdOrRom bool `json:"initrd_or_rom"`
+	// The size of the image in bytes.
+	SizeInBytes int64 `json:"size_in_bytes"`
+	// Command-line arguments for the image.
+	Args []string `json:"args,omitzero"`
+	// Environment variables for the image.
+	Env map[string]string `json:"env,omitzero"`
+	// Tags associated with the image.
+	Tags []string `json:"tags,omitzero"`
+	// Users associated with the image.
+	Users []string `json:"users,omitzero"`
+	// Whether the image is pinned and exempt from cache eviction. Only
 	// populated (and only ever `true`) for callers with image manager
 	// permissions; omitted otherwise, including when the image is not pinned.
 	Persistent *bool `json:"persistent,omitzero"`

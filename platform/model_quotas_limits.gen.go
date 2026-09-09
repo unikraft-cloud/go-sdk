@@ -14,6 +14,7 @@ import (
 
 var _ time.Time
 
+// Additional resource limits.
 type QuotasLimits struct {
 	// Minimum amount of memory assigned to live instances in megabytes
 	MinMemoryMb int64 `json:"min_memory_mb"`

@@ -14,18 +14,17 @@ import (
 
 var _ time.Time
 
+// Per-item result for a create autoscale configurations operation.
 type CreateAutoscaleConfigurationsResponseConfigurationsResponse struct {
+	// The UUID of the resource.
+	Uuid string `json:"uuid"`
+	// The human-readable name of the resource.
+	Name string `json:"name"`
 	// The status of the response.
 	Status ResponseStatus `json:"status"`
-	// The UUID of the service where the configuration was created.
-	Uuid string `json:"uuid"`
-	// The name of the service where the configuration was created.
-	Name string `json:"name"`
 	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`
 	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
 	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

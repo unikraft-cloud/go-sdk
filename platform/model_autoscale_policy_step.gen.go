@@ -14,6 +14,7 @@ import (
 
 var _ time.Time
 
+// A single step in a step autoscaling policy.
 type AutoscalePolicyStep struct {
 	// The adjustment value for the step.
 	Adjustment int64 `json:"adjustment"`

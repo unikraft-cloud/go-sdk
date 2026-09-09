@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type UpdateTemplateVolumesResponseData struct {
-	// The template volume(s) which were updated by the request.
 	Volumes []UpdateTemplateVolumesResponseTemplateVolume `json:"volumes,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

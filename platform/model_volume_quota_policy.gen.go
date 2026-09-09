@@ -6,7 +6,7 @@
 
 package platform
 
-// VolumeQuotaPolicy defines the quota policy of a volume.
+// Quota policy for a volume.
 type VolumeQuotaPolicy string
 
 const (

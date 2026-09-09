@@ -14,6 +14,7 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type CreateCheckpointInstancesResponseData struct {
 	// List of checkpoint instances that were created during the operation.
 	Instances []CreateCheckpointInstancesResponseCheckpointInstance `json:"instances,omitzero"`

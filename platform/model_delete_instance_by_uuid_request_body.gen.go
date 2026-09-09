@@ -16,11 +16,11 @@ var _ time.Time
 
 // Parameters for deleting the instance by UUID.
 type DeleteInstanceByUUIDRequestBody struct {
-	// Timeout in seconds to wait for the instance to be deleted.  No wait
+	// Timeout in seconds to wait for the instance to be deleted. No wait
 	// performed for a value of 0.
 	TimeoutS *int64 `json:"timeout_s,omitzero"`
-	// Delete immediately without retention.  If the instance is already
-	// being retained, this will force its deletion.  Ignored if retention
+	// Delete immediately without retention. If the instance is already
+	// being retained, this will force its deletion. Ignored if retention
 	// for instances is not configured.
 	DontRetain *bool `json:"dont_retain,omitzero"`
 

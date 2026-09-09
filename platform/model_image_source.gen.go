@@ -19,7 +19,6 @@ type ImageSource interface {
 	isImageSource()
 }
 
-// The image as a plain image reference.
 type ImageReference string
 
 func (ImageReference) isImageSource() {}

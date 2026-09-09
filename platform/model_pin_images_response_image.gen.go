@@ -14,33 +14,31 @@ import (
 
 var _ time.Time
 
-// The result of pinning a single image.  On success, `uuid` through `tags`
+// The result of pinning a single image. On success, `uuid` through `tags`
 // are set; on failure, only `message` and `error` are set (the image
 // being pulled is not otherwise identified in the response).
 type PinImagesResponseImage struct {
-	// Indicates whether this image was pulled and pinned successfully.
+	// Indicates whether the operation was successful for this item.
 	Status ResponseStatus `json:"status"`
-	// The UUID of the image.  Only set on success.
+	// An optional message providing additional information.
+	Message *string `json:"message,omitzero"`
+	// An optional error code.
+	Error *int32 `json:"error,omitzero"`
+	// The UUID of the image. Only set on success.
 	Uuid *string `json:"uuid,omitzero"`
-	// The name of the image.  Only set on success.
+	// The name of the image. Only set on success.
 	Name *string `json:"name,omitzero"`
-	// The time the image was created.  Only set on success.
+	// The time the image was created. Only set on success.
 	CreatedAt *time.Time `json:"created_at,omitzero"`
-	// The current state of the image (e.g. `ready`).  Only set on success.
+	// The current state of the image (e.g. `ready`). Only set on success.
 	State *string `json:"state,omitzero"`
-	// The image URL.  Only set on success.
+	// The image URL. Only set on success.
 	Url *string `json:"url,omitzero"`
-	// Whether the image is pinned and exempt from cache eviction.  Only set
+	// Whether the image is pinned and exempt from cache eviction. Only set
 	// on success, where it is always `true`.
 	Persistent *bool `json:"persistent,omitzero"`
-	// The tags associated with the image.  Only set on success.
+	// The tags associated with the image. Only set on success.
 	Tags []string `json:"tags,omitzero"`
-	// Set when the image could not be pulled; carries the agent's error, if
-	// any (e.g. a registry connectivity issue).
-	Message *string `json:"message,omitzero"`
-	// An optional error code providing additional information about the
-	// status.  This field is only set when the status is not `success`.
-	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

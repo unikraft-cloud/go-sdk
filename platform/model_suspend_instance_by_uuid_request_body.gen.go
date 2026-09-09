@@ -16,8 +16,8 @@ var _ time.Time
 
 // Parameters for suspending the instance.
 type SuspendInstanceByUUIDRequestBody struct {
-	// Timeout for draining connections in milliseconds.  No draining
-	// will occur if set to 0.  Use -1 for the largest possible value.
+	// Timeout for draining connections in milliseconds. No draining
+	// will occur if set to 0. Use -1 for the largest possible value.
 	DrainTimeoutMs *uint64 `json:"drain_timeout_ms,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

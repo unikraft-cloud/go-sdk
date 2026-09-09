@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type DeleteServiceGroupsResponseData struct {
-	// The service group(s) which were deleted by the request.
 	ServiceGroups []DeleteServiceGroupsResponseDeletedServiceGroup `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

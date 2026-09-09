@@ -14,9 +14,13 @@ import (
 
 var _ time.Time
 
-// A single wait operation to be applied to an instance.
+// A single request item to wait for an instance's state.
 type WaitInstancesRequestItem struct {
-	// The desired state to wait for.  Default is `running`.
+	// The UUID of the resource.
+	Uuid *string `json:"uuid,omitzero"`
+	// The name of the resource.
+	Name *string `json:"name,omitzero"`
+	// The desired state to wait for. Default is `running`.
 	State *InstanceState `json:"state,omitzero"`
 	// Deprecated: Use `timeout_s` instead. Timeout in milliseconds to
 	// wait for the instance to reach the desired state. If `timeout_s` is
@@ -28,10 +32,6 @@ type WaitInstancesRequestItem struct {
 	// error. A value of -1 means to wait indefinitely until the instance
 	// reaches the desired state. No wait performed for a value of 0.
 	TimeoutS *int64 `json:"timeout_s,omitzero"`
-	// The UUID of the instance to wait for.  Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitzero"`
-	// The name of the instance to wait for.  Mutually exclusive with UUID.
-	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

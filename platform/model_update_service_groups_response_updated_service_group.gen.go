@@ -14,22 +14,19 @@ import (
 
 var _ time.Time
 
+// Per-item result for an update service groups operation.
 type UpdateServiceGroupsResponseUpdatedServiceGroup struct {
-	// The UUID of the service group that was updated.
+	// The UUID of the resource.
 	Uuid string `json:"uuid"`
-	// The name of the service group that was updated.
+	// The human-readable name of the resource.
 	Name string `json:"name"`
-	// The status of this particular service group update operation.
-	Status ResponseStatus `json:"status"`
-	// (Optional).  The client-provided ID from the request.
+	// The client-provided ID from the request.
 	Id *string `json:"id,omitzero"`
+	// The status of the response.
+	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the status.
-	// This field is only set when this message object is used as a response
-	// message, and is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`
 	// An optional error code providing additional information about the status.
-	// This field is only set when this message object is used as a response
-	// message, and is useful when the status is not `success`.
 	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

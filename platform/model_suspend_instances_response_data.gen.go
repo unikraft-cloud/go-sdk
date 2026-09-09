@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type SuspendInstancesResponseData struct {
-	// The instance(s) which were suspended by the request.
 	Instances []SuspendInstancesResponseSuspendedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

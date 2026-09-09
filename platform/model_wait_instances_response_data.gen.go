@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type WaitInstancesResponseData struct {
-	// The instance(s) which this requested waited on.
 	Instances []WaitInstancesResponseWaitedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

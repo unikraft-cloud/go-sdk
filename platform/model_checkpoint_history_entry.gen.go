@@ -14,8 +14,7 @@ import (
 
 var _ time.Time
 
-// A checkpoint history entry, representing a single checkpoint in the
-// history of an instance.
+// A checkpoint history entry, representing a single checkpoint in the history of an instance.
 type CheckpointHistoryEntry struct {
 	// The UUID of the checkpoint.
 	Uuid string `json:"uuid"`

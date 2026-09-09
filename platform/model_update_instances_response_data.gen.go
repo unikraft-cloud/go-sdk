@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type UpdateInstancesResponseData struct {
-	// List of instances that were processed during the update operation.
 	Instances []UpdateInstancesResponseUpdatedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

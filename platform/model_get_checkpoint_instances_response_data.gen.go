@@ -14,6 +14,7 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type GetCheckpointInstancesResponseData struct {
 	// List of checkpoint instances that were retrieved during the operation.
 	Instances []Instance `json:"instances,omitzero"`

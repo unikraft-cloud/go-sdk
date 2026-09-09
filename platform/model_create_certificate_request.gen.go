@@ -19,8 +19,8 @@ type CreateCertificateRequest struct {
 	// The name of the certificate.
 	//
 	// This is a human-readable name that can be used to identify the certificate.
-	// The name must be unique within the context of your account.  If no name is
-	// specified, a random name is generated for you.  The name can also be used
+	// The name must be unique within the context of your account. If no name is
+	// specified, a random name is generated for you. The name can also be used
 	// to identify the certificate in API calls.
 	Name *string `json:"name,omitzero"`
 	// The common name (CN) of the certificate.
@@ -32,9 +32,9 @@ type CreateCertificateRequest struct {
 	// This must be a fully-qualified domain name (FQDN). Exactly one of `cn`
 	// or `common_name` must be specified.
 	CommonName *string `json:"common_name,omitzero"`
-	// The chain of the certificate.
+	// The certificate chain in PEM format. Required for user-uploaded certificates.
 	Chain string `json:"chain"`
-	// The private key of the certificate.
+	// The private key in PEM format. Required for user-uploaded certificates.
 	Pkey string `json:"pkey"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

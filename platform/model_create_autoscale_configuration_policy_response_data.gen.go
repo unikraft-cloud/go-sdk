@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type CreateAutoscaleConfigurationPolicyResponseData struct {
-	// The policies which were added by the request.
 	Policies []CreateAutoscaleConfigurationPolicyResponsePolicy `json:"policies,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

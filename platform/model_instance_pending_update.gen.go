@@ -14,18 +14,17 @@ import (
 
 var _ time.Time
 
-// A queued property change awaiting application (typically on next restart).
+// A queued property change awaiting application on an instance.
 type InstancePendingUpdate struct {
 	// The property being updated.
 	Prop MutableInstanceProperty `json:"prop"`
 	// The patch operation type.
 	Op MutableInstanceOperation `json:"op"`
-	// The new value for the property.  Type depends on the property being
-	// updated.
+	// The new value for the property. Type depends on the property being updated.
 	Value interface{} `json:"value"`
 	// The status of this update.
 	Status InstancePendingUpdateStatus `json:"status"`
-	// Error message.  Only present when status is "failed".
+	// Error message. Only present when status is "failed".
 	Error *string `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

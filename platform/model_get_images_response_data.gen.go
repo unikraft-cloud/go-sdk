@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type GetImagesResponseData struct {
-	// The list of images.
 	Images []Image `json:"images,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

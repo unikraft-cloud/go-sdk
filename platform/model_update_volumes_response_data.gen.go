@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type UpdateVolumesResponseData struct {
-	// List of volumes that were processed during the update operation.
 	Volumes []UpdateVolumesResponseUpdatedVolume `json:"volumes,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

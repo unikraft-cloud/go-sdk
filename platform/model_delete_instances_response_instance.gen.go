@@ -14,23 +14,20 @@ import (
 
 var _ time.Time
 
-// Details of the instance which was deleted by this request.
+// Per-item result for a delete instances operation.
 type DeleteInstancesResponseInstance struct {
-	// Indicates whether the start operation was successful or not for this
-	// instance.
+	// Indicates whether the operation was successful for this item.
 	Status ResponseStatus `json:"status"`
-	// The UUID of the instance which was deleted.
+	// An optional message providing additional information.
+	Message *string `json:"message,omitzero"`
+	// An optional error code.
+	Error *int32 `json:"error,omitzero"`
+	// The UUID of the resource.
 	Uuid string `json:"uuid"`
-	// The name of the instance which was deleted.
+	// The human-readable name of the resource.
 	Name string `json:"name"`
 	// The previous state of the instance before it was deleted.
 	PreviousState string `json:"previous_state"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitzero"`
-	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

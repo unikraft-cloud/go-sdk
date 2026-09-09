@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type CloneVolumesResponseData struct {
-	// The volume(s) which were cloned by the request.
 	Volumes []CloneVolumesResponseVolume `json:"volumes,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

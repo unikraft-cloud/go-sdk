@@ -14,16 +14,15 @@ import (
 
 var _ time.Time
 
+// Per-item result for a get autoscale configuration policy operation.
 type GetAutoscaleConfigurationPolicyResponsePolicyResponse struct {
-	// The status of the response.
-	Status ResponseStatus `json:"status"`
 	// The policy which was retrieved by the request.
 	Policy AutoscalePolicy `json:"policy"`
+	// The status of the response.
+	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`
 	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
 	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

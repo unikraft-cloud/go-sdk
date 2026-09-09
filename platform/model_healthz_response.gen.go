@@ -14,18 +14,17 @@ import (
 
 var _ time.Time
 
-// The response message for a health check of the platform.
+// Standard response envelope wrapping all API responses.
 type HealthzResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`
-	// An optional message providing additional information about the response.
+	// An optional message providing additional information about the status.
 	Message *string `json:"message,omitzero"`
-	// A list of errors which may have occurred during the request.
-	Errors []ResponseError `json:"errors,omitzero"`
 	// The response data for this request.
 	Data *HealthzResponseData `json:"data,omitzero"`
-	// The operation time in microseconds.  This is the time it took to process
-	// the request and generate the response.
+	// A list of errors which may have occurred during the request.
+	Errors []ResponseError `json:"errors,omitzero"`
+	// The operation time in microseconds.
 	OpTimeUs uint64 `json:"op_time_us"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

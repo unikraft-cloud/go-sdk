@@ -14,21 +14,20 @@ import (
 
 var _ time.Time
 
+// Per-item result for a wait instances operation.
 type WaitInstancesResponseWaitedInstance struct {
-	// The UUID of the instance.
+	// Indicates whether the operation was successful for this item.
+	Status *ResponseStatus `json:"status,omitzero"`
+	// An optional message providing additional information.
+	Message *string `json:"message,omitzero"`
+	// An optional error code.
+	Error *int32 `json:"error,omitzero"`
+	// The UUID of the resource.
 	Uuid string `json:"uuid"`
-	// The name of the instance.
+	// The human-readable name of the resource.
 	Name string `json:"name"`
 	// The current state of the instance.
 	State InstanceState `json:"state"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitzero"`
-	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Error *int32 `json:"error,omitzero"`
-	// The status of the response.
-	Status *ResponseStatus `json:"status,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

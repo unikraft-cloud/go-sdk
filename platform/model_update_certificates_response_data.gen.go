@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type UpdateCertificatesResponseData struct {
-	// The certificate(s) which were updated by the request.
 	Certificates []Certificate `json:"certificates,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

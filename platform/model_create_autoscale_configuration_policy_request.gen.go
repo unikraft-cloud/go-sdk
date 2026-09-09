@@ -17,7 +17,7 @@ var _ time.Time
 // The request message to create an autoscale configuration policy for a
 // service.
 type CreateAutoscaleConfigurationPolicyRequest struct {
-	// The Name of the service to add a policy to.
+	// The name of the policy.
 	Name string `json:"name"`
 	// The policy type to add to the autoscale configuration.
 	Type AutoscalePolicy `json:"type"`

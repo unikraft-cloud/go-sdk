@@ -14,8 +14,8 @@ import (
 
 var _ time.Time
 
+// The response data for this request.
 type DeleteCertificatesResponseData struct {
-	// The certificate(s) which were deleted by the request.
 	Certificates []DeleteCertificatesResponseDeletedCertificate `json:"certificates,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
