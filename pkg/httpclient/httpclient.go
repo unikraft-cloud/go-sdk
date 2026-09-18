@@ -25,6 +25,7 @@ type Option func(*options)
 type options struct {
 	insecure  bool
 	userAgent string
+	timeout   time.Duration
 	transport *http.Transport
 }
 
@@ -40,6 +41,13 @@ func WithInsecure() Option {
 func WithUserAgent(ua string) Option {
 	return func(o *options) {
 		o.userAgent = ua
+	}
+}
+
+// WithTimeout sets a deadline on the full exchange, bodies included.
+func WithTimeout(timeout time.Duration) Option {
+	return func(o *options) {
+		o.timeout = timeout
 	}
 }
 
@@ -73,6 +81,8 @@ func NewHTTPClient(opts ...Option) *http.Client {
 		base.MaxIdleConns = 500
 		// Stdlib default is 2; keep more idle connections per host open.
 		base.MaxIdleConnsPerHost = 100
+		// Stops once headers arrive, so a body of any size can stream.
+		base.ResponseHeaderTimeout = 30 * time.Second
 	}
 
 	transport := base.Clone()
@@ -93,7 +103,7 @@ func NewHTTPClient(opts ...Option) *http.Client {
 
 	return &http.Client{
 		Transport: rt,
-		Timeout:   30 * time.Second,
+		Timeout:   o.timeout,
 	}
 }
 

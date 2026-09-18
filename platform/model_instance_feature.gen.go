@@ -13,9 +13,11 @@ package platform
 //
 // | Feature            | Description |
 // |--------------------|-------------|
-// | `delete-on-stop`   | The instance will be deleted when it is stopped. This is useful for instances that are not needed after they are stopped, such as temporary or ephemeral instances. |
+// | `delete-on-stop`   | The instance will be deleted when it is stopped. This is useful for instances that are not needed after they are stopped, such as temporary or ephemeral instances. Cannot be combined with a `restart_policy` other than `never`. |
+// | `nested-virt`      | Expose virtualization extensions to the guest, so that it can run virtual machines of its own. Requires the `nested_virt` permission. |
 type InstanceFeature string
 
 const (
 	InstanceFeatureDeleteOnStop InstanceFeature = "delete-on-stop"
+	InstanceFeatureNestedVirt   InstanceFeature = "nested-virt"
 )
