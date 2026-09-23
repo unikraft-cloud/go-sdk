@@ -91,6 +91,51 @@ func (r *Request) clone() *Request {
 	return &rcpy
 }
 
+// DefaultStreamHeartbeatTimeout bounds how long an event stream may be silent
+// before it is treated as dead, unless the operation's Opts set a
+// HeartbeatTimeout of their own.
+//
+// A stream with nothing to report is normal, so this cannot be short: it is the
+// absence of the server's heartbeat that means something, not the absence of
+// events. Set well above any sensible heartbeat interval.
+const DefaultStreamHeartbeatTimeout = 120 * time.Second
+
+// streamOption carries a stream setting from the generated method's options
+// struct down to the request. Not exported: a caller sets it on the operation's
+// Opts.
+type streamOption func(*streamOptions)
+
+type streamOptions struct {
+	heartbeatTimeout time.Duration
+}
+
+func withHeartbeatTimeout(d time.Duration) streamOption {
+	return func(o *streamOptions) {
+		o.heartbeatTimeout = d
+	}
+}
+
+// heartbeatReader resets a watchdog on anything read from the stream.
+//
+// Liveness is measured in bytes rather than events on purpose: a heartbeat is a
+// comment, and whether one surfaces as an event depends on how the server frames
+// it -- some terminate it with a blank line and some do not. Counting bytes is
+// true for both, and for a stream which is simply quiet.
+type heartbeatReader struct {
+	r         io.Reader
+	heartbeat *time.Timer
+	timeout   time.Duration
+}
+
+func (s *heartbeatReader) Read(p []byte) (int, error) {
+	n, err := s.r.Read(p)
+	if n > 0 {
+		s.heartbeat.Reset(s.timeout)
+	}
+
+	return n, err
+}
+
 // doRequest performs the request and handles the return media type differently
 // depending on the media type:
 //
@@ -98,8 +143,8 @@ func (r *Request) clone() *Request {
 //     body.
 //   - text/event-stream: returns a channel of events which will be closed when
 //     the context is done or the connection is closed.  The channel will contain
-//     pointers to Response items, which are decoded from the event data.
-func doRequest[T any](ctx context.Context, req *Request, method, path string, query url.Values, reqBody io.Reader, target *Response[T]) error {
+//     pointers to the event type, which are decoded from the event data.
+func doRequest[T any](ctx context.Context, req *Request, method, path string, query url.Values, reqBody io.Reader, target *Response[T], sopts []streamOption) error {
 	var m string
 	var u *url.URL
 	var err error
@@ -122,8 +167,13 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 		return fmt.Errorf("error creating the request: %w", err)
 	}
 
+	accept := "application/json"
+	if len(sopts) > 0 {
+		accept = "text/event-stream"
+	}
+
 	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("Accept", "application/json")
+	httpReq.Header.Set("Accept", accept)
 	if req.GetToken() != "" {
 		httpReq.Header.Set("Authorization", req.GetBearerToken())
 	}
@@ -166,14 +216,32 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 			return errors.Join(rerr, target)
 		}
 
-		target.events = make(chan *Response[T])
+		target.events = make(chan *T)
 
 		// Start a goroutine to process the event stream.
 		go func() {
 			defer close(target.events)
+			defer func() {
+				_ = resp.Body.Close()
+			}()
+
+			so := streamOptions{heartbeatTimeout: DefaultStreamHeartbeatTimeout}
+			for _, opt := range sopts {
+				opt(&so)
+			}
+			if so.heartbeatTimeout <= 0 {
+				so.heartbeatTimeout = DefaultStreamHeartbeatTimeout
+			}
+
+			timeout := so.heartbeatTimeout
+
+			heartbeat := time.AfterFunc(timeout, func() {
+				_ = resp.Body.Close()
+			})
+			defer heartbeat.Stop()
 
 			// Create an SSE reader.
-			reader := sse.NewReader(resp.Body)
+			reader := sse.NewReader(&heartbeatReader{r: resp.Body, heartbeat: heartbeat, timeout: timeout})
 
 			// Process events until context is done or connection is closed
 			for {
@@ -191,10 +259,12 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 						continue
 					}
 
-					var item Response[T]
+					var item T
 					if err := json.Unmarshal(event.Data, &item); err != nil {
 						continue
 					}
+
+					heartbeat.Stop()
 
 					// Send the decoded item to the channel
 					select {
@@ -202,6 +272,8 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 					case <-resp.Request.Context().Done():
 						return
 					}
+
+					heartbeat.Reset(timeout)
 				}
 			}
 		}()
