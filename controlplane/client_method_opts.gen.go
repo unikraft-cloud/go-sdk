@@ -6,28 +6,42 @@
 
 package controlplane
 
-// ListImagesOpts holds query-parameter options for [Client.ListImages].
+import "time"
+
+// CheckAuthorizationOpts holds options for [Client.CheckAuthorization].
+type CheckAuthorizationOpts struct {
+	// HeartbeatTimeout is how long the stream may be silent before the connection
+	// is treated as dead and closed, so the caller reconnects rather than
+	// waiting on a read which will never return.
+	//
+	// What this bounds is the absence of the server's heartbeat, not the
+	// absence of events: a stream with nothing to report is normal. Zero keeps
+	// DefaultStreamHeartbeatTimeout.
+	HeartbeatTimeout time.Duration
+}
+
+// ListImagesOpts holds options for [Client.ListImages].
 type ListImagesOpts struct {
 	Details   *bool
 	Namespace []string
 }
 
-// DestroyNodeOpts holds query-parameter options for [Client.DestroyNode].
+// DestroyNodeOpts holds options for [Client.DestroyNode].
 type DestroyNodeOpts struct {
 	Force *bool
 }
 
-// DestroyNodeByUUIDOpts holds query-parameter options for [Client.DestroyNodeByUUID].
+// DestroyNodeByUUIDOpts holds options for [Client.DestroyNodeByUUID].
 type DestroyNodeByUUIDOpts struct {
 	Force *bool
 }
 
-// ListMachineTypesOpts holds query-parameter options for [Client.ListMachineTypes].
+// ListMachineTypesOpts holds options for [Client.ListMachineTypes].
 type ListMachineTypesOpts struct {
 	Region *string
 }
 
-// ListNodesOpts holds query-parameter options for [Client.ListNodes].
+// ListNodesOpts holds options for [Client.ListNodes].
 type ListNodesOpts struct {
 	Uuid          []string
 	Name          []string
@@ -38,20 +52,20 @@ type ListNodesOpts struct {
 	Offset        *uint32
 }
 
-// UpdateNodesOpts holds query-parameter options for [Client.UpdateNodes].
+// UpdateNodesOpts holds options for [Client.UpdateNodes].
 type UpdateNodesOpts struct {
 	Property  []MutableNodeProperty
 	Operation []MutableNodeOperation
 	Value     []string
 }
 
-// WaitNodeByUUIDOpts holds query-parameter options for [Client.WaitNodeByUUID].
+// WaitNodeByUUIDOpts holds options for [Client.WaitNodeByUUID].
 type WaitNodeByUUIDOpts struct {
 	States    []NodeState
 	TimeoutMs *int64
 }
 
-// WaitNodesOpts holds query-parameter options for [Client.WaitNodes].
+// WaitNodesOpts holds options for [Client.WaitNodes].
 type WaitNodesOpts struct {
 	Uuid      []string
 	Name      []string
