@@ -27,6 +27,14 @@ const (
 	forgetTimeout   = 10 * time.Second
 )
 
+// The instance runs Linux, so the signals sent to a command carry the Linux
+// numbers, not the numbers of the host.
+const (
+	sigINT  syscall.Signal = 2
+	sigKILL syscall.Signal = 9
+	sigPIPE syscall.Signal = 13
+)
+
 const PluginName = plugin.PluginName
 
 type ExitError struct {
@@ -399,7 +407,7 @@ func (c *Cmd) cancel() error {
 
 	signalCtx, cancel := context.WithTimeout(c.waitCtx, signalTimeout)
 	defer cancel()
-	if err := c.Signal(signalCtx, syscall.SIGINT); err != nil {
+	if err := c.Signal(signalCtx, sigINT); err != nil {
 		log.G(c.ctx).Debug().Err(err).Str("cmd", c.UUID).Msg("failed to signal remote command")
 	}
 	c.closeStdin(signalCtx)
@@ -410,7 +418,7 @@ func (c *Cmd) cancel() error {
 func (c *Cmd) kill() {
 	signalCtx, cancel := context.WithTimeout(c.waitCtx, signalTimeout)
 	defer cancel()
-	if err := c.Signal(signalCtx, syscall.SIGKILL); err != nil {
+	if err := c.Signal(signalCtx, sigKILL); err != nil {
 		log.G(c.ctx).Debug().Err(err).Str("cmd", c.UUID).Msg("failed to kill remote command")
 	}
 }
