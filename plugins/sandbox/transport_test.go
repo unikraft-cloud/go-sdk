@@ -108,7 +108,7 @@ func TestAnUninterruptibleCommandGivesThePromptBack(t *testing.T) {
 
 	require.NoError(t, err, "a command that would not end is still an answer to the prompt")
 	assert.Equal(t, shell.StatusInterrupted, code)
-	assert.Contains(t, fake.sentSignals(), 2, "Linux SIGINT")
+	assert.Contains(t, fake.sentSignals(), int(sigINT))
 	assert.NotEmpty(t, said.String(), "the user is told why the prompt came back")
 }
 
@@ -125,7 +125,7 @@ func TestAClosedReaderReachesTheInstance(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Zero(t, code)
-	assert.Contains(t, fake.sentSignals(), 13,
+	assert.Contains(t, fake.sentSignals(), int(sigPIPE),
 		"the command is told its reader has gone, as a local pipeline would")
 }
 

@@ -27,14 +27,6 @@ const (
 	forgetTimeout   = 10 * time.Second
 )
 
-// The instance runs Linux, so the signals sent to a command carry the Linux
-// numbers, not the numbers of the host.
-const (
-	sigINT  syscall.Signal = 2
-	sigKILL syscall.Signal = 9
-	sigPIPE syscall.Signal = 13
-)
-
 const PluginName = plugin.PluginName
 
 type ExitError struct {
