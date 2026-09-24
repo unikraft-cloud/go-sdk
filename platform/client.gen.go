@@ -21,6 +21,15 @@ import (
 )
 
 type Client interface {
+	// Subscribe to audit events as they are raised.
+	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
+	// Performs: GET /v1/audit
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/audit#subscribe-audit-events
+	SubscribeAuditEvents(ctx context.Context, opts SubscribeAuditEventsOpts) (<-chan *Response[AuditEventData], error)
 	// Create an autoscale configuration for a service group by UUID.
 	//
 	// @param `uuid`
@@ -1015,6 +1024,27 @@ func (c *client) WithTimeout(to time.Duration) Client {
 func (c *client) clone() *client {
 	ccpy := *c
 	return &ccpy
+}
+
+func (c *client) SubscribeAuditEvents(ctx context.Context, opts SubscribeAuditEventsOpts) (<-chan *Response[AuditEventData], error) {
+	requestPath := "/v1/audit"
+
+	query := make(url.Values)
+	for _, v := range opts.Events {
+		query.Add("events", string(v))
+	}
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Tags {
+		query.Add("tags", string(v))
+	}
+
+	resp := &Response[AuditEventData]{}
+	if err := doRequest[AuditEventData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp.Events()
 }
 
 func (c *client) CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
