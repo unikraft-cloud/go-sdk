@@ -17,7 +17,6 @@ import (
 	"net/http/httptest"
 	"strings"
 	"sync"
-	"syscall"
 	"testing"
 	"time"
 
@@ -204,7 +203,7 @@ func (f *mockPlugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		f.signals = append(f.signals, req.Signal)
 		f.mu.Unlock()
 		// SIGKILL cannot be ignored: the command dies of it, as a real one does.
-		if req.Signal == int(syscall.SIGKILL) {
+		if req.Signal == 9 {
 			f.exit(137)
 		}
 		reply(nil)
@@ -551,7 +550,7 @@ func TestCmdCancelWaitDelayExpires(t *testing.T) {
 	err := cmd.Wait()
 	require.ErrorIs(t, err, context.Canceled)
 	require.ErrorContains(t, err, "cmd-1")
-	assert.Equal(t, []int{int(syscall.SIGINT), int(syscall.SIGKILL)}, fake.sentSignals())
+	assert.Equal(t, []int{2, 9}, fake.sentSignals(), "Linux SIGINT, then SIGKILL")
 	assert.True(t, fake.forgotten(), "the killed command's record was dropped")
 }
 

@@ -60,7 +60,7 @@ func (c *Cmd) pipeClosed() {
 		ctx, cancel := context.WithTimeout(context.WithoutCancel(c.ctx), signalTimeout)
 		defer cancel()
 
-		if err := c.Signal(ctx, syscall.SIGPIPE); err != nil {
+		if err := c.Signal(ctx, sigPIPE); err != nil {
 			log.G(c.ctx).Debug().Err(err).Str("cmd", c.UUID).Msg("could not report the closed pipe")
 		}
 	})
