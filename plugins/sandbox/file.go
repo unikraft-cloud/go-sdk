@@ -101,7 +101,7 @@ func (t Target) Download(ctx context.Context, opts DownloadOpts) (string, int, e
 		local = path.Base(opts.Remote)
 	} else if info, err := os.Stat(local); err == nil && info.IsDir() {
 		local = filepath.Join(local, path.Base(opts.Remote))
-	} else if strings.HasSuffix(local, string(os.PathSeparator)) {
+	} else if os.IsPathSeparator(local[len(local)-1]) {
 		local = filepath.Join(local, path.Base(opts.Remote))
 	}
 
