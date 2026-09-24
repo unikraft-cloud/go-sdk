@@ -37,7 +37,8 @@ type UpdateInstanceByUUIDRequestBody struct {
 	// - For "autokill": object with time_ms and num_requests fields
 	// - For "hostname": string (valid DNS label)
 	// - For "roms": array of ROM objects (with name and image fields) for SET/ADD, or array of ROM names for DEL
-	// - For "plugins": array of plugin objects (with name, rom, and optional config fields) for SET/ADD
+	// - For "plugins": array of plugin objects (with name, image, and optional config fields)
+	// for SET/ADD. The deprecated `rom` field is accepted in place of `image`.
 	// - For "dependencies": array of instance identifiers (name or UUID)
 	// - For "sched_priority": SchedPriority enum value ("normal", "medium", "high", "admin")
 	// - For "annotations": object (for SET/ADD) or string/array of strings (for DEL)

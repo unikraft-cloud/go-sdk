@@ -6,6 +6,13 @@
 
 package platform
 
+// SubscribeAuditEventsOpts holds query-parameter options for [Client.SubscribeAuditEvents].
+type SubscribeAuditEventsOpts struct {
+	Events []AuditEventType
+	Uuid   []string
+	Tags   []string
+}
+
 // GetAutoscaleConfigurationsOpts holds query-parameter options for [Client.GetAutoscaleConfigurations].
 type GetAutoscaleConfigurationsOpts struct {
 	Uuid []string

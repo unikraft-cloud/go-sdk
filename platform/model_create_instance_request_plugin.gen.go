@@ -24,12 +24,19 @@ type CreateInstanceRequestPlugin struct {
 	// maximum length of 63 characters and contains only letters (`a`-`z`,
 	// `A`-`Z`), digits (`0`-`9`), hyphen (`-`), and underscore (`_`).
 	Name string `json:"name"`
-	// The plugin's ROM image. The platform loads the image, mounts it at
+	// The plugin's image. The platform loads the image, mounts it at
 	// `/uk/plugins/<plugin_name>`, and runs its `init` program when the plugin
 	// starts. Accepts either a plain image reference string
 	// (`"user/myplugin:latest"`) or an object carrying additional pull
 	// configuration (`{"url": "user/myplugin:latest", "pull_policy": "always"}`).
-	Rom ImageSource `json:"rom"`
+	// Exactly one of `image` and `rom` must be set.
+	Image ImageSource `json:"image,omitzero"`
+	// The plugin's image, under its former name. The platform still accepts
+	// it and adds a deprecation warning to the response. Exactly one of
+	// `image` and `rom` must be set.
+	//
+	// Deprecated: Use `image` instead.
+	Rom ImageSource `json:"rom,omitzero"`
 	// Arbitrary JSON configuration that the platform passes to the plugin's
 	// `init` program on `STDIN`. Any JSON value works, including a string, a
 	// number, or an object.
@@ -47,11 +54,23 @@ func (m *CreateInstanceRequestPlugin) UnmarshalJSON(data []byte) error {
 	// alias shadows the alias' own members of the same name.  An absent member
 	// leaves the current value in place, whereas an explicit null clears it.
 	aux := struct {
-		Rom jsontext.Value `json:"rom,omitzero"`
+		Image jsontext.Value `json:"image,omitzero"`
+		Rom   jsontext.Value `json:"rom,omitzero"`
 		*Alias
 	}{Alias: (*Alias)(m)}
 	if err := json.Unmarshal(data, &aux); err != nil {
 		return err
+	}
+	if len(aux.Image) > 0 {
+		if aux.Image.Kind() == 'n' {
+			m.Image = nil
+		} else {
+			value, err := UnmarshalImageSource(aux.Image)
+			if err != nil {
+				return err
+			}
+			m.Image = value
+		}
 	}
 	if len(aux.Rom) > 0 {
 		if aux.Rom.Kind() == 'n' {
