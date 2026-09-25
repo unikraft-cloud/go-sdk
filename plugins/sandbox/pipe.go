@@ -9,7 +9,6 @@ import (
 	"context"
 	"errors"
 	"io"
-	"syscall"
 
 	"unikraft.com/x/log"
 )
@@ -31,7 +30,7 @@ func (w *deadPipe) Write(p []byte) (int, error) {
 	switch {
 	case err == nil:
 		return n, nil
-	case errors.Is(err, syscall.EPIPE), errors.Is(err, io.ErrClosedPipe):
+	case isBrokenPipe(err), errors.Is(err, io.ErrClosedPipe):
 		// The reader has gone: the command is told, and from here its output
 		// goes nowhere.
 		w.dead = true
