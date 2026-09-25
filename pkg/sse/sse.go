@@ -83,7 +83,7 @@ func (r *Reader) ReadEvent() (*Event, error) {
 			event.Event = string(fieldValue)
 		case "data":
 			if event.Data == nil {
-				event.Data = fieldValue
+				event.Data = bytes.Clone(fieldValue)
 			} else {
 				// Data fields are concatenated with a newline
 				event.Data = append(append(event.Data, '\n'), fieldValue...)
