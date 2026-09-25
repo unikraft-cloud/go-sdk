@@ -7,17 +7,15 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
-// An instance network interface.
+// A network interface attached to an instance.
 type InstanceNetworkInterface struct {
-	// The UUID of the network interface. This is a unique identifier for the
-	// network interface that is generated when the instance is created.
 	Uuid string `json:"uuid"`
 	// The private IP address of the network interface. This is the internal IP
 	// address that is used for communication between instances within the same
@@ -32,8 +30,8 @@ type InstanceNetworkInterface struct {
 	// The TAP device to attach the interface. Provide it together with ip.
 	TapName *string `json:"tap_name,omitzero"`
 	// Whether the interface is automatically configured inside the guest
-	// (IP address, routes, etc.).  When absent or true, autoconfiguration
-	// is enabled.  Present and false when the guest is expected to
+	// (IP address, routes, etc.). When absent or true, autoconfiguration
+	// is enabled. Present and false when the guest is expected to
 	// configure the interface manually.
 	Autoconfig *bool `json:"autoconfig,omitzero"`
 	// Relay configuration for this interface.

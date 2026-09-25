@@ -49,7 +49,7 @@ type Response[T any] struct {
 
 	// The channel to stream events from the response body.
 	// This is only used for streaming responses (e.g., SSE).
-	events chan *Response[T]
+	events chan *T
 }
 
 // RawBody returns the raw API response body.
@@ -60,7 +60,7 @@ func (r *Response[T]) RawBody() []byte {
 }
 
 // Events returns a channel that streams events from the response body.
-func (r *Response[T]) Events() (<-chan *Response[T], error) {
+func (r *Response[T]) Events() (<-chan *T, error) {
 	if r == nil || r.events == nil {
 		return nil, errors.New("no events available in response")
 	}

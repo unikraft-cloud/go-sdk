@@ -7,18 +7,15 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// The response data for this request.
 type CreateServiceGroupResponseData struct {
-	// The service group which was created by this request.
-	//
-	// Note: only one service group can be specified in the request, so this
-	// will always contain a single entry.
 	ServiceGroups []ServiceGroup `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

@@ -7,23 +7,22 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// The request body for updating a certificate by its UUID or name.
 type UpdateCertificateByUUIDRequestBody struct {
-	// The new certificate chain.
-	//
-	// This is the public chain of the certificate in PEM format. The chain
-	// should include the certificate and any intermediate certificates.
+	// The new certificate chain. This is the public chain of the certificate in
+	// PEM format. The chain should include the certificate and any intermediate
+	// certificates.
 	Chain string `json:"chain"`
-	// The new private key.
-	//
-	// This is the private key of the certificate in PEM format. The private
-	// key must match the public key in the certificate chain.
+	// The new private key. This is the private key of the certificate in PEM
+	// format. The private key must match the public key in the certificate
+	// chain.
 	Pkey string `json:"pkey"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

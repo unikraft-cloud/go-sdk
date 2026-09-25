@@ -6,7 +6,7 @@
 
 package platform
 
-// The mutable properties of a volume.
+// Mutable volume properties.
 type MutableVolumeProperty string
 
 const (

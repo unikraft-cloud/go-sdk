@@ -7,16 +7,15 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
-// The snapshot UUID of the instance.
+// A snapshot reference for an instance.
 type InstanceSnapshot struct {
-	// The UUID of the snapshot.
 	Uuid string `json:"uuid"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

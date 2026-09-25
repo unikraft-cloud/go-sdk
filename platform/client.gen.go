@@ -21,12 +21,18 @@ import (
 )
 
 type Client interface {
-	// Create an autoscale configuration for the specified service group given
-	// its UUID.
+	// Subscribe to audit events as they are raised.
+	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
+	// Performs: GET /v1/audit
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/audit#subscribe-audit-events
+	SubscribeAuditEvents(ctx context.Context, opts SubscribeAuditEventsOpts) (<-chan *AuditEvent, error)
+	// Create an autoscale configuration for a service group by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the service to create a configuration for.
-	// 	Mutually exclusive with name.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -35,8 +41,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configuration-by-service-group-uuid
 	CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest) (*Response[CreateAutoscaleConfigurationsResponseData], error)
-	// Add a new autoscale policy to an autoscale configuration given a service
-	// group UUID.
+	// Add a new autoscale policy to a service group by UUID.
 	//
 	// @param `uuid`
 	//
@@ -47,8 +52,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configuration-policy
 	CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid string, request CreateAutoscaleConfigurationPolicyRequest) (*Response[CreateAutoscaleConfigurationPolicyResponseData], error)
-	// Create one or more autoscale configurations for the specified service groups
-	// given their UUIDs or names.
+	// Create one or more autoscale configurations for the specified service groups.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -57,7 +61,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#create-autoscale-configurations
 	CreateAutoscaleConfigurations(ctx context.Context, request []CreateAutoscaleConfigurationsRequestConfiguration) (*Response[CreateAutoscaleConfigurationsResponseData], error)
-	// Delete one or more autoscale policies for a given service group.
+	// Delete autoscale policies for a service group by UUID.
 	//
 	// @param `uuid`
 	//
@@ -68,20 +72,17 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configuration-policies
 	DeleteAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request DeletePolicyRequest) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error)
-	// Delete an autoscale policy by name given the service group UUID.
+	// Delete an autoscale policy by name for a service group by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the service group.
 	//
 	// @param `name`
-	// 	The name of the policy to delete.
 	//
 	// Performs: DELETE /v1/services/{uuid}/autoscale/policies/{name}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configuration-policy-by-name
 	DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string) (*Response[DeleteAutoscaleConfigurationPolicyResponseData], error)
-	// Delete autoscale configuration for a given set of service groups given
-	// their UUIDs or names.
+	// Delete autoscale configurations for the specified service groups.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -90,23 +91,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configurations
 	DeleteAutoscaleConfigurations(ctx context.Context, request []NameOrUUID) (*Response[DeleteAutoscaleConfigurationsResponseData], error)
-	// Delete the autoscale configuration for the service group given its UUID.
-	//
-	// Unikraft Cloud will immediately drain all connections from all instances
-	// that have been created by autoscale and delete the instances afterwards.
-	// The draining phase is allowed to take at most `cooldown_time_ms`
-	// milliseconds after which remaining connections are forcefully closed.  The
-	// master instance is never deleted.  However, deleting the autoscale
-	// configuration causes the master instance to start if it is stopped.
+	// Delete the autoscale configuration for a service group by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the service group.
 	//
 	// Performs: DELETE /v1/services/{uuid}/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#delete-autoscale-configurations-by-service-group-uuid
 	DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string) (*Response[DeleteAutoscaleConfigurationsResponseData], error)
-	// List the autoscale policies for a given service group given its UUID.
+	// List autoscale policies for a service group by UUID.
 	//
 	// @param `uuid`
 	//
@@ -117,21 +110,17 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configuration-policies
 	GetAutoscaleConfigurationPolicies(ctx context.Context, uuid string, request GetAutoscaleConfigurationPolicyRequest) (*Response[GetAutoscaleConfigurationPolicyResponseData], error)
-	// Return the current state and configuration of an autoscale policy given
-	// the service group UUID and the name of the policy.
+	// Get an autoscale policy by name for a service group by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the service group.
 	//
 	// @param `name`
-	// 	The name of the policy to get.
 	//
 	// Performs: GET /v1/services/{uuid}/autoscale/policies/{name}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configuration-policy-by-name
 	GetAutoscaleConfigurationPolicyByName(ctx context.Context, uuid string, name string) (*Response[GetAutoscaleConfigurationPolicyResponseData], error)
-	// Return the current states and configurations of autoscale configurations
-	// for a given set of service groups given their UUIDs or names.
+	// List autoscale configurations for the specified service groups.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -143,17 +132,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configurations
 	GetAutoscaleConfigurations(ctx context.Context, request []NameOrUUID, opts GetAutoscaleConfigurationsOpts) (*Response[GetAutoscaleConfigurationsResponseData], error)
-	// Return the current states and configurations of autoscale configurations
-	// given a service group UUID.
+	// Get autoscale configurations for a service group by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the service group.
 	//
 	// Performs: GET /v1/services/{uuid}/autoscale
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/autoscale#get-autoscale-configurations-by-service-group-uuid
 	GetAutoscaleConfigurationsByServiceGroupUUID(ctx context.Context, uuid string) (*Response[GetAutoscaleConfigurationsResponseData], error)
-	// Upload a new certificate with the given configuration.
+	// Upload a new certificate.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -162,18 +149,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#create-certificate
 	CreateCertificate(ctx context.Context, request CreateCertificateRequest) (*Response[CreateCertificateResponseData], error)
-	// Delete a specified certificate by its UUID.  After this call the UUID of
-	// the certificate are no longer valid.
+	// Delete a certificate by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the certificate to delete.
 	//
 	// Performs: DELETE /v1/certificates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#delete-certificate-by-uuid
 	DeleteCertificateByUUID(ctx context.Context, uuid string) (*Response[DeleteCertificatesResponseData], error)
-	// Delete the specified certificate(s).  After this call the name of the
-	// certificate(s) are no longer valid.
+	// Delete certificates by ID(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -182,17 +166,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#delete-certificates
 	DeleteCertificates(ctx context.Context, request []NameOrUUID) (*Response[DeleteCertificatesResponseData], error)
-	// Get a specified certificate by its UUID.
+	// Get a certificate by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the certificate.
 	//
 	// Performs: GET /v1/certificates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#get-certificate-by-uuid
 	GetCertificateByUUID(ctx context.Context, uuid string) (*Response[GetCertificatesResponseData], error)
-	// Get one or many certificates with their current status and configuration.
-	// It's possible to filter this list by name or UUID.
+	// List certificates.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -204,11 +186,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#get-certificates
 	GetCertificates(ctx context.Context, request []NameOrUUID, opts GetCertificatesOpts) (*Response[GetCertificatesResponseData], error)
-	// Update a specified certificate by its UUID with a new certificate chain
-	// and private key.
+	// Update a certificate by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the certificate to update.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -217,10 +197,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#update-certificate-by-uuid
 	UpdateCertificateByUUID(ctx context.Context, uuid string, request UpdateCertificateByUUIDRequestBody) (*Response[UpdateCertificatesResponseData], error)
-	// Update the specified certificate(s) with new certificate chain(s) and private
-	// key(s). Only user-uploaded certificates can be updated; system-managed
-	// certificates cannot be modified. The new certificate(s) must have the same
-	// common name (CN) as the existing certificate(s).
+	// Update certificates.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -229,7 +206,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#update-certificates
 	UpdateCertificates(ctx context.Context, request []UpdateCertificatesRequestItem) (*Response[UpdateCertificatesResponseData], error)
-	// Retrieve all images.
+	// Retrieve all images in store.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -255,7 +232,7 @@ type Client interface {
 	GetImages(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImagesOpts) (*Response[GetImagesResponseData], error)
 	// Pull and pin one or more images so they stay cached and are never
 	// evicted, without relying on an on-demand pull to succeed at instance
-	// start.  If a pull fails, the agent's error is returned in the entry's
+	// start. If a pull fails, the agent's error is returned in the entry's
 	// `message` field.
 	//
 	// @param `request`
@@ -266,7 +243,7 @@ type Client interface {
 	// See: https://unikraft.com/docs/api/platform/v1/images#pin-images
 	PinImages(ctx context.Context, request []PinImageRequestItem) (*Response[PinImagesResponseData], error)
 	// Unpin one or more images by UUID, making them eligible for normal
-	// cache eviction again.  This does not delete the image.
+	// cache eviction again. This does not delete the image.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -275,8 +252,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#unpin-images
 	UnpinImages(ctx context.Context, request []UnpinImageRequestItem) (*Response[UnpinImagesResponseData], error)
-	// Create a checkpoint from an existing instance.  A checkpoint captures the
-	// state of an instance at a specific point in time.  Checkpoints can be
+	// Create a checkpoint from an existing instance. A checkpoint captures the
+	// state of an instance at a specific point in time. Checkpoints can be
 	// created from running, stopped, or standby instances.
 	//
 	// @param `request`
@@ -295,11 +272,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#create-instance
 	CreateInstance(ctx context.Context, request CreateInstanceRequest) (*Response[CreateInstanceResponseData], error)
-	// Convert one or more existing instances by their UUID(s) or name(s) into
-	// template instances that can be used to create new instances.
-	//
-	// The existing instances must be in the `stopped` state and not have existing
-	// snapshots.
+	// Convert instances to template instances.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -308,11 +281,10 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#create-template-instances
 	CreateTemplateInstances(ctx context.Context, request []CreateTemplateInstancesRequestItem) (*Response[CreateTemplateInstancesResponseData], error)
-	// Delete a specified checkpoint instance by its UUID.  After this call the
+	// Delete a specified checkpoint instance by its UUID. After this call the
 	// UUID of the checkpoint instance is no longer valid.
 	//
 	// @param `uuid`
-	// 	The UUID of the checkpoint instance to delete.
 	//
 	// Performs: DELETE /v1/instances/checkpoints/{uuid}
 	//
@@ -328,12 +300,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-checkpoint-instances
 	DeleteCheckpointInstances(ctx context.Context, request []NameOrUUID) (*Response[DeleteCheckpointInstancesResponseData], error)
-	// Delete a specified instance by its UUID.  After this call the UUID of the
-	// instance is no longer valid.  If the instance is currently running,
-	// it is force-stopped.
+	// Delete instance by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the instance to delete.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -342,9 +311,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instance-by-uuid
 	DeleteInstanceByUUID(ctx context.Context, uuid string, request DeleteInstanceByUUIDRequestBody) (*Response[DeleteInstancesResponseData], error)
-	// Delete the specified instance(s) by ID(s) (name or UUID).  After this call
-	// the IDs of the instances are no longer valid.  If the instances are
-	// currently running, they are force-stopped.
+	// Delete instances by ID(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -353,18 +320,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-instances
 	DeleteInstances(ctx context.Context, request []DeleteInstanceRequestItem) (*Response[DeleteInstancesResponseData], error)
-	// Delete a specified template instance by its UUID.  After this call the UUID
-	// of the template instance is no longer valid.
+	// Delete a template instance by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the template instance to delete.
 	//
 	// Performs: DELETE /v1/instances/templates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#delete-template-instance-by-uuid
 	DeleteTemplateInstanceByUUID(ctx context.Context, uuid string) (*Response[DeleteTemplateInstancesResponseData], error)
-	// Delete the specified template instance(s) by ID(s) (name or UUID).  After
-	// this call the IDs of the template instances are no longer valid.
+	// Delete template instances by ID(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -390,7 +354,6 @@ type Client interface {
 	// Returns the ordered list of checkpoints in the checkpoint's history.
 	//
 	// @param `uuid`
-	// 	The UUID of the instance or checkpoint to retrieve history for.
 	//
 	// Performs: GET /v1/instances/checkpoints/{uuid}/history
 	//
@@ -399,7 +362,6 @@ type Client interface {
 	// Get a single checkpoint instance by its UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the checkpoint instance to retrieve.
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
@@ -420,10 +382,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-checkpoint-instances
 	GetCheckpointInstances(ctx context.Context, request []NameOrUUID, opts GetCheckpointInstancesOpts) (*Response[GetCheckpointInstancesResponseData], error)
-	// Get a single instance by its UUID.
+	// Get a single instance by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the instance to get.
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
@@ -449,13 +410,12 @@ type Client interface {
 	// Returns the ordered list of checkpoints associated with the instance.
 	//
 	// @param `uuid`
-	// 	The UUID of the instance or checkpoint to retrieve history for.
 	//
 	// Performs: GET /v1/instances/{uuid}/history
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-history-by-uuid
 	GetInstanceHistoryByUUID(ctx context.Context, uuid string) (*Response[GetCheckpointHistoryResponseData], error)
-	// Retrieve the logs of one or more instances by ID(s) (name or UUID).
+	// Get instances logs.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -467,10 +427,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-logs
 	GetInstanceLogs(ctx context.Context, request []GetInstancesLogsRequestItem, opts GetInstanceLogsOpts) (*Response[GetInstancesLogsResponseData], error)
-	// Retrieve the logs of an instance by its UUID.
+	// Get instance logs by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the instance to retrieve logs for.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -479,7 +438,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-logs-by-uuid
 	GetInstanceLogsByUUID(ctx context.Context, uuid string, request GetInstanceLogsByUUIDRequestBody) (*Response[GetInstancesLogsResponseData], error)
-	// Get the metrics of one or more instances by their ID(s) (name or UUID).
+	// Get instances metrics.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -491,17 +450,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-metrics
 	GetInstanceMetrics(ctx context.Context, request []NameOrUUID, opts GetInstanceMetricsOpts) (*Response[GetInstancesMetricsResponseData], error)
-	// Get the metrics of an instance by its UUID.
+	// Get instance metrics by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the instance to retrieve metrics for.
 	//
 	// Performs: GET /v1/instances/{uuid}/metrics
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-metrics-by-uuid
 	GetInstanceMetricsByUUID(ctx context.Context, uuid string) (*Response[GetInstancesMetricsResponseData], error)
 	// Get one or many instances with their current status and configuration.
-	// It's possible to filter this list by ID(s) (name or UUID).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -513,10 +470,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instances
 	GetInstances(ctx context.Context, request []NameOrUUID, opts GetInstancesOpts) (*Response[GetInstancesResponseData], error)
-	// Get a single template instance by its UUID.
+	// Get a single template instance by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the template instance to retrieve.
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
@@ -525,7 +481,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instance-by-uuid
 	GetTemplateInstanceByUUID(ctx context.Context, uuid string, opts GetTemplateInstanceByUUIDOpts) (*Response[GetTemplateInstancesResponseData], error)
-	// Get one or more template instances by their UUID(s) or name(s).
+	// Get one or more template instances.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -537,11 +493,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instances
 	GetTemplateInstances(ctx context.Context, request []NameOrUUID, opts GetTemplateInstancesOpts) (*Response[GetTemplateInstancesResponseData], error)
-	// Start a previously stopped instance by its UUID or do nothing if the
-	// instance is already running.
+	// Start instance by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the instance to start.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -550,8 +504,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instance-by-uuid
 	StartInstanceByUUID(ctx context.Context, uuid string, request StartInstanceByUUIDRequestBody) (*Response[StartInstancesResponseData], error)
-	// Start previously stopped instances by ID(s) (name or UUID) or do
-	// nothing if the instances are already running.
+	// Start instances by ID(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -560,11 +513,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#start-instances
 	StartInstances(ctx context.Context, request []StartInstancesRequestItem) (*Response[StartInstancesResponseData], error)
-	// Stop a running instance by its UUID or do nothing if the instance is
-	// already stopped.
+	// Stop instance by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the instance to stop.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -573,8 +524,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instance-by-uuid
 	StopInstanceByUUID(ctx context.Context, uuid string, request StopInstanceByUUIDRequestBody) (*Response[StopInstancesResponseData], error)
-	// Stop one or more running instance by ID(s) (name or UUID) or do
-	// nothing if the instances are already stopped.
+	// Stop instances by ID(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -583,11 +533,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#stop-instances
 	StopInstances(ctx context.Context, request []StopInstancesRequestItem) (*Response[StopInstancesResponseData], error)
-	// Suspend a running instance by its UUID or do nothing if the instance is
-	// already suspended.
+	// Suspend instance by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the instance to suspend.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -596,8 +544,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#suspend-instance-by-uuid
 	SuspendInstanceByUUID(ctx context.Context, uuid string, request SuspendInstanceByUUIDRequestBody) (*Response[SuspendInstancesResponseData], error)
-	// Suspend one or more running instances by ID(s) (name or UUID) or do
-	// nothing if the instances are already suspended.
+	// Suspend instances by ID(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -609,7 +556,6 @@ type Client interface {
 	// Update (modify) a checkpoint instance by its UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the checkpoint instance to update.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -627,11 +573,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-checkpoint-instances
 	UpdateCheckpointInstances(ctx context.Context, request []UpdateCheckpointInstancesRequestItem) (*Response[UpdateCheckpointInstancesResponseData], error)
-	// Update (modify) an instance by its UUID.  The instance must be in a stopped
-	// state for most update operations.
+	// Update instance by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the instance to update.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -640,8 +584,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-instance-by-uuid
 	UpdateInstanceByUUID(ctx context.Context, uuid string, request UpdateInstanceByUUIDRequestBody) (*Response[UpdateInstancesResponseData], error)
-	// Update (modify) one or more instances by ID(s) (name or UUID).  The
-	// instances must be in a stopped state for most update operations.
+	// Update instances by ID(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -650,10 +593,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-instances
 	UpdateInstances(ctx context.Context, request []UpdateInstancesRequestItem) (*Response[UpdateInstancesResponseData], error)
-	// Update (modify) a template instance by its UUID.
+	// Update a template instance by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the template instance to update.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -662,7 +604,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-template-instance-by-uuid
 	UpdateTemplateInstanceByUUID(ctx context.Context, uuid string, request UpdateTemplateInstanceByUUIDRequestBody) (*Response[UpdateTemplateInstancesResponseData], error)
-	// Update (modify) one or more template instances by ID(s) (name or UUID).
+	// Update template instances by ID(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -671,17 +613,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#update-template-instances
 	UpdateTemplateInstances(ctx context.Context, request []UpdateTemplateInstancesRequestItem) (*Response[UpdateTemplateInstancesResponseData], error)
-	// Wait for an instance to reach a certain state, by its UUID.
-	//
-	// If the instance is already in the desired state, the request will return
-	// immediately.  If the instance is not in the desired state, the request will
-	// block until the instance reaches the desired state or the timeout is
-	// reached.  If the timeout is reached, the request will fail with an error.
-	// If the timeout is -1, the request will block indefinitely until the
-	// instance reaches the desired state.
+	// Wait for instance state by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the instance to wait for.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -690,15 +624,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#wait-instance-by-uuid
 	WaitInstanceByUUID(ctx context.Context, uuid string, request WaitInstanceByUUIDRequestBody) (*Response[WaitInstancesResponseData], error)
-	// Wait for one or more instances to reach certain states by ID(s)
-	// (name or UUID).
-	//
-	// If the instances are already in the desired states, the request will return
-	// immediately.  If the instances are not in the desired state, the request will
-	// block until the instances reach the desired state or the timeout is
-	// reached.  If the timeout is reached, the request will fail with an error.
-	// If the timeout is -1, the request will block indefinitely until the
-	// instances reach the desired states.
+	// Wait for instances to reach states.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -710,60 +636,50 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#wait-instances
 	WaitInstances(ctx context.Context, request []WaitInstancesRequestItem, opts WaitInstancesOpts) (*Response[WaitInstancesResponseData], error)
-	// Return the status of a full-system health check of the node.
+	// Return the status of a full-system health check.
 	//
 	// Performs: GET /v1/healthz
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/node#healthz
 	Healthz(ctx context.Context) (*Response[HealthzResponseData], error)
-	// Create a new service with the given configuration.
-	//
-	// Note that the service properties like published ports can only be defined
-	// during creation.  They cannot be changed later.  Each port in a service can
-	// specify a list of handlers that determine how traffic arriving at the port
-	// is handled. See Connection Handlers for a complete overview.
+	// Create a new service group.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
 	// Performs: POST /v1/services
 	//
-	// See: https://unikraft.com/docs/api/platform/v1/service-groups#create-service-group
+	// See: https://unikraft.com/docs/api/platform/v1/services#create-service-group
 	CreateServiceGroup(ctx context.Context, request CreateServiceGroupRequest) (*Response[CreateServiceGroupResponseData], error)
-	// Delete a specified service group by its UUID.  After this call the UUID of
-	// the service group is no longer valid.
+	// Delete a service group by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the service group to delete.
 	//
 	// Performs: DELETE /v1/services/{uuid}
 	//
-	// See: https://unikraft.com/docs/api/platform/v1/service-groups#delete-service-group-by-uuid
+	// See: https://unikraft.com/docs/api/platform/v1/services#delete-service-group-by-uuid
 	DeleteServiceGroupByUUID(ctx context.Context, uuid string) (*Response[DeleteServiceGroupsResponseData], error)
-	// Delete the specified service group(s).  After this call the name of the
-	// service group(s) are no longer valid.
+	// Delete service groups by ID(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
 	// Performs: DELETE /v1/services
 	//
-	// See: https://unikraft.com/docs/api/platform/v1/service-groups#delete-service-groups
+	// See: https://unikraft.com/docs/api/platform/v1/services#delete-service-groups
 	DeleteServiceGroups(ctx context.Context, request []NameOrUUID) (*Response[DeleteServiceGroupsResponseData], error)
-	// Get a specified service group by its UUID.
+	// Get a service group by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the service group to retrieve.
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
 	//
 	// Performs: GET /v1/services/{uuid}
 	//
-	// See: https://unikraft.com/docs/api/platform/v1/service-groups#get-service-group-by-uuid
+	// See: https://unikraft.com/docs/api/platform/v1/services#get-service-group-by-uuid
 	GetServiceGroupByUUID(ctx context.Context, uuid string, opts GetServiceGroupByUUIDOpts) (*Response[GetServiceGroupsResponseData], error)
-	// Get one or many service groups with their current status and configuration.
-	// It's possible to filter this list by name or UUID.
+	// List service groups.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -773,52 +689,45 @@ type Client interface {
 	//
 	// Performs: GET /v1/services
 	//
-	// See: https://unikraft.com/docs/api/platform/v1/service-groups#get-service-groups
+	// See: https://unikraft.com/docs/api/platform/v1/services#get-service-groups
 	GetServiceGroups(ctx context.Context, request []NameOrUUID, opts GetServiceGroupsOpts) (*Response[GetServiceGroupsResponseData], error)
-	// Update a service group by its UUID.
+	// Update a service group by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the service group to update.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
 	// Performs: PATCH /v1/services/{uuid}
 	//
-	// See: https://unikraft.com/docs/api/platform/v1/service-groups#update-service-group-by-uuid
+	// See: https://unikraft.com/docs/api/platform/v1/services#update-service-group-by-uuid
 	UpdateServiceGroupByUUID(ctx context.Context, uuid string, request UpdateServiceGroupByUUIDRequestBody) (*Response[UpdateServiceGroupsResponseData], error)
-	// Update one or more service groups.
+	// Update service groups.
 	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
 	// Performs: PATCH /v1/services
 	//
-	// See: https://unikraft.com/docs/api/platform/v1/service-groups#update-service-groups
+	// See: https://unikraft.com/docs/api/platform/v1/services#update-service-groups
 	UpdateServiceGroups(ctx context.Context, request []UpdateServiceGroupsRequestItem) (*Response[UpdateServiceGroupsResponseData], error)
 	// List quota usage and limits of your user account.
-	// Limits are hard limits that cannot be exceeded.
 	//
 	// Performs: GET /v1/users/quotas
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/users#get-user
 	GetUser(ctx context.Context) (*Response[QuotasResponseData], error)
 	// List quota usage and limits of a user account by UUID.
-	// Limits are hard limits that cannot be exceeded.
 	//
 	// @param `uuid`
-	// 	The UUID of the user to retrieve quotas for.
 	//
 	// Performs: GET /v1/users/{uuid}/quotas
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/users#get-user-by-uuid
 	GetUserByUUID(ctx context.Context, uuid string) (*Response[QuotasResponseData], error)
-	// Attach a volume by UUID to an instance so that the volume is mounted when
-	// the instance starts.  The volume needs to be in `available` state and the
-	// instance must be in `stopped` state.
+	// Attach a volume by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the volume to attach.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -827,9 +736,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#attach-volume-by-uuid
 	AttachVolumeByUUID(ctx context.Context, uuid string, request AttachVolumeByUUIDRequestBody) (*Response[AttachVolumesResponseData], error)
-	// Attach one or more volumes specified by ID(s) (name or UUID) to instances
-	// so that the volumes are mounted when the instances start.  The volumes need
-	// to be in `available` state and the instances must be in `stopped` state.
+	// Attach volumes to instances.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -838,13 +745,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#attach-volumes
 	AttachVolumes(ctx context.Context, request []AttachVolumesRequestItem) (*Response[AttachVolumesResponseData], error)
-	// Clone a volume given by its UUID.  The volume to be cloned must not be
-	// mounted to any instance or only mounted as read-only.  It also needs to not
-	// be busy or in an error state.  This operation is most useful when cloning
-	// template volumes.
+	// Clone a volume by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the volume to clone.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -853,10 +756,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#clone-volume-by-uuid
 	CloneVolumeByUUID(ctx context.Context, uuid string, request CloneVolumeByUUIDRequestBody) (*Response[CloneVolumesResponseData], error)
-	// Clone one or more volumes given by their ID(s) (name or UUID).  The
-	// volumes to be cloned must not be mounted to any instance or only mounted
-	// as read-only.  They also need to not be busy or in an error state.  This
-	// operation is most useful when cloning template volumes.
+	// Clone volumes.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -865,12 +765,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#clone-volumes
 	CloneVolumes(ctx context.Context, request []CloneVolumesRequestItem) (*Response[CloneVolumesResponseData], error)
-	// Converts one or more existing volumes given by their ID(s) (name or UUID)
-	// into template volumes.  This operation is irreversible in the sense that a
-	// template volume cannot be converted back into a regular volume.
-	//
-	// The existing volume(s) must not be attached to any instance and must be in
-	// the `available` state.
+	// Create a template volume.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -879,11 +774,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#create-template-volume
 	CreateTemplateVolume(ctx context.Context, request []NameOrUUID) (*Response[CreateTemplateVolumesResponseData], error)
-	// Create a volume given the specified configuration parameters.
-	// The volume is automatically initialized with an empty file system.
-	// After initialization, the volume is in the `available` state and can be
-	// attached to an instance with the `PUT /v1/volumes/attach` endpoint.
-	// Note that, the size of a volume cannot be changed after creation.
+	// Create a new volume.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -892,18 +783,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#create-volume
 	CreateVolume(ctx context.Context, request CreateVolumeRequest) (*Response[CreateVolumeResponseData], error)
-	// Delete the specified template volume by its UUID.  After this call, the IDs
-	// associated with the template volume are no longer valid.
+	// Delete a template volume by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the template volume to delete.
 	//
 	// Performs: DELETE /v1/volumes/templates/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-template-volume-by-uuid
 	DeleteTemplateVolumeByUUID(ctx context.Context, uuid string) (*Response[DeleteTemplateVolumesResponseData], error)
-	// Delete one or more template volumes by their UUID(s) or name(s).  After this
-	// call, the IDs associated with the template volumes are no longer valid.
+	// Delete template volumes by ID(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -912,20 +800,15 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-template-volumes
 	DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID) (*Response[DeleteTemplateVolumesResponseData], error)
-	// Delete the specified volume by its UUID.  If the volume is still attached
-	// to an instance, the operation fails.  After this call, the IDs associated
-	// with the volume are no longer valid.
+	// Delete a volume by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the volume to delete.
 	//
 	// Performs: DELETE /v1/volumes/{uuid}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-volume-by-uuid
 	DeleteVolumeByUUID(ctx context.Context, uuid string) (*Response[DeleteVolumesResponseData], error)
-	// Delete one or more volumes by their UUID(s) or name(s).  If the volumes are
-	// still attached to an instance, the operation fails.  After this call, the
-	// IDs associated with the volumes are no longer valid.
+	// Delete volumes by ID(s).
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -934,15 +817,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#delete-volumes
 	DeleteVolumes(ctx context.Context, request []NameOrUUID) (*Response[DeleteVolumesResponseData], error)
-	// Detach a volume by UUID from instances.  If no particular instance is
-	// specified the volume is detached from all instances.  The instances from
-	// which to detach must not have the volume mounted.  The API returns an error
-	// for each instance from which it was unable to detach the volume.  If the
-	// volume has been created together with an instance, detaching the volume
-	// will make it persistent (i.e., it survives the deletion of the instance).
+	// Detach a volume by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the volume to detach.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -951,13 +828,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#detach-volume-by-uuid
 	DetachVolumeByUUID(ctx context.Context, uuid string, request DetachVolumeByUUIDRequestBody) (*Response[DetachVolumesResponseData], error)
-	// Detach volumes specified by ID(s) (name or UUID) from instances.  If no
-	// particular instance is specified the volume is detached from all instances.
-	// The instances from which to detach must not have the volumes mounted.  The
-	// API returns an error for each instance from which it was unable to detach
-	// the volume.  If the volume has been created together with an instance,
-	// detaching the volume will make it persistent (i.e., it survives the
-	// deletion of the instance).
+	// Detach volumes from instances.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -966,11 +837,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#detach-volumes
 	DetachVolumes(ctx context.Context, request []DetachVolumesRequestItem) (*Response[DetachVolumesResponseData], error)
-	// Return the current status and the configuration of a particular template
-	// volume by its UUID.
+	// Get a template volume by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the template volume to retrieve.
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
@@ -979,9 +848,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-template-volume-by-uuid
 	GetTemplateVolumeByUUID(ctx context.Context, uuid string, opts GetTemplateVolumeByUUIDOpts) (*Response[GetTemplateVolumesResponseData], error)
-	// Return the current status and the configuration of one or more template
-	// volumes specified by either UUID(s) or name(s).  If no identifier is
-	// provided, all template volumes are returned.
+	// List template volumes.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -993,11 +860,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-template-volumes
 	GetTemplateVolumes(ctx context.Context, request []NameOrUUID, opts GetTemplateVolumesOpts) (*Response[GetTemplateVolumesResponseData], error)
-	// Return the current status and the configuration of a particular volume by
-	// its UUID.
+	// Get a volume by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the volume to retrieve.
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
@@ -1006,9 +871,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volume-by-uuid
 	GetVolumeByUUID(ctx context.Context, uuid string, opts GetVolumeByUUIDOpts) (*Response[GetVolumesResponseData], error)
-	// Return the current status and the configuration of one or more volumes
-	// specified by either UUID(s) or name(s).  If no identifier is provided,
-	// all volumes are returned.
+	// List volumes.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -1020,10 +883,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#get-volumes
 	GetVolumes(ctx context.Context, request []NameOrUUID, opts GetVolumesOpts) (*Response[GetVolumesResponseData], error)
-	// Update the specified template volume by its UUID.
+	// Update a template volume by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the template volume to update.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -1032,7 +894,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-template-volume-by-uuid
 	UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, request UpdateTemplateVolumeByUUIDRequestBody) (*Response[UpdateTemplateVolumesResponseData], error)
-	// Update one or more template volumes specified by either UUID(s) or name(s).
+	// Update template volumes.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -1041,10 +903,9 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-template-volumes
 	UpdateTemplateVolumes(ctx context.Context, request []UpdateTemplateVolumesRequestItem) (*Response[UpdateTemplateVolumesResponseData], error)
-	// Update the specified volume by its UUID.
+	// Update a volume by UUID.
 	//
 	// @param `uuid`
-	// 	The UUID of the volume to update.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -1053,7 +914,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/volumes#update-volume-by-uuid
 	UpdateVolumeByUUID(ctx context.Context, uuid string, request UpdateVolumeByUUIDRequestBody) (*Response[UpdateVolumesResponseData], error)
-	// Update one or more volumes specified by either UUID(s) or name(s).
+	// Update volumes.
 	//
 	// @param `request`
 	// 	The request body for this operation.
@@ -1165,6 +1026,27 @@ func (c *client) clone() *client {
 	return &ccpy
 }
 
+func (c *client) SubscribeAuditEvents(ctx context.Context, opts SubscribeAuditEventsOpts) (<-chan *AuditEvent, error) {
+	requestPath := "/v1/audit"
+
+	query := make(url.Values)
+	for _, v := range opts.Events {
+		query.Add("events", string(v))
+	}
+	for _, v := range opts.Uuid {
+		query.Add("uuid", string(v))
+	}
+	for _, v := range opts.Tags {
+		query.Add("tags", string(v))
+	}
+
+	resp := &Response[AuditEvent]{}
+	if err := doRequest[AuditEvent](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, []streamOption{withHeartbeatTimeout(opts.HeartbeatTimeout)}); err != nil {
+		return nil, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp.Events()
+}
+
 func (c *client) CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Context, uuid string, request CreateAutoscaleConfigurationByServiceGroupUUIDRequest) (*Response[CreateAutoscaleConfigurationsResponseData], error) {
 	requestPath := "/v1/services/{uuid}/autoscale"
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
@@ -1175,7 +1057,7 @@ func (c *client) CreateAutoscaleConfigurationByServiceGroupUUID(ctx context.Cont
 	}
 
 	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1191,7 +1073,7 @@ func (c *client) CreateAutoscaleConfigurationPolicy(ctx context.Context, uuid st
 	}
 
 	resp := &Response[CreateAutoscaleConfigurationPolicyResponseData]{}
-	if err := doRequest[CreateAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[CreateAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1210,7 +1092,7 @@ func (c *client) CreateAutoscaleConfigurations(ctx context.Context, request []Cr
 	}
 
 	resp := &Response[CreateAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[CreateAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1226,7 +1108,7 @@ func (c *client) DeleteAutoscaleConfigurationPolicies(ctx context.Context, uuid 
 	}
 
 	resp := &Response[DeleteAutoscaleConfigurationPolicyResponseData]{}
-	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1238,7 +1120,7 @@ func (c *client) DeleteAutoscaleConfigurationPolicyByName(ctx context.Context, u
 	requestPath = strings.ReplaceAll(requestPath, "{name}", url.PathEscape(string(name)))
 
 	resp := &Response[DeleteAutoscaleConfigurationPolicyResponseData]{}
-	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[DeleteAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1257,7 +1139,7 @@ func (c *client) DeleteAutoscaleConfigurations(ctx context.Context, request []Na
 	}
 
 	resp := &Response[DeleteAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1268,7 +1150,7 @@ func (c *client) DeleteAutoscaleConfigurationsByServiceGroupUUID(ctx context.Con
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[DeleteAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1284,7 +1166,7 @@ func (c *client) GetAutoscaleConfigurationPolicies(ctx context.Context, uuid str
 	}
 
 	resp := &Response[GetAutoscaleConfigurationPolicyResponseData]{}
-	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1296,7 +1178,7 @@ func (c *client) GetAutoscaleConfigurationPolicyByName(ctx context.Context, uuid
 	requestPath = strings.ReplaceAll(requestPath, "{name}", url.PathEscape(string(name)))
 
 	resp := &Response[GetAutoscaleConfigurationPolicyResponseData]{}
-	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[GetAutoscaleConfigurationPolicyResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1323,7 +1205,7 @@ func (c *client) GetAutoscaleConfigurations(ctx context.Context, request []NameO
 	}
 
 	resp := &Response[GetAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1334,7 +1216,7 @@ func (c *client) GetAutoscaleConfigurationsByServiceGroupUUID(ctx context.Contex
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetAutoscaleConfigurationsResponseData]{}
-	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[GetAutoscaleConfigurationsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1349,7 +1231,7 @@ func (c *client) CreateCertificate(ctx context.Context, request CreateCertificat
 	}
 
 	resp := &Response[CreateCertificateResponseData]{}
-	if err := doRequest[CreateCertificateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[CreateCertificateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1360,7 +1242,7 @@ func (c *client) DeleteCertificateByUUID(ctx context.Context, uuid string) (*Res
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteCertificatesResponseData]{}
-	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1379,7 +1261,7 @@ func (c *client) DeleteCertificates(ctx context.Context, request []NameOrUUID) (
 	}
 
 	resp := &Response[DeleteCertificatesResponseData]{}
-	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DeleteCertificatesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1390,7 +1272,7 @@ func (c *client) GetCertificateByUUID(ctx context.Context, uuid string) (*Respon
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetCertificatesResponseData]{}
-	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1432,7 +1314,7 @@ func (c *client) GetCertificates(ctx context.Context, request []NameOrUUID, opts
 	}
 
 	resp := &Response[GetCertificatesResponseData]{}
-	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetCertificatesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1448,7 +1330,7 @@ func (c *client) UpdateCertificateByUUID(ctx context.Context, uuid string, reque
 	}
 
 	resp := &Response[UpdateCertificatesResponseData]{}
-	if err := doRequest[UpdateCertificatesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateCertificatesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1467,7 +1349,7 @@ func (c *client) UpdateCertificates(ctx context.Context, request []UpdateCertifi
 	}
 
 	resp := &Response[UpdateCertificatesResponseData]{}
-	if err := doRequest[UpdateCertificatesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateCertificatesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1494,7 +1376,7 @@ func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTa
 	}
 
 	resp := &Response[GetImagesResponseData]{}
-	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1521,7 +1403,7 @@ func (c *client) GetImages(ctx context.Context, request []GetImagesRequestTagOrD
 	}
 
 	resp := &Response[GetImagesResponseData]{}
-	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1540,7 +1422,7 @@ func (c *client) PinImages(ctx context.Context, request []PinImageRequestItem) (
 	}
 
 	resp := &Response[PinImagesResponseData]{}
-	if err := doRequest[PinImagesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[PinImagesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1559,7 +1441,7 @@ func (c *client) UnpinImages(ctx context.Context, request []UnpinImageRequestIte
 	}
 
 	resp := &Response[UnpinImagesResponseData]{}
-	if err := doRequest[UnpinImagesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UnpinImagesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1578,7 +1460,7 @@ func (c *client) CreateCheckpointInstances(ctx context.Context, request []Create
 	}
 
 	resp := &Response[CreateCheckpointInstancesResponseData]{}
-	if err := doRequest[CreateCheckpointInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[CreateCheckpointInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1593,7 +1475,7 @@ func (c *client) CreateInstance(ctx context.Context, request CreateInstanceReque
 	}
 
 	resp := &Response[CreateInstanceResponseData]{}
-	if err := doRequest[CreateInstanceResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[CreateInstanceResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1612,7 +1494,7 @@ func (c *client) CreateTemplateInstances(ctx context.Context, request []CreateTe
 	}
 
 	resp := &Response[CreateTemplateInstancesResponseData]{}
-	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[CreateTemplateInstancesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1623,7 +1505,7 @@ func (c *client) DeleteCheckpointInstanceByUUID(ctx context.Context, uuid string
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteCheckpointInstancesResponseData]{}
-	if err := doRequest[DeleteCheckpointInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[DeleteCheckpointInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1642,7 +1524,7 @@ func (c *client) DeleteCheckpointInstances(ctx context.Context, request []NameOr
 	}
 
 	resp := &Response[DeleteCheckpointInstancesResponseData]{}
-	if err := doRequest[DeleteCheckpointInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DeleteCheckpointInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1658,7 +1540,7 @@ func (c *client) DeleteInstanceByUUID(ctx context.Context, uuid string, request 
 	}
 
 	resp := &Response[DeleteInstancesResponseData]{}
-	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1677,7 +1559,7 @@ func (c *client) DeleteInstances(ctx context.Context, request []DeleteInstanceRe
 	}
 
 	resp := &Response[DeleteInstancesResponseData]{}
-	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DeleteInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1688,7 +1570,7 @@ func (c *client) DeleteTemplateInstanceByUUID(ctx context.Context, uuid string) 
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteTemplateInstancesResponseData]{}
-	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1707,7 +1589,7 @@ func (c *client) DeleteTemplateInstances(ctx context.Context, request []NameOrUU
 	}
 
 	resp := &Response[DeleteTemplateInstancesResponseData]{}
-	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DeleteTemplateInstancesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1734,7 +1616,7 @@ func (c *client) GetCheckpointHistory(ctx context.Context, request []NameOrUUID,
 	}
 
 	resp := &Response[GetCheckpointHistoryResponseData]{}
-	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1745,7 +1627,7 @@ func (c *client) GetCheckpointHistoryByUUID(ctx context.Context, uuid string) (*
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetCheckpointHistoryResponseData]{}
-	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1761,7 +1643,7 @@ func (c *client) GetCheckpointInstanceByUUID(ctx context.Context, uuid string, o
 	}
 
 	resp := &Response[GetCheckpointInstancesResponseData]{}
-	if err := doRequest[GetCheckpointInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
+	if err := doRequest[GetCheckpointInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1783,9 +1665,6 @@ func (c *client) GetCheckpointInstances(ctx context.Context, request []NameOrUUI
 	if opts.Count != nil {
 		query.Add("count", fmt.Sprintf("%d", *opts.Count))
 	}
-	for _, v := range opts.Tags {
-		query.Add("tags", string(v))
-	}
 	if opts.From != nil {
 		query.Add("from", string(*opts.From))
 	}
@@ -1794,6 +1673,9 @@ func (c *client) GetCheckpointInstances(ctx context.Context, request []NameOrUUI
 	}
 	if opts.Sortby != nil {
 		query.Add("sortby", string(*opts.Sortby))
+	}
+	for _, v := range opts.Tags {
+		query.Add("tags", string(v))
 	}
 
 	var body []byte
@@ -1806,7 +1688,7 @@ func (c *client) GetCheckpointInstances(ctx context.Context, request []NameOrUUI
 	}
 
 	resp := &Response[GetCheckpointInstancesResponseData]{}
-	if err := doRequest[GetCheckpointInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetCheckpointInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1822,7 +1704,7 @@ func (c *client) GetInstanceByUUID(ctx context.Context, uuid string, opts GetIns
 	}
 
 	resp := &Response[GetInstancesResponseData]{}
-	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
+	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1849,7 +1731,7 @@ func (c *client) GetInstanceHistory(ctx context.Context, request []NameOrUUID, o
 	}
 
 	resp := &Response[GetCheckpointHistoryResponseData]{}
-	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1860,7 +1742,7 @@ func (c *client) GetInstanceHistoryByUUID(ctx context.Context, uuid string) (*Re
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetCheckpointHistoryResponseData]{}
-	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[GetCheckpointHistoryResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1893,7 +1775,7 @@ func (c *client) GetInstanceLogs(ctx context.Context, request []GetInstancesLogs
 	}
 
 	resp := &Response[GetInstancesLogsResponseData]{}
-	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1909,7 +1791,7 @@ func (c *client) GetInstanceLogsByUUID(ctx context.Context, uuid string, request
 	}
 
 	resp := &Response[GetInstancesLogsResponseData]{}
-	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetInstancesLogsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1936,7 +1818,7 @@ func (c *client) GetInstanceMetrics(ctx context.Context, request []NameOrUUID, o
 	}
 
 	resp := &Response[GetInstancesMetricsResponseData]{}
-	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1947,7 +1829,7 @@ func (c *client) GetInstanceMetricsByUUID(ctx context.Context, uuid string) (*Re
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[GetInstancesMetricsResponseData]{}
-	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[GetInstancesMetricsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1972,14 +1854,14 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, opts Ge
 	if opts.From != nil {
 		query.Add("from", string(*opts.From))
 	}
-	for _, v := range opts.Tags {
-		query.Add("tags", string(v))
-	}
 	if opts.Order != nil {
 		query.Add("order", string(*opts.Order))
 	}
 	if opts.Sortby != nil {
 		query.Add("sortby", string(*opts.Sortby))
+	}
+	for _, v := range opts.Tags {
+		query.Add("tags", string(v))
 	}
 
 	var body []byte
@@ -1992,7 +1874,7 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, opts Ge
 	}
 
 	resp := &Response[GetInstancesResponseData]{}
-	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2008,7 +1890,7 @@ func (c *client) GetTemplateInstanceByUUID(ctx context.Context, uuid string, opt
 	}
 
 	resp := &Response[GetTemplateInstancesResponseData]{}
-	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
+	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2030,9 +1912,6 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 	if opts.Count != nil {
 		query.Add("count", fmt.Sprintf("%d", *opts.Count))
 	}
-	for _, v := range opts.Tags {
-		query.Add("tags", string(v))
-	}
 	if opts.From != nil {
 		query.Add("from", string(*opts.From))
 	}
@@ -2041,6 +1920,9 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 	}
 	if opts.Sortby != nil {
 		query.Add("sortby", string(*opts.Sortby))
+	}
+	for _, v := range opts.Tags {
+		query.Add("tags", string(v))
 	}
 
 	var body []byte
@@ -2053,7 +1935,7 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 	}
 
 	resp := &Response[GetTemplateInstancesResponseData]{}
-	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2069,7 +1951,7 @@ func (c *client) StartInstanceByUUID(ctx context.Context, uuid string, request S
 	}
 
 	resp := &Response[StartInstancesResponseData]{}
-	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2088,7 +1970,7 @@ func (c *client) StartInstances(ctx context.Context, request []StartInstancesReq
 	}
 
 	resp := &Response[StartInstancesResponseData]{}
-	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[StartInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2104,7 +1986,7 @@ func (c *client) StopInstanceByUUID(ctx context.Context, uuid string, request St
 	}
 
 	resp := &Response[StopInstancesResponseData]{}
-	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2123,7 +2005,7 @@ func (c *client) StopInstances(ctx context.Context, request []StopInstancesReque
 	}
 
 	resp := &Response[StopInstancesResponseData]{}
-	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[StopInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2139,7 +2021,7 @@ func (c *client) SuspendInstanceByUUID(ctx context.Context, uuid string, request
 	}
 
 	resp := &Response[SuspendInstancesResponseData]{}
-	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2158,7 +2040,7 @@ func (c *client) SuspendInstances(ctx context.Context, request []SuspendInstance
 	}
 
 	resp := &Response[SuspendInstancesResponseData]{}
-	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[SuspendInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2174,7 +2056,7 @@ func (c *client) UpdateCheckpointInstanceByUUID(ctx context.Context, uuid string
 	}
 
 	resp := &Response[UpdateCheckpointInstancesResponseData]{}
-	if err := doRequest[UpdateCheckpointInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateCheckpointInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2193,7 +2075,7 @@ func (c *client) UpdateCheckpointInstances(ctx context.Context, request []Update
 	}
 
 	resp := &Response[UpdateCheckpointInstancesResponseData]{}
-	if err := doRequest[UpdateCheckpointInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateCheckpointInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2209,7 +2091,7 @@ func (c *client) UpdateInstanceByUUID(ctx context.Context, uuid string, request 
 	}
 
 	resp := &Response[UpdateInstancesResponseData]{}
-	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2228,7 +2110,7 @@ func (c *client) UpdateInstances(ctx context.Context, request []UpdateInstancesR
 	}
 
 	resp := &Response[UpdateInstancesResponseData]{}
-	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2244,7 +2126,7 @@ func (c *client) UpdateTemplateInstanceByUUID(ctx context.Context, uuid string, 
 	}
 
 	resp := &Response[UpdateTemplateInstancesResponseData]{}
-	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2263,7 +2145,7 @@ func (c *client) UpdateTemplateInstances(ctx context.Context, request []UpdateTe
 	}
 
 	resp := &Response[UpdateTemplateInstancesResponseData]{}
-	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateTemplateInstancesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2279,7 +2161,7 @@ func (c *client) WaitInstanceByUUID(ctx context.Context, uuid string, request Wa
 	}
 
 	resp := &Response[WaitInstancesResponseData]{}
-	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2315,7 +2197,7 @@ func (c *client) WaitInstances(ctx context.Context, request []WaitInstancesReque
 	}
 
 	resp := &Response[WaitInstancesResponseData]{}
-	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[WaitInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2325,7 +2207,7 @@ func (c *client) Healthz(ctx context.Context) (*Response[HealthzResponseData], e
 	requestPath := "/v1/healthz"
 
 	resp := &Response[HealthzResponseData]{}
-	if err := doRequest[HealthzResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[HealthzResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2340,7 +2222,7 @@ func (c *client) CreateServiceGroup(ctx context.Context, request CreateServiceGr
 	}
 
 	resp := &Response[CreateServiceGroupResponseData]{}
-	if err := doRequest[CreateServiceGroupResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[CreateServiceGroupResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2351,7 +2233,7 @@ func (c *client) DeleteServiceGroupByUUID(ctx context.Context, uuid string) (*Re
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteServiceGroupsResponseData]{}
-	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2370,7 +2252,7 @@ func (c *client) DeleteServiceGroups(ctx context.Context, request []NameOrUUID) 
 	}
 
 	resp := &Response[DeleteServiceGroupsResponseData]{}
-	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DeleteServiceGroupsResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2386,7 +2268,7 @@ func (c *client) GetServiceGroupByUUID(ctx context.Context, uuid string, opts Ge
 	}
 
 	resp := &Response[GetServiceGroupsResponseData]{}
-	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
+	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2428,7 +2310,7 @@ func (c *client) GetServiceGroups(ctx context.Context, request []NameOrUUID, opt
 	}
 
 	resp := &Response[GetServiceGroupsResponseData]{}
-	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetServiceGroupsResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2444,7 +2326,7 @@ func (c *client) UpdateServiceGroupByUUID(ctx context.Context, uuid string, requ
 	}
 
 	resp := &Response[UpdateServiceGroupsResponseData]{}
-	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2463,7 +2345,7 @@ func (c *client) UpdateServiceGroups(ctx context.Context, request []UpdateServic
 	}
 
 	resp := &Response[UpdateServiceGroupsResponseData]{}
-	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateServiceGroupsResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2473,7 +2355,7 @@ func (c *client) GetUser(ctx context.Context) (*Response[QuotasResponseData], er
 	requestPath := "/v1/users/quotas"
 
 	resp := &Response[QuotasResponseData]{}
-	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2484,7 +2366,7 @@ func (c *client) GetUserByUUID(ctx context.Context, uuid string) (*Response[Quot
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[QuotasResponseData]{}
-	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2500,7 +2382,7 @@ func (c *client) AttachVolumeByUUID(ctx context.Context, uuid string, request At
 	}
 
 	resp := &Response[AttachVolumesResponseData]{}
-	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2519,7 +2401,7 @@ func (c *client) AttachVolumes(ctx context.Context, request []AttachVolumesReque
 	}
 
 	resp := &Response[AttachVolumesResponseData]{}
-	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[AttachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2535,7 +2417,7 @@ func (c *client) CloneVolumeByUUID(ctx context.Context, uuid string, request Clo
 	}
 
 	resp := &Response[CloneVolumesResponseData]{}
-	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2554,7 +2436,7 @@ func (c *client) CloneVolumes(ctx context.Context, request []CloneVolumesRequest
 	}
 
 	resp := &Response[CloneVolumesResponseData]{}
-	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[CloneVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2573,7 +2455,7 @@ func (c *client) CreateTemplateVolume(ctx context.Context, request []NameOrUUID)
 	}
 
 	resp := &Response[CreateTemplateVolumesResponseData]{}
-	if err := doRequest[CreateTemplateVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[CreateTemplateVolumesResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2588,7 +2470,7 @@ func (c *client) CreateVolume(ctx context.Context, request CreateVolumeRequest) 
 	}
 
 	resp := &Response[CreateVolumeResponseData]{}
-	if err := doRequest[CreateVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[CreateVolumeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2599,7 +2481,7 @@ func (c *client) DeleteTemplateVolumeByUUID(ctx context.Context, uuid string) (*
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteTemplateVolumesResponseData]{}
-	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2618,7 +2500,7 @@ func (c *client) DeleteTemplateVolumes(ctx context.Context, request []NameOrUUID
 	}
 
 	resp := &Response[DeleteTemplateVolumesResponseData]{}
-	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DeleteTemplateVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2629,7 +2511,7 @@ func (c *client) DeleteVolumeByUUID(ctx context.Context, uuid string) (*Response
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[DeleteVolumesResponseData]{}
-	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2648,7 +2530,7 @@ func (c *client) DeleteVolumes(ctx context.Context, request []NameOrUUID) (*Resp
 	}
 
 	resp := &Response[DeleteVolumesResponseData]{}
-	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DeleteVolumesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2664,7 +2546,7 @@ func (c *client) DetachVolumeByUUID(ctx context.Context, uuid string, request De
 	}
 
 	resp := &Response[DetachVolumesResponseData]{}
-	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2683,7 +2565,7 @@ func (c *client) DetachVolumes(ctx context.Context, request []DetachVolumesReque
 	}
 
 	resp := &Response[DetachVolumesResponseData]{}
-	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DetachVolumesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2699,7 +2581,7 @@ func (c *client) GetTemplateVolumeByUUID(ctx context.Context, uuid string, opts 
 	}
 
 	resp := &Response[GetTemplateVolumesResponseData]{}
-	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
+	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2724,14 +2606,14 @@ func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, o
 	if opts.From != nil {
 		query.Add("from", string(*opts.From))
 	}
-	for _, v := range opts.Tags {
-		query.Add("tags", string(v))
-	}
 	if opts.Order != nil {
 		query.Add("order", string(*opts.Order))
 	}
 	if opts.Sortby != nil {
 		query.Add("sortby", string(*opts.Sortby))
+	}
+	for _, v := range opts.Tags {
+		query.Add("tags", string(v))
 	}
 
 	var body []byte
@@ -2744,7 +2626,7 @@ func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, o
 	}
 
 	resp := &Response[GetTemplateVolumesResponseData]{}
-	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetTemplateVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2760,7 +2642,7 @@ func (c *client) GetVolumeByUUID(ctx context.Context, uuid string, opts GetVolum
 	}
 
 	resp := &Response[GetVolumesResponseData]{}
-	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
+	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2785,14 +2667,14 @@ func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, opts GetV
 	if opts.From != nil {
 		query.Add("from", string(*opts.From))
 	}
-	for _, v := range opts.Tags {
-		query.Add("tags", string(v))
-	}
 	if opts.Order != nil {
 		query.Add("order", string(*opts.Order))
 	}
 	if opts.Sortby != nil {
 		query.Add("sortby", string(*opts.Sortby))
+	}
+	for _, v := range opts.Tags {
+		query.Add("tags", string(v))
 	}
 
 	var body []byte
@@ -2805,7 +2687,7 @@ func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, opts GetV
 	}
 
 	resp := &Response[GetVolumesResponseData]{}
-	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[GetVolumesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2821,7 +2703,7 @@ func (c *client) UpdateTemplateVolumeByUUID(ctx context.Context, uuid string, re
 	}
 
 	resp := &Response[UpdateTemplateVolumesResponseData]{}
-	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2840,7 +2722,7 @@ func (c *client) UpdateTemplateVolumes(ctx context.Context, request []UpdateTemp
 	}
 
 	resp := &Response[UpdateTemplateVolumesResponseData]{}
-	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateTemplateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2856,7 +2738,7 @@ func (c *client) UpdateVolumeByUUID(ctx context.Context, uuid string, request Up
 	}
 
 	resp := &Response[UpdateVolumesResponseData]{}
-	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -2875,7 +2757,7 @@ func (c *client) UpdateVolumes(ctx context.Context, request []UpdateVolumesReque
 	}
 
 	resp := &Response[UpdateVolumesResponseData]{}
-	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateVolumesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil

@@ -6,13 +6,31 @@
 
 package platform
 
-// GetAutoscaleConfigurationsOpts holds query-parameter options for [Client.GetAutoscaleConfigurations].
+import "time"
+
+// SubscribeAuditEventsOpts holds options for [Client.SubscribeAuditEvents].
+type SubscribeAuditEventsOpts struct {
+	Events []AuditEventType
+	Uuid   []string
+	Tags   []string
+
+	// HeartbeatTimeout is how long the stream may be silent before the connection
+	// is treated as dead and closed, so the caller reconnects rather than
+	// waiting on a read which will never return.
+	//
+	// What this bounds is the absence of the server's heartbeat, not the
+	// absence of events: a stream with nothing to report is normal. Zero keeps
+	// DefaultStreamHeartbeatTimeout.
+	HeartbeatTimeout time.Duration
+}
+
+// GetAutoscaleConfigurationsOpts holds options for [Client.GetAutoscaleConfigurations].
 type GetAutoscaleConfigurationsOpts struct {
 	Uuid []string
 	Name []string
 }
 
-// GetCertificatesOpts holds query-parameter options for [Client.GetCertificates].
+// GetCertificatesOpts holds options for [Client.GetCertificates].
 type GetCertificatesOpts struct {
 	Uuid    []string
 	Name    []string
@@ -23,53 +41,53 @@ type GetCertificatesOpts struct {
 	Sortby  *PaginationSortBy
 }
 
-// GetImageStoreOpts holds query-parameter options for [Client.GetImageStore].
+// GetImageStoreOpts holds options for [Client.GetImageStore].
 type GetImageStoreOpts struct {
 	Digest *string
 	Tag    *string
 }
 
-// GetImagesOpts holds query-parameter options for [Client.GetImages].
+// GetImagesOpts holds options for [Client.GetImages].
 type GetImagesOpts struct {
 	Digest *string
 	Tag    *string
 }
 
-// GetCheckpointHistoryOpts holds query-parameter options for [Client.GetCheckpointHistory].
+// GetCheckpointHistoryOpts holds options for [Client.GetCheckpointHistory].
 type GetCheckpointHistoryOpts struct {
 	Uuid []string
 	Name []string
 }
 
-// GetCheckpointInstanceByUUIDOpts holds query-parameter options for [Client.GetCheckpointInstanceByUUID].
+// GetCheckpointInstanceByUUIDOpts holds options for [Client.GetCheckpointInstanceByUUID].
 type GetCheckpointInstanceByUUIDOpts struct {
 	Details *bool
 }
 
-// GetCheckpointInstancesOpts holds query-parameter options for [Client.GetCheckpointInstances].
+// GetCheckpointInstancesOpts holds options for [Client.GetCheckpointInstances].
 type GetCheckpointInstancesOpts struct {
 	Uuid    []string
 	Name    []string
 	Details *bool
 	Count   *uint32
-	Tags    []string
 	From    *string
 	Order   *PaginationOrder
 	Sortby  *PaginationSortBy
+	Tags    []string
 }
 
-// GetInstanceByUUIDOpts holds query-parameter options for [Client.GetInstanceByUUID].
+// GetInstanceByUUIDOpts holds options for [Client.GetInstanceByUUID].
 type GetInstanceByUUIDOpts struct {
 	Details *bool
 }
 
-// GetInstanceHistoryOpts holds query-parameter options for [Client.GetInstanceHistory].
+// GetInstanceHistoryOpts holds options for [Client.GetInstanceHistory].
 type GetInstanceHistoryOpts struct {
 	Uuid []string
 	Name []string
 }
 
-// GetInstanceLogsOpts holds query-parameter options for [Client.GetInstanceLogs].
+// GetInstanceLogsOpts holds options for [Client.GetInstanceLogs].
 type GetInstanceLogsOpts struct {
 	Uuid   []string
 	Name   []string
@@ -77,42 +95,42 @@ type GetInstanceLogsOpts struct {
 	Limit  []int64
 }
 
-// GetInstanceMetricsOpts holds query-parameter options for [Client.GetInstanceMetrics].
+// GetInstanceMetricsOpts holds options for [Client.GetInstanceMetrics].
 type GetInstanceMetricsOpts struct {
 	Uuid []string
 	Name []string
 }
 
-// GetInstancesOpts holds query-parameter options for [Client.GetInstances].
+// GetInstancesOpts holds options for [Client.GetInstances].
 type GetInstancesOpts struct {
 	Uuid    []string
 	Name    []string
 	Details *bool
 	Count   *uint32
 	From    *string
-	Tags    []string
 	Order   *PaginationOrder
 	Sortby  *PaginationSortBy
+	Tags    []string
 }
 
-// GetTemplateInstanceByUUIDOpts holds query-parameter options for [Client.GetTemplateInstanceByUUID].
+// GetTemplateInstanceByUUIDOpts holds options for [Client.GetTemplateInstanceByUUID].
 type GetTemplateInstanceByUUIDOpts struct {
 	Details *bool
 }
 
-// GetTemplateInstancesOpts holds query-parameter options for [Client.GetTemplateInstances].
+// GetTemplateInstancesOpts holds options for [Client.GetTemplateInstances].
 type GetTemplateInstancesOpts struct {
 	Uuid    []string
 	Name    []string
 	Details *bool
 	Count   *uint32
-	Tags    []string
 	From    *string
 	Order   *PaginationOrder
 	Sortby  *PaginationSortBy
+	Tags    []string
 }
 
-// WaitInstancesOpts holds query-parameter options for [Client.WaitInstances].
+// WaitInstancesOpts holds options for [Client.WaitInstances].
 type WaitInstancesOpts struct {
 	Uuid      []string
 	Name      []string
@@ -121,12 +139,12 @@ type WaitInstancesOpts struct {
 	TimeoutS  []int64
 }
 
-// GetServiceGroupByUUIDOpts holds query-parameter options for [Client.GetServiceGroupByUUID].
+// GetServiceGroupByUUIDOpts holds options for [Client.GetServiceGroupByUUID].
 type GetServiceGroupByUUIDOpts struct {
 	Details *bool
 }
 
-// GetServiceGroupsOpts holds query-parameter options for [Client.GetServiceGroups].
+// GetServiceGroupsOpts holds options for [Client.GetServiceGroups].
 type GetServiceGroupsOpts struct {
 	Uuid    []string
 	Name    []string
@@ -137,36 +155,36 @@ type GetServiceGroupsOpts struct {
 	Sortby  *PaginationSortBy
 }
 
-// GetTemplateVolumeByUUIDOpts holds query-parameter options for [Client.GetTemplateVolumeByUUID].
+// GetTemplateVolumeByUUIDOpts holds options for [Client.GetTemplateVolumeByUUID].
 type GetTemplateVolumeByUUIDOpts struct {
 	Details *bool
 }
 
-// GetTemplateVolumesOpts holds query-parameter options for [Client.GetTemplateVolumes].
+// GetTemplateVolumesOpts holds options for [Client.GetTemplateVolumes].
 type GetTemplateVolumesOpts struct {
 	Uuid    []string
 	Name    []string
 	Details *bool
 	Count   *uint32
 	From    *string
-	Tags    []string
 	Order   *PaginationOrder
 	Sortby  *PaginationSortBy
+	Tags    []string
 }
 
-// GetVolumeByUUIDOpts holds query-parameter options for [Client.GetVolumeByUUID].
+// GetVolumeByUUIDOpts holds options for [Client.GetVolumeByUUID].
 type GetVolumeByUUIDOpts struct {
 	Details *bool
 }
 
-// GetVolumesOpts holds query-parameter options for [Client.GetVolumes].
+// GetVolumesOpts holds options for [Client.GetVolumes].
 type GetVolumesOpts struct {
 	Uuid    []string
 	Name    []string
 	Details *bool
 	Count   *uint32
 	From    *string
-	Tags    []string
 	Order   *PaginationOrder
 	Sortby  *PaginationSortBy
+	Tags    []string
 }

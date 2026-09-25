@@ -9,7 +9,9 @@ package httpclient
 
 import (
 	"crypto/tls"
+	"net"
 	"net/http"
+	"time"
 )
 
 // HTTPClient interface abstracts a generic HTTP request issuing client.
@@ -23,6 +25,7 @@ type Option func(*options)
 type options struct {
 	insecure  bool
 	userAgent string
+	timeout   time.Duration
 	transport *http.Transport
 }
 
@@ -38,6 +41,13 @@ func WithInsecure() Option {
 func WithUserAgent(ua string) Option {
 	return func(o *options) {
 		o.userAgent = ua
+	}
+}
+
+// WithTimeout sets a deadline on the full exchange, bodies included.
+func WithTimeout(timeout time.Duration) Option {
+	return func(o *options) {
+		o.timeout = timeout
 	}
 }
 
@@ -60,7 +70,23 @@ func NewHTTPClient(opts ...Option) *http.Client {
 
 	base := o.transport
 	if base == nil {
-		base = http.DefaultTransport.(*http.Transport)
+		// TODO: move these hardcoded values to configurable env variables.
+		base = http.DefaultTransport.(*http.Transport).Clone()
+		// Stdlib default is 30s; fail faster on an unreachable peer.
+		// Check guard for wasm which requires DialContext to be unset.
+		// Value is not nil by default on all but the wasm platform.
+		if base.DialContext != nil {
+			base.DialContext = (&net.Dialer{
+				Timeout:   10 * time.Second,
+				KeepAlive: 30 * time.Second,
+			}).DialContext
+		}
+		// Stdlib default is 100; this client talks to many hosts at once.
+		base.MaxIdleConns = 500
+		// Stdlib default is 2; keep more idle connections per host open.
+		base.MaxIdleConnsPerHost = 100
+		// Stops once headers arrive, so a body of any size can stream.
+		base.ResponseHeaderTimeout = 30 * time.Second
 	}
 
 	transport := base.Clone()
@@ -79,7 +105,10 @@ func NewHTTPClient(opts ...Option) *http.Client {
 		}
 	}
 
-	return &http.Client{Transport: rt}
+	return &http.Client{
+		Transport: rt,
+		Timeout:   o.timeout,
+	}
 }
 
 // NewInsecureHTTPClient creates a default Go HTTP client with insecure checks

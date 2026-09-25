@@ -7,15 +7,15 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// The response data for this request.
 type StopInstancesResponseData struct {
-	// The instance(s) which were stopped by the request.
 	Instances []StopInstancesResponseStoppedInstance `json:"instances,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

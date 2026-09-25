@@ -7,8 +7,8 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
@@ -16,19 +16,17 @@ var _ time.Time
 
 // The result of unpinning a single image.
 type UnpinImagesResponseImage struct {
-	// Indicates whether this image was unpinned successfully.
+	// Indicates whether the operation was successful for this item.
 	Status ResponseStatus `json:"status"`
+	// An optional message providing additional information.
+	Message *string `json:"message,omitzero"`
+	// An optional error code.
+	Error *int32 `json:"error,omitzero"`
 	// The UUID of the image.
 	Uuid string `json:"uuid"`
-	// The name of the image.  Only set on success, and only if the image
+	// The name of the image. Only set on success, and only if the image
 	// has a name.
 	Name *string `json:"name,omitzero"`
-	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
-	Message *string `json:"message,omitzero"`
-	// An optional error code providing additional information about the
-	// status.  This field is only set when the status is not `success`.
-	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

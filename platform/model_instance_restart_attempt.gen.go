@@ -7,14 +7,14 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
-// Records the current restart attempt of an instance.
+// Restart attempt information for an instance.
 type InstanceRestartAttempt struct {
 	// Current restart attempt number. This is incremented each time the instance
 	// is restarted automatically by the platform.
