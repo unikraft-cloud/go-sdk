@@ -27,6 +27,8 @@ type options struct {
 	userAgent string
 	timeout   time.Duration
 	transport *http.Transport
+
+	responseHeaderTimeout *time.Duration
 }
 
 // WithInsecure configures the client to skip TLS certificate verification.
@@ -48,6 +50,14 @@ func WithUserAgent(ua string) Option {
 func WithTimeout(timeout time.Duration) Option {
 	return func(o *options) {
 		o.timeout = timeout
+	}
+}
+
+// WithResponseHeaderTimeout sets how long to wait for response headers after
+// the request is fully written.  Zero means no timeout.
+func WithResponseHeaderTimeout(timeout time.Duration) Option {
+	return func(o *options) {
+		o.responseHeaderTimeout = &timeout
 	}
 }
 
@@ -90,6 +100,9 @@ func NewHTTPClient(opts ...Option) *http.Client {
 	}
 
 	transport := base.Clone()
+	if o.responseHeaderTimeout != nil {
+		transport.ResponseHeaderTimeout = *o.responseHeaderTimeout
+	}
 	if o.insecure {
 		if transport.TLSClientConfig == nil {
 			transport.TLSClientConfig = &tls.Config{}
