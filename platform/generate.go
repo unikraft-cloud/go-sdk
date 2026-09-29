@@ -5,4 +5,4 @@
 
 package platform
 
-//go:generate go run -C ../tools/openapi-gen unikraft.com/x/tools/openapi-gen -i ../../platform.yaml -o ../../platform -v package=platform -t ./templates
+//go:generate go run -C ../tools/openapi-gen unikraft.com/x/tools/openapi-gen -i ../../platform.yaml -o ../../platform -v package=platform -t ./templates --namespace-flatten=strip

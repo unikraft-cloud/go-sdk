@@ -1,11 +1,10 @@
 module unikraft.com/cloud/sdk
 
-go 1.26.1
+go 1.27.0
 
 tool unikraft.com/x/tools/openapi-gen
 
 require (
-	github.com/go-json-experiment/json v0.0.0-20260623181947-01eb4420fa68
 	github.com/stretchr/testify v1.11.1
 	unikraft.com/x/joinerrgroup v0.0.0-20260220150535-dbc51abe4158
 	unikraft.com/x/log v0.0.0-20260126094137-ab6e717e5679
@@ -21,7 +20,7 @@ require (
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ProtonMail/go-crypto v1.4.1 // indirect
 	github.com/alecthomas/kong v1.16.1 // indirect
-	github.com/buger/jsonparser v1.1.1 // indirect
+	github.com/buger/jsonparser v1.1.2 // indirect
 	github.com/charmbracelet/colorprofile v0.4.3 // indirect
 	github.com/charmbracelet/ultraviolet v0.0.0-20260812204455-68fa937c71be // indirect
 	github.com/charmbracelet/x/ansi v0.11.8 // indirect

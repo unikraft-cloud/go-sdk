@@ -7,18 +7,24 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
-// Reference to the instance to attach the volume to.
+// An instance a volume is attached to.
 type VolumeInstanceID struct {
-	// The UUID of the instance that the volume is attached to.
+	// The UUID of the instance. This is a unique identifier for the instance
+	// that is generated when the instance is created. The UUID is used to
+	// reference the instance in API calls and can be used to identify the
+	// instance in all API calls that require an instance identifier.
 	Uuid string `json:"uuid"`
-	// The name of the instance that the volume is attached to.
+	// The name of the instance. This is a human-readable name that can be used
+	// to identify the instance. The name must be unique within the context of
+	// your account. If no name is specified, a random name is generated for
+	// you. The name can also be used to identify the instance in API calls.
 	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

@@ -7,8 +7,8 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
@@ -23,7 +23,8 @@ type HealthzResponseData struct {
 	// missing, or which user-defined script failed) is not exposed here.
 	Checks   map[string]HealthState `json:"checks,omitzero"`
 	Versions map[string]string      `json:"versions,omitzero"`
-	License  *DataLicense           `json:"license,omitzero"`
+	// License information (admin only).
+	License *DataLicense `json:"license,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

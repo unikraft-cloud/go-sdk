@@ -1,6 +1,8 @@
 {{template "header"}}
 package {{.Var "package" ""}}
 
+import "time"
+
 {{range .Operations -}}
 {{- $op := .Operation -}}
 {{- $queryParams := list -}}
@@ -9,11 +11,31 @@ package {{.Var "package" ""}}
 {{- $queryParams = append $queryParams .Value -}}
 {{- end -}}
 {{- end -}}
-{{- if $queryParams}}
-// {{$op.OperationID}}Opts holds query-parameter options for [Client.{{$op.OperationID}}].
+{{- $isSSE := false -}}
+{{- if $op.Responses -}}
+{{- $defaultResp := $op.Responses.Default -}}
+{{- if not $defaultResp}}{{- $defaultResp = index ($op.Responses.Map) "200" -}}{{- end -}}
+{{- if and $defaultResp $defaultResp.Value -}}
+{{- if index $defaultResp.Value.Content "text/event-stream"}}{{- $isSSE = true -}}{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- if or $queryParams $isSSE}}
+// {{$op.OperationID}}Opts holds options for [Client.{{$op.OperationID}}].
 type {{$op.OperationID}}Opts struct {
 {{- range $queryParams}}
 	{{pascalcase .Name}} {{if and (not .Required) (not (and .Schema .Schema.Value (eq (getType .Schema.Value) "array")))}}*{{end}}{{paramToGoType .}}
+{{- end}}
+{{- if $isSSE}}
+{{- if $queryParams}}
+{{end}}
+	// HeartbeatTimeout is how long the stream may be silent before the connection
+	// is treated as dead and closed, so the caller reconnects rather than
+	// waiting on a read which will never return.
+	//
+	// What this bounds is the absence of the server's heartbeat, not the
+	// absence of events: a stream with nothing to report is normal. Zero keeps
+	// DefaultStreamHeartbeatTimeout.
+	HeartbeatTimeout time.Duration
 {{- end}}
 }
 

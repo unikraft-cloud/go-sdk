@@ -7,10 +7,9 @@
 package platform
 
 import (
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"fmt"
-
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
 )
 
 // ImageSource is a closed union: exactly one of ImageReference, ImageSpec.
@@ -20,7 +19,6 @@ type ImageSource interface {
 	isImageSource()
 }
 
-// The image as a plain image reference.
 type ImageReference string
 
 func (ImageReference) isImageSource() {}

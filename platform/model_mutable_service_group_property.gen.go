@@ -6,7 +6,7 @@
 
 package platform
 
-// The mutable properties of a service group.
+// Mutable service group properties.
 type MutableServiceGroupProperty string
 
 const (

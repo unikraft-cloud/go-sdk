@@ -7,8 +7,8 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
@@ -25,15 +25,15 @@ type PinImageRequestItem struct {
 	// Optional HTTP headers to send when fetching the image.
 	Headers map[string]string `json:"headers,omitzero"`
 	// Controls when the image is pulled relative to what is already cached on
-	// the node.  If unset, this is inferred from the URL.
+	// the node. If unset, this is inferred from the URL.
 	PullPolicy *PullPolicy `json:"pull_policy,omitzero"`
-	// Number of seconds to wait for the pull to complete.  Required and must
+	// Number of seconds to wait for the pull to complete. Required and must
 	// be non-zero; `-1` waits up to the platform's maximum timeout.
 	TimeoutS int64 `json:"timeout_s"`
 	// Avoid duplicate pulls by merging with any in-flight request for the
-	// same image.  Defaults to `true`.
+	// same image. Defaults to `true`.
 	MergeRequests *bool `json:"merge_requests,omitzero"`
-	// (Optional).  Automatically unpin the image after a period of inactivity.
+	// Automatically unpin the image after a period of inactivity.
 	Autokill *PinImageRequestItemAutokill `json:"autokill,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

@@ -7,15 +7,15 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// The response data for this request.
 type CreateAutoscaleConfigurationsResponseData struct {
-	// The configuration(s) which were created by the request.
 	ServiceGroups []CreateAutoscaleConfigurationsResponseConfigurationsResponse `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

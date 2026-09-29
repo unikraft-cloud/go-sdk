@@ -7,8 +7,8 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
@@ -16,17 +16,25 @@ var _ time.Time
 
 // A single request item to stop an instance.
 type StopInstancesRequestItem struct {
+	// The UUID of the resource.
+	Uuid *string `json:"uuid,omitzero"`
+	// The name of the resource.
+	Name *string `json:"name,omitzero"`
 	// Whether to immediately force stop the instance.
 	Force *bool `json:"force,omitzero"`
-	// Timeout for draining connections in milliseconds.  The instance does not
-	// receive new connections in the draining phase.  The instance is stopped
-	// when the last connection has been closed or the timeout expired.  The
-	// maximum timeout may vary.  Use -1 for the largest possible value.
+	// Timeout for draining connections in milliseconds.
+	// No draining will occur if set to 0. The instance
+	// does not receive new connections in the draining
+	// phase. The instance is stopped when the last
+	// connection has been closed or the timeout expired.
+	// The maximum timeout may vary. Use -1 for the
+	// largest possible value. Ignored if force is set.
 	//
-	// Note: This endpoint does not block.  Use the wait endpoint for the
-	// instance to reach the stopped state.
+	// Note: This endpoint does not block. Use the wait
+	// endpoint for the instance to reach the stopped
+	// state.
 	DrainTimeoutMs *uint64 `json:"drain_timeout_ms,omitzero"`
-	// Whether to perform a quick shutdown.  This flag is
+	// Whether to perform a quick shutdown. This flag is
 	// overridden by force.
 	Quick *bool `json:"quick,omitzero"`
 	// Only stop the instance if it is in this state.
@@ -34,10 +42,6 @@ type StopInstancesRequestItem struct {
 	// If set, forces the VMM to shutdown immediately and generate a coredump.
 	// Can only be used in conjunction with force.
 	Dump *bool `json:"dump,omitzero"`
-	// The UUID of the instance to stop.  Mutually exclusive with name.
-	Uuid *string `json:"uuid,omitzero"`
-	// The name of the instance to stop.  Mutually exclusive with UUID.
-	Name *string `json:"name,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

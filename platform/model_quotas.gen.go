@@ -7,33 +7,29 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// Quotas with per-item response envelope fields merged in.
 type Quotas struct {
+	// Indicates whether the operation was successful for this item.
+	Status *ResponseStatus `json:"status,omitzero"`
+	// An optional message providing additional information.
+	Message *string `json:"message,omitzero"`
+	// An optional error code.
+	Error *int32 `json:"error,omitzero"`
 	// The UUID of the quota.
 	Uuid string `json:"uuid"`
-	// Used quota
+	// Used quota.
 	Used QuotasStats `json:"used"`
-	// Configured quota limits
+	// Configured quota limits.
 	Hard QuotasStats `json:"hard"`
-	// Additional limits
+	// Additional limits.
 	Limits QuotasLimits `json:"limits"`
-	// An optional field representing the status of the request.  This field is
-	// only set when this message object is used as a response message.
-	Status *ResponseStatus `json:"status,omitzero"`
-	// An optional message providing additional information about the status.
-	// This field is only set when this message object is used as a response
-	// message, and is useful when the status is not `success`.
-	Message *string `json:"message,omitzero"`
-	// An optional error code providing additional information about the status.
-	// This field is only set when this message object is used as a response
-	// message, and is useful when the status is not `success`.
-	Error *int32 `json:"error,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

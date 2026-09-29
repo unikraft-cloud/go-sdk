@@ -27,6 +27,11 @@ package {{$.Var "package" ""}}
 {{$schemaName := .SchemaName}}
 {{if $schema.Enum}}
 {{template "model_enum" .}}
+{{else if and (ne (getType $schema) "object") (not $schema.Properties)}}
+{{- /* A named schema of a non-object shape — an array of strings, say — is the
+       type it encodes to under a name of its own, not a struct.  Rendering it
+       as one leaves a union unable to decode the branch that references it. */}}
+{{template "model_defined" .}}
 {{else}}
 {{template "model_simple" (dict "Model" . "FieldUnions" $unions.Fields)}}
 {{end}}

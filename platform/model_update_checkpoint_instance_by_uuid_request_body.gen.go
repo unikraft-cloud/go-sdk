@@ -7,16 +7,16 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// Request body for updating a single checkpoint instance by UUID.
 type UpdateCheckpointInstanceByUUIDRequestBody struct {
-	// (Optional).  A client-provided identifier for tracking this operation in
-	// the response.
+	// A client-provided identifier for tracking this operation in the response.
 	Id *string `json:"id,omitzero"`
 	// The property to modify.
 	Prop MutableCheckpointInstanceProperty `json:"prop"`

@@ -229,7 +229,7 @@ func (c *client) clone() *client {
 	// @param `request`
 	// 	The request body for this operation.
 {{- end}}
-{{- if $queryParams}}
+{{- if or $queryParams $isSSE}}
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
@@ -243,7 +243,7 @@ func (c *client) clone() *client {
 	{{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error)
+{{- if or $queryParams $isSSE}}, opts {{$op.OperationID}}Opts{{end}}) ({{if $isSSE}}<-chan *{{if $responseType}}{{$responseType}}{{else}}any{{end}}{{else}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}]{{end}}, error)
 {{- end}}
 
 {{- define "impl_method"}}
@@ -313,7 +313,7 @@ func (c *client) clone() *client {
 func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- range $pathParams}}, {{camelcase .Name}} {{paramToGoType .}}{{end}}
 {{- if $hasRequestBody}}, request {{if $requestBodyIsArray}}[]{{end}}{{$requestBodyType}}{{end}}
-{{- if $queryParams}}, opts {{$op.OperationID}}Opts{{end}}) ({{if $isSSE}}<-chan {{end}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}], error) {
+{{- if or $queryParams $isSSE}}, opts {{$op.OperationID}}Opts{{end}}) ({{if $isSSE}}<-chan *{{if $responseType}}{{$responseType}}{{else}}any{{end}}{{else}}*Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}]{{end}}, error) {
 	requestPath := "{{$path}}"
 {{- range $pathParams}}
 	requestPath = strings.ReplaceAll(requestPath, "{{"{"}}{{.Name}}{{"}"}}", url.PathEscape(string({{camelcase .Name}})))
@@ -393,8 +393,8 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- end}}
 {{- end}}
 
-	resp := &Response[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}]{}
-	if err := doRequest[{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}](ctx, c.request, http.Method{{title (lower $method)}}, requestPath, {{if $queryParams}}query{{else}}nil{{end}}, {{if $hasRequestBody}}bytes.NewReader(body){{else}}nil{{end}}, resp); err != nil {
+	resp := &Response[{{if and $isSSE $responseType}}{{$responseType}}{{else}}{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}{{end}}]{}
+	if err := doRequest[{{if and $isSSE $responseType}}{{$responseType}}{{else}}{{if $responseHasData}}{{$responseType}}Data{{else}}any{{end}}{{end}}](ctx, c.request, http.Method{{title (lower $method)}}, requestPath, {{if $queryParams}}query{{else}}nil{{end}}, {{if $hasRequestBody}}bytes.NewReader(body){{else}}nil{{end}}, resp, {{if $isSSE}}[]streamOption{withHeartbeatTimeout(opts.HeartbeatTimeout)}{{else}}nil{{end}}); err != nil {
 {{- if $isSSE}}
 		return nil, fmt.Errorf("performing the request: %w", err)
 {{- else}}

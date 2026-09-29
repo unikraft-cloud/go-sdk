@@ -104,10 +104,10 @@ func (sc KernelStopCode) Description() string {
 	case StopCodeReasonEXP:
 		return "assertion error"
 	case StopCodeReasonPGFAULT:
-		switch sc.Errno() {
-		case syscall.ENOMEM:
+		switch Errno(sc.Errno()) {
+		case ErrnoENOMEM:
 			return "out of memory"
-		case syscall.EFAULT, syscall.EPERM:
+		case ErrnoEFAULT, ErrnoEPERM:
 			return "illegal memory access"
 		}
 		return "page fault"

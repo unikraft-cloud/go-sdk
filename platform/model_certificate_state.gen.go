@@ -14,7 +14,7 @@ package platform
 // |-----------|-------------|
 // | `pending` | The certificate request is pending while the certificate is being requested from the certification authority. During this phase any service using this certificate is not available if this is not a renewal. |
 // | `valid`   | The certificate is valid and can be used by your services. |
-// | `error`   | The certificate request failed after multiple attempts. This can happen, for example, if your DNS configuration is not correct, you run into Let’s Encrypt™ quota limits, or the domain validation process failed for some other reason. There won’t be any further automatic attempts. |
+// | `error`   | The certificate request failed after multiple attempts. This can happen, for example, if your DNS configuration is not correct, you run into Let's Encrypt™ quota limits, or the domain validation process failed for some other reason. There won't be any further automatic attempts. |
 type CertificateState string
 
 const (

@@ -7,8 +7,8 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
@@ -18,7 +18,7 @@ var _ time.Time
 type InlineFile struct {
 	// The file path within the image.
 	Path string `json:"path"`
-	// (Optional).  The encoding of the data field.  Defaults to "text".
+	// The encoding of the data field. Defaults to "text".
 	Encoding *InlineDataEncoding `json:"encoding,omitzero"`
 	// The file data, encoded according to the encoding field.
 	Data string `json:"data"`

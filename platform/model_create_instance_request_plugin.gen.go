@@ -7,32 +7,39 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
 // A helper program attached to the instance and reachable over a direct,
-// authenticated HTTP endpoint.  A plugin runs inside the instance next to the
-// main application, loads from its own ROM image, and answers requests that
-// the Unikraft Cloud API forwards to it.
+// authenticated HTTP endpoint. A plugin runs inside the instance next to
+// the main application, loads from its own ROM image, and answers requests
+// that the Unikraft Cloud API forwards to it.
 type CreateInstanceRequestPlugin struct {
-	// The plugin name.  It becomes the `<plugin_name>` segment in the plugin
-	// endpoint (`.../plugins/<plugin_name>/<path>`).  A plugin name has a
+	// The plugin name. It becomes the `<plugin_name>` segment in the plugin
+	// endpoint (`.../plugins/<plugin_name>/<path>`). A plugin name has a
 	// maximum length of 63 characters and contains only letters (`a`-`z`,
 	// `A`-`Z`), digits (`0`-`9`), hyphen (`-`), and underscore (`_`).
 	Name string `json:"name"`
-	// The plugin's ROM image.  The platform loads the image, mounts it at
+	// The plugin's image. The platform loads the image, mounts it at
 	// `/uk/plugins/<plugin_name>`, and runs its `init` program when the plugin
-	// starts.  Accepts either a plain image reference string
+	// starts. Accepts either a plain image reference string
 	// (`"user/myplugin:latest"`) or an object carrying additional pull
 	// configuration (`{"url": "user/myplugin:latest", "pull_policy": "always"}`).
-	Rom ImageSource `json:"rom"`
-	// (Optional).  Arbitrary JSON configuration that the platform passes to the
-	// plugin's `init` program on `STDIN`.  Any JSON value works, including a
-	// string, a number, or an object.
+	// Exactly one of `image` and `rom` must be set.
+	Image ImageSource `json:"image,omitzero"`
+	// The plugin's image, under its former name. The platform still accepts
+	// it and adds a deprecation warning to the response. Exactly one of
+	// `image` and `rom` must be set.
+	//
+	// Deprecated: Use `image` instead.
+	Rom ImageSource `json:"rom,omitzero"`
+	// Arbitrary JSON configuration that the platform passes to the plugin's
+	// `init` program on `STDIN`. Any JSON value works, including a string, a
+	// number, or an object.
 	Config *interface{} `json:"config,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
@@ -47,11 +54,23 @@ func (m *CreateInstanceRequestPlugin) UnmarshalJSON(data []byte) error {
 	// alias shadows the alias' own members of the same name.  An absent member
 	// leaves the current value in place, whereas an explicit null clears it.
 	aux := struct {
-		Rom jsontext.Value `json:"rom,omitzero"`
+		Image jsontext.Value `json:"image,omitzero"`
+		Rom   jsontext.Value `json:"rom,omitzero"`
 		*Alias
 	}{Alias: (*Alias)(m)}
 	if err := json.Unmarshal(data, &aux); err != nil {
 		return err
+	}
+	if len(aux.Image) > 0 {
+		if aux.Image.Kind() == 'n' {
+			m.Image = nil
+		} else {
+			value, err := UnmarshalImageSource(aux.Image)
+			if err != nil {
+				return err
+			}
+			m.Image = value
+		}
 	}
 	if len(aux.Rom) > 0 {
 		if aux.Rom.Kind() == 'n' {

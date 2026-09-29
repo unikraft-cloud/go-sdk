@@ -7,45 +7,41 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// Per-item result for a get autoscale configurations operation.
 type GetAutoscaleConfigurationsResponseServiceGroup struct {
-	// The status of the response.
-	Status ResponseStatus `json:"status"`
-	// The UUID of the service where the configuration was created.
+	// The UUID of the resource.
 	Uuid string `json:"uuid"`
-	// The name of the service where the configuration was created.
+	// The human-readable name of the resource.
 	Name string `json:"name"`
 	// If the autoscale configuration is enabled.
 	Enabled bool `json:"enabled"`
-	// The minimum number of instances to keep running.
-	// Only if enabled is true.
+	// The minimum number of instances to keep running. Only if enabled is true.
 	MinSize *int64 `json:"min_size,omitzero"`
-	// The maximum number of instances to keep running.
-	// Only if enabled is true.
+	// The maximum number of instances to keep running. Only if enabled is true.
 	MaxSize *int64 `json:"max_size,omitzero"`
-	// The warmup time in seconds for new instances.
-	// Only if enabled is true.
+	// The warmup time in seconds for new instances. Only if enabled is true.
 	WarmupTimeMs *int64 `json:"warmup_time_ms,omitzero"`
-	// The cooldown time in seconds for the autoscale configuration.
-	// Only if enabled is true.
+	// The cooldown time in seconds for the autoscale configuration. Only if
+	// enabled is true.
 	CooldownTimeMs *int64 `json:"cooldown_time_ms,omitzero"`
-	// The instance template used for the autoscale configuration.
-	// Only if enabled is true.
+	// The instance template used for the autoscale configuration. Only if
+	// enabled is true.
 	Template *ServiceGroupTemplate `json:"template,omitzero"`
 	// The policies applied to the autoscale configuration.
 	Policies []AutoscalePolicy `json:"policies,omitzero"`
 	// An optional message providing additional information about the status.
-	// This field is useful when the status is not `success`.
 	Message *string `json:"message,omitzero"`
 	// An optional error code providing additional information about the status.
-	// This field is useful when the status is not `success`.
 	Error *int32 `json:"error,omitzero"`
+	// The status of the response.
+	Status ResponseStatus `json:"status"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

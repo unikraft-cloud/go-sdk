@@ -7,10 +7,10 @@ package platform_test
 
 import (
 	"encoding/json"
+	"encoding/json/jsontext"
 	"testing"
 	"time"
 
-	"github.com/go-json-experiment/json/jsontext"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 

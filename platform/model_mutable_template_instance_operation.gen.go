@@ -6,7 +6,7 @@
 
 package platform
 
-// The operations available on a template instance's properties.
+// Mutable template instance operations.
 type MutableTemplateInstanceOperation string
 
 const (

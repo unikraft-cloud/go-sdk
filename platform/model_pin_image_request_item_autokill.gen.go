@@ -7,16 +7,17 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
+// Automatically unpin the image after a period of inactivity.
 type PinImageRequestItemAutokill struct {
 	// Automatically unpin the image after this many milliseconds of
-	// inactivity.  `0` (the default) disables this.
+	// inactivity. `0` (the default) disables this.
 	TimeMs uint64 `json:"time_ms"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

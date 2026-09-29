@@ -28,8 +28,11 @@ type Client interface {
 	// @param `request`
 	// 	The request body for this operation.
 	//
+	// @param `opts`
+	// 	Optional query parameters for this operation.
+	//
 	// Performs: POST /v1/auth/check
-	CheckAuthorization(ctx context.Context, request CheckAuthorizationRequest) (<-chan *Response[CheckAuthorizationResponseData], error)
+	CheckAuthorization(ctx context.Context, request CheckAuthorizationRequest, opts CheckAuthorizationOpts) (<-chan *CheckAuthorizationResponse, error)
 	// Get authorization details for a token.
 	//
 	// Performs: GET /v1/auth
@@ -305,7 +308,7 @@ func (c *client) clone() *client {
 	return &ccpy
 }
 
-func (c *client) CheckAuthorization(ctx context.Context, request CheckAuthorizationRequest) (<-chan *Response[CheckAuthorizationResponseData], error) {
+func (c *client) CheckAuthorization(ctx context.Context, request CheckAuthorizationRequest, opts CheckAuthorizationOpts) (<-chan *CheckAuthorizationResponse, error) {
 	requestPath := "/v1/auth/check"
 
 	body, err := json.Marshal(request)
@@ -313,8 +316,8 @@ func (c *client) CheckAuthorization(ctx context.Context, request CheckAuthorizat
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 
-	resp := &Response[CheckAuthorizationResponseData]{}
-	if err := doRequest[CheckAuthorizationResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	resp := &Response[CheckAuthorizationResponse]{}
+	if err := doRequest[CheckAuthorizationResponse](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, []streamOption{withHeartbeatTimeout(opts.HeartbeatTimeout)}); err != nil {
 		return nil, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp.Events()
@@ -324,7 +327,7 @@ func (c *client) GetAuthorization(ctx context.Context) (*Response[GetAuthorizati
 	requestPath := "/v1/auth"
 
 	resp := &Response[GetAuthorizationResponseData]{}
-	if err := doRequest[GetAuthorizationResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[GetAuthorizationResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -339,7 +342,7 @@ func (c *client) RequestSignin(ctx context.Context, request RequestSigninRequest
 	}
 
 	resp := &Response[RequestSigninResponseData]{}
-	if err := doRequest[RequestSigninResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[RequestSigninResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -357,7 +360,7 @@ func (c *client) ListImages(ctx context.Context, opts ListImagesOpts) (*Response
 	}
 
 	resp := &Response[ListImagesResponseData]{}
-	if err := doRequest[ListImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
+	if err := doRequest[ListImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -367,7 +370,7 @@ func (c *client) ListMetros(ctx context.Context) (*Response[ListMetroResponseDat
 	requestPath := "/v1/metros"
 
 	resp := &Response[ListMetroResponseData]{}
-	if err := doRequest[ListMetroResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[ListMetroResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -382,7 +385,7 @@ func (c *client) NodeActivate(ctx context.Context, request NodeActivateRequest) 
 	}
 
 	resp := &Response[NodeActivateResponseData]{}
-	if err := doRequest[NodeActivateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[NodeActivateResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -397,7 +400,7 @@ func (c *client) NodeDeactivate(ctx context.Context, request NodeDeactivateReque
 	}
 
 	resp := &Response[any]{}
-	if err := doRequest[any](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[any](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -421,7 +424,7 @@ func (c *client) DestroyNode(ctx context.Context, request []NameOrUUID, opts Des
 	}
 
 	resp := &Response[DestroyNodeResponseData]{}
-	if err := doRequest[DestroyNodeResponseData](ctx, c.request, http.MethodDelete, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[DestroyNodeResponseData](ctx, c.request, http.MethodDelete, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -437,7 +440,7 @@ func (c *client) DestroyNodeByUUID(ctx context.Context, uuid string, opts Destro
 	}
 
 	resp := &Response[DestroyNodeResponseData]{}
-	if err := doRequest[DestroyNodeResponseData](ctx, c.request, http.MethodDelete, requestPath, query, nil, resp); err != nil {
+	if err := doRequest[DestroyNodeResponseData](ctx, c.request, http.MethodDelete, requestPath, query, nil, resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -448,7 +451,7 @@ func (c *client) GetNodeByUUID(ctx context.Context, uuid string) (*Response[List
 	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
 
 	resp := &Response[ListNodesResponseData]{}
-	if err := doRequest[ListNodesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[ListNodesResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -464,7 +467,7 @@ func (c *client) ListMachineTypes(ctx context.Context, cloudprovider CloudProvid
 	}
 
 	resp := &Response[ListMachineTypesResponseData]{}
-	if err := doRequest[ListMachineTypesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
+	if err := doRequest[ListMachineTypesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -506,7 +509,7 @@ func (c *client) ListNodes(ctx context.Context, request []NameOrUUID, opts ListN
 	}
 
 	resp := &Response[ListNodesResponseData]{}
-	if err := doRequest[ListNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[ListNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -517,7 +520,7 @@ func (c *client) ListRegions(ctx context.Context, cloudprovider CloudProvider) (
 	requestPath = strings.ReplaceAll(requestPath, "{cloudprovider}", url.PathEscape(string(cloudprovider)))
 
 	resp := &Response[ListRegionsResponseData]{}
-	if err := doRequest[ListRegionsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp); err != nil {
+	if err := doRequest[ListRegionsResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -532,7 +535,7 @@ func (c *client) ProvisionNode(ctx context.Context, request ProvisionNodeRequest
 	}
 
 	resp := &Response[ProvisionNodeResponseData]{}
-	if err := doRequest[ProvisionNodeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[ProvisionNodeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -552,7 +555,7 @@ func (c *client) UpdateNodeByUUID(ctx context.Context, uuid string, request []Up
 	}
 
 	resp := &Response[UpdateNodesResponseData]{}
-	if err := doRequest[UpdateNodesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateNodesResponseData](ctx, c.request, http.MethodPatch, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -582,7 +585,7 @@ func (c *client) UpdateNodes(ctx context.Context, request []NameOrUUID, opts Upd
 	}
 
 	resp := &Response[UpdateNodesResponseData]{}
-	if err := doRequest[UpdateNodesResponseData](ctx, c.request, http.MethodPatch, requestPath, query, bytes.NewReader(body), resp); err != nil {
+	if err := doRequest[UpdateNodesResponseData](ctx, c.request, http.MethodPatch, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -601,7 +604,7 @@ func (c *client) WaitNodeByUUID(ctx context.Context, uuid string, opts WaitNodeB
 	}
 
 	resp := &Response[WaitNodesResponseData]{}
-	if err := doRequest[WaitNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
+	if err := doRequest[WaitNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
@@ -625,7 +628,7 @@ func (c *client) WaitNodes(ctx context.Context, opts WaitNodesOpts) (*Response[W
 	}
 
 	resp := &Response[WaitNodesResponseData]{}
-	if err := doRequest[WaitNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp); err != nil {
+	if err := doRequest[WaitNodesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil

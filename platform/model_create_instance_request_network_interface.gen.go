@@ -7,8 +7,8 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
@@ -26,6 +26,9 @@ type CreateInstanceRequestNetworkInterface struct {
 	// The interface IP address in CIDR notation. Provide it together
 	// with tap_name to bring your own interface.
 	Ip *string `json:"ip,omitzero"`
+	// The interface MAC address. Provide it together with tap_name. Must be
+	// a unicast address outside the platform's address pool.
+	Mac *string `json:"mac,omitzero"`
 	// Whether the guest configures the interface itself. Defaults to true.
 	Autoconfig *bool `json:"autoconfig,omitzero"`
 	// Relay configuration for this interface.

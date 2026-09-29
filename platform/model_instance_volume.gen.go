@@ -7,32 +7,22 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
-// A volume defines a storage which can be attached to the instance.
-//
-// Volumes can be used to store persistent data which should remain available
-// even if the instance is stopped or restarted.
+// A volume defines a storage which can be attached to the instance. Volumes
+// can be used to store persistent data which should remain available even if
+// the instance is stopped or restarted.
 type InstanceVolume struct {
-	// The UUID of the volume.
-	//
-	// This is a unique identifier for the volume that is generated when the
-	// volume is created.  The UUID is used to reference the volume in API calls
-	// and can be used to identify the volume in all API calls that require a
-	// volume identifier.
+	// The UUID of the resource.
 	Uuid string `json:"uuid"`
-	// The name of the volume.
-	//
-	// This is a human-readable name that can be used to identify the volume.
-	// The name must be unique within the context of your account.  The name can
-	// also be used to identify the volume in API calls.
+	// The human-readable name of the resource.
 	Name string `json:"name"`
-	// The mount point of the volume in the instance.  This is the directory in
+	// The mount point of the volume in the instance. This is the directory in
 	// the instance where the volume will be mounted.
 	At string `json:"at"`
 	// Whether the volume is read-only or not.

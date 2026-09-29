@@ -1,10 +1,9 @@
 {{define "model_union" -}}
 {{- $union := .Name -}}
 import (
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"fmt"
-
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
 )
 
 // {{$union}} is a closed union: exactly one of {{join ", " .TypeNames}}.

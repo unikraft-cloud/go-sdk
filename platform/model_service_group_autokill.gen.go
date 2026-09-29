@@ -7,14 +7,14 @@
 package platform
 
 import (
-	"github.com/go-json-experiment/json"
-	"github.com/go-json-experiment/json/jsontext"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"time"
 )
 
 var _ time.Time
 
-// Automatic delete-on-idle configuration for service groups.
+// Autokill configuration for a service group.
 type ServiceGroupAutokill struct {
 	// Time in milliseconds after the service group becomes empty before it is
 	// deleted. A value of 0 disables autokill.

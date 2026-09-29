@@ -7,8 +7,8 @@
 package platform
 
 // The step policy is a type of autoscaling policy that scales the number of
-// instances in a service by a fixed number of instances at each step.
-// It uses a metric to determine when to scale up or down.
+// instances in a service by a fixed number of instances at each step. It uses
+// a metric to determine when to scale up or down.
 type StepPolicyMetric string
 
 const (
