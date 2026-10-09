@@ -1,0 +1,43 @@
+name: sdk-sync-dispatcher
+
+on:
+  pull_request_target:
+    branches:
+      - prod-staging
+    types: [closed]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request_target' && github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  dispatch-sdk-sync:
+    if: github.event.pull_request.merged == true && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch SDK sync to downstream repositories
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+            const repos = [
+              {
+                name: 'unikraft/cli',
+                ref:  'staging',
+              },
+            ];
+            const channel = 'prod-staging';
+
+            for (const repo of repos) {
+              const [owner, repoName] = repo.name.split('/');
+              console.log(`Dispatching SDK sync to ${owner}/${repoName}...`);
+              await github.rest.actions.createWorkflowDispatch({
+                owner,
+                repo: repoName,
+                workflow_id: 'sync-sdk.yaml',
+                ref: repo.ref,
+                inputs: { channel },
+              });
+            }
