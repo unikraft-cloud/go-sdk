@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         ref: prod-stable
 
@@ -23,7 +23,7 @@ jobs:
         git reset --hard prod-staging
 
     - name: Create pull request
-      uses: peter-evans/create-pull-request@v6
+      uses: peter-evans/create-pull-request@v8
       with:
         token: ${{ secrets.GH_PAT }}
         base: prod-stable
