@@ -21,7 +21,7 @@ jobs:
   go:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Login is necessary in order to let individual sub-modules of this
       # repository to be able to cross-reference each other.
@@ -32,7 +32,7 @@ jobs:
 
       - uses: go-task/setup-task@v2
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
 
@@ -46,7 +46,7 @@ jobs:
           } >>"$GITHUB_OUTPUT"
 
       - name: Go caches
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ${{ steps.goenv.outputs.cache }}
