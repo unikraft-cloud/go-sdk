@@ -33,6 +33,11 @@ type InstancePlugin struct {
 	// `init` program on `STDIN`. Any JSON value works, including a string, a
 	// number, or an object.
 	Config *interface{} `json:"config,omitzero"`
+	// The port on the instance's address on which the plugin's API listens.
+	// The platform picks it when the plugin is applied, so it lets a caller
+	// that can reach the instance directly talk to the plugin without going
+	// through the platform API.
+	ApiPort *uint32 `json:"api_port,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
