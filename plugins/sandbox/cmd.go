@@ -9,10 +9,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"runtime/debug"
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/coder/websocket"
 
 	plugin "unikraft.com/cloud/plugins/sandbox"
 	"unikraft.com/cloud/sdk/platform"
@@ -20,11 +21,8 @@ import (
 )
 
 const (
-	pollInterval    = 100 * time.Millisecond
-	pollMaxInterval = 1 * time.Second
-	pollMaxFailures = 3
-	signalTimeout   = 5 * time.Second
-	forgetTimeout   = 10 * time.Second
+	signalTimeout = 5 * time.Second
+	forgetTimeout = 10 * time.Second
 )
 
 const PluginName = plugin.PluginName
@@ -67,12 +65,20 @@ func (t Target) CommandLine(ctx context.Context, cmdline string) *Cmd {
 	return c
 }
 
+// Terminal is the size of the pty a command runs on.
+type Terminal struct {
+	Cols, Rows uint16
+}
+
 type Cmd struct {
 	Args    []string
 	Cmdline string
 
 	Dir string
 	Env map[string]string
+
+	// Terminal runs the command on a pty; nil runs it on pipes.
+	Terminal *Terminal
 
 	Stdin          io.Reader
 	Stdout, Stderr io.Writer
@@ -88,13 +94,13 @@ type Cmd struct {
 	waitCtx  context.Context
 	stopWait context.CancelFunc
 
-	stopStdin context.CancelFunc
-	stdinErr  chan error
-	stdinEOF  *sync.Once
+	conn *websocket.Conn
+
+	stdinErr chan error
+	stdinEOF *sync.Once
 
 	pipeOnce *sync.Once
 
-	logs   *logStream
 	done   chan error
 	closed bool
 
@@ -124,6 +130,9 @@ func (c *Cmd) Start() error {
 	if c.UUID != "" {
 		return errors.New("sandbox: command already started")
 	}
+	if errNoFollow != nil {
+		return errNoFollow
+	}
 
 	log.G(c.ctx).Trace().Msg("executing command")
 
@@ -140,6 +149,17 @@ func (c *Cmd) Start() error {
 		env := c.Env
 		req.Env = &env
 	}
+	if c.Terminal != nil {
+		pty := true
+		req.Pty = &pty
+		// Zero is refused; left out, the plugin's own default stands.
+		if c.Terminal.Cols > 0 {
+			req.Cols = &c.Terminal.Cols
+		}
+		if c.Terminal.Rows > 0 {
+			req.Rows = &c.Terminal.Rows
+		}
+	}
 
 	resp, err := c.target.Client.RunCommand(c.ctx, c.target.Instance, &req, c.target.Opts...)
 	if err != nil {
@@ -152,20 +172,22 @@ func (c *Cmd) Start() error {
 
 	c.waitCtx, c.stopWait = context.WithCancel(context.WithoutCancel(c.ctx))
 
+	c.conn, err = c.attach()
+	if err != nil {
+		// Nobody can follow it, so it is not left running for nobody.
+		c.kill()
+		c.Forget(c.ctx)
+		c.stopWait()
+		c.UUID = ""
+		return err
+	}
+	c.conn.SetReadLimit(wsReadLimit)
+
 	c.stdinErr = make(chan error, 1)
 	c.stdinEOF = new(sync.Once)
 	c.pipeOnce = new(sync.Once)
 	if c.Stdin != nil {
-		feedCtx, cancelFeed := context.WithCancel(c.ctx)
-		c.stopStdin = cancelFeed
-		go (&stdinPump{target: c.target, uuid: c.UUID, eof: c.stdinEOF}).feed(feedCtx, c.Stdin, c.stdinErr)
-	}
-
-	c.logs = &logStream{
-		target: c.target,
-		uuid:   c.UUID,
-		stdout: c.outputTo(c.Stdout),
-		stderr: c.outputTo(c.Stderr),
+		go c.feed()
 	}
 
 	log.G(c.ctx).Trace().
@@ -173,108 +195,8 @@ func (c *Cmd) Start() error {
 		Msg("waiting for command")
 
 	c.done = make(chan error, 1)
-	go c.stream()
+	go c.follow(c.outputTo(c.Stdout), c.outputTo(c.Stderr))
 
-	return nil
-}
-
-func (c *Cmd) stream() {
-	// A panic in an output writer ends this command, not the process.
-	defer func() {
-		r := recover()
-		if r == nil {
-			return
-		}
-		log.G(c.ctx).Warn().
-			Str("cmd", c.UUID).
-			Interface("panic", r).
-			Bytes("stack", debug.Stack()).
-			Msg("command output handler panicked")
-		c.done <- fmt.Errorf("command %s: output handler panicked: %v", c.UUID, r)
-	}()
-
-	ended := make(chan error, 1)
-	go func() {
-		_, err := c.target.Client.WaitForCommand(c.waitCtx, c.target.Instance, c.UUID, c.target.Opts...)
-		ended <- err
-	}()
-
-	poll := pollInterval
-	failures := 0
-	timer := time.NewTimer(poll)
-	defer timer.Stop()
-
-	for {
-		select {
-		case <-c.waitCtx.Done():
-			c.done <- c.waitCtx.Err()
-			return
-
-		case err := <-ended:
-			if err != nil {
-				if c.waitCtx.Err() != nil {
-					c.done <- c.waitCtx.Err()
-					return
-				}
-				c.done <- c.target.apiError("failed waiting for command", err)
-				return
-			}
-			if err := c.logs.drainAll(c.waitCtx); err != nil {
-				c.done <- err
-				return
-			}
-			c.done <- c.exitStatus()
-			return
-
-		case <-timer.C:
-			n, err := c.logs.drainOnce(c.waitCtx)
-			if err != nil {
-				if c.waitCtx.Err() != nil {
-					c.done <- c.waitCtx.Err()
-					return
-				}
-				failures++
-				if failures >= pollMaxFailures {
-					c.done <- err
-					return
-				}
-				log.G(c.ctx).Debug().
-					Err(err).
-					Str("cmd", c.UUID).
-					Int("failures", failures).
-					Msg("failed to fetch logs, retrying")
-				poll = min(poll*2, pollMaxInterval)
-				timer.Reset(poll)
-				continue
-			}
-			failures = 0
-			if n > 0 {
-				poll = pollInterval
-			} else {
-				poll = min(poll*2, pollMaxInterval)
-			}
-			timer.Reset(poll)
-		}
-	}
-}
-
-func (c *Cmd) exitStatus() error {
-	resp, err := c.target.Client.GetCommandByUuid(c.waitCtx, c.target.Instance, c.UUID, c.target.Opts...)
-	if err != nil {
-		return fmt.Errorf("failed to read the exit status of command %s: %w", c.UUID, err)
-	}
-	if resp.Data == nil {
-		return fmt.Errorf("failed to read the exit status of command %s: the %q plugin reported no state for it", c.UUID, c.target.Plugin)
-	}
-
-	c.ExitCode = int(resp.Data.Exitcode)
-	log.G(c.ctx).Trace().
-		Str("cmd", c.UUID).
-		Int("exit_code", c.ExitCode).
-		Msg("command ended")
-	if c.ExitCode != 0 {
-		return &ExitError{UUID: c.UUID, Code: c.ExitCode}
-	}
 	return nil
 }
 
@@ -288,9 +210,6 @@ func (c *Cmd) Wait() error {
 	c.waited = true
 
 	defer c.stop()
-	if c.stopStdin != nil {
-		defer c.stopStdin()
-	}
 
 	cancelled := c.ctx.Done()
 	var expired <-chan time.Time
@@ -352,6 +271,7 @@ func (c *Cmd) awaitEnd(d time.Duration) {
 
 func (c *Cmd) stop() {
 	c.stopWait()
+	_ = c.conn.CloseNow()
 	if !c.closed {
 		<-c.done
 		c.closed = true
@@ -415,11 +335,28 @@ func (c *Cmd) kill() {
 	}
 }
 
+// closeStdin tells the command its input has ended, once.
 func (c *Cmd) closeStdin(ctx context.Context) {
 	if c.Stdin == nil {
 		return
 	}
-	(&stdinPump{target: c.target, uuid: c.UUID, eof: c.stdinEOF}).close(ctx)
+	c.stdinEOF.Do(func() {
+		ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), signalTimeout)
+		defer cancel()
+		if err := c.conn.Write(ctx, websocket.MessageText, []byte(`{"type":"eof"}`)); err != nil {
+			log.G(c.ctx).Debug().Err(err).Str("cmd", c.UUID).Msg("could not close standard input")
+		}
+	})
+}
+
+// Resize tells the command's terminal its new size.
+func (c *Cmd) Resize(cols, rows uint16) error {
+	if c.conn == nil {
+		return errors.New("sandbox: command not started")
+	}
+	// The command's own context: a cancelled write would close the socket.
+	return c.conn.Write(c.waitCtx, websocket.MessageText,
+		fmt.Appendf(nil, `{"type":"resize","cols":%d,"rows":%d}`, cols, rows))
 }
 
 // killed reports a command that did not stop on the interrupt, and that this

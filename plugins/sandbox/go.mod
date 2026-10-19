@@ -3,6 +3,7 @@ module unikraft.com/cloud/sdk/plugins/sandbox
 go 1.27.1
 
 require (
+	github.com/coder/websocket v1.8.15
 	github.com/docker/go-units v0.5.0
 	github.com/stretchr/testify v1.12.1
 	golang.org/x/sys v0.48.0

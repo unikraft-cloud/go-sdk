@@ -8,7 +8,6 @@ package sandbox
 import (
 	"bytes"
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -20,6 +19,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/coder/websocket"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -33,6 +33,7 @@ type mockPlugin struct {
 	mu sync.Mutex
 
 	stdout, stderr []byte
+	more           chan struct{} // closed and replaced whenever there is more output
 
 	exited   chan struct{}
 	exitCode int32
@@ -41,19 +42,20 @@ type mockPlugin struct {
 	run      plugin.RunCommandRequest
 	stdin    []byte
 	stdinEOF bool
+	resizes  [][2]uint16
 
-	// failStdinData is set before the plugin serves anything, so it needs no
-	// lock of its own.
-	failStdinData bool
+	// refuse and drop are set before the plugin serves anything, so they need
+	// no lock of their own: refuse answers the socket with that status, and drop
+	// closes it as the plugin does a command forgotten under it.
+	refuse int
+	drop   string
 
 	signals []int
 	forgot  bool
-
-	badLogs int
 }
 
 func newFakePlugin() *mockPlugin {
-	return &mockPlugin{exited: make(chan struct{})}
+	return &mockPlugin{more: make(chan struct{}), exited: make(chan struct{})}
 }
 
 func (f *mockPlugin) write(stdout, stderr string) {
@@ -61,6 +63,8 @@ func (f *mockPlugin) write(stdout, stderr string) {
 	defer f.mu.Unlock()
 	f.stdout = append(f.stdout, stdout...)
 	f.stderr = append(f.stderr, stderr...)
+	close(f.more)
+	f.more = make(chan struct{})
 }
 
 // exit ends the command once; a later call, as from a SIGKILL after the
@@ -101,6 +105,12 @@ func (f *mockPlugin) stdinSeen() (string, bool) {
 	return string(f.stdin), f.stdinEOF
 }
 
+func (f *mockPlugin) resized() [][2]uint16 {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	return append([][2]uint16(nil), f.resizes...)
+}
+
 func (f *mockPlugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	const prefix = "/v1/instances/inst-1/plugins/sandbox"
 	path := strings.TrimPrefix(r.URL.Path, prefix)
@@ -123,75 +133,26 @@ func (f *mockPlugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		f.mu.Unlock()
 		reply(nil)
 
-	case path == "/commands/cmd-1" && r.Method == http.MethodGet:
-		f.mu.Lock()
-		code := f.exitCode
-		cmdline := f.run.Cmd
-		f.mu.Unlock()
-		reply(plugin.GetCommandData{Uuid: "cmd-1", Cmdline: cmdline, Exitcode: code})
+	case path == "/commands/cmd-1/ws" && f.refuse != 0:
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(f.refuse)
+		fmt.Fprint(w, "<html>\n<head><title>Bad Gateway</title></head>\n<body>openresty</body>\n</html>")
 
-	case path == "/commands/cmd-1/wait":
-		select {
-		case <-f.exited:
-		case <-r.Context().Done():
-			// The client gave up; answering is pointless.
+	case path == "/commands/cmd-1/ws":
+		conn, err := websocket.Accept(w, r, nil)
+		if err != nil {
 			return
 		}
-		reply(nil)
-
-	case path == "/commands/cmd-1" && r.Method == http.MethodGet:
-		f.mu.Lock()
-		code := f.exitCode
-		f.mu.Unlock()
-		reply(plugin.GetCommandData{Uuid: "cmd-1", Exitcode: code})
-
-	case path == "/commands/cmd-1/logs":
-		f.mu.Lock()
-		bad := f.badLogs > 0
-		if bad {
-			f.badLogs--
-		}
-		f.mu.Unlock()
-		if bad {
-			w.Header().Set("Content-Type", "text/html")
-			w.WriteHeader(http.StatusBadGateway)
-			fmt.Fprint(w, "<html>\n<head><title>502 Bad Gateway</title></head>\n<body>openresty</body>\n</html>")
+		defer func() { _ = conn.CloseNow() }()
+		if f.drop != "" {
+			_ = conn.Close(websocket.StatusPolicyViolation, f.drop)
 			return
 		}
 
-		var req plugin.CommandLogsRequest
-		_ = json.NewDecoder(r.Body).Decode(&req)
-
-		f.mu.Lock()
-		out, outAvail := slice(f.stdout, req.Stdout.Offset)
-		errOut, errAvail := slice(f.stderr, req.Stderr.Offset)
-		f.mu.Unlock()
-
-		reply(plugin.CommandLogsData{
-			Stdout:          base64.StdEncoding.EncodeToString(out),
-			Stderr:          base64.StdEncoding.EncodeToString(errOut),
-			StdoutAvailable: outAvail,
-			StderrAvailable: errAvail,
-		})
-
-	case path == "/commands/cmd-1/stdin" && r.Method == http.MethodPost:
-		var req plugin.CommandStdinRequest
-		_ = json.NewDecoder(r.Body).Decode(&req)
-		decoded, _ := base64.StdEncoding.DecodeString(req.Data)
-
-		eof := req.Eof != nil && *req.Eof
-		if f.failStdinData && !eof {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		f.mu.Lock()
-		f.stdin = append(f.stdin, decoded...)
-		if eof {
-			f.stdinEOF = true
-		}
-		f.mu.Unlock()
-		reply(nil)
+		ctx, cancel := context.WithCancel(r.Context())
+		defer cancel()
+		go f.take(ctx, cancel, conn)
+		f.follow(ctx, conn)
 
 	case path == "/commands/cmd-1/signal" && r.Method == http.MethodPost:
 		var req struct {
@@ -213,12 +174,61 @@ func (f *mockPlugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// slice returns what follows offset, and how much there is in total.
-func slice(b []byte, offset uint64) ([]byte, uint64) {
-	if offset > uint64(len(b)) {
-		return nil, uint64(len(b))
+// follow sends the output as it comes, a frame per stream, then the exit.
+func (f *mockPlugin) follow(ctx context.Context, conn *websocket.Conn) {
+	var sentOut, sentErr int
+	for {
+		f.mu.Lock()
+		out, errOut := f.stdout[sentOut:], f.stderr[sentErr:]
+		sentOut, sentErr = len(f.stdout), len(f.stderr)
+		more, dead, code := f.more, f.dead, f.exitCode
+		f.mu.Unlock()
+
+		for _, frame := range [][]byte{append([]byte{1}, out...), append([]byte{2}, errOut...)} {
+			if len(frame) > 1 && conn.Write(ctx, websocket.MessageBinary, frame) != nil {
+				return
+			}
+		}
+		if dead {
+			_ = conn.Write(ctx, websocket.MessageText, fmt.Appendf(nil, `{"event":"exit","exitcode":%d}`, code))
+			_ = conn.Close(websocket.StatusNormalClosure, "")
+			return
+		}
+
+		select {
+		case <-more:
+		case <-f.exited:
+		case <-ctx.Done():
+			return
+		}
 	}
-	return b[offset:], uint64(len(b))
+}
+
+// take records the input and control messages the client sends.
+func (f *mockPlugin) take(ctx context.Context, cancel context.CancelFunc, conn *websocket.Conn) {
+	defer cancel()
+	for {
+		typ, msg, err := conn.Read(ctx)
+		if err != nil {
+			return
+		}
+
+		var control struct {
+			Type       string
+			Cols, Rows uint16
+		}
+		f.mu.Lock()
+		switch {
+		case typ == websocket.MessageBinary:
+			f.stdin = append(f.stdin, msg...)
+		case json.Unmarshal(msg, &control) != nil:
+		case control.Type == "eof":
+			f.stdinEOF = true
+		case control.Type == "resize":
+			f.resizes = append(f.resizes, [2]uint16{control.Cols, control.Rows})
+		}
+		f.mu.Unlock()
+	}
 }
 
 // newTarget serves fake over a test server and returns a Target addressing
@@ -386,32 +396,6 @@ func TestCmdStdin(t *testing.T) {
 
 	seen, eof := fake.stdinSeen()
 	assert.Equal(t, "one\ntwo\n", seen)
-	assert.True(t, eof)
-}
-
-// TestCmdStdinFailureClosesInput pins that standard input that fails part way
-// through still closes the command's input, so that a command reading to EOF
-// is not left waiting on input that will never arrive.
-func TestCmdStdinFailureClosesInput(t *testing.T) {
-	fake := newFakePlugin()
-	fake.failStdinData = true
-	target := newTarget(t, fake)
-
-	cmd := target.Command(t.Context(), "cat")
-	cmd.Stdin = strings.NewReader("never arrives\n")
-	cmd.Stdout = io.Discard
-
-	require.NoError(t, cmd.Start())
-	require.Eventually(t, func() bool {
-		_, eof := fake.stdinSeen()
-		return eof
-	}, 5*time.Second, 10*time.Millisecond)
-	fake.exit(0)
-
-	require.NoError(t, cmd.Wait())
-
-	seen, eof := fake.stdinSeen()
-	assert.Empty(t, seen)
 	assert.True(t, eof)
 }
 
@@ -674,39 +658,63 @@ func TestCmdStartFailure(t *testing.T) {
 	assert.ErrorContains(t, err, `"sandbox"`)
 }
 
-// TestTheLastReadRidesOutAGateway pins that a command which has already ended
-// does not lose its output to a gateway that is still coming back.
-func TestTheLastReadRidesOutAGateway(t *testing.T) {
+// TestACommandNobodyCanFollowIsKilled pins that a command whose socket is
+// refused is killed and forgotten rather than left running unwatched, and that
+// the refusal is said in one line.
+func TestACommandNobodyCanFollowIsKilled(t *testing.T) {
+	for _, tt := range []struct {
+		status int
+		want   string
+	}{
+		{http.StatusBadGateway, `failed to follow command: the "sandbox" plugin answered 502 Bad Gateway`},
+		{http.StatusNotFound, `failed to follow command: the "sandbox" plugin cannot stream commands; update its image`},
+	} {
+		t.Run(http.StatusText(tt.status), func(t *testing.T) {
+			fake := newFakePlugin()
+			fake.refuse = tt.status
+			target := newTarget(t, fake)
+
+			cmd := target.Command(t.Context(), "ls")
+			err := cmd.Start()
+
+			require.Error(t, err)
+			assert.Equal(t, tt.want, err.Error())
+			assert.Equal(t, []int{int(sigKILL)}, fake.sentSignals())
+			assert.True(t, fake.forgotten())
+			assert.ErrorContains(t, cmd.Wait(), "not started", "there is nothing left to wait for")
+		})
+	}
+}
+
+// TestCmdForgottenWhileFollowing pins that a command the plugin stops
+// following ends with the plugin's reason, not an exit status it never had.
+func TestCmdForgottenWhileFollowing(t *testing.T) {
 	fake := newFakePlugin()
-	fake.badLogs = 3
+	fake.drop = "command forgotten"
 	target := newTarget(t, fake)
 
-	fake.write("mounted\n", "")
+	err := target.Command(t.Context(), "sleep", "300").Run()
+
+	require.Error(t, err)
+	assert.Equal(t, "command cmd-1: command forgotten", err.Error())
+}
+
+// TestCmdTakesAWholeFrame pins that the largest frame the plugin sends is read,
+// past the WebSocket library's own default limit.
+func TestCmdTakesAWholeFrame(t *testing.T) {
+	fake := newFakePlugin()
+	target := newTarget(t, fake)
+
+	want := strings.Repeat("x", 64<<10)
+	fake.write(want, "")
 	fake.exit(0)
 
 	var stdout bytes.Buffer
-	cmd := target.Command(t.Context(), "ls", "-d", "/data")
+	cmd := target.Command(t.Context(), "cat", "big")
 	cmd.Stdout = &stdout
 
 	require.NoError(t, cmd.Run())
-	assert.Equal(t, "mounted\n", stdout.String(), "the output survived the gateway")
-}
-
-func TestAGatewayIsNotQuotedBackAtTheUser(t *testing.T) {
-	fake := newFakePlugin()
-	fake.badLogs = 1000
-	target := newTarget(t, fake)
-
-	fake.exit(0)
-
-	cmd := target.Command(t.Context(), "ls")
-	cmd.Stdout = io.Discard
-
-	err := cmd.Run()
-
-	require.Error(t, err)
-	assert.Equal(t, `failed to fetch logs: the "sandbox" plugin answered 502 Bad Gateway`, err.Error())
-	assert.NotContains(t, err.Error(), "html")
+	assert.Equal(t, want, stdout.String())
 }
 
 func TestAStoppedInstanceIsSaidInOneLine(t *testing.T) {
@@ -839,8 +847,10 @@ func TestCmdCancelClosesStdin(t *testing.T) {
 	cancel()
 	require.Error(t, cmd.Wait())
 
-	_, eof := fake.stdinSeen()
-	assert.True(t, eof)
+	assert.Eventually(t, func() bool {
+		_, eof := fake.stdinSeen()
+		return eof
+	}, 5*time.Second, 10*time.Millisecond)
 }
 
 type writerFunc func(p []byte) (int, error)

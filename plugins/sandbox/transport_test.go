@@ -146,3 +146,33 @@ func TestADetachedCommandIsNotWaitedFor(t *testing.T) {
 	assert.Eventually(t, fake.forgotten, 10*time.Second, 20*time.Millisecond,
 		"the instance keeps no record of a command nobody collected")
 }
+
+func TestATerminalReachesTheInstance(t *testing.T) {
+	fake := newFakePlugin()
+	transport := Transport{Target: newTargetServing(t, fake)}
+
+	resize := make(chan shell.WinSize, 1)
+	resize <- shell.WinSize{Cols: 132, Rows: 43}
+
+	done := make(chan error, 1)
+	go func() {
+		_, err := transport.Shell()(t.Context(), shell.Command{
+			Args:     []string{"vi"},
+			Terminal: &shell.Terminal{Size: shell.WinSize{Cols: 120, Rows: 40}, Resize: resize},
+		})
+		done <- err
+	}()
+
+	require.Eventually(t, func() bool { return len(fake.resized()) > 0 }, 5*time.Second, 10*time.Millisecond,
+		"the window's new size reached the command's terminal")
+	fake.exit(0)
+	require.NoError(t, <-done)
+
+	ran := fake.started()
+	require.NotNil(t, ran.Pty)
+	assert.True(t, *ran.Pty)
+	require.NotNil(t, ran.Cols)
+	require.NotNil(t, ran.Rows)
+	assert.Equal(t, [2]uint16{120, 40}, [2]uint16{*ran.Cols, *ran.Rows}, "the terminal starts at the size it has here")
+	assert.Equal(t, [][2]uint16{{132, 43}}, fake.resized())
+}
