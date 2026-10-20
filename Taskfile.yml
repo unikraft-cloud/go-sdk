@@ -5,6 +5,11 @@ includes:
   go:
     taskfile: https://github.com/unikraft-cloud/x.git//Taskfile.go.yml?ref=prod-staging
 
+  # The build client is a module of its own, so its checks run in its directory.
+  build:
+    taskfile: https://github.com/unikraft-cloud/x.git//Taskfile.go.yml?ref=prod-staging
+    dir: ./build
+
 vars:
   go_bin:
     ref: .go_bin | default "go"
@@ -26,6 +31,8 @@ tasks:
       vars: { spec: platform }
     - task: generate:spec
       vars: { spec: controlplane }
+    - task: generate:spec
+      vars: { spec: build }
     - task: fmt
 
   generate:spec:
@@ -58,6 +65,7 @@ tasks:
     desc: Run unit tests.
     cmds:
     - task: go:test
+    - task: build:test
 
   clean:
     desc: Remove build artifacts.
@@ -68,9 +76,11 @@ tasks:
 
   ci/check:
   - task: go:ci/check
+  - task: build:ci/check
 
   ci/test:
   - task: go:ci/test
+  - task: build:ci/test
 
   ci/generate:
     desc: "Tasks for CI generate job: check the SDK is in sync with the specifications"
