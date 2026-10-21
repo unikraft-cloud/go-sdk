@@ -160,7 +160,9 @@ type Builder struct {
 	// The name of the builder. Empty means `default`.
 	Name *string `json:"name,omitempty"`
 
-	// The buildkit image the builder boots. Defaults to the service's.
+	// The buildkit image the builder boots. Defaults to the service's. An
+	// existing builder matches it by repository, and by registry, tag or
+	// digest when both name one.
 	Image *string `json:"image,omitempty"`
 
 	// The vCPUs of the builder.
@@ -172,7 +174,7 @@ type Builder struct {
 	// The size of the builder's cache volume, in MiB.
 	CacheMb *int64 `json:"cache_mb,omitempty"`
 
-	// Delete the builder once it has been idle for a while.
+	// Delete the builder once it has been idle for a while. Not supported yet.
 	Autokill *BuilderAutokill `json:"autokill,omitempty"`
 }
 
@@ -188,7 +190,8 @@ type CreateBuildRequest struct {
 	// The Kraftfile to build. Without one, the build uses a Kraftfile with
 	// `runtime: base-compat:latest` and `rootfs: ./Dockerfile`, so its rootfs
 	// is `contexts.context` built with the file `Dockerfile`, or with the one
-	// that `contexts.dockerfile` gives.
+	// that `contexts.dockerfile` gives. A service whose metro boots
+	// kernel-less images with its own kernel leaves the runtime out.
 	Kraftfile Kraftfile `json:"kraftfile,omitempty"`
 
 	// The contexts to build from.
@@ -208,8 +211,7 @@ type CreateBuildRequest struct {
 	// Ignore the builder's cache, like `--no-cache`.
 	NoCache *bool `json:"no_cache,omitempty"`
 
-	// The builder to run on. Defaults to the one named `default`. Not
-	// supported yet.
+	// The builder to run on. Defaults to the one named `default`.
 	Builder *Builder `json:"builder,omitempty"`
 
 	// The secrets the build can mount, by ID.
