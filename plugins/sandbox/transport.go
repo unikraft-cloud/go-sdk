@@ -62,9 +62,27 @@ func (t Transport) Exec(ctx context.Context, sc shell.Command) (int, error) {
 	cmd.Stderr = streams.Stderr
 
 	cmd.WaitDelay = t.waitDelay(detach)
+	if sc.Terminal != nil {
+		cmd.Terminal = &Terminal{Cols: uint16(sc.Terminal.Size.Cols), Rows: uint16(sc.Terminal.Size.Rows)}
+	}
 
 	if err := cmd.Start(); err != nil {
 		return 0, err
+	}
+
+	if sc.Terminal != nil {
+		go func() {
+			for {
+				select {
+				case size := <-sc.Terminal.Resize:
+					if cmd.Resize(uint16(size.Cols), uint16(size.Rows)) != nil {
+						return
+					}
+				case <-ctx.Done():
+					return
+				}
+			}
+		}()
 	}
 
 	done := make(chan error, 1)
@@ -90,7 +108,12 @@ func (t Transport) Exec(ctx context.Context, sc shell.Command) (int, error) {
 		case ctx.Err() == nil:
 			return 0, err
 		default:
-			fmt.Fprintln(streams.Stderr, err)
+			// A terminal is still raw while the command has it.
+			end := "\n"
+			if sc.Terminal != nil {
+				end = "\r\n"
+			}
+			fmt.Fprint(streams.Stderr, err, end)
 			return shell.StatusInterrupted, nil
 		}
 	}
