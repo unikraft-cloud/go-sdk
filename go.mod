@@ -5,7 +5,9 @@ go 1.27.0
 tool unikraft.com/x/tools/openapi-gen
 
 require (
+	github.com/docker/go-units v0.5.0
 	github.com/stretchr/testify v1.11.1
+	github.com/unikraft/go-cpio v0.0.0-20260415131742-4f1984ca41f3
 	unikraft.com/x/joinerrgroup v0.0.0-20260220150535-dbc51abe4158
 	unikraft.com/x/log v0.0.0-20260126094137-ab6e717e5679
 	unikraft.com/x/ptr v0.0.0-20260126094137-ab6e717e5679
