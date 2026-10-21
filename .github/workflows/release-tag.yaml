@@ -1,0 +1,61 @@
+name: release-tag
+
+on:
+  push:
+    branches:
+    - prod-staging
+    - prod-stable
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+env:
+  GOPRIVATE: github.com/unikraft-cloud/x
+  TASK_X_REMOTE_TASKFILES: 1
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GH_PAT }}
+
+    - name: Fetch all tags
+      shell: bash
+      run: git fetch --force --tags
+
+    - name: Login to GitHub
+      shell: bash
+      run: |
+        git config --global url."https://${{ secrets.GH_PAT }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+        git config user.name "Unikraft Bot"
+        git config user.email "monkey@unikraft.com"
+
+    - uses: go-task/setup-task@v2
+
+    - uses: actions/setup-go@v5
+      with:
+        go-version-file: go.mod
+
+    - name: Tag next version
+      shell: bash
+      run: |
+        # Without --trusted-hosts, task prints its trust prompt to stdout on a fresh checkout.
+        if [[ "${{ github.ref }}" == "refs/heads/prod-stable" ]]; then
+          VERSION=$(task --yes --trusted-hosts github.com next-stable)
+        else
+          VERSION=$(task --yes --trusted-hosts github.com next-staging)
+        fi
+
+        if [[ ! "${VERSION}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-staging\.[0-9]+)?$ ]]; then
+          echo "Unexpected version: ${VERSION}" >&2
+          exit 1
+        fi
+
+        git tag -a "${VERSION}" -m "${VERSION}"
+        git push origin "${VERSION}"
