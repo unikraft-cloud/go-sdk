@@ -6,18 +6,10 @@
 package sandbox
 
 import (
-	"context"
 	"errors"
 	"fmt"
-	"net/http"
-
-	"github.com/coder/websocket"
 )
 
 // A browser's WebSocket sends no Authorization header, so nothing is started
 // that could not be followed.
 var errNoFollow = fmt.Errorf("sandbox: commands cannot be followed from a browser, its WebSocket carries no credentials: %w", errors.ErrUnsupported)
-
-func dial(context.Context, *http.Request, *http.Client) (*websocket.Conn, *http.Response, error) {
-	return nil, nil, errNoFollow
-}

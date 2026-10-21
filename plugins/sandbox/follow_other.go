@@ -7,16 +7,5 @@
 
 package sandbox
 
-import (
-	"context"
-	"net/http"
-
-	"github.com/coder/websocket"
-)
-
 // errNoFollow is why no command can be followed from here; nil where one can.
 var errNoFollow error
-
-func dial(ctx context.Context, req *http.Request, client *http.Client) (*websocket.Conn, *http.Response, error) {
-	return websocket.Dial(ctx, req.URL.String(), &websocket.DialOptions{HTTPClient: client, HTTPHeader: req.Header})
-}

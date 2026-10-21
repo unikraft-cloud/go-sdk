@@ -10,8 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net/http"
-	"net/url"
 	"runtime/debug"
 
 	"github.com/coder/websocket"
@@ -29,24 +27,17 @@ const (
 
 // attach opens the socket that follows the command from its first byte.
 func (c *Cmd) attach() (*websocket.Conn, error) {
-	req, client, err := c.target.Client.NewRequest(c.ctx, c.target.Instance, http.MethodGet,
-		"/commands/"+url.PathEscape(c.UUID)+"/ws", nil, c.target.Opts...)
-	if err != nil {
-		return nil, err
+	conn, err := c.target.Client.FollowCommand(c.ctx, c.target.Instance, c.UUID, nil, c.target.Opts...)
+	if err == nil {
+		return conn, nil
 	}
 
-	conn, resp, err := dial(c.ctx, req, client)
-	switch {
-	case err == nil:
-		return conn, nil
-	case resp == nil:
-		return nil, c.target.apiError("failed to follow command", err)
-	case resp.StatusCode == http.StatusNotFound:
-		// It was started a moment ago, so the plugin is there but predates the socket.
+	// It was started a moment ago, so the plugin is there but predates the socket.
+	if apiErr, ok := plugin.GetAPIError(err); ok && apiErr.IsNotFound() {
 		return nil, fmt.Errorf("failed to follow command: the %q plugin cannot stream commands; update its image", c.target.Plugin)
-	default:
-		return nil, c.target.apiError("failed to follow command", &plugin.APIError{StatusCode: resp.StatusCode})
 	}
+
+	return nil, c.target.apiError("failed to follow command", err)
 }
 
 // follow delivers the command's output as the socket brings it, then its end.
