@@ -164,6 +164,18 @@ type Client interface {
 	//
 	// Performs: POST /v1/nodes
 	ProvisionNode(ctx context.Context, request ProvisionNodeRequest) (*Response[ProvisionNodeResponseData], error)
+	// Register a node.
+	//
+	// Creates the record of a node that an operator or a provisioner runs,
+	// and returns a single-use activation token for it.  The node activates
+	// with this token and takes over the record, so the record keeps the API
+	// endpoint given here.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// Performs: POST /v1/nodes/register
+	RegisterNode(ctx context.Context, request RegisterNodeRequest) (*Response[RegisterNodeResponseData], error)
 	// Update a node by its UUID.
 	//
 	// Updates mutable properties of a node such as tags, delete lock,
@@ -536,6 +548,21 @@ func (c *client) ProvisionNode(ctx context.Context, request ProvisionNodeRequest
 
 	resp := &Response[ProvisionNodeResponseData]{}
 	if err := doRequest[ProvisionNodeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
+		return resp, fmt.Errorf("performing the request: %w", err)
+	}
+	return resp, nil
+}
+
+func (c *client) RegisterNode(ctx context.Context, request RegisterNodeRequest) (*Response[RegisterNodeResponseData], error) {
+	requestPath := "/v1/nodes/register"
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[RegisterNodeResponseData]{}
+	if err := doRequest[RegisterNodeResponseData](ctx, c.request, http.MethodPost, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, fmt.Errorf("performing the request: %w", err)
 	}
 	return resp, nil
