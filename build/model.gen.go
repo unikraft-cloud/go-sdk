@@ -187,11 +187,10 @@ type BuilderAutokill struct {
 
 // CreateBuildRequest is the request message for creating a build.
 type CreateBuildRequest struct {
-	// The Kraftfile to build. Without one, the build uses a Kraftfile with
-	// `runtime: base-compat:latest` and `rootfs: ./Dockerfile`, so its rootfs
-	// is `contexts.context` built with the file `Dockerfile`, or with the one
-	// that `contexts.dockerfile` gives. A service whose metro boots
-	// kernel-less images with its own kernel leaves the runtime out.
+	// The Kraftfile to build. Without one, the build is the kernel-less image
+	// of `contexts.context` built with the file `Dockerfile`, or with the one
+	// that `contexts.dockerfile` gives, for x86_64 unless `platforms` names
+	// others.
 	Kraftfile Kraftfile `json:"kraftfile,omitempty"`
 
 	// The contexts to build from.
