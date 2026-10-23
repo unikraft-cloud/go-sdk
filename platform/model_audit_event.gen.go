@@ -20,12 +20,14 @@ type AuditEvent struct {
 	Type AuditEventType `json:"type"`
 	// When the event was raised.
 	Timestamp time.Time `json:"timestamp"`
-	// The object the event is about.
-	Object AuditObject `json:"object"`
+	// The object the event is about. Absent on `gap`, which names no object.
+	Object *AuditObject `json:"object,omitzero"`
 	// The operation the event belongs to.
 	Attribution *AuditAttribution `json:"attribution,omitzero"`
 	// The event payload. Its fields depend on `type`.
 	Data *AuditEventData `json:"data,omitzero"`
+	// How many events were lost. Only on `gap`.
+	Dropped *uint64 `json:"dropped,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

@@ -17,4 +17,5 @@ type AuditEventType string
 const (
 	AuditEventTypeVmStateChange AuditEventType = "vm.state_change"
 	AuditEventTypeVmStartFailed AuditEventType = "vm.start_failed"
+	AuditEventTypeGap           AuditEventType = "gap"
 )

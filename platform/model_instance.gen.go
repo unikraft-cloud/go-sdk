@@ -80,6 +80,19 @@ type Instance struct {
 	UptimeMs *uint64 `json:"uptime_ms,omitzero"`
 	// Time when the instance will be permanently deleted (for deleted instances).
 	RetainedUntil *time.Time `json:"retained_until,omitzero"`
+	// The time taken for the start prerequisites to be fulfilled, measured in
+	// microseconds from when the instance start was requested. Prerequisites
+	// are the resources the instance needs before its VM can be launched: the
+	// kernel and image being available locally, volumes being mounted, and a
+	// template being ready to resume from.
+	// Not used for template instances.
+	StartPrereqTimeUs *uint64 `json:"start_prereq_time_us,omitzero"`
+	// (Developer-only). The time taken between the start being requested and
+	// the moment the VMM (Virtual Machine Monitor) process is spawned, measured
+	// in microseconds. This field is primarily used for debugging and
+	// performance analysis purposes.
+	// Not used for template instances.
+	VmmPrestartTimeUs *uint64 `json:"vmm_prestart_time_us,omitzero"`
 	// (Developer-only). The time taken between the main controller and the
 	// beginning of execution of the VMM (Virtual Machine Monitor) measured in
 	// microseconds. This field is primarily used for debugging and performance
@@ -116,8 +129,14 @@ type Instance struct {
 	// instance to become operationally ready.
 	// Not used for template instances.
 	NetTimeUs *uint64 `json:"net_time_us,omitzero"`
-	// Template creation time in microseconds.
+	// The time taken for the instance to reach the template state, measured in
+	// microseconds from when the template was requested.
+	// Only used for template instances.
 	TemplateTimeUs *uint64 `json:"template_time_us,omitzero"`
+	// The time taken for the instance to reach the checkpoint state, measured
+	// in microseconds from when the checkpoint was requested.
+	// Only used for checkpoint instances.
+	CheckpointTimeUs *uint64 `json:"checkpoint_time_us,omitzero"`
 	// The instance stop reason.
 	//
 	// Provides reason as to why an instance is stopped or in the process of
