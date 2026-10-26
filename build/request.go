@@ -89,3 +89,33 @@ func KraftfileObjectOf(v any) (KraftfileObject, error) {
 func Image(ref string) BuildOutput {
 	return BuildOutput{Image: new(ref)}
 }
+
+// Volume returns the output that imports the build into the volume name; not supported yet.
+func Volume(name string) BuildOutput {
+	return BuildOutput{Volume: new(name)}
+}
+
+// SessionSource returns the directory that the caller's session serves under name.
+func SessionSource(name string) Source {
+	return Source{Session: new(name)}
+}
+
+// SecretValue returns a secret whose value is sent in the request.
+func SecretValue(value string) Secret {
+	return Secret{Value: new(value)}
+}
+
+// SessionSecret returns the secret that the caller's session serves under id.
+func SessionSecret(id string) Secret {
+	return Secret{Session: new(id)}
+}
+
+// Credentials returns a registry login with username and password.
+func Credentials(username, password string) Registry {
+	return Registry{Username: new(username), Password: new(password)}
+}
+
+// SessionRegistry returns a registry login that the caller's session answers for.
+func SessionRegistry() Registry {
+	return Registry{Session: new(true)}
+}
