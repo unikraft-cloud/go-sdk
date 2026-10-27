@@ -331,10 +331,16 @@ func (c *Cmd) Wait() error {
 
 		case err := <-c.done:
 			c.closed = true
-			// However it ended, the instance need not keep its record.
-			c.Forget(c.ctx)
 			if _, exited := errors.AsType[*ExitError](err); err == nil || exited {
+				// However it ended, the instance need not keep its record.
+				c.Forget(c.ctx)
 				return err
+			}
+			if err := c.forget(c.ctx); err != nil {
+				log.G(c.ctx).Warn().
+					Err(c.target.apiError("failed to drop the command", err)).
+					Str("cmd", c.UUID).
+					Msg("command may still be running")
 			}
 			if c.ctx.Err() != nil {
 				return c.ctx.Err()
@@ -378,17 +384,22 @@ func (c *Cmd) Run() error {
 // finished command says so. It is not an error worth reporting: the record is
 // the instance's, and it outliving the command harms nothing here.
 func (c *Cmd) Forget(ctx context.Context) {
+	if err := c.forget(ctx); err != nil {
+		log.G(ctx).Debug().Err(err).Str("cmd", c.UUID).Msg("could not drop the command record")
+	}
+}
+
+func (c *Cmd) forget(ctx context.Context) error {
 	if c.UUID == "" || c.forgotten {
-		return
+		return nil
 	}
 	c.forgotten = true
 
 	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), forgetTimeout)
 	defer cancel()
 
-	if _, err := c.target.Client.DeleteCommandByUuid(ctx, c.target.Instance, c.UUID, c.target.Opts...); err != nil {
-		log.G(ctx).Debug().Err(err).Str("cmd", c.UUID).Msg("could not drop the command record")
-	}
+	_, err := c.target.Client.DeleteCommandByUuid(ctx, c.target.Instance, c.UUID, c.target.Opts...)
+	return err
 }
 
 func (c *Cmd) Signal(ctx context.Context, sig syscall.Signal) error {
