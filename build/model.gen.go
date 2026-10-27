@@ -58,6 +58,10 @@ type Build struct {
 	// their credentials. Absent when the request has none.
 	Registries []string `json:"registries,omitempty"`
 
+	// The outputs of the request, where the build goes. Absent for a build
+	// from before the service kept its requests.
+	Output []BuildOutput `json:"output,omitempty"`
+
 	// The path to attach the build's session at. Only present while the build
 	// is `waiting` for it.
 	Session *string `json:"session,omitempty"`
@@ -142,8 +146,9 @@ type BuildOutput struct {
 	// platform.
 	Volume *string `json:"volume,omitempty"`
 
-	// The name of the metro of `volume`, only needed when it is not the metro
-	// of the service. Only valid with `volume`.
+	// The metro of `volume`, only needed when it is not the metro of the
+	// service: the name of a metro of Unikraft Cloud, or the https URL of the
+	// API of any other metro. Only valid with `volume`.
 	Metro *string `json:"metro,omitempty"`
 }
 
