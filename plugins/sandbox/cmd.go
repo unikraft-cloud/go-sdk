@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/http"
 	"runtime/debug"
 	"sync"
 	"syscall"
@@ -25,6 +26,7 @@ const (
 	pollMaxFailures = 3
 	signalTimeout   = 5 * time.Second
 	forgetTimeout   = 10 * time.Second
+	waitRound       = 25 * time.Second
 )
 
 const PluginName = plugin.PluginName
@@ -195,8 +197,14 @@ func (c *Cmd) stream() {
 
 	ended := make(chan error, 1)
 	go func() {
-		_, err := c.target.Client.WaitForCommand(c.waitCtx, c.target.Instance, c.UUID, c.target.Opts...)
-		ended <- err
+		req := plugin.CommandWaitTimeoutRequest{TimeoutS: waitRound.Seconds()}
+		for {
+			_, err := c.target.Client.WaitForCommandWithTimeout(c.waitCtx, c.target.Instance, c.UUID, &req, c.target.Opts...)
+			if !plugin.ErrorContains(err, http.StatusRequestTimeout) {
+				ended <- err
+				return
+			}
+		}
 	}()
 
 	poll := pollInterval
