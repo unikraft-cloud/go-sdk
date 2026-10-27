@@ -322,6 +322,8 @@ type Instance struct {
 	Nameserver *string `json:"nameserver,omitzero"`
 	// The type of virtual machine used to run the instance.
 	Type InstanceType `json:"type"`
+	// The source this instance was cloned from, while the source exists.
+	CloneSource *InstanceCloneSource `json:"clone_source,omitzero"`
 	// GPUs attached to the instance. Only present for instances of type
 	// `full`.
 	Gpus []InstanceGpu `json:"gpus,omitzero"`
