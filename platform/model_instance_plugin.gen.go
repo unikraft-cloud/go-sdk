@@ -38,6 +38,9 @@ type InstancePlugin struct {
 	// that can reach the instance directly talk to the plugin without going
 	// through the platform API.
 	ApiPort *uint32 `json:"api_port,omitzero"`
+	// The plugin's authorization method. Only present when it is not the
+	// default (`userdb`).
+	Authorization *InstancePluginAuthorization `json:"authorization,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

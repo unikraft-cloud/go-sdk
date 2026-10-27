@@ -49,7 +49,10 @@ func (c *Client) CancelBuild(ctx context.Context, id string) (*Build, error) {
 // at once as the service allows. A request that uses a part of the full build
 // API this service does not support yet is answered with `400` and the code
 // `unsupported`. A tenant that already has as many builds running or waiting
-// as it may is answered with `429` and the code `too_many_builds`.
+// as it may is answered with `429` and the code `too_many_builds`. A request
+// whose `hints.dedupe` names a running or succeeded build with the same
+// `output` is answered with `200` and that build, and starts nothing. With
+// other `output`, the new build pushes the image of a succeeded build.
 func (c *Client) CreateBuild(ctx context.Context, body CreateBuildRequest) (*Build, error) {
 	path := "/v1/builds"
 
