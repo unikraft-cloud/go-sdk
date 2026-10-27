@@ -7,10 +7,14 @@
 package platform
 
 // The mutable properties of a template instance that can be updated.
+// Setting `image`, `roms`, or `plugins` updates the template in place.
 type MutableTemplateInstanceProperty string
 
 const (
 	MutableTemplateInstancePropertyTags       MutableTemplateInstanceProperty = "tags"
 	MutableTemplateInstancePropertyDeleteLock MutableTemplateInstanceProperty = "delete_lock"
 	MutableTemplateInstancePropertyAutokill   MutableTemplateInstanceProperty = "autokill"
+	MutableTemplateInstancePropertyImage      MutableTemplateInstanceProperty = "image"
+	MutableTemplateInstancePropertyRoms       MutableTemplateInstanceProperty = "roms"
+	MutableTemplateInstancePropertyPlugins    MutableTemplateInstanceProperty = "plugins"
 )
