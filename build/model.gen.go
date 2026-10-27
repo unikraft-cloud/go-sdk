@@ -38,6 +38,26 @@ type Build struct {
 	// for a build from before the service kept its requests.
 	Contexts *BuildContexts `json:"contexts,omitempty"`
 
+	// The platforms of the request. Absent when the request names none.
+	Platforms []string `json:"platforms,omitempty"`
+
+	// The build args of the request, by name. Absent when it has none.
+	BuildArgs map[string]string `json:"build_args,omitempty"`
+
+	// The Dockerfile stage of the request. Absent when it names none.
+	Target *string `json:"target,omitempty"`
+
+	// Whether the request ignores the builder's cache.
+	NoCache *bool `json:"no_cache,omitempty"`
+
+	// The IDs of the secrets of the request, sorted. The service does not keep
+	// their values. Absent when the request has none.
+	Secrets []string `json:"secrets,omitempty"`
+
+	// The registry hosts of the request, sorted. The service does not keep
+	// their credentials. Absent when the request has none.
+	Registries []string `json:"registries,omitempty"`
+
 	// The path to attach the build's session at. Only present while the build
 	// is `waiting` for it.
 	Session *string `json:"session,omitempty"`
@@ -79,6 +99,33 @@ func (m *Build) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// BuildHints is hints on how to handle a build request. They do not change
+// what the build builds.
+type BuildHints struct {
+	// A name for what the build builds, such as a repository or a project. The
+	// service tries to run builds with the same name on the same builder, so
+	// that they share its cache. Empty or absent means the URL of
+	// `contexts.context` without its query, followed by its `subdir`, and no
+	// name for a session context. Only builds on `default` use it.
+	Cache *string `json:"cache,omitempty"`
+
+	// A key that the caller computes from the files that the build reads from
+	// its sources, for example a hash of the contexts and of a Kraftfile from
+	// a source. The service makes the key of the build from it, from the rest
+	// of the request except `output`, `builder`, `hints.cache`, `no_cache`,
+	// `registries` and the values of `secrets`, and from the version of the
+	// service's image builder. When a build of the caller's tenant with the
+	// same key and `output` is `running` or `succeeded`, the request is
+	// answered with that build and `200`, and no new build starts. Else, when
+	// a build with the same key `succeeded`, the new build pushes its image,
+	// or imports its filesystem, to the new `output`, and builds the image
+	// only if it cannot read it. A request with `no_cache` always starts a new
+	// build. Failed builds do not count, and neither do cancelled builds, from
+	// the cancel on. A build that reads from the client's session is never
+	// shared: its request always starts a new build.
+	Dedupe *string `json:"dedupe,omitempty"`
+}
+
 // BuildOutput is where the result of a build goes: exactly one of an image,
 // named by `image`, or a volume, named by `volume`.
 type BuildOutput struct {
@@ -89,11 +136,14 @@ type BuildOutput struct {
 	Image *string `json:"image,omitempty"`
 
 	// The name or UUID of an existing volume to import the built filesystem
-	// into. Only valid for a build of a single platform. Not supported yet.
+	// into, as cpio, through a short-lived instance in the metro of the volume
+	// that runs with the caller's token. A volume that does not exist is not
+	// created. Only valid for a build without a `kraftfile`, of a single
+	// platform.
 	Volume *string `json:"volume,omitempty"`
 
-	// The metro of `volume`, only needed when its name is ambiguous. Only
-	// valid with `volume`. Not supported yet.
+	// The name of the metro of `volume`, only needed when it is not the metro
+	// of the service. Only valid with `volume`.
 	Metro *string `json:"metro,omitempty"`
 }
 
@@ -138,7 +188,7 @@ type BuildResultVolume struct {
 // |-------------|-------------|
 // | `waiting`   | The build waits for a client to attach its buildkit session, and then becomes `running`. |
 // | `running`   | The build waits for a build slot or for its builder, or is being built. |
-// | `succeeded` | The build finished and every output was pushed; see `result`. |
+// | `succeeded` | The build finished and every output was pushed or imported; see `result`. |
 // | `failed`    | The build failed; see `error`. |
 // | `cancelled` | The build was cancelled before it finished; `error` says so. |
 type BuildStatus string
@@ -154,8 +204,8 @@ const (
 // Builder is the builder a build runs on: a buildkitd instance and its cache
 // volume in the caller's account. Builds on the same builder share its cache.
 // A builder that does not exist yet is created from these fields; for one that
-// does, every field but `name` only has to match it, and one that conflicts is
-// a `409`.
+// does, every field but `name` and `autokill` only has to match it, and one
+// that conflicts is a `409`.
 type Builder struct {
 	// The name of the builder. Empty means `default`.
 	Name *string `json:"name,omitempty"`
@@ -174,14 +224,17 @@ type Builder struct {
 	// The size of the builder's cache volume, in MiB.
 	CacheMb *int64 `json:"cache_mb,omitempty"`
 
-	// Delete the builder once it has been idle for a while. Not supported yet.
+	// Delete the builder once it has been idle for a while, set when it is
+	// created.
 	Autokill *BuilderAutokill `json:"autokill,omitempty"`
 }
 
 // BuilderAutokill is when to delete an idle builder.
 type BuilderAutokill struct {
-	// Delete the builder and its cache once it has had no running build for
-	// this many milliseconds. `0` (the default) never does.
+	// Delete the builder and its cache once it has scaled to zero for this
+	// many milliseconds, past the cooldown that follows its last build. `0`
+	// never does. Without it, `default` is deleted after 7 days and a named
+	// builder never is. A delete lock on the builder's instance keeps it.
 	TimeMs *uint64 `json:"time_ms,omitempty"`
 }
 
@@ -210,13 +263,19 @@ type CreateBuildRequest struct {
 	// Ignore the builder's cache, like `--no-cache`.
 	NoCache *bool `json:"no_cache,omitempty"`
 
-	// The builder to run on. Defaults to the one named `default`.
+	// The builder to run on. Defaults to `default`, which runs each build on
+	// one of `default`, `default-2`, ..., as many as the service allows: the
+	// first with a free slot, in the order that `hints.cache` gives.
 	Builder *Builder `json:"builder,omitempty"`
+
+	// Hints on how to handle the request: where to run the build, and which
+	// existing build to answer instead.
+	Hints *BuildHints `json:"hints,omitempty"`
 
 	// The secrets the build can mount, by ID.
 	Secrets map[string]Secret `json:"secrets,omitempty"`
 
-	// The SSH agents the build can mount, by ID. Not supported yet.
+	// The SSH agents the build can mount, by ID.
 	SSH map[string]SSHAgent `json:"ssh,omitempty"`
 
 	// The credentials for registries, by host, with `*` for any other host.
@@ -225,8 +284,8 @@ type CreateBuildRequest struct {
 	Registries map[string]Registry `json:"registries,omitempty"`
 
 	// Where the result goes. At least one output is required. The outputs are
-	// pushed one after the other, so a build that fails or is cancelled can
-	// leave the first outputs pushed.
+	// pushed or imported one after the other, so a build that fails or is
+	// cancelled can leave the first outputs pushed or imported.
 	Output []BuildOutput `json:"output"`
 }
 
@@ -275,18 +334,18 @@ type ErrorBody struct {
 //
 // | Code               | Description |
 // |--------------------|-------------|
-// | `invalid`          | `400`: the request is malformed, or a value in it is not valid: the body is not JSON, a required field is missing, a source has more than one of `session`, `git` and `url`, an image reference does not parse, an inline Kraftfile does not parse or cannot be built, ... |
+// | `invalid`          | `400`: the request is malformed, or a value in it is not valid: the body is not JSON, a required field is missing, a source has more than one of `session`, `git` and `url`, an image reference does not parse, a volume output has a `kraftfile` or more than one platform, an inline Kraftfile does not parse or cannot be built, a session does not advertise a method the build needs, ... |
 // | `unsupported`      | `400`: the request uses a part of the full build API, or of the Kraftfile, that this service does not support yet. Nothing is ignored silently. |
 // | `unauthenticated`  | `401`: the request carries no bearer token, or one that the platform does not accept. |
 // | `auth_unavailable` | `502`: the token could not be validated because the platform did not give a usable answer. Retrying later is the right response. |
 // | `not_found`        | `404`: no build with this ID belongs to the caller's tenant. The build of another tenant is indistinguishable from a build that does not exist. |
-// | `conflict`         | `409`: the build is still waiting or running, so its record cannot be deleted yet; cancel it first. Or the build does not wait for a session, or already has one. Or the `builder` of the request conflicts with the existing builder of that name. |
+// | `conflict`         | `409`: the build is still waiting or running, so its record cannot be deleted yet; cancel it first. Or the build does not wait for a session, already has one, or another user started it. Or the `builder` of the request conflicts with the existing builder of that name. |
 // | `too_many_builds`  | `429`: the caller's tenant already has as many builds running or waiting as it may. Submit the build again once one of them has finished. |
 // | `internal`         | `500`: the service could not handle the request, through no fault of the request; the details are in the service's log. `503` while the service is shutting down. Retrying later is the right response. |
-// | `failed`           | The build itself failed: a source could not be fetched, a Kraftfile read from a source did not parse, a build step exited non-zero, the push was refused. The message is the error buildkit or the pipeline reported. |
+// | `failed`           | The build itself failed: no session attached in time, a source could not be fetched, a Kraftfile read from a source did not parse, a build step exited non-zero, the push was refused, the volume of an output does not exist or refused the import. The message is the error buildkit or the pipeline reported. |
 // | `cancelled`        | The build was cancelled by a request to the cancel endpoint. |
 // | `interrupted`      | The service restarted while the build was running, so the build was lost. It can be submitted again. |
-// | `builder_quota`    | The builder of the build could not be created or started because the tenant is over its quota. Free resources or raise the quota, then submit the build again. |
+// | `builder_quota`    | The builder of the build, or the instance that imports it into a volume, could not be created or started because the tenant is over its quota. Free resources or raise the quota, then submit the build again. |
 type ErrorCode string
 
 const (
@@ -386,8 +445,9 @@ type Registry struct {
 	// The password to log in with, which is never stored.
 	Password *string `json:"password,omitempty"`
 
-	// Must be `true`: the client's session answers for the registry. Not
-	// supported yet.
+	// Must be `true`: the client's session answers for the registry. For the
+	// registry of Unikraft Cloud, the caller's token answers when the session
+	// has no credentials.
 	Session *bool `json:"session,omitempty"`
 }
 
@@ -405,7 +465,7 @@ type Secret struct {
 	// The value of the secret, at most 500 KiB, which is never stored.
 	Value *string `json:"value,omitempty"`
 
-	// The ID the client's session serves the secret under. Not supported yet.
+	// The ID the client's session serves the secret under.
 	Session *string `json:"session,omitempty"`
 }
 
@@ -418,7 +478,10 @@ type Secret struct {
 // from the client as the build needs it, so the build waits for the session.
 type Source struct {
 	// The name the client's buildkit session serves the directory under.
-	// Mutually exclusive with `git` and `url`. Not supported yet.
+	// Mutually exclusive with `git` and `url`. The build reads only the files
+	// it needs, and a `.dockerignore` applies only when the whole `context`
+	// directory is the build context. With `session`, a `subdir` or `filename`
+	// cannot start with `!` or contain `*`, `?`, `[` or a backslash.
 	Session *string `json:"session,omitempty"`
 
 	// The HTTPS URL of a git repository, cloned anonymously. Mutually
