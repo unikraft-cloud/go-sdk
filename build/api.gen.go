@@ -102,14 +102,23 @@ type ListBuildsOptions struct {
 	// Only the builds in this state.
 	Status *BuildStatus
 
-	// The maximum number of builds to return. When omitted, every matching
-	// build is returned.
+	// The maximum number of builds in the page, from 1 to 50. Defaults to 10,
+	// also when there are more builds.
 	Limit *int32
+
+	// The `next` of the previous page, for the builds that follow it. It is
+	// opaque: pass it as it is, with the `status` of that page.
+	After *string
 }
 
 // ListBuilds is the List Builds operation.
 //
-// List the builds of the caller's tenant, newest first.
+// List the builds of the caller's tenant, newest first. A finished build is
+// kept for 7 days. A new build removes the oldest finished builds of its
+// tenant once they pass the tenant's storage, and the service removes the
+// oldest finished builds of all tenants when it runs out of storage. The
+// builds come in pages, of 10 without `limit`: `next` gives the page that
+// follows. A build created after the first page is only on a new first page.
 func (c *Client) ListBuilds(ctx context.Context, opts ListBuildsOptions) (*ListBuildsResponse, error) {
 	path := "/v1/builds"
 
@@ -119,6 +128,9 @@ func (c *Client) ListBuilds(ctx context.Context, opts ListBuildsOptions) (*ListB
 	}
 	if opts.Limit != nil {
 		query.Set("limit", fmt.Sprint(*opts.Limit))
+	}
+	if opts.After != nil {
+		query.Set("after", fmt.Sprint(*opts.After))
 	}
 
 	var out ListBuildsResponse

@@ -256,10 +256,13 @@ type CreateBuildRequest struct {
 
 	// The platforms to build for. Only the architecture selects, so `x86_64`
 	// is `linux/amd64`. Defaults to the targets of the Kraftfile, or to
-	// `x86_64` when it has none.
+	// `x86_64` when it has none. With several architectures, an architecture
+	// that the service builds in a metro of its own builds there, on a builder
+	// of the caller's account in that metro.
 	Platforms []string `json:"platforms,omitempty"`
 
-	// The values of the Dockerfile's `ARG`s, by name.
+	// The values of the Dockerfile's `ARG`s, by name. The record of the build
+	// keeps them and answers them, so pass credentials as `secrets` instead.
 	BuildArgs map[string]string `json:"build_args,omitempty"`
 
 	// The Dockerfile stage to build. Defaults to the last one.
@@ -332,21 +335,22 @@ type ErrorBody struct {
 
 // ErrorCode is the reason a request, or a build, failed.
 //
-// The first eight codes are answered by the API together with the HTTP status
+// The first nine codes are answered by the API together with the HTTP status
 // code given. The last four are the `code` of the `error` of a build whose
 // `status` is `failed` or `cancelled`, both in the build itself and in the last
 // event of its progress stream.
 //
 // | Code               | Description |
 // |--------------------|-------------|
-// | `invalid`          | `400`: the request is malformed, or a value in it is not valid: the body is not JSON, a required field is missing, a source has more than one of `session`, `git` and `url`, an image reference does not parse, a volume output has a `kraftfile` or more than one platform, an inline Kraftfile does not parse or cannot be built, a session does not advertise a method the build needs, ... |
+// | `invalid`          | `400`: the request is malformed, or a value in it is not valid: the body is not JSON, a required field is missing, a source has more than one of `session`, `git` and `url`, an image reference does not parse, a volume output has a `kraftfile` or more than one platform, an inline Kraftfile does not parse or cannot be built, a session does not advertise a method the build needs, the request without its secret values is larger than 64 KiB, ... |
 // | `unsupported`      | `400`: the request uses a part of the full build API, or of the Kraftfile, that this service does not support yet. Nothing is ignored silently. |
 // | `unauthenticated`  | `401`: the request carries no bearer token, or one that the platform does not accept. |
-// | `auth_unavailable` | `502`: the token could not be validated because the platform did not give a usable answer. Retrying later is the right response. |
+// | `auth_unavailable` | `502`: the token could not be validated because the platform did not give a usable answer. `503`, with `Retry-After`, while the service checks too many tokens at once. Retrying later is the right response. |
 // | `not_found`        | `404`: no build with this ID belongs to the caller's tenant. The build of another tenant is indistinguishable from a build that does not exist. |
 // | `conflict`         | `409`: the build is still waiting or running, so its record cannot be deleted yet; cancel it first. Or the build does not wait for a session, already has one, or another user started it. Or the `builder` of the request conflicts with the existing builder of that name. |
-// | `too_many_builds`  | `429`: the caller's tenant already has as many builds running or waiting as it may. Submit the build again once one of them has finished. |
-// | `internal`         | `500`: the service could not handle the request, through no fault of the request; the details are in the service's log. `503` while the service is shutting down. Retrying later is the right response. |
+// | `too_many_builds`  | `429`: the caller's tenant already has as many builds running or waiting as it may, or the platform limits the rate of its requests. Submit the build again once one of them has finished, or later. |
+// | `rate_limited`     | `429`, with `Retry-After`: the platform refused too many tokens from the caller's address. Wait as long as `Retry-After` says. |
+// | `internal`         | `500`: the service could not handle the request, through no fault of the request; the details are in the service's log. `503` while the service is shutting down or out of storage. Retrying later is the right response. |
 // | `failed`           | The build itself failed: no session attached in time, a source could not be fetched, a Kraftfile read from a source did not parse, a build step exited non-zero, the push was refused, the volume of an output does not exist or refused the import. The message is the error buildkit or the pipeline reported. |
 // | `cancelled`        | The build was cancelled by a request to the cancel endpoint. |
 // | `interrupted`      | The service restarted while the build was running, so the build was lost. It can be submitted again. |
@@ -361,6 +365,7 @@ const (
 	ErrorCodeNotFound        ErrorCode = "not_found"
 	ErrorCodeConflict        ErrorCode = "conflict"
 	ErrorCodeTooManyBuilds   ErrorCode = "too_many_builds"
+	ErrorCodeRateLimited     ErrorCode = "rate_limited"
 	ErrorCodeInternal        ErrorCode = "internal"
 	ErrorCodeFailed          ErrorCode = "failed"
 	ErrorCodeCancelled       ErrorCode = "cancelled"
@@ -439,6 +444,10 @@ type KraftfileObject map[string]any
 type ListBuildsResponse struct {
 	// The builds, newest first.
 	Builds []Build `json:"builds"`
+
+	// The `after` of the request for the next page, which is opaque. Absent on
+	// the last page.
+	Next *string `json:"next,omitempty"`
 }
 
 // Registry is the credentials for a registry: exactly one of a `username` and

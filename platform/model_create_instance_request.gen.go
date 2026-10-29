@@ -33,6 +33,20 @@ type CreateInstanceRequest struct {
 	Env map[string]string `json:"env,omitzero"`
 	// Memory in MB to allocate for the instance. Default is 128.
 	MemoryMb *int64 `json:"memory_mb,omitzero"`
+	// Lower bound in MB for memory vertical scaling. Setting this or
+	// `max_memory_mb` enables memory vertical scaling, which is only supported
+	// by microVM instances. The instance boots with this amount of memory, and
+	// `memory_mb` selects the initial allocation within the bounds, defaulting
+	// to `min_memory_mb`. Must be lower than `max_memory_mb`, and within the
+	// user's memory limits. Cannot be used with templates that have a
+	// snapshot, `branch_from` or `checkpoint`.
+	MinMemoryMb *int64 `json:"min_memory_mb,omitzero"`
+	// Upper bound in MB for memory vertical scaling. Setting this or
+	// `min_memory_mb` enables memory vertical scaling. Defaults to the user's
+	// maximum memory limit. Must be higher than `min_memory_mb` by at least
+	// the platform's memory block size. Cannot be used with templates that
+	// have a snapshot, `branch_from` or `checkpoint`.
+	MaxMemoryMb *int64 `json:"max_memory_mb,omitzero"`
 	// The service group configuration when creating an instance.
 	//
 	// When creating an instance, either a previously created (persistent)
@@ -65,6 +79,19 @@ type CreateInstanceRequest struct {
 	ScaleToZero *CreateInstanceScaleToZero `json:"scale_to_zero,omitzero"`
 	// Number of vCPUs to allocate for the instance. Defaults to 1.
 	Vcpus *int32 `json:"vcpus,omitzero"`
+	// Lower bound for vCPU vertical scaling. Setting this or `max_vcpus`
+	// enables vCPU vertical scaling, which is only supported by microVM
+	// instances. The instance boots with this number of vCPUs, and `vcpus`
+	// selects the initial allocation within the bounds, defaulting to
+	// `min_vcpus`. Must be lower than `max_vcpus`, and within the user's vCPU
+	// limits. Cannot be used with templates that have a snapshot,
+	// `branch_from` or `checkpoint`.
+	MinVcpus *int32 `json:"min_vcpus,omitzero"`
+	// Upper bound for vCPU vertical scaling. Setting this or `min_vcpus`
+	// enables vCPU vertical scaling. Defaults to the user's maximum vCPU
+	// limit. Must be higher than `min_vcpus`. Cannot be used with templates
+	// that have a snapshot, `branch_from` or `checkpoint`.
+	MaxVcpus *int32 `json:"max_vcpus,omitzero"`
 	// Deprecated: Use `timeout_s` instead. Timeout in milliseconds to
 	// wait for all new instances to reach running state. Requires
 	// `autostart` to be set. If `timeout_s` is not set, this value is
