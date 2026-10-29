@@ -16,11 +16,12 @@ var _ time.Time
 
 // The request message for creating a new instance.
 type CreateInstanceRequest struct {
-	// The name of the instance.
-	//
-	// If not provided, a random name will be generated. The name must be
-	// unique.
+	// The name of the resource. If not provided, a random name is generated.
+	// The name must be unique within the context of your account.
 	Name *string `json:"name,omitzero"`
+	// The name of the node to place the resource on. If not provided, the
+	// platform picks one. Only accepted on metros that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 	// The image to use for the instance.
 	//
 	// Either an image or a template must be specified. Accepts either a plain

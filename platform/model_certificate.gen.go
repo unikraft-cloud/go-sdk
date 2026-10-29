@@ -26,6 +26,9 @@ type Certificate struct {
 	Uuid string `json:"uuid"`
 	// The human-readable name of the resource.
 	Name string `json:"name"`
+	// The name of the node the resource is placed on. Only present on metros
+	// that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 	// The time the certificate was created.
 	CreatedAt time.Time `json:"created_at"`
 	// The common name (CN) field from the certificate's subject.
@@ -76,7 +79,7 @@ type Certificate struct {
 	// Validation status when state is pending.
 	Validation *CertificateValidation `json:"validation,omitzero"`
 	// Service groups using this certificate.
-	ServiceGroups []ID `json:"service_groups,omitzero"`
+	ServiceGroups []ResourceID `json:"service_groups,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

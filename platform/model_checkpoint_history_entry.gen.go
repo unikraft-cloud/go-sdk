@@ -20,6 +20,9 @@ type CheckpointHistoryEntry struct {
 	Uuid string `json:"uuid"`
 	// The name of the checkpoint.
 	Name string `json:"name"`
+	// The name of the node the resource is placed on. Only present on metros
+	// that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 	// The time the checkpoint was created.
 	CreatedAt time.Time `json:"created_at"`
 

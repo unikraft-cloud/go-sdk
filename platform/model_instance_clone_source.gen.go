@@ -20,6 +20,8 @@ type InstanceCloneSource struct {
 	Uuid string `json:"uuid"`
 	// The name of the source.
 	Name *string `json:"name,omitzero"`
+	// The name of the node the source is placed on.
+	Node *string `json:"node,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

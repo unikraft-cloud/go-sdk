@@ -20,6 +20,9 @@ type ServiceGroupTemplate struct {
 	Uuid string `json:"uuid"`
 	// The name of the template used for the autoscale configuration.
 	Name string `json:"name"`
+	// The name of the node the resource is placed on. Only present on metros
+	// that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
