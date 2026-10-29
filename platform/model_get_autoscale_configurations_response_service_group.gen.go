@@ -20,6 +20,9 @@ type GetAutoscaleConfigurationsResponseServiceGroup struct {
 	Uuid string `json:"uuid"`
 	// The human-readable name of the resource.
 	Name string `json:"name"`
+	// The name of the node the resource is placed on. Only present on metros
+	// that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 	// If the autoscale configuration is enabled.
 	Enabled bool `json:"enabled"`
 	// The minimum number of instances to keep running. Only if enabled is true.

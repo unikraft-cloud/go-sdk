@@ -26,6 +26,9 @@ type SuspendUsersResponseSuspendedUser struct {
 	Uuid string `json:"uuid"`
 	// The human-readable name of the resource.
 	Name string `json:"name"`
+	// The name of the node the resource is placed on. Only present on metros
+	// that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 	// Whether the user account is suspended after this request.
 	Suspended bool `json:"suspended"`
 	// The instances of the user that were brought to rest. Only present if

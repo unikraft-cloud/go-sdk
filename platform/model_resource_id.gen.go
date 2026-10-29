@@ -14,24 +14,27 @@ import (
 
 var _ time.Time
 
-// Common identity fields for a resource.
-type ID struct {
+// Identity fields for a resource, including the node it is placed on.
+type ResourceID struct {
 	// The UUID of the resource.
 	Uuid string `json:"uuid"`
 	// The human-readable name of the resource.
 	Name string `json:"name"`
+	// The name of the node the resource is placed on. Only present on metros
+	// that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
-func (m *ID) UnmarshalJSON(data []byte) error {
-	type Alias ID
+func (m *ResourceID) UnmarshalJSON(data []byte) error {
+	type Alias ResourceID
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m ID) MarshalJSON() ([]byte, error) {
-	type Alias ID
+func (m ResourceID) MarshalJSON() ([]byte, error) {
+	type Alias ResourceID
 	return json.Marshal((Alias)(m))
 }
