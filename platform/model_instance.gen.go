@@ -42,10 +42,28 @@ type Instance struct {
 	// total amount of memory that is available to the instance for its
 	// operations.
 	MemoryMb uint64 `json:"memory_mb"`
+	// The amount of memory in megabytes the instance boots with. Only present
+	// if memory vertical scaling is enabled for the instance.
+	BootMemoryMb *uint64 `json:"boot_memory_mb,omitzero"`
+	// The lower bound of memory vertical scaling in megabytes. Only present if
+	// memory vertical scaling is enabled for the instance.
+	MinMemoryMb *uint64 `json:"min_memory_mb,omitzero"`
+	// The upper bound of memory vertical scaling in megabytes. Only present if
+	// memory vertical scaling is enabled for the instance.
+	MaxMemoryMb *uint64 `json:"max_memory_mb,omitzero"`
 	// The number of vCPUs allocated for the instance. This is the total
 	// number of virtual CPUs that are available to the instance for its
 	// operations.
 	Vcpus uint32 `json:"vcpus"`
+	// The number of vCPUs the instance boots with. Only present if vCPU
+	// vertical scaling is enabled for the instance.
+	BootVcpus *uint32 `json:"boot_vcpus,omitzero"`
+	// The lower bound of vCPU vertical scaling. Only present if vCPU vertical
+	// scaling is enabled for the instance.
+	MinVcpus *uint32 `json:"min_vcpus,omitzero"`
+	// The upper bound of vCPU vertical scaling. Only present if vCPU vertical
+	// scaling is enabled for the instance.
+	MaxVcpus *uint32 `json:"max_vcpus,omitzero"`
 	// The arguments passed to the instance when it was started. This is a
 	// list of command-line arguments that were provided to the instance at
 	// startup. These arguments can be used to configure the behavior of the
