@@ -14,24 +14,25 @@ import (
 
 var _ time.Time
 
-// Common identity fields for a resource.
-type ID struct {
-	// The UUID of the resource.
-	Uuid string `json:"uuid"`
-	// The human-readable name of the resource.
-	Name string `json:"name"`
+// Authorization for requests to a plugin endpoint.
+type PluginAuthorization struct {
+	// The authorization method.
+	Type *PluginAuthorizationType `json:"type,omitzero"`
+	// The token that requests must present as `Authorization: Bearer <token>`.
+	// Required for, and only allowed with, the `bearer` type.
+	Token *string `json:"token,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
 	AdditionalProperties map[string]jsontext.Value `json:",embed"`
 }
 
-func (m *ID) UnmarshalJSON(data []byte) error {
-	type Alias ID
+func (m *PluginAuthorization) UnmarshalJSON(data []byte) error {
+	type Alias PluginAuthorization
 	return json.Unmarshal(data, (*Alias)(m))
 }
 
-func (m ID) MarshalJSON() ([]byte, error) {
-	type Alias ID
+func (m PluginAuthorization) MarshalJSON() ([]byte, error) {
+	type Alias PluginAuthorization
 	return json.Marshal((Alias)(m))
 }

@@ -20,6 +20,9 @@ type CreateCheckpointInstancesRequestItem struct {
 	From NameOrUUID `json:"from"`
 	// The name of the checkpoint. If not provided, a name will be generated.
 	Name *string `json:"name,omitzero"`
+	// The name of the node to place the checkpoint on. Must be the node of the
+	// source instance. Only accepted on metros that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 	// Timeout in seconds to wait for the checkpoint to be created.
 	// No wait performed for a value of 0.
 	TimeoutS *int64 `json:"timeout_s,omitzero"`

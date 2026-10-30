@@ -20,6 +20,9 @@ type VolumeInstanceMount struct {
 	Uuid string `json:"uuid"`
 	// The name of the instance that the volume is mounted in.
 	Name string `json:"name"`
+	// The name of the node the resource is placed on. Only present on metros
+	// that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 	// Whether the volume is mounted read-only or read-write.
 	Readonly bool `json:"readonly"`
 

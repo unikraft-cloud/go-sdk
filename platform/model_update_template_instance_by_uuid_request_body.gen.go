@@ -26,6 +26,9 @@ type UpdateTemplateInstanceByUUIDRequestBody struct {
 	// - For "tags": array of strings
 	// - For "delete_lock": boolean
 	// - For "autokill": object with time_ms field
+	// - For "image": image reference string or object (SET only)
+	// - For "roms": array of ROM objects (SET only)
+	// - For "plugins": array of plugin objects (SET only)
 	Value *interface{} `json:"value,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

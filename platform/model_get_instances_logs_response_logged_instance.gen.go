@@ -26,6 +26,9 @@ type GetInstancesLogsResponseLoggedInstance struct {
 	Uuid string `json:"uuid"`
 	// The human-readable name of the resource.
 	Name string `json:"name"`
+	// The name of the node the resource is placed on. Only present on metros
+	// that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 	// Base64 encoded log output of the instance.
 	Output string `json:"output"`
 	// Description of the log availability.

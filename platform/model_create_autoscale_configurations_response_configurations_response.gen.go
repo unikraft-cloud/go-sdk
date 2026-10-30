@@ -20,6 +20,9 @@ type CreateAutoscaleConfigurationsResponseConfigurationsResponse struct {
 	Uuid string `json:"uuid"`
 	// The human-readable name of the resource.
 	Name string `json:"name"`
+	// The name of the node the resource is placed on. Only present on metros
+	// that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 	// The status of the response.
 	Status ResponseStatus `json:"status"`
 	// An optional message providing additional information about the status.

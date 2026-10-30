@@ -26,6 +26,8 @@ type VolumeInstanceID struct {
 	// your account. If no name is specified, a random name is generated for
 	// you. The name can also be used to identify the instance in API calls.
 	Name *string `json:"name,omitzero"`
+	// The name of the node the instance is placed on.
+	Node *string `json:"node,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

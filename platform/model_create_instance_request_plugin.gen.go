@@ -41,6 +41,11 @@ type CreateInstanceRequestPlugin struct {
 	// `init` program on `STDIN`. Any JSON value works, including a string, a
 	// number, or an object.
 	Config *interface{} `json:"config,omitzero"`
+	// How requests to the plugin endpoint are authenticated. Without it, the
+	// platform API token of a user with access to the instance (`userdb`) is
+	// required. The platform checks the token and strips it before forwarding
+	// the request to the plugin.
+	Authorization *PluginAuthorization `json:"authorization,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
