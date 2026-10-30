@@ -77,6 +77,7 @@ tasks:
   ci/check:
   - task: go:ci/check
   - task: build:ci/check
+  - task: build:wasm-check
 
   ci/test:
   - task: go:ci/test
