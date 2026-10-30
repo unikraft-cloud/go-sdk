@@ -3,6 +3,8 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
+//go:build !js
+
 package build
 
 import (
@@ -45,12 +47,6 @@ func (e Event) Done() bool {
 }
 
 const (
-	// logsRetryMin and logsRetryMax bound the wait before the progress
-	// stream is asked for again, which doubles on every attempt in a row and
-	// starts over once an attempt brings a new event.
-	logsRetryMin = 250 * time.Millisecond
-	logsRetryMax = 5 * time.Second
-
 	// logsRetryBudget is how many more times in a row the stream is asked
 	// for after an attempt got no stream at all, because the service could
 	// not be reached or answered with a 5xx, before Logs gives up.

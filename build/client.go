@@ -30,6 +30,12 @@ const (
 	// maxErrorBody bounds how much of a failed response is read for its
 	// message.
 	maxErrorBody = 1 << 20
+
+	// logsRetryMin and logsRetryMax bound the wait before the progress
+	// stream is asked for again, which doubles on every attempt in a row and
+	// starts over once an attempt brings a new event.
+	logsRetryMin = 250 * time.Millisecond
+	logsRetryMax = 5 * time.Second
 )
 
 // Client talks to one build service with one token.
