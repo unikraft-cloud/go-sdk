@@ -20,6 +20,65 @@ var (
 	_ = url.Values{}
 )
 
+// CreateBuilder is the Create Builder operation.
+//
+// Create a builder of the caller's tenant in the service's metro, which then
+// scales to zero until a build uses it. A builder that already exists is
+// answered with `200` if every field of the request matches it and `409`
+// otherwise, and is left as it is. A tenant over its quota is answered with
+// `403` and the code `builder_quota`.
+func (c *Client) CreateBuilder(ctx context.Context, body Builder) (*Builder, error) {
+	path := "/v1/builders"
+
+	var out Builder
+	if err := c.do(ctx, http.MethodPost, path, nil, body, &out); err != nil {
+		return nil, err
+	}
+
+	return &out, nil
+}
+
+// GetBuilderUsage is the Get Builder Usage operation.
+//
+// Get the disk usage of a builder's cache, waking the builder. Only the
+// builder of this name in the service's metro is counted. A builder that does
+// not exist is answered with `404`, and is not created.
+func (c *Client) GetBuilderUsage(ctx context.Context, name string) (*BuilderUsage, error) {
+	nameSegment, err := pathSegment("name", name)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("/v1/builders/%s/usage", nameSegment)
+
+	var out BuilderUsage
+	if err := c.do(ctx, http.MethodGet, path, nil, nil, &out); err != nil {
+		return nil, err
+	}
+
+	return &out, nil
+}
+
+// PruneBuilder is the Prune Builder operation.
+//
+// Free the records of a builder's cache that no build uses, waking the builder
+// and keeping it. Only the builder of this name in the service's metro is
+// pruned. A builder that does not exist is answered with `404`, and is not
+// created.
+func (c *Client) PruneBuilder(ctx context.Context, name string) (*PruneBuilderResponse, error) {
+	nameSegment, err := pathSegment("name", name)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("/v1/builders/%s/prune", nameSegment)
+
+	var out PruneBuilderResponse
+	if err := c.do(ctx, http.MethodPost, path, nil, nil, &out); err != nil {
+		return nil, err
+	}
+
+	return &out, nil
+}
+
 // CancelBuild is the Cancel Build operation.
 //
 // Cancel a build by ID. A waiting or running build is answered with `202` and

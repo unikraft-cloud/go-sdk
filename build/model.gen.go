@@ -243,6 +243,15 @@ type BuilderAutokill struct {
 	TimeMs *uint64 `json:"time_ms,omitempty"`
 }
 
+// BuilderUsage is how much of a builder's cache its records take.
+type BuilderUsage struct {
+	// The bytes of the records that no build uses, which a prune frees.
+	ReclaimableBytes int64 `json:"reclaimable_bytes"`
+
+	// The bytes of all the records.
+	TotalBytes int64 `json:"total_bytes"`
+}
+
 // CreateBuildRequest is the request message for creating a build.
 type CreateBuildRequest struct {
 	// The Kraftfile to build. Without one, the build is the kernel-less image
@@ -335,10 +344,10 @@ type ErrorBody struct {
 
 // ErrorCode is the reason a request, or a build, failed.
 //
-// The first nine codes are answered by the API together with the HTTP status
-// code given. The last four are the `code` of the `error` of a build whose
-// `status` is `failed` or `cancelled`, both in the build itself and in the last
-// event of its progress stream.
+// The first nine codes, and `builder_quota`, are answered by the API together
+// with the HTTP status code given. The last four are the `code` of the `error`
+// of a build whose `status` is `failed` or `cancelled`, both in the build
+// itself and in the last event of its progress stream.
 //
 // | Code               | Description |
 // |--------------------|-------------|
@@ -346,15 +355,15 @@ type ErrorBody struct {
 // | `unsupported`      | `400`: the request uses a part of the full build API, or of the Kraftfile, that this service does not support yet. Nothing is ignored silently. |
 // | `unauthenticated`  | `401`: the request carries no bearer token, or one that the platform does not accept. |
 // | `auth_unavailable` | `502`: the token could not be validated because the platform did not give a usable answer. `503`, with `Retry-After`, while the service checks too many tokens at once. Retrying later is the right response. |
-// | `not_found`        | `404`: no build with this ID belongs to the caller's tenant. The build of another tenant is indistinguishable from a build that does not exist. |
-// | `conflict`         | `409`: the build is still waiting or running, so its record cannot be deleted yet; cancel it first. Or the build does not wait for a session, already has one, or another user started it. Or the `builder` of the request conflicts with the existing builder of that name. |
+// | `not_found`        | `404`: no build with this ID belongs to the caller's tenant. The build of another tenant is indistinguishable from a build that does not exist. Or the caller has no builder of this name. |
+// | `conflict`         | `409`: the build is still waiting or running, so its record cannot be deleted yet; cancel it first. Or the build does not wait for a session, already has one, or another user started it. Or the `builder` of the request, or the builder to create, conflicts with the existing builder of that name. |
 // | `too_many_builds`  | `429`: the caller's tenant already has as many builds running or waiting as it may, or the platform limits the rate of its requests. Submit the build again once one of them has finished, or later. |
 // | `rate_limited`     | `429`, with `Retry-After`: the platform refused too many tokens from the caller's address. Wait as long as `Retry-After` says. |
 // | `internal`         | `500`: the service could not handle the request, through no fault of the request; the details are in the service's log. `503` while the service is shutting down or out of storage. Retrying later is the right response. |
 // | `failed`           | The build itself failed: no session attached in time, a source could not be fetched, a Kraftfile read from a source did not parse, a build step exited non-zero, the push was refused, the volume of an output does not exist or refused the import. The message is the error buildkit or the pipeline reported. |
 // | `cancelled`        | The build was cancelled by a request to the cancel endpoint. |
 // | `interrupted`      | The service restarted while the build was running, so the build was lost. It can be submitted again. |
-// | `builder_quota`    | The builder of the build, or the instance that imports it into a volume, could not be created or started because the tenant is over its quota. Free resources or raise the quota, then submit the build again. |
+// | `builder_quota`    | `403`: the builder to create could not be created because the tenant is over its quota. Or, as the error of a build: the builder of the build, or the instance that imports it into a volume, could not be created or started because the tenant is over its quota. Free resources or raise the quota, then submit the build again. |
 type ErrorCode string
 
 const (
@@ -448,6 +457,12 @@ type ListBuildsResponse struct {
 	// The `after` of the request for the next page, which is opaque. Absent on
 	// the last page.
 	Next *string `json:"next,omitempty"`
+}
+
+// PruneBuilderResponse is what a prune freed.
+type PruneBuilderResponse struct {
+	// The bytes of the records the prune freed.
+	FreedBytes int64 `json:"freed_bytes"`
 }
 
 // Registry is the credentials for a registry: exactly one of a `username` and
