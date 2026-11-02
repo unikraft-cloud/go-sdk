@@ -24,6 +24,7 @@ type UpdateNodePayload struct {
 	// - TAGS: google.protobuf.Struct with key-value pairs
 	// - DELETE_LOCK: google.protobuf.Value with boolean
 	// - SSH_KEYS: google.protobuf.ListValue with SSHKey objects
+	// - API_ENDPOINT: the URL as plain text
 	Value *string `json:"value,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to

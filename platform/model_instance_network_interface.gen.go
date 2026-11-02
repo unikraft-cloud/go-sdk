@@ -17,6 +17,8 @@ var _ time.Time
 // A network interface attached to an instance.
 type InstanceNetworkInterface struct {
 	Uuid string `json:"uuid"`
+	// The name of the node the network interface is placed on.
+	Node *string `json:"node,omitzero"`
 	// The private IP address of the network interface. This is the internal IP
 	// address that is used for communication between instances within the same
 	// network.

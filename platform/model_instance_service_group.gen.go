@@ -23,6 +23,9 @@ type InstanceServiceGroup struct {
 	Uuid string `json:"uuid"`
 	// The human-readable name of the resource.
 	Name string `json:"name"`
+	// The name of the node the resource is placed on. Only present on metros
+	// that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 	// The domain configuration for the service group.
 	Domains []ServiceGroupInstanceDomain `json:"domains,omitzero"`
 

@@ -16,7 +16,12 @@ var _ time.Time
 
 // The request message for creating a volume.
 type CreateVolumeRequest struct {
-	Name        *string            `json:"name,omitzero"`
+	// The name of the resource. If not provided, a random name is generated.
+	// The name must be unique within the context of your account.
+	Name *string `json:"name,omitzero"`
+	// The name of the node to place the resource on. If not provided, the
+	// platform picks one. Only accepted on metros that span multiple nodes.
+	Node        *string            `json:"node,omitzero"`
 	SizeMb      *uint64            `json:"size_mb,omitzero"`
 	HostPath    *string            `json:"host_path,omitzero"`
 	Template    *NameOrUUID        `json:"template,omitzero"`

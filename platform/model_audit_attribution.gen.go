@@ -21,9 +21,9 @@ var _ time.Time
 // only observable after the fact.
 type AuditAttribution struct {
 	// UUID shared by every event belonging to the same operation.
-	Operation string `json:"operation"`
+	Operation *string `json:"operation,omitzero"`
 	// What was performed on the object.
-	Kind AuditOperationKind `json:"kind"`
+	Kind *AuditOperationKind `json:"kind,omitzero"`
 	// Whether this event was raised by the operation or observed after it.
 	Trigger AuditTrigger `json:"trigger"`
 	// What caused the operation.

@@ -20,6 +20,9 @@ type InstanceNetworkInterfaceRelay struct {
 	Uuid string `json:"uuid"`
 	// Name of the relay interface.
 	Name string `json:"name"`
+	// The name of the node the resource is placed on. Only present on metros
+	// that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 	// Whether DNS traffic is relayed through this interface.
 	// Defaults to true.
 	RelayDns bool `json:"relay_dns"`

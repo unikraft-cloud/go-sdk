@@ -725,6 +725,55 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/users#get-user-by-uuid
 	GetUserByUUID(ctx context.Context, uuid string) (*Response[QuotasResponseData], error)
+	// Resume a suspended user account by UUID. Removes the suspension and
+	// restores the instances that the suspension brought to rest. Requires the
+	// `root` permission.
+	//
+	// @param `uuid`
+	//
+	// Performs: PUT /v1/users/{uuid}/resume
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/users#resume-user-by-uuid
+	ResumeUserByUUID(ctx context.Context, uuid string) (*Response[ResumeUsersResponseData], error)
+	// Resume suspended user accounts by UUID(s). Removes the suspension and
+	// restores the instances that the suspension brought to rest. Requires the
+	// `root` permission.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// Performs: PUT /v1/users/resume
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/users#resume-users
+	ResumeUsers(ctx context.Context, request []ResumeUsersRequestItem) (*Response[ResumeUsersResponseData], error)
+	// Suspend a user account by UUID. A suspended user keeps read access to its
+	// resources but cannot create, modify, start, stop, or delete them. Its
+	// scheduled operations fail, autoscaling of its service groups stops, and
+	// autokill of its instances pauses. Requires the `root` permission; root
+	// users cannot be suspended.
+	//
+	// @param `uuid`
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// Performs: PUT /v1/users/{uuid}/suspend
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/users#suspend-user-by-uuid
+	SuspendUserByUUID(ctx context.Context, uuid string, request SuspendUserByUUIDRequestBody) (*Response[SuspendUsersResponseData], error)
+	// Suspend user accounts by UUID(s). A suspended user keeps read access to
+	// its resources but cannot create, modify, start, stop, or delete them. Its
+	// scheduled operations fail, autoscaling of its service groups stops, and
+	// autokill of its instances pauses. Requires the `root` permission; root
+	// users cannot be suspended.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// Performs: PUT /v1/users/suspend
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/users#suspend-users
+	SuspendUsers(ctx context.Context, request []SuspendUsersRequestItem) (*Response[SuspendUsersResponseData], error)
 	// Attach a volume by UUID.
 	//
 	// @param `uuid`
@@ -2367,6 +2416,71 @@ func (c *client) GetUserByUUID(ctx context.Context, uuid string) (*Response[Quot
 
 	resp := &Response[QuotasResponseData]{}
 	if err := doRequest[QuotasResponseData](ctx, c.request, http.MethodGet, requestPath, nil, nil, resp, nil); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) ResumeUserByUUID(ctx context.Context, uuid string) (*Response[ResumeUsersResponseData], error) {
+	requestPath := "/v1/users/{uuid}/resume"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
+
+	resp := &Response[ResumeUsersResponseData]{}
+	if err := doRequest[ResumeUsersResponseData](ctx, c.request, http.MethodPut, requestPath, nil, nil, resp, nil); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) ResumeUsers(ctx context.Context, request []ResumeUsersRequestItem) (*Response[ResumeUsersResponseData], error) {
+	requestPath := "/v1/users/resume"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[ResumeUsersResponseData]{}
+	if err := doRequest[ResumeUsersResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) SuspendUserByUUID(ctx context.Context, uuid string, request SuspendUserByUUIDRequestBody) (*Response[SuspendUsersResponseData], error) {
+	requestPath := "/v1/users/{uuid}/suspend"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[SuspendUsersResponseData]{}
+	if err := doRequest[SuspendUsersResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) SuspendUsers(ctx context.Context, request []SuspendUsersRequestItem) (*Response[SuspendUsersResponseData], error) {
+	requestPath := "/v1/users/suspend"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[SuspendUsersResponseData]{}
+	if err := doRequest[SuspendUsersResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil

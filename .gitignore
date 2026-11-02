@@ -1,5 +1,6 @@
 platform.yaml
 controlplane.yaml
+build.yaml
 
 dist/
 .task/

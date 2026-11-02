@@ -22,6 +22,9 @@ type InstanceVolume struct {
 	Uuid string `json:"uuid"`
 	// The human-readable name of the resource.
 	Name string `json:"name"`
+	// The name of the node the resource is placed on. Only present on metros
+	// that span multiple nodes.
+	Node *string `json:"node,omitzero"`
 	// The mount point of the volume in the instance. This is the directory in
 	// the instance where the volume will be mounted.
 	At string `json:"at"`

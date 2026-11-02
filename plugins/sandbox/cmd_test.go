@@ -50,6 +50,8 @@ type mockPlugin struct {
 	forgot  bool
 
 	badLogs int
+
+	outlived bool
 }
 
 func newFakePlugin() *mockPlugin {
@@ -130,7 +132,27 @@ func (f *mockPlugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		f.mu.Unlock()
 		reply(plugin.GetCommandData{Uuid: "cmd-1", Cmdline: cmdline, Exitcode: code})
 
-	case path == "/commands/cmd-1/wait":
+	case path == "/commands/cmd-1/wait_timeout":
+		var req plugin.CommandWaitTimeoutRequest
+		_ = json.NewDecoder(r.Body).Decode(&req)
+
+		// A longer wait is cut off by the client or the proxy in front.
+		if req.TimeoutS >= plugin.DefaultTimeout.Seconds() {
+			w.WriteHeader(http.StatusGatewayTimeout)
+			return
+		}
+
+		// Every command outlives its first round, as a long one does.
+		f.mu.Lock()
+		first := !f.outlived
+		f.outlived = true
+		f.mu.Unlock()
+		if first {
+			w.WriteHeader(http.StatusRequestTimeout)
+			fmt.Fprint(w, "Timed out")
+			return
+		}
+
 		select {
 		case <-f.exited:
 		case <-r.Context().Done():
