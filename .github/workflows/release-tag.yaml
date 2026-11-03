@@ -14,7 +14,6 @@ concurrency:
 
 env:
   GOPRIVATE: github.com/unikraft-cloud/x
-  TASK_X_REMOTE_TASKFILES: 1
 
 jobs:
   tag:
