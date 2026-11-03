@@ -38,6 +38,42 @@ func (c *Client) CreateBuilder(ctx context.Context, body Builder) (*Builder, err
 	return &out, nil
 }
 
+// DeleteBuilder is the Delete Builder operation.
+//
+// Delete a builder by name: its instance and its cache. The builds running on
+// it fail, and a later build on it creates it again. Only the builder of this
+// name in the service's metro is deleted. A builder whose instance has a
+// delete lock is answered with `409`.
+func (c *Client) DeleteBuilder(ctx context.Context, name string) error {
+	nameSegment, err := pathSegment("name", name)
+	if err != nil {
+		return err
+	}
+	path := fmt.Sprintf("/v1/builders/%s", nameSegment)
+
+	return c.do(ctx, http.MethodDelete, path, nil, nil, nil)
+}
+
+// GetBuilder is the Get Builder operation.
+//
+// Get a builder by name: the builds of the caller's tenant on it, and its
+// instance. Only the builder of this name in the service's metro is looked up,
+// without waking it.
+func (c *Client) GetBuilder(ctx context.Context, name string) (*BuilderStatus, error) {
+	nameSegment, err := pathSegment("name", name)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("/v1/builders/%s", nameSegment)
+
+	var out BuilderStatus
+	if err := c.do(ctx, http.MethodGet, path, nil, nil, &out); err != nil {
+		return nil, err
+	}
+
+	return &out, nil
+}
+
 // GetBuilderUsage is the Get Builder Usage operation.
 //
 // Get the disk usage of a builder's cache, waking the builder. Only the
@@ -51,6 +87,20 @@ func (c *Client) GetBuilderUsage(ctx context.Context, name string) (*BuilderUsag
 	path := fmt.Sprintf("/v1/builders/%s/usage", nameSegment)
 
 	var out BuilderUsage
+	if err := c.do(ctx, http.MethodGet, path, nil, nil, &out); err != nil {
+		return nil, err
+	}
+
+	return &out, nil
+}
+
+// ListBuilders is the List Builders operation.
+//
+// List the builders of the caller's tenant in the service's metro.
+func (c *Client) ListBuilders(ctx context.Context) (*ListBuildersResponse, error) {
+	path := "/v1/builders"
+
+	var out ListBuildersResponse
 	if err := c.do(ctx, http.MethodGet, path, nil, nil, &out); err != nil {
 		return nil, err
 	}
