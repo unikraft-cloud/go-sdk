@@ -125,8 +125,10 @@ type BuildHints struct {
 	// or imports its filesystem, to the new `output`, and builds the image
 	// only if it cannot read it. A request with `no_cache` always starts a new
 	// build. Failed builds do not count, and neither do cancelled builds, from
-	// the cancel on. A build that reads from the client's session is never
-	// shared: its request always starts a new build.
+	// the cancel on. When the service runs more than one replica, a build
+	// cancelled on another one counts until it ends. A build that reads from
+	// the client's session is never shared: its request always starts a new
+	// build.
 	Dedupe *string `json:"dedupe,omitempty"`
 }
 
@@ -243,6 +245,42 @@ type BuilderAutokill struct {
 	TimeMs *uint64 `json:"time_ms,omitempty"`
 }
 
+// BuilderInstance is the instance a builder runs as, which the platform's API
+// answers for.
+type BuilderInstance struct {
+	// The UUID of the instance.
+	UUID string `json:"uuid"`
+
+	// The name of the instance.
+	Name string `json:"name"`
+
+	// The metro of the instance.
+	Metro string `json:"metro"`
+}
+
+// BuilderStatus is a builder of the caller's tenant, and the builds the
+// service runs on it.
+type BuilderStatus struct {
+	// The name of the builder.
+	Name string `json:"name"`
+
+	// Whether builds without a `builder` run on it.
+	Default bool `json:"default"`
+
+	// The builds of the tenant running on the builder now.
+	Builds []Build `json:"builds"`
+
+	// The number of builds of the tenant waiting for the builder, or for any
+	// builder of the pool for `default`.
+	WaitingBuilds int32 `json:"waiting_builds"`
+
+	// The number of builds that run on the builder at once; more wait.
+	MaxBuilds int32 `json:"max_builds"`
+
+	// The instance of the builder, for its image, sizes and state.
+	Instance BuilderInstance `json:"instance"`
+}
+
 // BuilderUsage is how much of a builder's cache its records take.
 type BuilderUsage struct {
 	// The bytes of the records that no build uses, which a prune frees.
@@ -356,13 +394,13 @@ type ErrorBody struct {
 // | `unauthenticated`  | `401`: the request carries no bearer token, or one that the platform does not accept. |
 // | `auth_unavailable` | `502`: the token could not be validated because the platform did not give a usable answer. `503`, with `Retry-After`, while the service checks too many tokens at once. Retrying later is the right response. |
 // | `not_found`        | `404`: no build with this ID belongs to the caller's tenant. The build of another tenant is indistinguishable from a build that does not exist. Or the caller has no builder of this name. |
-// | `conflict`         | `409`: the build is still waiting or running, so its record cannot be deleted yet; cancel it first. Or the build does not wait for a session, already has one, or another user started it. Or the `builder` of the request, or the builder to create, conflicts with the existing builder of that name. |
+// | `conflict`         | `409`: the build is still waiting or running, so its record cannot be deleted yet; cancel it first. Or the build does not wait for a session, already has one, or another user started it. Or the `builder` of the request, or the builder to create, conflicts with the existing builder of that name. Or the instance of the builder to delete has a delete lock. |
 // | `too_many_builds`  | `429`: the caller's tenant already has as many builds running or waiting as it may, or the platform limits the rate of its requests. Submit the build again once one of them has finished, or later. |
 // | `rate_limited`     | `429`, with `Retry-After`: the platform refused too many tokens from the caller's address. Wait as long as `Retry-After` says. |
-// | `internal`         | `500`: the service could not handle the request, through no fault of the request; the details are in the service's log. `503` while the service is shutting down or out of storage. Retrying later is the right response. |
+// | `internal`         | `500`: the service could not handle the request, through no fault of the request; the details are in the service's log. `502` when the request did not reach the replica that handles it. `503` while the service is shutting down or out of storage. Retrying later is the right response, but a create that got `502` may have started. |
 // | `failed`           | The build itself failed: no session attached in time, a source could not be fetched, a Kraftfile read from a source did not parse, a build step exited non-zero, the push was refused, the volume of an output does not exist or refused the import. The message is the error buildkit or the pipeline reported. |
 // | `cancelled`        | The build was cancelled by a request to the cancel endpoint. |
-// | `interrupted`      | The service restarted while the build was running, so the build was lost. It can be submitted again. |
+// | `interrupted`      | The service restarted, or lost the replica that ran the build, while the build was running, so the build was lost. It can be submitted again. |
 // | `builder_quota`    | `403`: the builder to create could not be created because the tenant is over its quota. Or, as the error of a build: the builder of the build, or the instance that imports it into a volume, could not be created or started because the tenant is over its quota. Free resources or raise the quota, then submit the build again. |
 type ErrorCode string
 
@@ -447,6 +485,13 @@ type KraftfileInline string
 // keys. None of `session`, `git` and `url` is one of them, which is what tells
 // the object apart from a source.
 type KraftfileObject map[string]any
+
+// ListBuildersResponse is the response message for listing the builders of the
+// caller's tenant.
+type ListBuildersResponse struct {
+	// The builders, by name.
+	Builders []BuilderStatus `json:"builders"`
+}
 
 // ListBuildsResponse is the response message for listing the builds of the
 // caller's tenant.
