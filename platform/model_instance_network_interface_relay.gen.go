@@ -23,6 +23,9 @@ type InstanceNetworkInterfaceRelay struct {
 	// The name of the node the resource is placed on. Only present on metros
 	// that span multiple nodes.
 	Node *string `json:"node,omitzero"`
+	// The instance the relay interface is attached to. Omitted if the interface
+	// is not attached to an instance.
+	Instance *InstanceNetworkInterfaceRelayInstance `json:"instance,omitzero"`
 	// Whether DNS traffic is relayed through this interface.
 	// Defaults to true.
 	RelayDns bool `json:"relay_dns"`

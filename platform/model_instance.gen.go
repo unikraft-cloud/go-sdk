@@ -321,6 +321,9 @@ type Instance struct {
 	// action is `exec`, the `args` field of the schedule specifies the command
 	// to run inside the instance.
 	Schedules []Schedule `json:"schedules,omitzero"`
+	// The migration of the instance, if it migrates or waits to migrate. Only
+	// present for users with the `migration` permission.
+	Migration *InstanceMigration `json:"migration,omitzero"`
 	// Automatic delete-on-idle/request-limit configuration.
 	// Not used for template instances.
 	Autokill *InstanceAutokill `json:"autokill,omitzero"`

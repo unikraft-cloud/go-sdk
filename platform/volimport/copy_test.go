@@ -15,7 +15,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/unikraft/go-cpio"
+	"github.com/unikraft/go-archivefs/cpio"
 )
 
 const testAuth = "0123456789abcdefghijklmnopqrstuv"

@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/coder/websocket"
 	"github.com/moby/buildkit/session"
 	"github.com/moby/buildkit/session/secrets"
 	"github.com/moby/buildkit/session/secrets/secretsprovider"
@@ -30,16 +31,25 @@ func TestAttach(t *testing.T) {
 
 		sm, err := session.NewManager()
 		require.NoError(t, err)
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodPost || r.URL.Path != "/v1/builds/b1/session" || r.Header.Get("Authorization") != "Bearer tok" {
+		srv := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != http.MethodGet || r.URL.Path != "/v1/builds/b1/session" || r.Header.Get("Authorization") != "Bearer tok" {
 				http.Error(w, "unexpected request", http.StatusBadRequest)
 				return
 			}
-			_ = sm.HandleHTTPRequest(r.Context(), w, r)
+			ws, err := websocket.Accept(w, r, nil)
+			if err != nil {
+				return
+			}
+			_ = sm.HandleConn(r.Context(), websocket.NetConn(r.Context(), ws, websocket.MessageBinary), r.Header)
 		}))
+		// The server offers HTTP/2, as a load balancer does.
+		srv.EnableHTTP2 = true
+		srv.StartTLS()
 		t.Cleanup(srv.Close)
 
-		c, err := build.New(srv.URL, build.WithToken("tok"), build.WithHTTPClient(&http.Client{Timeout: time.Minute}))
+		hc := srv.Client()
+		hc.Timeout = time.Minute
+		c, err := build.New(srv.URL, build.WithToken("tok"), build.WithHTTPClient(hc))
 		require.NoError(t, err)
 
 		s, err := session.NewSession(ctx, "app")
