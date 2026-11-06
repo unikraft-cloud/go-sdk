@@ -3,6 +3,7 @@ module unikraft.com/cloud/sdk/build
 go 1.27.0
 
 require (
+	github.com/coder/websocket v1.8.15
 	github.com/moby/buildkit v0.31.1
 	github.com/stretchr/testify v1.12.1
 )
