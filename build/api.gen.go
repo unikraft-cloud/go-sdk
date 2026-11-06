@@ -22,7 +22,7 @@ var (
 
 // CreateBuilder is the Create Builder operation.
 //
-// Create a builder of the caller's tenant in the service's metro, which then
+// Create a builder of the caller's tenant in the caller's metro, which then
 // scales to zero until a build uses it. A builder that already exists is
 // answered with `200` if every field of the request matches it and `409`
 // otherwise, and is left as it is. A tenant over its quota is answered with
@@ -42,8 +42,8 @@ func (c *Client) CreateBuilder(ctx context.Context, body Builder) (*Builder, err
 //
 // Delete a builder by name: its instance and its cache. The builds running on
 // it fail, and a later build on it creates it again. Only the builder of this
-// name in the service's metro is deleted. A builder whose instance has a
-// delete lock is answered with `409`.
+// name in the caller's metro is deleted. A builder whose instance has a delete
+// lock is answered with `409`.
 func (c *Client) DeleteBuilder(ctx context.Context, name string) error {
 	nameSegment, err := pathSegment("name", name)
 	if err != nil {
@@ -57,7 +57,7 @@ func (c *Client) DeleteBuilder(ctx context.Context, name string) error {
 // GetBuilder is the Get Builder operation.
 //
 // Get a builder by name: the builds of the caller's tenant on it, and its
-// instance. Only the builder of this name in the service's metro is looked up,
+// instance. Only the builder of this name in the caller's metro is looked up,
 // without waking it.
 func (c *Client) GetBuilder(ctx context.Context, name string) (*BuilderStatus, error) {
 	nameSegment, err := pathSegment("name", name)
@@ -77,7 +77,7 @@ func (c *Client) GetBuilder(ctx context.Context, name string) (*BuilderStatus, e
 // GetBuilderUsage is the Get Builder Usage operation.
 //
 // Get the disk usage of a builder's cache, waking the builder. Only the
-// builder of this name in the service's metro is counted. A builder that does
+// builder of this name in the caller's metro is counted. A builder that does
 // not exist is answered with `404`, and is not created.
 func (c *Client) GetBuilderUsage(ctx context.Context, name string) (*BuilderUsage, error) {
 	nameSegment, err := pathSegment("name", name)
@@ -96,7 +96,7 @@ func (c *Client) GetBuilderUsage(ctx context.Context, name string) (*BuilderUsag
 
 // ListBuilders is the List Builders operation.
 //
-// List the builders of the caller's tenant in the service's metro.
+// List the builders of the caller's tenant in the caller's metro.
 func (c *Client) ListBuilders(ctx context.Context) (*ListBuildersResponse, error) {
 	path := "/v1/builders"
 
@@ -111,7 +111,7 @@ func (c *Client) ListBuilders(ctx context.Context) (*ListBuildersResponse, error
 // PruneBuilder is the Prune Builder operation.
 //
 // Free the records of a builder's cache that no build uses, waking the builder
-// and keeping it. Only the builder of this name in the service's metro is
+// and keeping it. Only the builder of this name in the caller's metro is
 // pruned. A builder that does not exist is answered with `404`, and is not
 // created.
 func (c *Client) PruneBuilder(ctx context.Context, name string) (*PruneBuilderResponse, error) {
