@@ -149,7 +149,7 @@ type BuildOutput struct {
 	Volume *string `json:"volume,omitempty"`
 
 	// The metro of `volume`, only needed when it is not the metro of the
-	// service: the name of a metro of Unikraft Cloud, or the https URL of the
+	// build: the name of a metro of Unikraft Cloud, or the https URL of the
 	// API of any other metro. Only valid with `volume`.
 	Metro *string `json:"metro,omitempty"`
 }
