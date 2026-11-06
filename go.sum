@@ -165,8 +165,8 @@ github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXf
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
-github.com/unikraft/go-cpio v0.0.0-20260415131742-4f1984ca41f3 h1:C8GONmMNDK3spdZEHBIffmq1b1hjCm9nZrquv3+4H+U=
-github.com/unikraft/go-cpio v0.0.0-20260415131742-4f1984ca41f3/go.mod h1:OFJWAQVOq1qppx75rzF7qDoE5TqGjM1oCXW5N06Lftg=
+github.com/unikraft/go-archivefs v0.0.0-20261106123111-364b178a11ba h1:v9Gc/bx6ifAQ0/XK33mwoMT5Ad4n3+qoqQ5FHnraACQ=
+github.com/unikraft/go-archivefs v0.0.0-20261106123111-364b178a11ba/go.mod h1:NLWtSTdsTRLGQN87zqm9+vN01Ei9JX+FWwuOme2wJXw=
 github.com/xanzy/ssh-agent v0.3.3 h1:+/15pJfg/RsTxqYcX6fHqOXZwwMP+2VyYWJeWM2qQFM=
 github.com/xanzy/ssh-agent v0.3.3/go.mod h1:6dzNDKs0J9rVPHPhaGCukekBHKqfl+L3KghI1Bc68Uw=
 github.com/xo/terminfo v1.0.0 h1:2ZpYzqWzyyytjk3TP6aJVDhkMAkc99/1xKQdA3TDTBY=
