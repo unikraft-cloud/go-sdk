@@ -44,7 +44,7 @@ type Schedule struct {
 	// See https://www.man7.org/linux/man-pages/man7/systemd.time.7.html
 	When string `json:"when"`
 	// The action to perform at the scheduled time.
-	Action ScheduleAction `json:"action"`
+	Action *ScheduleAction `json:"action,omitzero"`
 	// The timestamp of when the next scheduled action will occur.
 	//
 	// This field is populated only in responses (not settable in requests).
@@ -52,8 +52,10 @@ type Schedule struct {
 	NextAt *time.Time `json:"next_at,omitzero"`
 	// The command to execute when the action is `exec`.
 	//
-	// Required when `action` is `SCHEDULE_ACTION_EXEC`, ignored otherwise.
-	// Each element is a separate argument; the first element is the executable.
+	// Required and non-empty when `action` is `exec`, and rejected for any
+	// other action, even when empty. Each element is a separate argument; the
+	// first element is the executable. At most 128 arguments, and the encoded
+	// command must fit in 1024 bytes.
 	Args []string `json:"args,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
