@@ -33,7 +33,7 @@ jobs:
 
       - uses: actions/setup-go@v7
         with:
-          go-version-file: go.mod
+          go-version-file: go.work
 
       - name: Set Go variables
         id: goenv
@@ -56,5 +56,9 @@ jobs:
 
       - name: Run checks
         shell: bash
+        env:
+          # setup-go sets GOTOOLCHAIN=local. Shared tools can use a newer Go,
+          # so let Go download that version.
+          GOTOOLCHAIN: auto
         run: |
           task --yes ci/check
