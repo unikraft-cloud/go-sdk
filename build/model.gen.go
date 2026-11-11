@@ -30,6 +30,11 @@ type Build struct {
 	// The name of the builder the build runs on.
 	Builder string `json:"builder"`
 
+	// The URL of the API of the metro of that builder: the one that the build
+	// tries first, until it started. Absent for a build that the service did
+	// not run in a metro. It is not always the metro of a volume of `output`.
+	Metro *string `json:"metro,omitempty"`
+
 	// The Kraftfile of the request. Absent for a build without one, and for a
 	// build from before the service kept its requests.
 	Kraftfile Kraftfile `json:"kraftfile,omitempty"`
@@ -116,20 +121,28 @@ type BuildHints struct {
 	// A key that the caller computes from the files that the build reads from
 	// its sources, for example a hash of the contexts and of a Kraftfile from
 	// a source. The service makes the key of the build from it, from the rest
-	// of the request except `output`, `builder`, `hints.cache`, `no_cache`,
-	// `registries` and the values of `secrets`, and from the version of the
-	// service's image builder. When a build of the caller's tenant with the
-	// same key and `output` is `running` or `succeeded`, the request is
-	// answered with that build and `200`, and no new build starts. Else, when
-	// a build with the same key `succeeded`, the new build pushes its image,
-	// or imports its filesystem, to the new `output`, and builds the image
-	// only if it cannot read it. A request with `no_cache` always starts a new
-	// build. Failed builds do not count, and neither do cancelled builds, from
-	// the cancel on. When the service runs more than one replica, a build
-	// cancelled on another one counts until it ends. A build that reads from
-	// the client's session is never shared: its request always starts a new
-	// build.
+	// of the request except `output`, `builder`, `hints.cache`,
+	// `hints.metros`, `no_cache`, `registries` and the values of `secrets`,
+	// and from the version of the service's image builder. When a build of the
+	// caller's tenant with the same key and `output` is `running` or
+	// `succeeded`, the request is answered with that build and `200`, and no
+	// new build starts. Else, when a build with the same key `succeeded`, the
+	// new build pushes its image, or imports its filesystem, to the new
+	// `output`, and builds the image only if it cannot read it. A request with
+	// `no_cache` always starts a new build. Failed builds do not count, and
+	// neither do cancelled builds, from the cancel on. When the service runs
+	// more than one replica, a build cancelled on another one counts until it
+	// ends. A build that reads from the client's session is never shared: its
+	// request always starts a new build.
 	Dedupe *string `json:"dedupe,omitempty"`
+
+	// The metros that the build may run in: names of metros, or the URLs of
+	// their APIs. The build runs in the first that answers, in the order of
+	// the service, and `metro` of the build tells which. Each must be a metro
+	// of the caller's organization that the service builds in, else the
+	// request is `invalid`. Absent means each of those metros. With them, no
+	// architecture of `platforms` builds in another metro.
+	Metros []string `json:"metros,omitempty"`
 }
 
 // BuildOutput is where the result of a build goes: exactly one of an image,
@@ -148,9 +161,11 @@ type BuildOutput struct {
 	// platform.
 	Volume *string `json:"volume,omitempty"`
 
-	// The metro of `volume`, only needed when it is not the metro of the
-	// service: the name of a metro of Unikraft Cloud, or the https URL of the
-	// API of any other metro. Only valid with `volume`.
+	// The metro of `volume`: the name of a metro of Unikraft Cloud, or the
+	// https URL of the API of any other metro. Only valid with `volume`.
+	// Defaults to the first metro that the build may run in, in the order of
+	// the service, also when that metro does not answer and the build runs in
+	// another one: name the metro of a volume that is not there.
 	Metro *string `json:"metro,omitempty"`
 }
 
@@ -382,9 +397,9 @@ type ErrorBody struct {
 
 // ErrorCode is the reason a request, or a build, failed.
 //
-// The first nine codes, and `builder_quota`, are answered by the API together
-// with the HTTP status code given. The last four are the `code` of the `error`
-// of a build whose `status` is `failed` or `cancelled`, both in the build
+// The first nine codes, `builder_quota` and `no_metro` are answered by the API together
+// with the HTTP status code given. `failed`, `cancelled`, `interrupted` and
+// `builder_quota` are the `code` of the `error` of a build whose `status` is `failed` or `cancelled`, both in the build
 // itself and in the last event of its progress stream.
 //
 // | Code               | Description |
@@ -402,6 +417,7 @@ type ErrorBody struct {
 // | `cancelled`        | The build was cancelled by a request to the cancel endpoint. |
 // | `interrupted`      | The service restarted, or lost the replica that ran the build, while the build was running, so the build was lost. It can be submitted again. |
 // | `builder_quota`    | `403`: the builder to create could not be created because the tenant is over its quota. Or, as the error of a build: the builder of the build, or the instance that imports it into a volume, could not be created or started because the tenant is over its quota. Free resources or raise the quota, then submit the build again. |
+// | `no_metro`         | `403`: the caller's organization has none of the metros that the service builds in. |
 type ErrorCode string
 
 const (
@@ -418,6 +434,7 @@ const (
 	ErrorCodeCancelled       ErrorCode = "cancelled"
 	ErrorCodeInterrupted     ErrorCode = "interrupted"
 	ErrorCodeBuilderQuota    ErrorCode = "builder_quota"
+	ErrorCodeNoMetro         ErrorCode = "no_metro"
 )
 
 // Kraftfile is the Kraftfile of a build, in one of three forms: the whole file
@@ -489,7 +506,8 @@ type KraftfileObject map[string]any
 // ListBuildersResponse is the response message for listing the builders of the
 // caller's tenant.
 type ListBuildersResponse struct {
-	// The builders, by name.
+	// The builders, by name and then by metro: one of a name in each metro
+	// that has it.
 	Builders []BuilderStatus `json:"builders"`
 }
 
