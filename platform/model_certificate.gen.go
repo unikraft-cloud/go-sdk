@@ -35,6 +35,7 @@ type Certificate struct {
 	//
 	// This is typically the primary domain name that the certificate is issued
 	// for. It represents the main identity that the certificate validates.
+	// Reported without the trailing period required on creation.
 	CommonName string `json:"common_name"`
 	// The complete subject distinguished name (DN) of the certificate.
 	//

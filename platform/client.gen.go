@@ -206,10 +206,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#update-certificates
 	UpdateCertificates(ctx context.Context, request []UpdateCertificatesRequestItem) (*Response[UpdateCertificatesResponseData], error)
-	// Retrieve all images in store.
-	//
-	// @param `request`
-	// 	The request body for this operation.
+	// Retrieve all images in store. Filter with the `digest` and `tag` query
+	// parameters; a request body is not accepted.
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
@@ -217,7 +215,7 @@ type Client interface {
 	// Performs: GET /v1/image-store
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-image-store
-	GetImageStore(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImageStoreOpts) (*Response[GetImagesResponseData], error)
+	GetImageStore(ctx context.Context, opts GetImageStoreOpts) (*Response[GetImagesResponseData], error)
 	// Retrieve all images.
 	//
 	// @param `request`
@@ -242,7 +240,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#pin-images
 	PinImages(ctx context.Context, request []PinImageRequestItem) (*Response[PinImagesResponseData], error)
-	// Unpin one or more images by UUID, making them eligible for normal
+	// Unpin one or more images by UUID or URL, making them eligible for normal
 	// cache eviction again. This does not delete the image.
 	//
 	// @param `request`
@@ -472,6 +470,12 @@ type Client interface {
 	GetInstanceLogsByUUID(ctx context.Context, uuid string, request GetInstanceLogsByUUIDRequestBody) (*Response[GetInstancesLogsResponseData], error)
 	// Get instances metrics.
 	//
+	// The response is JSON only if the request's `Accept` header is exactly
+	// `application/json` (case-insensitive, without parameters or other media
+	// types). Otherwise, including without an `Accept` header or with a
+	// wildcard, the metrics are returned as `text/plain` in the Prometheus
+	// text exposition format.
+	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
@@ -483,6 +487,12 @@ type Client interface {
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-metrics
 	GetInstanceMetrics(ctx context.Context, request []NameOrUUID, opts GetInstanceMetricsOpts) (*Response[GetInstancesMetricsResponseData], error)
 	// Get instance metrics by UUID.
+	//
+	// The response is JSON only if the request's `Accept` header is exactly
+	// `application/json` (case-insensitive, without parameters or other media
+	// types). Otherwise, including without an `Accept` header or with a
+	// wildcard, the metrics are returned as `text/plain` in the Prometheus
+	// text exposition format.
 	//
 	// @param `uuid`
 	//
@@ -1460,7 +1470,7 @@ func (c *client) UpdateCertificates(ctx context.Context, request []UpdateCertifi
 	return resp, nil
 }
 
-func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImageStoreOpts) (*Response[GetImagesResponseData], error) {
+func (c *client) GetImageStore(ctx context.Context, opts GetImageStoreOpts) (*Response[GetImagesResponseData], error) {
 	requestPath := "/v1/image-store"
 
 	query := make(url.Values)
@@ -1471,17 +1481,8 @@ func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTa
 		query.Add("tag", string(*opts.Tag))
 	}
 
-	var body []byte
-	var err error
-	if request != nil {
-		body, err = json.Marshal(request)
-		if err != nil {
-			return nil, fmt.Errorf("error marshalling request body: %w", err)
-		}
-	}
-
 	resp := &Response[GetImagesResponseData]{}
-	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
+	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
