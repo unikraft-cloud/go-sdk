@@ -3,9 +3,10 @@
 // Licensed under the BSD-3-Clause License (the "License").
 // You may not use this file except in compliance with the License.
 
-// Package lineage draws instance family trees: an instance hangs off the
-// clone source the platform reports for it, a checkpoint off the instance
-// that took it.
+// Package lineage builds the family trees of instances: an instance is the
+// child of the instance or checkpoint it was cloned from, and a checkpoint is
+// the child of the instance that took it. FetchHistories reads the checkpoint
+// histories that Build needs from the platform.
 package lineage
 
 import (
