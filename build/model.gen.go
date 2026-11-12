@@ -151,7 +151,8 @@ type BuildOutput struct {
 	// The reference to push the built image to, including the tag. The caller
 	// picks the tag, and checks whether it already exists. The push is done
 	// with the caller's token, unless `registries` has credentials for its
-	// registry.
+	// registry. A registry at a private address is `invalid` on a service that
+	// only reaches public addresses.
 	Image *string `json:"image,omitempty"`
 
 	// The name or UUID of an existing volume to import the built filesystem
@@ -289,7 +290,9 @@ type BuilderStatus struct {
 	// builder of the pool for `default`.
 	WaitingBuilds int32 `json:"waiting_builds"`
 
-	// The number of builds that run on the builder at once; more wait.
+	// The number of builds that each replica of the service runs on the
+	// builder at once; more wait. The replicas do not share their slots, so
+	// `builds` can hold more than this number.
 	MaxBuilds int32 `json:"max_builds"`
 
 	// The instance of the builder, for its image, sizes and state.
