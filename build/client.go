@@ -19,6 +19,9 @@ import (
 	"time"
 )
 
+// DefaultServer is the URL of the build service of Unikraft Cloud.
+const DefaultServer = "https://controlplane.unikraft.com"
+
 // userAgent identifies the client to the service.
 const userAgent = "unikraft-cloud-build-client"
 
