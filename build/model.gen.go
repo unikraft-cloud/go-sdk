@@ -444,7 +444,9 @@ const (
 // as a string, a source to read it from, or the parsed file as an object. A
 // source has `session`, `git` or `url`, and none is a Kraftfile key, so the
 // two object forms never collide. Relative paths in the Kraftfile resolve
-// inside the build context.
+// inside the build context. A source without a `filename` reads the file
+// `Kraftfile`, and if there is none, the build is the one of a request without
+// a `kraftfile`.
 //
 // It is one of KraftfileInline, Source, KraftfileObject.
 type Kraftfile interface {
