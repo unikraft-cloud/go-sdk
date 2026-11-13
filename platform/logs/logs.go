@@ -12,6 +12,7 @@ import (
 	"io"
 	"math"
 	"slices"
+	"sync"
 	"time"
 
 	"unikraft.com/cloud/sdk/platform"
@@ -36,11 +37,14 @@ type LogsReader struct {
 	client platform.Client
 }
 
-func (lr LogsReader) Reader(id platform.NameOrUUID, tail *int, follow bool) (io.Reader, error) {
+// Reader reads the logs of an instance from tail lines before the end. With
+// follow, it waits for new logs until StopFollowing.
+func (lr LogsReader) Reader(id platform.NameOrUUID, tail *int, follow bool) (*FollowReader, error) {
 	r := &logsReader{
 		LogsReader: lr,
 		id:         id,
 		follow:     follow,
+		stop:       make(chan struct{}),
 	}
 	offset := int64(0)
 	if tail != nil {
@@ -52,7 +56,35 @@ func (lr LogsReader) Reader(id platform.NameOrUUID, tail *int, follow bool) (io.
 	}
 	// section reader needs a max size, but we don't know it here, so just use
 	// max int - we'll handle returning EOF ourselves in ReadAt
-	return io.NewSectionReader(r, offset, math.MaxInt64), nil
+	return &FollowReader{
+		sr: io.NewSectionReader(r, offset, math.MaxInt64),
+		r:  r,
+	}, nil
+}
+
+// FollowReader reads the logs of an instance. When it follows the logs, it
+// ends with io.EOF if the instance is not found.
+type FollowReader struct {
+	sr       *io.SectionReader
+	r        *logsReader
+	stopOnce sync.Once
+	eof      bool
+}
+
+// Read reads the logs. After io.EOF, it returns io.EOF and sends no request.
+func (r *FollowReader) Read(p []byte) (int, error) {
+	if r.eof {
+		return 0, io.EOF
+	}
+	n, err := r.sr.Read(p)
+	r.eof = err == io.EOF
+	return n, err
+}
+
+// StopFollowing makes the reader return the remaining logs, then io.EOF. It
+// is safe to call from other goroutines.
+func (r *FollowReader) StopFollowing() {
+	r.stopOnce.Do(func() { close(r.r.stop) })
 }
 
 type logsReader struct {
@@ -60,6 +92,7 @@ type logsReader struct {
 	id platform.NameOrUUID
 
 	follow bool
+	stop   chan struct{}
 
 	start *int64
 	end   *int64
@@ -137,20 +170,35 @@ func (r *logsReader) ReadAt(p []byte, off int64) (n int, err error) {
 	}
 
 	for {
+		// Check for a stop before the fetch. Thus the last fetch gets all the logs.
+		stopped := false
+		select {
+		case <-r.stop:
+			stopped = true
+		default:
+		}
+
 		_, n, err = r.readChunk(p, off)
 		if err != nil {
+			if r.follow && platform.ErrorContainsOnly(err, platform.APIHTTPErrorNotFound) {
+				return 0, io.EOF
+			}
 			return n, err
 		}
-		if r.end != nil && *r.end <= off+int64(n) && !r.follow {
+		if r.end != nil && *r.end <= off+int64(n) && (!r.follow || stopped) {
 			return n, io.EOF
 		}
 		if n > 0 {
 			return n, nil
 		}
+		if stopped {
+			return 0, io.EOF
+		}
 
 		select {
 		case <-r.ctx.Done():
 			return 0, r.ctx.Err()
+		case <-r.stop:
 		case <-time.After(logBackoffDuration):
 		}
 	}
@@ -178,7 +226,7 @@ func (r *logsReader) readChunk(p []byte, off int64) (actualOffset int64, n int, 
 	if err != nil {
 		return 0, 0, err
 	}
-	if len(resp.Data.Instances) == 0 {
+	if resp == nil || resp.Data == nil || len(resp.Data.Instances) == 0 {
 		return 0, 0, fmt.Errorf("no data returned")
 	}
 	data := resp.Data.Instances[0]
