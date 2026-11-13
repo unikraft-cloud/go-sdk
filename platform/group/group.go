@@ -53,6 +53,13 @@ func (c *Group[C]) WithClient(metro string, client C) *Group[C] {
 	return c
 }
 
+// WithNotFound sets the error that DoRefs and CollectRefs return for refs that
+// no client found, in place of ErrRefNotFound.
+func (c *Group[C]) WithNotFound(fn func(ErrRefNotFound) error) *Group[C] {
+	c.notFound = fn
+	return c
+}
+
 // Names returns the names of all clients in the Group.
 func (c *Group[C]) Names() []string {
 	names := make([]string, len(c.clients))
@@ -66,6 +73,7 @@ func (c *Group[C]) Names() []string {
 // the provided list.
 func (c *Group[C]) Filter(names []string) *Group[C] {
 	g := New[C]()
+	g.notFound = c.notFound
 	for _, name := range names {
 		if client, ok := c.clientsMap[name]; ok {
 			g = g.WithClient(name, client)
@@ -77,6 +85,7 @@ func (c *Group[C]) Filter(names []string) *Group[C] {
 type Group[C platform.Client] struct {
 	clients    []namedClient[C]
 	clientsMap map[string]C
+	notFound   func(ErrRefNotFound) error
 }
 
 type namedClient[C platform.Client] struct {

@@ -120,7 +120,7 @@ func Terminate(ctx context.Context, c platform.Client, instUUID string) error {
 // Wait waits for the given instance to reach the stopped state.
 func Wait(ctx context.Context, c platform.Client, instUUID string) error {
 	req := platform.WaitInstanceByUUIDRequestBody{
-		State:    platform.InstanceStateStopped,
+		State:    new(platform.InstanceStateStopped),
 		TimeoutS: new(int64(-1)),
 	}
 	_, err := timeouts.TryWithFallback(ctx, req,

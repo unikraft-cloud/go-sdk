@@ -20,37 +20,139 @@ var (
 	_ = url.Values{}
 )
 
+// CreateBuilderOptions are the optional parameters of CreateBuilder.
+type CreateBuilderOptions struct {
+	// The metro of the builder: its name, or the URL of its API. It must be
+	// one that the caller's builds may run in. Defaults to the first of them.
+	Metro *string
+}
+
 // CreateBuilder is the Create Builder operation.
 //
-// Create a builder of the caller's tenant in the service's metro, which then
-// scales to zero until a build uses it. A builder that already exists is
-// answered with `200` if every field of the request matches it and `409`
-// otherwise, and is left as it is. A tenant over its quota is answered with
-// `403` and the code `builder_quota`.
-func (c *Client) CreateBuilder(ctx context.Context, body Builder) (*Builder, error) {
+// Create a builder of the caller's tenant in `metro`, which then scales to
+// zero until a build uses it. A builder that already exists is answered with
+// `200` if every field of the request matches it and `409` otherwise, and is
+// left as it is. A tenant over its quota is answered with `403` and the code
+// `builder_quota`, and a builder that the platform refuses, such as one with
+// sizes past the limits of the tenant's plan, with `400` and the code
+// `invalid`.
+func (c *Client) CreateBuilder(ctx context.Context, body Builder, opts CreateBuilderOptions) (*Builder, error) {
 	path := "/v1/builders"
 
+	query := url.Values{}
+	if opts.Metro != nil {
+		query.Set("metro", fmt.Sprint(*opts.Metro))
+	}
+
 	var out Builder
-	if err := c.do(ctx, http.MethodPost, path, nil, body, &out); err != nil {
+	if err := c.do(ctx, http.MethodPost, path, query, body, &out); err != nil {
 		return nil, err
 	}
 
 	return &out, nil
 }
 
+// DeleteBuilderOptions are the optional parameters of DeleteBuilder.
+type DeleteBuilderOptions struct {
+	// The metro of the builder: its name, or the URL of its API. It must be
+	// one that the caller's builds may run in. Defaults to the first of them.
+	Metro *string
+}
+
+// DeleteBuilder is the Delete Builder operation.
+//
+// Delete a builder by name: its instance and its cache. The builds running on
+// it fail, and a later build on it creates it again. Only the builder of this
+// name in `metro` is deleted. A builder whose instance has a delete lock is
+// answered with `409`.
+func (c *Client) DeleteBuilder(ctx context.Context, name string, opts DeleteBuilderOptions) error {
+	nameSegment, err := pathSegment("name", name)
+	if err != nil {
+		return err
+	}
+	path := fmt.Sprintf("/v1/builders/%s", nameSegment)
+
+	query := url.Values{}
+	if opts.Metro != nil {
+		query.Set("metro", fmt.Sprint(*opts.Metro))
+	}
+
+	return c.do(ctx, http.MethodDelete, path, query, nil, nil)
+}
+
+// GetBuilderOptions are the optional parameters of GetBuilder.
+type GetBuilderOptions struct {
+	// The metro of the builder: its name, or the URL of its API. It must be
+	// one that the caller's builds may run in. Defaults to the first of them.
+	Metro *string
+}
+
+// GetBuilder is the Get Builder operation.
+//
+// Get a builder by name: the builds of the caller's tenant on it, and its
+// instance. Only the builder of this name in `metro` is looked up, without
+// waking it.
+func (c *Client) GetBuilder(ctx context.Context, name string, opts GetBuilderOptions) (*BuilderStatus, error) {
+	nameSegment, err := pathSegment("name", name)
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("/v1/builders/%s", nameSegment)
+
+	query := url.Values{}
+	if opts.Metro != nil {
+		query.Set("metro", fmt.Sprint(*opts.Metro))
+	}
+
+	var out BuilderStatus
+	if err := c.do(ctx, http.MethodGet, path, query, nil, &out); err != nil {
+		return nil, err
+	}
+
+	return &out, nil
+}
+
+// GetBuilderUsageOptions are the optional parameters of GetBuilderUsage.
+type GetBuilderUsageOptions struct {
+	// The metro of the builder: its name, or the URL of its API. It must be
+	// one that the caller's builds may run in. Defaults to the first of them.
+	Metro *string
+}
+
 // GetBuilderUsage is the Get Builder Usage operation.
 //
 // Get the disk usage of a builder's cache, waking the builder. Only the
-// builder of this name in the service's metro is counted. A builder that does
-// not exist is answered with `404`, and is not created.
-func (c *Client) GetBuilderUsage(ctx context.Context, name string) (*BuilderUsage, error) {
+// builder of this name in `metro` is counted. A builder that does not exist is
+// answered with `404`, and is not created.
+func (c *Client) GetBuilderUsage(ctx context.Context, name string, opts GetBuilderUsageOptions) (*BuilderUsage, error) {
 	nameSegment, err := pathSegment("name", name)
 	if err != nil {
 		return nil, err
 	}
 	path := fmt.Sprintf("/v1/builders/%s/usage", nameSegment)
 
+	query := url.Values{}
+	if opts.Metro != nil {
+		query.Set("metro", fmt.Sprint(*opts.Metro))
+	}
+
 	var out BuilderUsage
+	if err := c.do(ctx, http.MethodGet, path, query, nil, &out); err != nil {
+		return nil, err
+	}
+
+	return &out, nil
+}
+
+// ListBuilders is the List Builders operation.
+//
+// List the builders of the caller's tenant in each metro that its builds may
+// run in. A metro that does not answer within 10 seconds, or that refuses the
+// token, is left out.
+func (c *Client) ListBuilders(ctx context.Context) (*ListBuildersResponse, error) {
+	path := "/v1/builders"
+
+	var out ListBuildersResponse
 	if err := c.do(ctx, http.MethodGet, path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -58,21 +160,32 @@ func (c *Client) GetBuilderUsage(ctx context.Context, name string) (*BuilderUsag
 	return &out, nil
 }
 
+// PruneBuilderOptions are the optional parameters of PruneBuilder.
+type PruneBuilderOptions struct {
+	// The metro of the builder: its name, or the URL of its API. It must be
+	// one that the caller's builds may run in. Defaults to the first of them.
+	Metro *string
+}
+
 // PruneBuilder is the Prune Builder operation.
 //
 // Free the records of a builder's cache that no build uses, waking the builder
-// and keeping it. Only the builder of this name in the service's metro is
-// pruned. A builder that does not exist is answered with `404`, and is not
-// created.
-func (c *Client) PruneBuilder(ctx context.Context, name string) (*PruneBuilderResponse, error) {
+// and keeping it. Only the builder of this name in `metro` is pruned. A
+// builder that does not exist is answered with `404`, and is not created.
+func (c *Client) PruneBuilder(ctx context.Context, name string, opts PruneBuilderOptions) (*PruneBuilderResponse, error) {
 	nameSegment, err := pathSegment("name", name)
 	if err != nil {
 		return nil, err
 	}
 	path := fmt.Sprintf("/v1/builders/%s/prune", nameSegment)
 
+	query := url.Values{}
+	if opts.Metro != nil {
+		query.Set("metro", fmt.Sprint(*opts.Metro))
+	}
+
 	var out PruneBuilderResponse
-	if err := c.do(ctx, http.MethodPost, path, nil, nil, &out); err != nil {
+	if err := c.do(ctx, http.MethodPost, path, query, nil, &out); err != nil {
 		return nil, err
 	}
 
@@ -105,13 +218,15 @@ func (c *Client) CancelBuild(ctx context.Context, id string) (*Build, error) {
 // Create a build. It runs on a builder of the caller's tenant, which is
 // created on first use, whether or not anyone is watching it, and waits for a
 // build slot while each of the tenant's builders already runs as many builds
-// at once as the service allows. A request that uses a part of the full build
-// API this service does not support yet is answered with `400` and the code
-// `unsupported`. A tenant that already has as many builds running or waiting
-// as it may is answered with `429` and the code `too_many_builds`. A request
-// whose `hints.dedupe` names a running or succeeded build with the same
-// `output` is answered with `200` and that build, and starts nothing. With
-// other `output`, the new build pushes the image of a succeeded build.
+// at once as the service allows. Each replica of the service has its own slots
+// on each builder, so a builder runs up to `max_builds` builds for each
+// replica. A request that uses a part of the full build API this service does
+// not support yet is answered with `400` and the code `unsupported`. A tenant
+// that already has as many builds running or waiting as it may is answered
+// with `429` and the code `too_many_builds`. A request whose `hints.dedupe`
+// names a running or succeeded build with the same `output` is answered with
+// `200` and that build, and starts nothing. With other `output`, the new build
+// pushes the image of a succeeded build.
 func (c *Client) CreateBuild(ctx context.Context, body CreateBuildRequest) (*Build, error) {
 	path := "/v1/builds"
 

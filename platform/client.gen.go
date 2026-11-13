@@ -206,10 +206,8 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/certificates#update-certificates
 	UpdateCertificates(ctx context.Context, request []UpdateCertificatesRequestItem) (*Response[UpdateCertificatesResponseData], error)
-	// Retrieve all images in store.
-	//
-	// @param `request`
-	// 	The request body for this operation.
+	// Retrieve all images in store. Filter with the `digest` and `tag` query
+	// parameters; a request body is not accepted.
 	//
 	// @param `opts`
 	// 	Optional query parameters for this operation.
@@ -217,7 +215,7 @@ type Client interface {
 	// Performs: GET /v1/image-store
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#get-image-store
-	GetImageStore(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImageStoreOpts) (*Response[GetImagesResponseData], error)
+	GetImageStore(ctx context.Context, opts GetImageStoreOpts) (*Response[GetImagesResponseData], error)
 	// Retrieve all images.
 	//
 	// @param `request`
@@ -242,7 +240,7 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#pin-images
 	PinImages(ctx context.Context, request []PinImageRequestItem) (*Response[PinImagesResponseData], error)
-	// Unpin one or more images by UUID, making them eligible for normal
+	// Unpin one or more images by UUID or URL, making them eligible for normal
 	// cache eviction again. This does not delete the image.
 	//
 	// @param `request`
@@ -252,6 +250,38 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/images#unpin-images
 	UnpinImages(ctx context.Context, request []UnpinImageRequestItem) (*Response[UnpinImagesResponseData], error)
+	// Abort the migration of an instance by UUID. Only the source node can abort
+	// a migration, and not once it commits. Requires the `migration` permission.
+	//
+	// @param `uuid`
+	//
+	// Performs: PUT /v1/instances/{uuid}/migrate/abort
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#abort-instance-migration-by-uuid
+	AbortInstanceMigrationByUUID(ctx context.Context, uuid string) (*Response[AbortInstanceMigrationsResponseData], error)
+	// Abort the migrations of instances by ID(s). Only the source node can
+	// abort a migration, and not once it commits. Requires the `migration`
+	// permission.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// Performs: PUT /v1/instances/migrate/abort
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#abort-instance-migrations
+	AbortInstanceMigrations(ctx context.Context, request []NameOrUUID) (*Response[AbortInstanceMigrationsResponseData], error)
+	// Accept migrations on this node. Issues a migration URL and token for each
+	// item, to pass to the migrate request on the source node. A request
+	// without a body accepts one migration of any instance. Requires the
+	// `migration` permission.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// Performs: PUT /v1/instances/migrate/accept
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#accept-instance-migrations
+	AcceptInstanceMigrations(ctx context.Context, request []AcceptInstanceMigrationsRequestItem) (*Response[AcceptInstanceMigrationsResponseData], error)
 	// Create a checkpoint from an existing instance. A checkpoint captures the
 	// state of an instance at a specific point in time. Checkpoints can be
 	// created from running, stopped, or standby instances.
@@ -440,6 +470,12 @@ type Client interface {
 	GetInstanceLogsByUUID(ctx context.Context, uuid string, request GetInstanceLogsByUUIDRequestBody) (*Response[GetInstancesLogsResponseData], error)
 	// Get instances metrics.
 	//
+	// The response is JSON only if the request's `Accept` header is exactly
+	// `application/json` (case-insensitive, without parameters or other media
+	// types). Otherwise, including without an `Accept` header or with a
+	// wildcard, the metrics are returned as `text/plain` in the Prometheus
+	// text exposition format.
+	//
 	// @param `request`
 	// 	The request body for this operation.
 	//
@@ -451,6 +487,12 @@ type Client interface {
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-instance-metrics
 	GetInstanceMetrics(ctx context.Context, request []NameOrUUID, opts GetInstanceMetricsOpts) (*Response[GetInstancesMetricsResponseData], error)
 	// Get instance metrics by UUID.
+	//
+	// The response is JSON only if the request's `Accept` header is exactly
+	// `application/json` (case-insensitive, without parameters or other media
+	// types). Otherwise, including without an `Accept` header or with a
+	// wildcard, the metrics are returned as `text/plain` in the Prometheus
+	// text exposition format.
 	//
 	// @param `uuid`
 	//
@@ -493,6 +535,30 @@ type Client interface {
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/instances#get-template-instances
 	GetTemplateInstances(ctx context.Context, request []NameOrUUID, opts GetTemplateInstancesOpts) (*Response[GetTemplateInstancesResponseData], error)
+	// Migrate instance by UUID to another node. Call accept on the destination
+	// node first. A running instance migrates live, a stopped one as it is.
+	// Requires the `migration` permission.
+	//
+	// @param `uuid`
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// Performs: PUT /v1/instances/{uuid}/migrate
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#migrate-instance-by-uuid
+	MigrateInstanceByUUID(ctx context.Context, uuid string, request MigrateInstanceByUUIDRequestBody) (*Response[MigrateInstancesResponseData], error)
+	// Migrate instances by ID(s) to another node. Call accept on the
+	// destination node first. A running instance migrates live, a stopped one
+	// as it is. Requires the `migration` permission.
+	//
+	// @param `request`
+	// 	The request body for this operation.
+	//
+	// Performs: PUT /v1/instances/migrate
+	//
+	// See: https://unikraft.com/docs/api/platform/v1/instances#migrate-instances
+	MigrateInstances(ctx context.Context, request []MigrateInstancesRequestItem) (*Response[MigrateInstancesResponseData], error)
 	// Start instance by UUID.
 	//
 	// @param `uuid`
@@ -1404,7 +1470,7 @@ func (c *client) UpdateCertificates(ctx context.Context, request []UpdateCertifi
 	return resp, nil
 }
 
-func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTagOrDigest, opts GetImageStoreOpts) (*Response[GetImagesResponseData], error) {
+func (c *client) GetImageStore(ctx context.Context, opts GetImageStoreOpts) (*Response[GetImagesResponseData], error) {
 	requestPath := "/v1/image-store"
 
 	query := make(url.Values)
@@ -1415,17 +1481,8 @@ func (c *client) GetImageStore(ctx context.Context, request []GetImagesRequestTa
 		query.Add("tag", string(*opts.Tag))
 	}
 
-	var body []byte
-	var err error
-	if request != nil {
-		body, err = json.Marshal(request)
-		if err != nil {
-			return nil, fmt.Errorf("error marshalling request body: %w", err)
-		}
-	}
-
 	resp := &Response[GetImagesResponseData]{}
-	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
+	if err := doRequest[GetImagesResponseData](ctx, c.request, http.MethodGet, requestPath, query, nil, resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1491,6 +1548,55 @@ func (c *client) UnpinImages(ctx context.Context, request []UnpinImageRequestIte
 
 	resp := &Response[UnpinImagesResponseData]{}
 	if err := doRequest[UnpinImagesResponseData](ctx, c.request, http.MethodDelete, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) AbortInstanceMigrationByUUID(ctx context.Context, uuid string) (*Response[AbortInstanceMigrationsResponseData], error) {
+	requestPath := "/v1/instances/{uuid}/migrate/abort"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
+
+	resp := &Response[AbortInstanceMigrationsResponseData]{}
+	if err := doRequest[AbortInstanceMigrationsResponseData](ctx, c.request, http.MethodPut, requestPath, nil, nil, resp, nil); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) AbortInstanceMigrations(ctx context.Context, request []NameOrUUID) (*Response[AbortInstanceMigrationsResponseData], error) {
+	requestPath := "/v1/instances/migrate/abort"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[AbortInstanceMigrationsResponseData]{}
+	if err := doRequest[AbortInstanceMigrationsResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) AcceptInstanceMigrations(ctx context.Context, request []AcceptInstanceMigrationsRequestItem) (*Response[AcceptInstanceMigrationsResponseData], error) {
+	requestPath := "/v1/instances/migrate/accept"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[AcceptInstanceMigrationsResponseData]{}
+	if err := doRequest[AcceptInstanceMigrationsResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -1985,6 +2091,41 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 
 	resp := &Response[GetTemplateInstancesResponseData]{}
 	if err := doRequest[GetTemplateInstancesResponseData](ctx, c.request, http.MethodGet, requestPath, query, bytes.NewReader(body), resp, nil); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) MigrateInstanceByUUID(ctx context.Context, uuid string, request MigrateInstanceByUUIDRequestBody) (*Response[MigrateInstancesResponseData], error) {
+	requestPath := "/v1/instances/{uuid}/migrate"
+	requestPath = strings.ReplaceAll(requestPath, "{uuid}", url.PathEscape(string(uuid)))
+
+	body, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("error marshalling request body: %w", err)
+	}
+
+	resp := &Response[MigrateInstancesResponseData]{}
+	if err := doRequest[MigrateInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (c *client) MigrateInstances(ctx context.Context, request []MigrateInstancesRequestItem) (*Response[MigrateInstancesResponseData], error) {
+	requestPath := "/v1/instances/migrate"
+
+	var body []byte
+	var err error
+	if request != nil {
+		body, err = json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("error marshalling request body: %w", err)
+		}
+	}
+
+	resp := &Response[MigrateInstancesResponseData]{}
+	if err := doRequest[MigrateInstancesResponseData](ctx, c.request, http.MethodPut, requestPath, nil, bytes.NewReader(body), resp, nil); err != nil {
 		return resp, err
 	}
 	return resp, nil

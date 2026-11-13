@@ -16,7 +16,7 @@ import (
 	"time"
 
 	"github.com/docker/go-units"
-	"github.com/unikraft/go-cpio"
+	"github.com/unikraft/go-archivefs/cpio"
 	"unikraft.com/x/log"
 )
 

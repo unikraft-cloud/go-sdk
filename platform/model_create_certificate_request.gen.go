@@ -28,8 +28,9 @@ type CreateCertificateRequest struct {
 	Cn *string `json:"cn,omitzero"`
 	// The common name (CN) of the certificate.
 	//
-	// This must be a fully-qualified domain name (FQDN). Exactly one of `cn`
-	// or `common_name` must be specified.
+	// This must be a fully-qualified domain name (FQDN) ending with a period
+	// `.`, e.g. `funky-town.com.`. Exactly one of `cn` or `common_name` must be
+	// specified.
 	CommonName *string `json:"common_name,omitzero"`
 	// The certificate chain in PEM format. Required for user-uploaded certificates.
 	Chain string `json:"chain"`

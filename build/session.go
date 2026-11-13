@@ -11,12 +11,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 	"maps"
 	"net"
 	"net/http"
-	"net/http/httptrace"
 
+	"github.com/coder/websocket"
 	"github.com/moby/buildkit/session"
 )
 
@@ -30,8 +29,8 @@ func (c *Client) Attach(ctx context.Context, id string, s *session.Session) erro
 
 	attached := make(chan error, 1)
 	go func() {
-		_ = s.Run(ctx, func(ctx context.Context, proto string, meta map[string][]string) (net.Conn, error) {
-			conn, err := c.upgrade(ctx, path, proto, meta)
+		_ = s.Run(ctx, func(ctx context.Context, _ string, meta map[string][]string) (net.Conn, error) {
+			conn, err := c.dial(ctx, path, meta)
 			attached <- err
 			return conn, err
 		})
@@ -49,59 +48,27 @@ func (c *Client) Attach(ctx context.Context, id string, s *session.Session) erro
 	return nil
 }
 
-// upgrade switches a POST to path over to proto.
-// shortcut: HTTP/2 cannot switch, UKC's edge speaks HTTP/1.1; force HTTP/1.1 if a server negotiates h2.
-func (c *Client) upgrade(ctx context.Context, path, proto string, header map[string][]string) (net.Conn, error) {
-	var conn net.Conn
-	ctx = httptrace.WithClientTrace(ctx, &httptrace.ClientTrace{
-		GotConn: func(info httptrace.GotConnInfo) { conn = info.Conn },
-	})
-
-	req, err := c.newRequest(ctx, http.MethodPost, path, nil, nil)
+// dial opens a WebSocket to path, whose binary messages carry the session. Go
+// dials a WebSocket over HTTP/1.1, also when the server offers HTTP/2.
+func (c *Client) dial(ctx context.Context, path string, header map[string][]string) (net.Conn, error) {
+	req, err := c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
 		return nil, err
 	}
 	maps.Copy(req.Header, header)
-	req.Header.Set("Connection", "Upgrade")
-	req.Header.Set("Upgrade", proto)
 
-	// A timeout would end the session, and net/http's timeout body cannot be written.
-	hc := *c.hc
-	hc.Timeout = 0
-	resp, err := hc.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
+	// The timeout of the client applies only to the handshake, thus the session can go on.
+	ws, resp, err := websocket.Dial(ctx, req.URL.String(), &websocket.DialOptions{HTTPClient: c.hc, HTTPHeader: req.Header})
 	switch {
-	case resp.StatusCode == http.StatusSwitchingProtocols:
+	case err == nil:
+		return websocket.NetConn(ctx, ws, websocket.MessageBinary), nil
+	case resp == nil:
+		return nil, err
 	case resp.StatusCode >= http.StatusBadRequest:
-		defer resp.Body.Close()
 		return nil, readError(resp)
 	case resp.StatusCode >= http.StatusMultipleChoices:
-		defer resp.Body.Close()
 		return nil, redirected(resp)
 	default:
-		defer resp.Body.Close()
-		return nil, fmt.Errorf("the service answered %s instead of switching to %s", resp.Status, proto)
+		return nil, err
 	}
-
-	// net/http hands out the switched connection as the body.
-	rwc, ok := resp.Body.(io.ReadWriteCloser)
-	if !ok || conn == nil {
-		resp.Body.Close()
-		return nil, fmt.Errorf("the connection that switched to %s is not writable", proto)
-	}
-
-	return upgradedConn{Conn: conn, rwc: rwc}, nil
 }
-
-// upgradedConn reads through the 101's body, which holds what net/http read ahead.
-type upgradedConn struct {
-	net.Conn
-	rwc io.ReadWriteCloser
-}
-
-func (c upgradedConn) Read(p []byte) (int, error)  { return c.rwc.Read(p) }
-func (c upgradedConn) Write(p []byte) (int, error) { return c.rwc.Write(p) }
-func (c upgradedConn) Close() error                { return c.rwc.Close() }
