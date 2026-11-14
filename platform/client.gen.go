@@ -1145,14 +1145,26 @@ func (c *client) SubscribeAuditEvents(ctx context.Context, opts SubscribeAuditEv
 	requestPath := "/v1/audit"
 
 	query := make(url.Values)
-	for _, v := range opts.Events {
-		query.Add("events", string(v))
+	if len(opts.Events) > 0 {
+		values := make([]string, 0, len(opts.Events))
+		for _, v := range opts.Events {
+			values = append(values, string(v))
+		}
+		query.Set("events", strings.Join(values, ","))
 	}
-	for _, v := range opts.Uuid {
-		query.Add("uuid", string(v))
+	if len(opts.Uuid) > 0 {
+		values := make([]string, 0, len(opts.Uuid))
+		for _, v := range opts.Uuid {
+			values = append(values, string(v))
+		}
+		query.Set("uuid", strings.Join(values, ","))
 	}
-	for _, v := range opts.Tags {
-		query.Add("tags", string(v))
+	if len(opts.Tags) > 0 {
+		values := make([]string, 0, len(opts.Tags))
+		for _, v := range opts.Tags {
+			values = append(values, string(v))
+		}
+		query.Set("tags", strings.Join(values, ","))
 	}
 
 	resp := &Response[AuditEvent]{}
@@ -1829,8 +1841,12 @@ func (c *client) GetCheckpointInstances(ctx context.Context, request []NameOrUUI
 	if opts.Sortby != nil {
 		query.Add("sortby", string(*opts.Sortby))
 	}
-	for _, v := range opts.Tags {
-		query.Add("tags", string(v))
+	if len(opts.Tags) > 0 {
+		values := make([]string, 0, len(opts.Tags))
+		for _, v := range opts.Tags {
+			values = append(values, string(v))
+		}
+		query.Set("tags", strings.Join(values, ","))
 	}
 
 	var body []byte
@@ -2015,8 +2031,12 @@ func (c *client) GetInstances(ctx context.Context, request []NameOrUUID, opts Ge
 	if opts.Sortby != nil {
 		query.Add("sortby", string(*opts.Sortby))
 	}
-	for _, v := range opts.Tags {
-		query.Add("tags", string(v))
+	if len(opts.Tags) > 0 {
+		values := make([]string, 0, len(opts.Tags))
+		for _, v := range opts.Tags {
+			values = append(values, string(v))
+		}
+		query.Set("tags", strings.Join(values, ","))
 	}
 
 	var body []byte
@@ -2076,8 +2096,12 @@ func (c *client) GetTemplateInstances(ctx context.Context, request []NameOrUUID,
 	if opts.Sortby != nil {
 		query.Add("sortby", string(*opts.Sortby))
 	}
-	for _, v := range opts.Tags {
-		query.Add("tags", string(v))
+	if len(opts.Tags) > 0 {
+		values := make([]string, 0, len(opts.Tags))
+		for _, v := range opts.Tags {
+			values = append(values, string(v))
+		}
+		query.Set("tags", strings.Join(values, ","))
 	}
 
 	var body []byte
@@ -2867,8 +2891,12 @@ func (c *client) GetTemplateVolumes(ctx context.Context, request []NameOrUUID, o
 	if opts.Sortby != nil {
 		query.Add("sortby", string(*opts.Sortby))
 	}
-	for _, v := range opts.Tags {
-		query.Add("tags", string(v))
+	if len(opts.Tags) > 0 {
+		values := make([]string, 0, len(opts.Tags))
+		for _, v := range opts.Tags {
+			values = append(values, string(v))
+		}
+		query.Set("tags", strings.Join(values, ","))
 	}
 
 	var body []byte
@@ -2928,8 +2956,12 @@ func (c *client) GetVolumes(ctx context.Context, request []NameOrUUID, opts GetV
 	if opts.Sortby != nil {
 		query.Add("sortby", string(*opts.Sortby))
 	}
-	for _, v := range opts.Tags {
-		query.Add("tags", string(v))
+	if len(opts.Tags) > 0 {
+		values := make([]string, 0, len(opts.Tags))
+		for _, v := range opts.Tags {
+			values = append(values, string(v))
+		}
+		query.Set("tags", strings.Join(values, ","))
 	}
 
 	var body []byte
