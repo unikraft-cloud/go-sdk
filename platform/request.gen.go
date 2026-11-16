@@ -16,6 +16,7 @@ import (
 	"mime"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"unikraft.com/cloud/sdk/pkg/httpclient"
@@ -165,7 +166,7 @@ func doRequest[T any](ctx context.Context, req *Request, method, path string, qu
 	}
 
 	u = u.JoinPath(path)
-	u.RawQuery = query.Encode()
+	u.RawQuery = strings.ReplaceAll(query.Encode(), "%2C", ",")
 
 	httpReq, err := http.NewRequestWithContext(ctx, method, u.String(), reqBody)
 	if err != nil {
