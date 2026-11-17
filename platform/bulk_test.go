@@ -102,6 +102,6 @@ func TestDeleteInstancesMissingOK(t *testing.T) {
 	})
 
 	c := newClientAgainst(srv)
-	assert.Error(t, c.DeleteInstances(t.Context(), []Ref{Name("web")}))
+	require.Error(t, c.DeleteInstances(t.Context(), []Ref{Name("web")}))
 	assert.NoError(t, c.DeleteInstances(t.Context(), []Ref{Name("web")}, WithDeleteMissingOK()))
 }

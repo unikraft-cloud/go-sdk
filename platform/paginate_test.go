@@ -90,7 +90,7 @@ func TestPaginate(t *testing.T) {
 			t.Parallel()
 
 			got, err := collectAll(paginate(t.Context(), tt.pageSize, tt.listing.fetch, func(s string) string { return s }))
-			assert.ErrorIs(t, err, tt.wantErr)
+			require.ErrorIs(t, err, tt.wantErr)
 			assert.Equal(t, tt.want, got)
 		})
 	}
@@ -100,7 +100,8 @@ func TestPaginateStopsWhenConsumerBreaks(t *testing.T) {
 	t.Parallel()
 
 	listing := fakeListing{items: []string{"a", "b", "c", "d"}}
-	for item := range paginate(t.Context(), 2, listing.fetch, func(s string) string { return s }) {
+	for item, err := range paginate(t.Context(), 2, listing.fetch, func(s string) string { return s }) {
+		require.NoError(t, err)
 		if item == "b" {
 			break
 		}
@@ -114,7 +115,7 @@ func TestPaginateYieldsFetchError(t *testing.T) {
 	boom := errors.New("boom")
 	fetch := func(context.Context, uint32, *string) ([]string, error) { return nil, boom }
 	_, err := collectAll(paginate(t.Context(), 2, fetch, func(s string) string { return s }))
-	assert.ErrorIs(t, err, boom)
+	require.ErrorIs(t, err, boom)
 }
 
 func TestListSendsPagingQuery(t *testing.T) {
