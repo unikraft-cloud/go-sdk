@@ -138,12 +138,12 @@ func TestInstanceWaitSendsStateAndTimeoutThenRefreshes(t *testing.T) {
 		{
 			name: "state and timeout",
 			opts: []WaitOption{WithWaitState(gen.InstanceStateStopped), WithWaitTimeout(1500 * time.Millisecond)},
-			want: `{"state":"stopped","timeout_ms":1500}`,
+			want: `{"state":"stopped","timeout_s":2}`,
 		},
 		{
 			name: "platform maximum",
 			opts: []WaitOption{WithWaitTimeout(-1)},
-			want: `{"timeout_ms":-1}`,
+			want: `{"timeout_s":-1}`,
 		},
 	}
 

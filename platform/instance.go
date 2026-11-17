@@ -223,15 +223,15 @@ func WithWaitState(state gen.InstanceState) WaitOption {
 	return func(b *gen.WaitInstanceByUUIDRequestBody) { b.State = &state }
 }
 
-// WithWaitTimeout stops waiting after d. A negative d waits for as long as
-// the platform allows.
+// WithWaitTimeout stops waiting after d, rounded up to a full second. A
+// negative d waits for as long as the platform allows.
 func WithWaitTimeout(d time.Duration) WaitOption {
 	return func(b *gen.WaitInstanceByUUIDRequestBody) {
 		if d < 0 {
-			b.TimeoutMs = new(int64(-1))
+			b.TimeoutS = new(int64(-1))
 			return
 		}
-		b.TimeoutMs = new(int64(d / time.Millisecond))
+		b.TimeoutS = new(int64((d + time.Second - 1) / time.Second))
 	}
 }
 
