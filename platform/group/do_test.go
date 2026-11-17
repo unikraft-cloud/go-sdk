@@ -41,7 +41,7 @@ func TestDoMetroUnknownNameErrors(t *testing.T) {
 		t.Fatal("fn must not be called for an unknown metro")
 		return nil
 	})
-	assert.ErrorContains(t, err, "missing")
+	require.ErrorContains(t, err, "missing")
 }
 
 func TestDoMetroWrapsCallbackError(t *testing.T) {
@@ -52,8 +52,8 @@ func TestDoMetroWrapsCallbackError(t *testing.T) {
 		return boom
 	})
 	require.Error(t, err)
-	assert.ErrorIs(t, err, boom)
-	assert.ErrorContains(t, err, `"fra"`)
+	require.ErrorIs(t, err, boom)
+	require.ErrorContains(t, err, `"fra"`)
 }
 
 func TestDoAllCallsEveryClient(t *testing.T) {
@@ -84,8 +84,8 @@ func TestDoAllJoinsAllErrors(t *testing.T) {
 		return wawErr
 	})
 	require.Error(t, err)
-	assert.ErrorIs(t, err, fraErr)
-	assert.ErrorIs(t, err, wawErr)
+	require.ErrorIs(t, err, fraErr)
+	require.ErrorIs(t, err, wawErr)
 }
 
 func TestDoAllOnEmptyGroupSucceeds(t *testing.T) {
@@ -200,10 +200,10 @@ func TestDoRefsScopedToUnknownMetroErrorsWithoutCallingAnyClient(t *testing.T) {
 		return nil, nil
 	})
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "missing")
+	require.ErrorContains(t, err, "missing")
 
 	var notFound ErrRefNotFound
-	assert.False(t, errors.As(err, &notFound), "an unknown metro is a hard error, not a not-found result")
+	assert.NotErrorAs(t, err, &notFound, "an unknown metro is a hard error, not a not-found result")
 }
 
 func TestDoRefsPropagatesCallbackError(t *testing.T) {
@@ -214,7 +214,7 @@ func TestDoRefsPropagatesCallbackError(t *testing.T) {
 		return nil, boom
 	})
 	require.Error(t, err)
-	assert.ErrorIs(t, err, boom)
+	require.ErrorIs(t, err, boom)
 }
 
 func TestDoRefsEmptyRefsSucceedsTrivially(t *testing.T) {

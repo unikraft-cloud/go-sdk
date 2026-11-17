@@ -22,7 +22,7 @@ func TestRefString(t *testing.T) {
 	assert.Equal(t, "custom", Ref{Name: "foo", Display: "custom"}.String())
 	assert.Equal(t, "foo", Ref{Name: "foo"}.String())
 	assert.Equal(t, "abc", Ref{UUID: "abc"}.String())
-	assert.Equal(t, "", Ref{}.String())
+	assert.Empty(t, Ref{}.String())
 }
 
 func TestRefsStrings(t *testing.T) {

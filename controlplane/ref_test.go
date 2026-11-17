@@ -44,6 +44,6 @@ func TestRefsWithSameStringAreDistinctTypes(t *testing.T) {
 }
 
 func TestEmptyRefs(t *testing.T) {
-	assert.Equal(t, "", Name("").String())
-	assert.Equal(t, "", UUID("").String())
+	assert.Empty(t, Name("").String())
+	assert.Empty(t, UUID("").String())
 }

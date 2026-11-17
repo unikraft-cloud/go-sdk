@@ -32,7 +32,7 @@ func TestCollectMetroPropagatesError(t *testing.T) {
 	_, err := CollectMetro(context.Background(), g, "fra", func(ctx context.Context, c fakeClient) (string, error) {
 		return "", boom
 	})
-	assert.ErrorIs(t, err, boom)
+	require.ErrorIs(t, err, boom)
 }
 
 func TestCollectAllPreservesClientOrder(t *testing.T) {
@@ -108,7 +108,7 @@ func TestCollectRefsReturnsErrRefNotFound(t *testing.T) {
 	})
 	require.Error(t, err)
 	var notFound ErrRefNotFound
-	assert.ErrorAs(t, err, &notFound)
+	require.ErrorAs(t, err, &notFound)
 }
 
 func TestCollectRefsSlicesFlattensAcrossClients(t *testing.T) {

@@ -131,7 +131,7 @@ func TestInstanceLogsPropagatesNoDataError(t *testing.T) {
 	require.NoError(t, err) // Reader() itself doesn't fetch when tail is nil.
 
 	_, err = io.ReadAll(r)
-	assert.ErrorContains(t, err, "no data returned")
+	require.ErrorContains(t, err, "no data returned")
 }
 
 func TestInstanceLogsDetectsShortReadMismatch(t *testing.T) {
@@ -158,7 +158,7 @@ func TestInstanceLogsDetectsShortReadMismatch(t *testing.T) {
 	require.NoError(t, err)
 
 	_, err = io.ReadAll(r)
-	assert.ErrorContains(t, err, "expected to read")
+	require.ErrorContains(t, err, "expected to read")
 }
 
 func TestInstanceLogsFollowBlocksThenRespectsContextCancellation(t *testing.T) {
@@ -182,7 +182,7 @@ func TestInstanceLogsFollowBlocksThenRespectsContextCancellation(t *testing.T) {
 
 	select {
 	case err := <-errCh:
-		assert.ErrorIs(t, err, context.Canceled)
+		require.ErrorIs(t, err, context.Canceled)
 	case <-time.After(3 * time.Second):
 		t.Fatal("cancelling the context did not unblock the follow read")
 	}

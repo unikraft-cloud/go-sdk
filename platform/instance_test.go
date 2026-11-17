@@ -9,7 +9,6 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -85,8 +84,8 @@ func TestInstanceRefreshNotFound(t *testing.T) {
 	inst := wrapInstance(rawClientAgainst(srv), gen.Instance{Uuid: "abc"})
 	err := inst.Refresh(context.Background())
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "abc")
-	assert.ErrorContains(t, err, "not found")
+	require.ErrorContains(t, err, "abc")
+	require.ErrorContains(t, err, "not found")
 }
 
 func TestInstanceStartRefreshesAfterwards(t *testing.T) {
@@ -170,7 +169,7 @@ func TestInstanceStartPropagatesLifecycleError(t *testing.T) {
 	inst := wrapInstance(rawClientAgainst(srv), gen.Instance{Uuid: "abc"})
 	err := inst.Start(context.Background())
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "start failed")
+	require.ErrorContains(t, err, "start failed")
 }
 
 func TestInstanceUpdateWithNoChangesSkipsRequest(t *testing.T) {
@@ -231,7 +230,7 @@ func TestInstanceUpdateJoinsRefreshErrorWhenPostUpdateRefreshFails(t *testing.T)
 
 	err := inst.Update(context.Background())
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "not found")
+	require.ErrorContains(t, err, "not found")
 }
 
 func TestInstanceUpdateReturnsAPIErrorWithoutRefreshWhenIfstateSet(t *testing.T) {
@@ -254,7 +253,7 @@ func TestInstanceUpdateReturnsAPIErrorWithoutRefreshWhenIfstateSet(t *testing.T)
 
 	err := inst.Update(context.Background())
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "update rejected")
+	require.ErrorContains(t, err, "update rejected")
 	assert.True(t, refreshed, "Update always refreshes even when the update call itself failed")
 }
 
@@ -366,7 +365,7 @@ func TestInstanceUpdateWrapsMarshalAndRefreshErrorsTogether(t *testing.T) {
 	require.Error(t, err)
 
 	var joined interface{ Unwrap() []error }
-	require.True(t, errors.As(err, &joined))
+	require.ErrorAs(t, err, &joined)
 	assert.Len(t, joined.Unwrap(), 2)
 }
 
@@ -458,7 +457,7 @@ func TestInstanceMetricsNotFound(t *testing.T) {
 	inst := wrapInstance(rawClientAgainst(srv), gen.Instance{Uuid: "abc"})
 	_, err := inst.Metrics(context.Background())
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "abc")
+	require.ErrorContains(t, err, "abc")
 }
 
 func TestInstanceHistory(t *testing.T) {
@@ -500,5 +499,5 @@ func TestInstanceHistoryNotFound(t *testing.T) {
 	inst := wrapInstance(rawClientAgainst(srv), gen.Instance{Uuid: "abc"})
 	_, err := inst.History(context.Background())
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "abc")
+	require.ErrorContains(t, err, "abc")
 }

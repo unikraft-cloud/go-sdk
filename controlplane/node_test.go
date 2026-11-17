@@ -8,7 +8,6 @@ package controlplane
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -72,8 +71,8 @@ func TestNodeRefreshNotFound(t *testing.T) {
 	node := wrapNode(rawClientAgainst(srv), gen.Node{Uuid: "abc"})
 	err := node.Refresh(context.Background())
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "abc")
-	assert.ErrorContains(t, err, "not found")
+	require.ErrorContains(t, err, "abc")
+	require.ErrorContains(t, err, "not found")
 }
 
 func TestNodeDestroyDoesNotRefresh(t *testing.T) {
@@ -106,7 +105,7 @@ func TestNodeDestroyPropagatesAPIError(t *testing.T) {
 	node := wrapNode(rawClientAgainst(srv), gen.Node{Uuid: "abc"})
 	err := node.Destroy(context.Background())
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "delete-locked")
+	require.ErrorContains(t, err, "delete-locked")
 }
 
 func TestNodeWaitRefreshesState(t *testing.T) {
@@ -134,7 +133,7 @@ func TestNodeWaitNotFound(t *testing.T) {
 	node := wrapNode(rawClientAgainst(srv), gen.Node{Uuid: "abc"})
 	err := node.Wait(context.Background())
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "not found")
+	require.ErrorContains(t, err, "not found")
 }
 
 func TestNodeUpdateWithNoChangesSkipsRequest(t *testing.T) {
@@ -226,7 +225,7 @@ func TestNodeUpdateJoinsRefreshErrorWhenPostUpdateRefreshFails(t *testing.T) {
 
 	err := node.Update(context.Background())
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "not found")
+	require.ErrorContains(t, err, "not found")
 }
 
 func TestNodeUpdateReturnsAPIErrorButStillRefreshes(t *testing.T) {
@@ -246,7 +245,7 @@ func TestNodeUpdateReturnsAPIErrorButStillRefreshes(t *testing.T) {
 
 	err := node.Update(context.Background())
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "update rejected")
+	require.ErrorContains(t, err, "update rejected")
 	assert.True(t, refreshed)
 }
 
@@ -296,6 +295,6 @@ func TestNodeUpdateWrapsMarshalAndRefreshErrorsTogether(t *testing.T) {
 	require.Error(t, err)
 
 	var joined interface{ Unwrap() []error }
-	require.True(t, errors.As(err, &joined))
+	require.ErrorAs(t, err, &joined)
 	assert.Len(t, joined.Unwrap(), 2)
 }

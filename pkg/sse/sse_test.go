@@ -85,14 +85,14 @@ func TestReadEventMultipleEventsInSequence(t *testing.T) {
 	assert.Equal(t, []byte("second"), second.Data)
 
 	_, err = r.ReadEvent()
-	assert.ErrorIs(t, err, io.EOF)
+	require.ErrorIs(t, err, io.EOF)
 }
 
 func TestReadEventEmptyStreamReturnsEOF(t *testing.T) {
 	r := NewReader(strings.NewReader(""))
 
 	_, err := r.ReadEvent()
-	assert.ErrorIs(t, err, io.EOF)
+	require.ErrorIs(t, err, io.EOF)
 }
 
 func TestReadEventWithoutTrailingBlankLineStillReturnsData(t *testing.T) {
@@ -104,7 +104,7 @@ func TestReadEventWithoutTrailingBlankLineStillReturnsData(t *testing.T) {
 	assert.Equal(t, []byte("hello"), event.Data)
 
 	_, err = r.ReadEvent()
-	assert.ErrorIs(t, err, io.EOF)
+	require.ErrorIs(t, err, io.EOF)
 }
 
 func TestReadEventHandlesCRLFLineEndings(t *testing.T) {
@@ -150,5 +150,5 @@ func TestReadEventPropagatesScannerError(t *testing.T) {
 	r := NewReader(errReader{err: boom})
 
 	_, err := r.ReadEvent()
-	assert.ErrorIs(t, err, boom)
+	require.ErrorIs(t, err, boom)
 }

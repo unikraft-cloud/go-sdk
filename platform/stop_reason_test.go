@@ -17,20 +17,20 @@ import (
 )
 
 func TestStopInfoNilWhenNoStopReason(t *testing.T) {
-	instance := &Instance{Instance: gen.Instance{State: gen.InstanceStateRunning}}
+	instance := &Instance{State: gen.InstanceStateRunning}
 
 	assert.Nil(t, instance.StopInfo())
-	assert.Equal(t, "", instance.DescribeStop())
+	assert.Empty(t, instance.DescribeStop())
 }
 
 func TestStopInfoPopulatedFromStopReasonAndCode(t *testing.T) {
 	reason := uint32(stop.StopReasonAppExit)
 	code := uint32(42)
-	instance := &Instance{Instance: gen.Instance{
+	instance := &Instance{
 		State:      gen.InstanceStateStopped,
 		StopReason: &reason,
 		StopCode:   &code,
-	}}
+	}
 
 	info := instance.StopInfo()
 	require.NotNil(t, info)
@@ -41,25 +41,25 @@ func TestStopInfoPopulatedFromStopReasonAndCode(t *testing.T) {
 
 func TestDescribeStopMatchesStopInfoString(t *testing.T) {
 	reason := uint32(stop.StopReasonKernelCrash)
-	instance := &Instance{Instance: gen.Instance{
+	instance := &Instance{
 		State:      gen.InstanceStateStopped,
 		StopReason: &reason,
-	}}
+	}
 
 	assert.Equal(t, "kernel crash", instance.DescribeStop())
 }
 
 func TestDescribeStatusEmptyWhenStateEmpty(t *testing.T) {
 	instance := &Instance{}
-	assert.Equal(t, "", instance.DescribeStatus())
+	assert.Empty(t, instance.DescribeStatus())
 }
 
 func TestDescribeStatusRunningShowsUptime(t *testing.T) {
 	started := time.Now().Add(-90 * time.Second)
-	instance := &Instance{Instance: gen.Instance{
+	instance := &Instance{
 		State:     gen.InstanceStateRunning,
 		StartedAt: &started,
-	}}
+	}
 
 	// Seconds are dropped whenever a larger unit (minutes here) is present.
 	assert.Equal(t, "since 1min", instance.DescribeStatus())
@@ -67,16 +67,16 @@ func TestDescribeStatusRunningShowsUptime(t *testing.T) {
 
 func TestDescribeStatusStoppedDelegatesToDescribeStop(t *testing.T) {
 	reason := uint32(stop.StopReasonAppExit)
-	instance := &Instance{Instance: gen.Instance{
+	instance := &Instance{
 		State:      gen.InstanceStateStopped,
 		StopReason: &reason,
-	}}
+	}
 
 	assert.Equal(t, instance.DescribeStop(), instance.DescribeStatus())
 	assert.Equal(t, "app exit", instance.DescribeStatus())
 }
 
 func TestDescribeStatusOtherStateReturnsRawState(t *testing.T) {
-	instance := &Instance{Instance: gen.Instance{State: gen.InstanceState("draining")}}
+	instance := &Instance{State: gen.InstanceState("draining")}
 	assert.Equal(t, "draining", instance.DescribeStatus())
 }

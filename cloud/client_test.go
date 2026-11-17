@@ -34,7 +34,7 @@ func newTestServer(t *testing.T, body any) (*httptest.Server, *[]recordedRequest
 		got = append(got, recordedRequest{Method: r.Method, Path: r.URL.Path, Headers: r.Header.Clone()})
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		require.NoError(t, json.NewEncoder(w).Encode(body))
+		assert.NoError(t, json.NewEncoder(w).Encode(body))
 	}))
 	t.Cleanup(srv.Close)
 	return srv, &got

@@ -13,7 +13,7 @@ import (
 )
 
 func TestErrnoStringZeroIsEmpty(t *testing.T) {
-	assert.Equal(t, "", Errno(0).String())
+	assert.Empty(t, Errno(0).String())
 }
 
 func TestErrnoStringKnownValue(t *testing.T) {

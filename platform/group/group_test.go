@@ -28,7 +28,7 @@ func TestGroupGetByName(t *testing.T) {
 	assert.Equal(t, "fra", client.id)
 
 	_, err = g.getByName("missing")
-	assert.ErrorContains(t, err, "missing")
+	require.ErrorContains(t, err, "missing")
 }
 
 func TestGroupFilterKeepsOnlyRequestedNames(t *testing.T) {

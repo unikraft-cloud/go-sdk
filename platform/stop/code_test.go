@@ -32,7 +32,7 @@ func TestKernelStopCodeFieldAccessors(t *testing.T) {
 func TestKernelStopCodeErrnoStringEmptyWhenZero(t *testing.T) {
 	sc := KernelStopCode(StopCodeReasonOK)
 	assert.Equal(t, syscall.Errno(0), sc.Errno())
-	assert.Equal(t, "", sc.ErrnoString())
+	assert.Empty(t, sc.ErrnoString())
 }
 
 func TestKernelStopCodeDescription(t *testing.T) {

@@ -32,7 +32,7 @@ func newTestServer(t *testing.T, handler func(w http.ResponseWriter, r *recorded
 	var got []recordedRequest
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		rec := recordedRequest{
 			Method:  r.Method,
 			Path:    r.URL.Path,
@@ -99,8 +99,8 @@ func TestClientNodeNotFound(t *testing.T) {
 	c := newClientAgainst(srv)
 	_, err := c.Node(context.Background(), Name("missing"))
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "missing")
-	assert.ErrorContains(t, err, "not found")
+	require.ErrorContains(t, err, "missing")
+	require.ErrorContains(t, err, "not found")
 }
 
 func TestClientNodeAPIError(t *testing.T) {
@@ -111,7 +111,7 @@ func TestClientNodeAPIError(t *testing.T) {
 	c := newClientAgainst(srv)
 	_, err := c.Node(context.Background(), UUID("abc"))
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "boom")
+	require.ErrorContains(t, err, "boom")
 }
 
 func TestClientNodesEmptyRefsRequestsAll(t *testing.T) {
@@ -135,7 +135,7 @@ func TestClientNodesEmptyRefsRequestsAll(t *testing.T) {
 	assert.Equal(t, "two", nodes[1].Name)
 
 	got := (*reqs)[0]
-	assert.Equal(t, "", string(got.Body))
+	assert.Empty(t, string(got.Body))
 }
 
 func TestClientNodesMultipleRefsAndOpts(t *testing.T) {
@@ -240,6 +240,6 @@ func TestClientRawExposesGeneratedClient(t *testing.T) {
 	resp, err := c.Raw().ListNodes(context.Background(), []gen.NameOrUUID{}, gen.ListNodesOpts{})
 	require.NoError(t, err)
 	require.NotNil(t, resp.Data)
-	assert.Len(t, resp.Data.Nodes, 0)
+	assert.Empty(t, resp.Data.Nodes)
 	assert.Len(t, *reqs, 1)
 }

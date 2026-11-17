@@ -36,7 +36,7 @@ func newTestServer(t *testing.T, handler func(w http.ResponseWriter, r *recorded
 	var got []recordedRequest
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		rec := recordedRequest{
 			Method:  r.Method,
 			Path:    r.URL.Path,
@@ -106,8 +106,8 @@ func TestClientInstanceNotFound(t *testing.T) {
 	c := newClientAgainst(srv)
 	_, err := c.Instance(context.Background(), Name("missing"))
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "missing")
-	assert.ErrorContains(t, err, "not found")
+	require.ErrorContains(t, err, "missing")
+	require.ErrorContains(t, err, "not found")
 }
 
 func TestClientInstanceAPIError(t *testing.T) {
@@ -121,7 +121,7 @@ func TestClientInstanceAPIError(t *testing.T) {
 	c := newClientAgainst(srv)
 	_, err := c.Instance(context.Background(), Name("foo"))
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "boom")
+	require.ErrorContains(t, err, "boom")
 }
 
 func TestClientServiceGroupFound(t *testing.T) {
@@ -150,7 +150,7 @@ func TestClientServiceGroupNotFound(t *testing.T) {
 	c := newClientAgainst(srv)
 	_, err := c.ServiceGroup(context.Background(), Name("missing"))
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "missing")
+	require.ErrorContains(t, err, "missing")
 }
 
 func TestClientServiceGroupsEmptyRefsRequestsAll(t *testing.T) {
@@ -168,7 +168,7 @@ func TestClientServiceGroupsEmptyRefsRequestsAll(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, groups, 2)
 
-	assert.Equal(t, "", string((*reqs)[0].Body), "no refs requested means a nil/omitted request body")
+	assert.Empty(t, string((*reqs)[0].Body), "no refs requested means a nil/omitted request body")
 }
 
 func TestClientCertificateFound(t *testing.T) {
@@ -197,7 +197,7 @@ func TestClientCertificateNotFound(t *testing.T) {
 	c := newClientAgainst(srv)
 	_, err := c.Certificate(context.Background(), Name("missing"))
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "missing")
+	require.ErrorContains(t, err, "missing")
 }
 
 func TestClientVolumeFound(t *testing.T) {
@@ -226,7 +226,7 @@ func TestClientVolumeNotFound(t *testing.T) {
 	c := newClientAgainst(srv)
 	_, err := c.Volume(context.Background(), Name("missing"))
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "missing")
+	require.ErrorContains(t, err, "missing")
 }
 
 func TestClientInstancesEmptyRefsRequestsAll(t *testing.T) {
@@ -250,7 +250,7 @@ func TestClientInstancesEmptyRefsRequestsAll(t *testing.T) {
 	assert.Equal(t, "two", instances[1].Name)
 
 	got := (*reqs)[0]
-	assert.Equal(t, "", string(got.Body), "no refs requested means a nil/omitted request body")
+	assert.Empty(t, string(got.Body), "no refs requested means a nil/omitted request body")
 }
 
 func TestClientInstancesMultipleRefsAndOpts(t *testing.T) {
@@ -358,6 +358,6 @@ func TestClientRawExposesGeneratedClient(t *testing.T) {
 	resp, err := c.Raw().GetInstances(context.Background(), []gen.NameOrUUID{}, gen.GetInstancesOpts{})
 	require.NoError(t, err)
 	require.NotNil(t, resp.Data)
-	assert.Len(t, resp.Data.Instances, 0)
+	assert.Empty(t, resp.Data.Instances)
 	assert.Len(t, *reqs, 1)
 }
