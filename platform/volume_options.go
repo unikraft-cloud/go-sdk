@@ -82,3 +82,22 @@ func WithVolumeTags(tags ...string) VolumesOption {
 func WithVolumeOrder(order PaginationOrder) VolumesOption {
 	return func(o *gen.GetVolumesOpts) { o.Order = new(gen.PaginationOrder(order)) }
 }
+
+// WithCreateVolumeNode places the volume on the node with this name or UUID.
+func WithCreateVolumeNode(node string) CreateVolumeOption {
+	return func(r *gen.CreateVolumeRequest) { r.Node = &node }
+}
+
+// WithCreateVolumeOwner sets the user and group IDs that own the root of the
+// volume.
+func WithCreateVolumeOwner(uid, gid uint32) CreateVolumeOption {
+	return func(r *gen.CreateVolumeRequest) {
+		r.Uid = &uid
+		r.Gid = &gid
+	}
+}
+
+// WithCreateVolumeArgs sets filesystem-specific arguments for the volume.
+func WithCreateVolumeArgs(args map[string]string) CreateVolumeOption {
+	return func(r *gen.CreateVolumeRequest) { r.Args = args }
+}
