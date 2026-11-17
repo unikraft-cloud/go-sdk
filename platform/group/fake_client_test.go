@@ -7,6 +7,7 @@ package group
 
 import (
 	"context"
+	"iter"
 	"time"
 
 	"unikraft.com/cloud/sdk/pkg/httpclient"
@@ -102,4 +103,56 @@ func (f fakeClient) PrepareTemplate(ctx context.Context, name string, source gen
 
 func (f fakeClient) Images(ctx context.Context, opts ...platform.ImagesOption) ([]gen.Image, error) {
 	return nil, nil
+}
+
+func (f fakeClient) StartInstances(ctx context.Context, refs []platform.Ref, opts ...platform.StartOption) error {
+	return nil
+}
+
+func (f fakeClient) StopInstances(ctx context.Context, refs []platform.Ref, opts ...platform.StopOption) error {
+	return nil
+}
+
+func (f fakeClient) SuspendInstances(ctx context.Context, refs []platform.Ref, opts ...platform.SuspendOption) error {
+	return nil
+}
+
+func (f fakeClient) DeleteInstances(ctx context.Context, refs []platform.Ref, opts ...platform.DeleteOption) error {
+	return nil
+}
+
+func (f fakeClient) DeleteVolumes(ctx context.Context, refs []platform.Ref) error {
+	return nil
+}
+
+func (f fakeClient) DeleteServiceGroups(ctx context.Context, refs []platform.Ref) error {
+	return nil
+}
+
+func (f fakeClient) DeleteCertificates(ctx context.Context, refs []platform.Ref) error {
+	return nil
+}
+
+func (f fakeClient) DeleteTemplates(ctx context.Context, refs []platform.Ref) error {
+	return nil
+}
+
+func (f fakeClient) ListInstances(ctx context.Context, opts ...platform.ListOption) iter.Seq2[*platform.Instance, error] {
+	return nil
+}
+
+func (f fakeClient) ListVolumes(ctx context.Context, opts ...platform.ListOption) iter.Seq2[*platform.Volume, error] {
+	return nil
+}
+
+func (f fakeClient) ListServiceGroups(ctx context.Context, opts ...platform.ListOption) iter.Seq2[*platform.ServiceGroup, error] {
+	return nil
+}
+
+func (f fakeClient) ListCertificates(ctx context.Context, opts ...platform.ListOption) iter.Seq2[*platform.Certificate, error] {
+	return nil
+}
+
+func (f fakeClient) ListTemplates(ctx context.Context, opts ...platform.ListOption) iter.Seq2[*platform.Template, error] {
+	return nil
 }
