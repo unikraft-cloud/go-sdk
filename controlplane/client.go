@@ -27,6 +27,12 @@ type Client interface {
 	// ProvisionNode provisions a new node, returning the created node.
 	ProvisionNode(ctx context.Context, opts ...ProvisionNodeOption) (*Node, error)
 
+	// FindImage returns the registry record of an image, or nil if the
+	// registry does not have it.
+	FindImage(ctx context.Context, ref string) (*RegistryImage, error)
+	// ImageExists reports whether the registry has an image.
+	ImageExists(ctx context.Context, ref string) (bool, error)
+
 	WithEndpoint(endpoint string) Client
 	WithHTTPClient(hc httpclient.HTTPClient) Client
 	WithTimeout(to time.Duration) Client
