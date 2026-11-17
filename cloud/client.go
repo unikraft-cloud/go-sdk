@@ -8,6 +8,7 @@
 package cloud
 
 import (
+	"sync"
 	"unikraft.com/cloud/sdk/controlplane"
 	"unikraft.com/cloud/sdk/pkg/httpclient"
 	"unikraft.com/cloud/sdk/platform"
@@ -21,6 +22,7 @@ type clientConfig struct {
 	httpClient    httpclient.HTTPClient
 	userAgent     string
 	allowInsecure bool
+	controlPlane  string
 }
 
 // WithToken sets the access token shared by clients minted from this Client.
@@ -44,10 +46,18 @@ func WithAllowInsecure(allow bool) ClientOption {
 	return func(c *clientConfig) { c.allowInsecure = allow }
 }
 
+// WithControlPlaneEndpoint sets the URL of the control plane API.
+func WithControlPlaneEndpoint(endpoint string) ClientOption {
+	return func(c *clientConfig) { c.controlPlane = endpoint }
+}
+
 // Client holds auth/config shared across the platform and control plane
 // APIs, and mints scoped clients for each.
 type Client struct {
 	cfg clientConfig
+
+	metrosMu sync.Mutex
+	metros   []Metro
 }
 
 // NewClient creates a new Client.
@@ -97,6 +107,9 @@ func (c *Client) ControlPlane() controlplane.Client {
 	}
 	if c.cfg.httpClient != nil {
 		opts = append(opts, controlplane.WithHTTPClient(c.cfg.httpClient))
+	}
+	if c.cfg.controlPlane != "" {
+		opts = append(opts, controlplane.WithEndpoint(c.cfg.controlPlane))
 	}
 	return controlplane.NewClient(opts...)
 }
