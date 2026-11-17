@@ -5,10 +5,15 @@ includes:
   go:
     taskfile: https://github.com/unikraft-cloud/x.git//Taskfile.go.yml?ref=prod-staging
 
-  # The build client is a module of its own, so its checks run in its directory.
+  # The build client and the sandbox plugin are modules of their own, so their
+  # checks run in their directories.
   build:
     taskfile: https://github.com/unikraft-cloud/x.git//Taskfile.go.yml?ref=prod-staging
     dir: ./build
+
+  sandbox:
+    taskfile: https://github.com/unikraft-cloud/x.git//Taskfile.go.yml?ref=prod-staging
+    dir: ./plugins/sandbox
 
 vars:
   go_bin:
@@ -113,10 +118,12 @@ tasks:
   - task: go:ci/check
   - task: build:ci/check
   - task: build:wasm-check
+  - task: sandbox:ci/check
 
   ci/test:
   - task: go:ci/test
   - task: build:ci/test
+  - task: sandbox:ci/test
 
   ci/generate:
     desc: "Tasks for CI generate job: check the SDK is in sync with the specifications"
