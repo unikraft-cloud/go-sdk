@@ -164,31 +164,87 @@ func (i *Instance) Suspend(ctx context.Context, opts ...SuspendOption) error {
 }
 
 // DeleteOption configures a call to Instance.Delete.
-type DeleteOption func(*gen.DeleteInstanceByUUIDRequestBody)
+type DeleteOption func(*deleteConfig)
+
+type deleteConfig struct {
+	body      gen.DeleteInstanceByUUIDRequestBody
+	missingOK bool
+	retryBusy time.Duration
+}
 
 // WithDeleteTimeout blocks Delete until the instance is deleted, or until d elapses.
 func WithDeleteTimeout(d time.Duration) DeleteOption {
-	return func(b *gen.DeleteInstanceByUUIDRequestBody) {
-		b.TimeoutS = new(int64(d / time.Second))
+	return func(c *deleteConfig) {
+		c.body.TimeoutS = new(int64(d / time.Second))
 	}
 }
 
 // WithoutRetention deletes the instance immediately, without retention, even
 // if it's currently being retained.
 func WithoutRetention() DeleteOption {
-	return func(b *gen.DeleteInstanceByUUIDRequestBody) { b.DontRetain = new(true) }
+	return func(c *deleteConfig) { c.body.DontRetain = new(true) }
+}
+
+// WithDeleteMissingOK makes Delete return nil when the instance does not
+// exist.
+func WithDeleteMissingOK() DeleteOption {
+	return func(c *deleteConfig) { c.missingOK = true }
+}
+
+// WithDeleteRetryBusy retries Delete with backoff for up to d while the API
+// reports the instance as busy.
+func WithDeleteRetryBusy(d time.Duration) DeleteOption {
+	return func(c *deleteConfig) { c.retryBusy = d }
 }
 
 // Delete deletes the instance. Unlike the other lifecycle methods, it does
 // not refresh afterwards: the instance is gone, and re-fetching it would
 // just 404.
 func (i *Instance) Delete(ctx context.Context, opts ...DeleteOption) error {
-	var body gen.DeleteInstanceByUUIDRequestBody
+	var cfg deleteConfig
+	for _, opt := range opts {
+		opt(&cfg)
+	}
+	err := whileBusy(ctx, cfg.retryBusy, func() error {
+		_, err := i.client.DeleteInstanceByUUID(ctx, i.Uuid, cfg.body)
+		return err
+	})
+	if cfg.missingOK && gen.ErrorContains(err, gen.APIHTTPErrorNotFound) {
+		return nil
+	}
+	return err
+}
+
+// WaitOption configures a call to Instance.Wait.
+type WaitOption func(*gen.WaitInstanceByUUIDRequestBody)
+
+// WithWaitState waits for state instead of the running state.
+func WithWaitState(state gen.InstanceState) WaitOption {
+	return func(b *gen.WaitInstanceByUUIDRequestBody) { b.State = &state }
+}
+
+// WithWaitTimeout stops waiting after d, rounded up to a full second. A
+// negative d waits for as long as the platform allows.
+func WithWaitTimeout(d time.Duration) WaitOption {
+	return func(b *gen.WaitInstanceByUUIDRequestBody) {
+		if d < 0 {
+			b.TimeoutS = new(int64(-1))
+			return
+		}
+		b.TimeoutS = new(int64((d + time.Second - 1) / time.Second))
+	}
+}
+
+// Wait blocks until the instance reaches a state, then refreshes it.
+func (i *Instance) Wait(ctx context.Context, opts ...WaitOption) error {
+	var body gen.WaitInstanceByUUIDRequestBody
 	for _, opt := range opts {
 		opt(&body)
 	}
-	_, err := i.client.DeleteInstanceByUUID(ctx, i.Uuid, body)
-	return err
+	if _, err := i.client.WaitInstanceByUUID(ctx, i.Uuid, body); err != nil {
+		return err
+	}
+	return i.Refresh(ctx)
 }
 
 // Update diffs the instance's current field values against the snapshot
@@ -200,8 +256,8 @@ func (i *Instance) Delete(ctx context.Context, opts ...DeleteOption) error {
 //
 // Only 13 of the 15 MutableInstanceProperty values are diffed here:
 // Hostname and Dependencies are write-only from the SDK's read side (no
-// field on gen.Instance to snapshot or compare), so changing those still
-// requires going through Raw().UpdateInstances(...) directly. Image is
+// field on gen.Instance to snapshot or compare), so use Patch to change
+// them. Image is
 // diffed as a URL-only change; credentials/pull-policy for the image aren't
 // tracked on Instance and can't be expressed here either.
 func (i *Instance) Update(ctx context.Context) error {
@@ -330,6 +386,22 @@ func (i *Instance) History(ctx context.Context) ([]gen.CheckpointHistoryEntry, e
 		return nil, fmt.Errorf("instance %s not found", i.Uuid)
 	}
 	return resp.Data.Instances[0].History, nil
+}
+
+// LogsPage reads up to limit bytes of the instance's log, starting at
+// offset. A negative offset counts back from the end of the log.
+func (i *Instance) LogsPage(ctx context.Context, offset, limit int64) (*gen.GetInstancesLogsResponseLoggedInstance, error) {
+	resp, err := i.client.GetInstanceLogsByUUID(ctx, i.Uuid, gen.GetInstanceLogsByUUIDRequestBody{
+		Offset: &offset,
+		Limit:  &limit,
+	})
+	if err != nil {
+		return nil, err
+	}
+	if len(resp.Data.Instances) == 0 {
+		return nil, fmt.Errorf("instance %s not found", i.Uuid)
+	}
+	return &resp.Data.Instances[0], nil
 }
 
 type logsReadCloser struct {
