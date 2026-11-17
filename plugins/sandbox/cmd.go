@@ -270,7 +270,7 @@ func (c *Cmd) awaitEnd(d time.Duration) {
 	limit := time.NewTimer(d)
 	defer limit.Stop()
 	select {
-	case <-c.done:
+	case <-c.done: //nolint:errcheck // the command was killed, so Wait reports killed() instead
 		c.closed = true
 	case <-limit.C:
 	}
@@ -280,7 +280,7 @@ func (c *Cmd) stop() {
 	c.stopWait()
 	_ = c.conn.CloseNow()
 	if !c.closed {
-		<-c.done
+		<-c.done //nolint:errcheck // Wait has already returned, so nothing can report the result
 		c.closed = true
 	}
 }
