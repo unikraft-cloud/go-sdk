@@ -42,6 +42,16 @@ type Client interface {
 	Volumes(ctx context.Context, refs []Ref, opts ...VolumesOption) ([]*Volume, error)
 	CreateVolume(ctx context.Context, opts ...CreateVolumeOption) (*Volume, error)
 
+	Template(ctx context.Context, ref Ref) (*Template, error)
+	// Templates returns all templates if refs is empty.
+	Templates(ctx context.Context, refs []Ref, opts ...TemplatesOption) ([]*Template, error)
+	// PrepareTemplate returns the template with name, and makes it from
+	// source if it does not exist.
+	PrepareTemplate(ctx context.Context, name string, source gen.Instance, opts ...PrepareTemplateOption) (*Template, error)
+
+	// Images returns the images that the nodes of the metro have cached.
+	Images(ctx context.Context, opts ...ImagesOption) ([]gen.Image, error)
+
 	// Quotas reports the current user's resource usage and limits.
 	Quotas(ctx context.Context) (*gen.Quotas, error)
 	// QuotasForUser reports resource usage and limits for the user

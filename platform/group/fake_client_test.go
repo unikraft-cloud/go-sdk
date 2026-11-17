@@ -87,3 +87,19 @@ func (f fakeClient) WithMetro(metro string) platform.Client { return fakeClient{
 func (f fakeClient) WithHTTPClient(hc httpclient.HTTPClient) platform.Client { return f }
 
 func (f fakeClient) WithTimeout(to time.Duration) platform.Client { return f }
+
+func (f fakeClient) Template(ctx context.Context, ref platform.Ref) (*platform.Template, error) {
+	return nil, nil
+}
+
+func (f fakeClient) Templates(ctx context.Context, refs []platform.Ref, opts ...platform.TemplatesOption) ([]*platform.Template, error) {
+	return nil, nil
+}
+
+func (f fakeClient) PrepareTemplate(ctx context.Context, name string, source gen.Instance, opts ...platform.PrepareTemplateOption) (*platform.Template, error) {
+	return nil, nil
+}
+
+func (f fakeClient) Images(ctx context.Context, opts ...platform.ImagesOption) ([]gen.Image, error) {
+	return nil, nil
+}
