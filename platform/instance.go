@@ -31,6 +31,9 @@ type Instance struct {
 	orig   gen.Instance // snapshot as of the last fetch/refresh, for diffing in Update
 }
 
+// UUID returns the UUID of the instance.
+func (i *Instance) UUID() string { return i.Uuid }
+
 // cloneInstance deep-clones a gen.Instance via a JSON round-trip, so that
 // slice/map/pointer fields aren't aliased between an Instance and its
 // snapshot. in was itself just unmarshaled from the API response, so a
