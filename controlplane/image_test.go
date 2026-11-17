@@ -38,7 +38,7 @@ func TestParseImageRef(t *testing.T) {
 
 			got, err := parseImageRef(tt.ref)
 			if tt.wantErr {
-				assert.Error(t, err)
+				require.Error(t, err)
 				return
 			}
 			require.NoError(t, err)
@@ -108,6 +108,6 @@ func TestClientFindImageRejectsBadRef(t *testing.T) {
 	})
 
 	_, err := newClientAgainst(srv).FindImage(t.Context(), "org/app:")
-	assert.Error(t, err)
+	require.Error(t, err)
 	assert.Empty(t, *reqs)
 }

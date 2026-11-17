@@ -89,7 +89,7 @@ func TestTemplateDelete(t *testing.T) {
 			err := wrapTemplate(rawClientAgainst(srv), gen.Instance{Uuid: "t1"}).Delete(t.Context(), tt.opts...)
 			assert.Equal(t, "/v1/instances/templates/t1", (*reqs)[0].Path)
 			if tt.wantErr {
-				assert.Error(t, err)
+				require.Error(t, err)
 				return
 			}
 			assert.NoError(t, err)
@@ -125,7 +125,7 @@ func TestTemplateCloneRejectsImage(t *testing.T) {
 
 	tmpl := wrapTemplate(rawClientAgainst(srv), gen.Instance{Uuid: "t1"})
 	_, err := tmpl.Clone(t.Context(), WithCreateImage(gen.ImageReference("nginx")))
-	assert.Error(t, err)
+	require.Error(t, err)
 	assert.Empty(t, *reqs)
 }
 
