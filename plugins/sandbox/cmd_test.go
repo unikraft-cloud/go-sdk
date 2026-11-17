@@ -24,7 +24,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	plugin "unikraft.com/cloud/plugins/sandbox"
-	"unikraft.com/cloud/sdk/platform"
+	"unikraft.com/cloud/sdk/platform/gen"
 )
 
 // mockPlugin is a sandbox plugin that serves one command: enough of the API
@@ -245,7 +245,7 @@ func newTargetServing(t *testing.T, h http.Handler) Target {
 
 	return Target{
 		Client:   plugin.NewClient(),
-		Instance: platform.Instance{Uuid: "inst-1"},
+		Instance: gen.Instance{Uuid: "inst-1"},
 		Plugin:   "sandbox",
 		Opts: []plugin.Option{
 			plugin.WithEndpoint(srv.URL),
@@ -739,7 +739,7 @@ func TestATransportFailureNamesNoURL(t *testing.T) {
 
 	target := Target{
 		Client:   plugin.NewClient(),
-		Instance: platform.Instance{Uuid: "inst-1"},
+		Instance: gen.Instance{Uuid: "inst-1"},
 		Plugin:   "sandbox",
 		Opts: []plugin.Option{
 			plugin.WithEndpoint(srv.URL),

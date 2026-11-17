@@ -16,7 +16,7 @@ import (
 	"github.com/coder/websocket"
 
 	plugin "unikraft.com/cloud/plugins/sandbox"
-	"unikraft.com/cloud/sdk/platform"
+	"unikraft.com/cloud/sdk/platform/gen"
 	"unikraft.com/x/log"
 )
 
@@ -40,7 +40,7 @@ func (e *ExitError) ExitCode() int { return e.Code }
 
 type Target struct {
 	Client   *plugin.Client
-	Instance platform.Instance
+	Instance gen.Instance
 	Plugin   string
 	Opts     []plugin.Option
 }
