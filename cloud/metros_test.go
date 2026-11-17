@@ -48,7 +48,7 @@ func TestAvailableMetrosNone(t *testing.T) {
 
 	for range 2 {
 		_, err := c.AvailableMetros(t.Context())
-		assert.Error(t, err)
+		require.Error(t, err)
 	}
 	assert.Len(t, *reqs, 2, "a failed answer is not kept")
 }
