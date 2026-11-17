@@ -8,6 +8,7 @@ package platform
 import (
 	"context"
 	"fmt"
+	"iter"
 	"time"
 
 	"unikraft.com/cloud/sdk/pkg/httpclient"
@@ -51,6 +52,37 @@ type Client interface {
 
 	// Images returns the images that the nodes of the metro have cached.
 	Images(ctx context.Context, opts ...ImagesOption) ([]gen.Image, error)
+
+	// StartInstances starts the instances that refs name, in one request.
+	StartInstances(ctx context.Context, refs []Ref, opts ...StartOption) error
+	// StopInstances stops the instances that refs name, in one request.
+	StopInstances(ctx context.Context, refs []Ref, opts ...StopOption) error
+	// SuspendInstances suspends the instances that refs name, in one request.
+	SuspendInstances(ctx context.Context, refs []Ref, opts ...SuspendOption) error
+	// DeleteInstances deletes the instances that refs name, in one request.
+	DeleteInstances(ctx context.Context, refs []Ref, opts ...DeleteOption) error
+	// DeleteVolumes deletes the volumes that refs name, in one request.
+	DeleteVolumes(ctx context.Context, refs []Ref) error
+	// DeleteServiceGroups deletes the service groups that refs name, in one
+	// request.
+	DeleteServiceGroups(ctx context.Context, refs []Ref) error
+	// DeleteCertificates deletes the certificates that refs name, in one
+	// request.
+	DeleteCertificates(ctx context.Context, refs []Ref) error
+	// DeleteTemplates deletes the templates that refs name, in one request.
+	DeleteTemplates(ctx context.Context, refs []Ref) error
+
+	// ListInstances yields all instances, reading one page at a time.
+	ListInstances(ctx context.Context, opts ...ListOption) iter.Seq2[*Instance, error]
+	// ListVolumes yields all volumes, reading one page at a time.
+	ListVolumes(ctx context.Context, opts ...ListOption) iter.Seq2[*Volume, error]
+	// ListServiceGroups yields all service groups, reading one page at a
+	// time.
+	ListServiceGroups(ctx context.Context, opts ...ListOption) iter.Seq2[*ServiceGroup, error]
+	// ListCertificates yields all certificates, reading one page at a time.
+	ListCertificates(ctx context.Context, opts ...ListOption) iter.Seq2[*Certificate, error]
+	// ListTemplates yields all templates, reading one page at a time.
+	ListTemplates(ctx context.Context, opts ...ListOption) iter.Seq2[*Template, error]
 
 	// Quotas reports the current user's resource usage and limits.
 	Quotas(ctx context.Context) (*gen.Quotas, error)
