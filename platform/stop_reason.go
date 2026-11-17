@@ -11,12 +11,13 @@ import (
 	"strings"
 	"time"
 
+	"unikraft.com/cloud/sdk/platform/gen"
 	"unikraft.com/cloud/sdk/platform/stop"
 )
 
-// Stop returns a structured representation of the stop reason for the
+// StopInfo returns a structured representation of the stop reason for the
 // instance, if it is stopped.
-func (instance *Instance) Stop() *stop.Stop {
+func (instance *Instance) StopInfo() *stop.Stop {
 	if instance.StopReason == nil {
 		return nil
 	}
@@ -29,11 +30,11 @@ func (instance *Instance) Stop() *stop.Stop {
 
 // DescribeStop provides a human-readable description of the stop reason.
 func (instance *Instance) DescribeStop() string {
-	stop := instance.Stop()
-	if stop == nil {
+	info := instance.StopInfo()
+	if info == nil {
 		return ""
 	}
-	return stop.String()
+	return info.String()
 }
 
 // DescribeStatus returns a human-readable description of the instance's status.
@@ -43,7 +44,7 @@ func (instance *Instance) DescribeStatus() string {
 	}
 
 	switch instance.State {
-	case InstanceStateRunning:
+	case gen.InstanceStateRunning:
 		dur := time.Since(*instance.StartedAt)
 		days := int64(dur.Hours() / 24)
 		hours := int64(math.Mod(dur.Hours(), 24))
@@ -77,7 +78,7 @@ func (instance *Instance) DescribeStatus() string {
 		}
 
 		return fmt.Sprintf("since %s", strings.Join(parts, " "))
-	case InstanceStateStopped:
+	case gen.InstanceStateStopped:
 		return instance.DescribeStop()
 	default:
 		return string(instance.State)

@@ -7,8 +7,6 @@ package group
 
 import (
 	"fmt"
-
-	"unikraft.com/cloud/sdk/platform"
 )
 
 // Ref represents a resource that may be identified by name or UUID,
@@ -27,16 +25,6 @@ type Ref struct {
 
 	// Display is a human-friendly string to use when displaying this Ref.
 	Display string
-}
-
-func (r Ref) NameOrUUID() platform.NameOrUUID {
-	if r.UUID != "" {
-		return platform.NameOrUUID{Uuid: &r.UUID}
-	}
-	if r.Name != "" {
-		return platform.NameOrUUID{Name: &r.Name}
-	}
-	return platform.NameOrUUID{}
 }
 
 func (r Ref) IsZero() bool {
@@ -79,14 +67,6 @@ func (r Ref) variants() []Ref {
 }
 
 type Refs []Ref
-
-func (rs Refs) NameOrUUIDs() []platform.NameOrUUID {
-	results := make([]platform.NameOrUUID, len(rs))
-	for i, r := range rs {
-		results[i] = r.NameOrUUID()
-	}
-	return results
-}
 
 func (rs Refs) Strings() []string {
 	results := make([]string, len(rs))

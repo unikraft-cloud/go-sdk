@@ -1,0 +1,38 @@
+// This file is auto-generated. DO NOT EDIT.
+// SPDX-License-Identifier: BSD-3-Clause
+// Copyright (c) 2025, Unikraft GmbH.
+// Licensed under the BSD-3-Clause License (the "License").
+// You may not use this file except in compliance with the License.
+
+package gen
+
+import (
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
+	"time"
+)
+
+var _ time.Time
+
+// Restart attempt information for an instance.
+type InstanceRestartAttempt struct {
+	// Current restart attempt number. This is incremented each time the instance
+	// is restarted automatically by the platform.
+	Attempt uint32 `json:"attempt"`
+	// Timestamp of the next scheduled restart attempt.
+	NextAt *time.Time `json:"next_at,omitzero"`
+
+	// AdditionalProperties captures any JSON object members that do not map to
+	// an explicit field above.
+	AdditionalProperties map[string]jsontext.Value `json:",embed"`
+}
+
+func (m *InstanceRestartAttempt) UnmarshalJSON(data []byte) error {
+	type Alias InstanceRestartAttempt
+	return json.Unmarshal(data, (*Alias)(m))
+}
+
+func (m InstanceRestartAttempt) MarshalJSON() ([]byte, error) {
+	type Alias InstanceRestartAttempt
+	return json.Marshal((Alias)(m))
+}

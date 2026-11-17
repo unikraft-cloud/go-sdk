@@ -1,4 +1,4 @@
-{{- if or (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
+{{- if or (eq (.Var "api" "") "platform") (eq (.Var "package" "") "platform") (eq (.Var "package" "") "sandbox")}}
 {{template "header"}}
 package {{.Var "package" ""}}
 

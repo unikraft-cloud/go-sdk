@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"net/http"
-{{- if eq (.Var "package" "") "controlplane"}}
+{{- if or (eq (.Var "api" "") "controlplane") (eq (.Var "package" "") "controlplane")}}
 	"fmt"
 	"reflect"
 	"strings"
@@ -65,7 +65,7 @@ func (r *Response[T]) Events() (<-chan *T, error) {
 	return r.events, nil
 }
 
-{{- if eq (.Var "package" "") "controlplane"}}
+{{- if or (eq (.Var "api" "") "controlplane") (eq (.Var "package" "") "controlplane")}}
 
 func (r *Response[T]) Error() string {
 	if r == nil || r.Status == ResponseStatusSuccess {

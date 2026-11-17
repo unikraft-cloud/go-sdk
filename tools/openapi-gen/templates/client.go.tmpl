@@ -19,7 +19,7 @@ type Client interface {
 {{- range .Operations}}
 {{- template "interface_method" .}}
 {{- end}}
-{{- if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
+{{- if or (eq ($.Var "api" "") "platform") (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 	// WithMetro sets the metro to use when connecting to the API.
 	WithMetro(string) Client
 {{- else}}
@@ -47,7 +47,7 @@ func NewClient(copts ...ClientOption) Client {
 
 // NewClientFromEnv creates a new client for the API, filling in whatever the
 // given options leave unset from the environment: the token from UKC_TOKEN,
-{{- if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
+{{- if or (eq ($.Var "api" "") "platform") (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 // UNIKRAFT_CLOUD_TOKEN or KRAFTCLOUD_TOKEN, and the metro from UKC_METRO.
 {{- else}}
 // UNIKRAFT_CLOUD_TOKEN or KRAFTCLOUD_TOKEN.
@@ -70,7 +70,7 @@ func NewClientFromEnv(copts ...ClientOption) Client {
 	if options.Token() == "" {
 		options.SetToken(os.Getenv("KRAFTCLOUD_TOKEN"))
 	}
-{{- if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
+{{- if or (eq ($.Var "api" "") "platform") (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 
 	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(os.Getenv("UKC_METRO"))
@@ -83,7 +83,7 @@ func NewClientFromEnv(copts ...ClientOption) Client {
 // newClient applies the defaults for anything options leaves unset, and
 // returns a client backed by them.
 func newClient(options *ClientOptions) Client {
-{{- if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
+{{- if or (eq ($.Var "api" "") "platform") (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 	if options.DefaultEndpoint() == "" {
 		options.SetDefaultMetro(DefaultMetro)
 	}
@@ -111,7 +111,7 @@ func newClient(options *ClientOptions) Client {
 type client struct {
 	request *Request
 }
-{{- if or (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
+{{- if or (eq ($.Var "api" "") "platform") (eq ($.Var "package" "") "platform") (eq ($.Var "package" "") "sandbox")}}
 
 // WithMetro sets the metro to use when connecting to the API.
 func (c *client) WithMetro(m string) Client {
@@ -156,7 +156,7 @@ func (c *client) clone() *client {
 {{- $op := .Operation}}
 {{- $path := .Path}}
 {{- $method := .Method}}
-{{- $pkg := .Var "package" ""}}
+{{- $pkg := .Var "api" (.Var "package" "")}}
 {{- $pathParams := list}}
 {{- $queryParams := list}}
 {{- range $op.Parameters}}
@@ -236,7 +236,7 @@ func (c *client) clone() *client {
 {{- end}}
 	//
 	// Performs: {{$method}} {{$path}}
-{{- if and $op.Tags (eq ($.Var "package" "") "platform")}}
+{{- if and $op.Tags (or (eq ($.Var "api" "") "platform") (eq ($.Var "package" "") "platform"))}}
 	//
 	// See: https://unikraft.com/docs/api/platform/v1/{{index $op.Tags 0 | kebabcase}}#{{$op.OperationID | kebabcase}}
 {{- end}}
@@ -250,7 +250,7 @@ func (c *client) clone() *client {
 {{- $op := .Operation}}
 {{- $path := .Path}}
 {{- $method := .Method}}
-{{- $pkg := .Var "package" ""}}
+{{- $pkg := .Var "api" (.Var "package" "")}}
 {{- $pathParams := list}}
 {{- $queryParams := list}}
 {{- range $op.Parameters}}
