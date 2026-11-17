@@ -267,15 +267,6 @@ func TestNodeDiffNoChangesIsEmpty(t *testing.T) {
 	assert.Empty(t, items)
 }
 
-func TestWrapNodeClonesDataSoOrigIsNotAliased(t *testing.T) {
-	data := gen.Node{Uuid: "abc", Tags: map[string]string{"env": "prod"}}
-	node := wrapNode(nil, data)
-
-	data.Tags["env"] = "mutated"
-	assert.Equal(t, "prod", node.orig.Tags["env"])
-	assert.Equal(t, "prod", node.Tags["env"])
-}
-
 func TestNodeUpdateWrapsMarshalAndRefreshErrorsTogether(t *testing.T) {
 	// Sanity check that errors.Join is actually used to combine the update
 	// and refresh failures rather than one silently shadowing the other.

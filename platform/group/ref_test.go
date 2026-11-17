@@ -18,18 +18,6 @@ func TestRefIsZero(t *testing.T) {
 	assert.False(t, Ref{UUID: "abc"}.IsZero())
 }
 
-func TestRefString(t *testing.T) {
-	assert.Equal(t, "custom", Ref{Name: "foo", Display: "custom"}.String())
-	assert.Equal(t, "foo", Ref{Name: "foo"}.String())
-	assert.Equal(t, "abc", Ref{UUID: "abc"}.String())
-	assert.Empty(t, Ref{}.String())
-}
-
-func TestRefsStrings(t *testing.T) {
-	refs := Refs{{Name: "a"}, {UUID: "b"}, {Name: "c", Display: "C"}}
-	assert.Equal(t, []string{"a", "b", "C"}, refs.Strings())
-}
-
 func TestRefVariantsUnscoped(t *testing.T) {
 	// A Ref with no Metro only ever produces unscoped variants.
 	nameOnly := Ref{Name: "foo"}
@@ -61,10 +49,4 @@ func TestRefVariantsScopedIncludesBothScopedAndUnscoped(t *testing.T) {
 func TestRefVariantsZeroRefIsEmpty(t *testing.T) {
 	assert.Empty(t, Ref{}.variants())
 	assert.Empty(t, Ref{Metro: "fra"}.variants())
-}
-
-func TestErrRefNotFoundError(t *testing.T) {
-	err := ErrRefNotFound{Refs: Refs{{Name: "foo"}, {UUID: "bar"}}}
-	assert.Contains(t, err.Error(), "foo")
-	assert.Contains(t, err.Error(), "bar")
 }

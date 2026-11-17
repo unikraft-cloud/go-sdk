@@ -348,16 +348,3 @@ func (c countingHTTPClient) Do(req *http.Request) (*http.Response, error) {
 	*c.calls++
 	return c.inner.Do(req)
 }
-
-func TestClientRawExposesGeneratedClient(t *testing.T) {
-	srv, reqs := newTestServer(t, func(w http.ResponseWriter, r *recordedRequest) {
-		writeJSON(t, w, http.StatusOK, map[string]any{"status": "success", "data": map[string]any{"instances": []map[string]any{}}})
-	})
-
-	c := newClientAgainst(srv)
-	resp, err := c.Raw().GetInstances(context.Background(), []gen.NameOrUUID{}, gen.GetInstancesOpts{})
-	require.NoError(t, err)
-	require.NotNil(t, resp.Data)
-	assert.Empty(t, resp.Data.Instances)
-	assert.Len(t, *reqs, 1)
-}

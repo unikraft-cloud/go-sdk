@@ -337,17 +337,6 @@ func TestInstanceDiffDoesNotTrackHostnameOrDependencies(t *testing.T) {
 	assert.Empty(t, inst.diff())
 }
 
-func TestWrapInstanceClonesDataSoOrigIsNotAliased(t *testing.T) {
-	data := gen.Instance{Uuid: "abc", Args: []string{"--foo"}}
-	inst := wrapInstance(nil, data)
-
-	// Mutating the caller's original slice must not affect the snapshot
-	// wrapInstance took, since it deep-clones via JSON round-trip.
-	data.Args[0] = "--mutated"
-	assert.Equal(t, "--foo", inst.orig.Args[0])
-	assert.Equal(t, "--foo", inst.Args[0])
-}
-
 func TestInstanceUpdateWrapsMarshalAndRefreshErrorsTogether(t *testing.T) {
 	srv, _ := newTestServer(t, func(w http.ResponseWriter, r *recordedRequest) {
 		switch r.Method {

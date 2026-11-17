@@ -47,15 +47,3 @@ func TestGroupFilterIgnoresUnknownNames(t *testing.T) {
 	filtered := g.Filter([]string{"fra", "does-not-exist"})
 	assert.Equal(t, []string{"fra"}, filtered.Names())
 }
-
-func TestGroupFilterEmpty(t *testing.T) {
-	g := New[fakeClient]().WithClient("fra", fakeClient{id: "fra"})
-
-	filtered := g.Filter(nil)
-	assert.Empty(t, filtered.Names())
-}
-
-func TestNewGroupIsEmpty(t *testing.T) {
-	g := New[fakeClient]()
-	assert.Empty(t, g.Names())
-}

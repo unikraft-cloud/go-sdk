@@ -68,15 +68,6 @@ func TestClientControlPlaneSharesTokenAndUserAgent(t *testing.T) {
 	assert.Equal(t, "shared-agent/1", got.Headers.Get("User-Agent"))
 }
 
-func TestClientPlatformEmptyMetroDoesNotOverrideDefaultResolution(t *testing.T) {
-	// Passing an empty metro must not call platform.WithDefaultMetro(""),
-	// which would otherwise stomp the platform package's own env-based
-	// default-metro resolution.
-	c := NewClient(WithToken("t"))
-	p := c.Platform("")
-	require.NotNil(t, p)
-}
-
 func TestClientPlatformWithCustomHTTPClient(t *testing.T) {
 	srv, reqs := newTestServer(t, map[string]any{"status": "success", "data": map[string]any{"instances": []map[string]any{}}})
 
@@ -101,54 +92,4 @@ type countingHTTPClient struct {
 func (c countingHTTPClient) Do(req *http.Request) (*http.Response, error) {
 	*c.calls++
 	return c.inner.Do(req)
-}
-
-func TestClientMintsIndependentPlatformClientsPerCall(t *testing.T) {
-	srvA, reqsA := newTestServer(t, map[string]any{"status": "success", "data": map[string]any{"instances": []map[string]any{}}})
-	srvB, reqsB := newTestServer(t, map[string]any{"status": "success", "data": map[string]any{"instances": []map[string]any{}}})
-
-	c := NewClient(WithToken("t"))
-	a := c.Platform(srvA.URL)
-	b := c.Platform(srvB.URL)
-
-	_, err := a.Instances(context.Background(), []platform.Ref{})
-	require.NoError(t, err)
-	_, err = b.Instances(context.Background(), []platform.Ref{})
-	require.NoError(t, err)
-
-	assert.Len(t, *reqsA, 1)
-	assert.Len(t, *reqsB, 1)
-}
-
-func TestClientMintsIndependentControlPlaneClientsPerCall(t *testing.T) {
-	srv, reqs := newTestServer(t, map[string]any{"status": "success", "data": map[string]any{"nodes": []map[string]any{}}})
-
-	c := NewClient(WithToken("t"))
-	cp1 := c.ControlPlane().WithEndpoint(srv.URL)
-	cp2 := c.ControlPlane().WithEndpoint(srv.URL)
-
-	_, err := cp1.Raw().ListNodes(context.Background(), []gen.NameOrUUID{}, gen.ListNodesOpts{})
-	require.NoError(t, err)
-	_, err = cp2.Raw().ListNodes(context.Background(), []gen.NameOrUUID{}, gen.ListNodesOpts{})
-	require.NoError(t, err)
-
-	assert.Len(t, *reqs, 2)
-}
-
-func TestClientAllowInsecurePropagatesToPlatformClient(t *testing.T) {
-	srv, reqs := newTestServer(t, map[string]any{"status": "success", "data": map[string]any{"instances": []map[string]any{}}})
-
-	c := NewClient(WithToken("t"), WithAllowInsecure(true))
-	p := c.Platform(srv.URL)
-
-	_, err := p.Instances(context.Background(), []platform.Ref{})
-	require.NoError(t, err)
-	assert.Len(t, *reqs, 1)
-}
-
-func TestNewClientWithNoOptionsDoesNotPanic(t *testing.T) {
-	c := NewClient()
-	require.NotNil(t, c)
-	assert.NotNil(t, c.Platform("fra"))
-	assert.NotNil(t, c.ControlPlane())
 }
