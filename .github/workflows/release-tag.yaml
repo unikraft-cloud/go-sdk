@@ -56,5 +56,16 @@ jobs:
           exit 1
         fi
 
-        git tag -a "${VERSION}" -m "${VERSION}"
-        git push origin "${VERSION}"
+        # Nested modules need their own <dir>/<version> tag, or Go sees no versions for them.
+        TAGS=()
+        for dir in $(go work edit -json | jq -r '.Use[].DiskPath'); do
+          dir="${dir#./}"
+          if [[ "${dir}" == "." ]]; then
+            TAG="${VERSION}"
+          else
+            TAG="${dir}/${VERSION}"
+          fi
+          git tag -a "${TAG}" -m "${TAG}"
+          TAGS+=("${TAG}")
+        done
+        git push --atomic origin "${TAGS[@]}"
