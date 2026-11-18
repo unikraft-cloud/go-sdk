@@ -25,7 +25,7 @@ type DestroyNodeResponseData struct {
 
 func (m *DestroyNodeResponseData) UnmarshalJSON(data []byte) error {
 	type Alias DestroyNodeResponseData
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m DestroyNodeResponseData) MarshalJSON() ([]byte, error) {

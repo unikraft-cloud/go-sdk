@@ -35,7 +35,7 @@ type AttachVolumesResponse struct {
 
 func (m *AttachVolumesResponse) UnmarshalJSON(data []byte) error {
 	type Alias AttachVolumesResponse
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m AttachVolumesResponse) MarshalJSON() ([]byte, error) {

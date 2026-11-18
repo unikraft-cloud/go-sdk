@@ -34,7 +34,7 @@ type ListMachineTypesResponse struct {
 
 func (m *ListMachineTypesResponse) UnmarshalJSON(data []byte) error {
 	type Alias ListMachineTypesResponse
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m ListMachineTypesResponse) MarshalJSON() ([]byte, error) {

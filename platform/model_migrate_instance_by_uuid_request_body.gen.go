@@ -34,7 +34,7 @@ type MigrateInstanceByUUIDRequestBody struct {
 
 func (m *MigrateInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias MigrateInstanceByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m MigrateInstanceByUUIDRequestBody) MarshalJSON() ([]byte, error) {

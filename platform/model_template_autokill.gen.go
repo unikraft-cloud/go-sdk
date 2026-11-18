@@ -28,7 +28,7 @@ type TemplateAutokill struct {
 
 func (m *TemplateAutokill) UnmarshalJSON(data []byte) error {
 	type Alias TemplateAutokill
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m TemplateAutokill) MarshalJSON() ([]byte, error) {

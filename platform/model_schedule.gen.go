@@ -65,7 +65,7 @@ type Schedule struct {
 
 func (m *Schedule) UnmarshalJSON(data []byte) error {
 	type Alias Schedule
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m Schedule) MarshalJSON() ([]byte, error) {

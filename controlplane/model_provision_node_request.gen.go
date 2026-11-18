@@ -44,7 +44,7 @@ type ProvisionNodeRequest struct {
 
 func (m *ProvisionNodeRequest) UnmarshalJSON(data []byte) error {
 	type Alias ProvisionNodeRequest
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m ProvisionNodeRequest) MarshalJSON() ([]byte, error) {

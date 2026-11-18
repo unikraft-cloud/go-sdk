@@ -29,7 +29,7 @@ type PluginAuthorization struct {
 
 func (m *PluginAuthorization) UnmarshalJSON(data []byte) error {
 	type Alias PluginAuthorization
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m PluginAuthorization) MarshalJSON() ([]byte, error) {

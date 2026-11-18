@@ -46,7 +46,7 @@ type InstanceNetworkInterface struct {
 
 func (m *InstanceNetworkInterface) UnmarshalJSON(data []byte) error {
 	type Alias InstanceNetworkInterface
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m InstanceNetworkInterface) MarshalJSON() ([]byte, error) {

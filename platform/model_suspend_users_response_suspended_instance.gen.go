@@ -45,7 +45,7 @@ type SuspendUsersResponseSuspendedInstance struct {
 
 func (m *SuspendUsersResponseSuspendedInstance) UnmarshalJSON(data []byte) error {
 	type Alias SuspendUsersResponseSuspendedInstance
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m SuspendUsersResponseSuspendedInstance) MarshalJSON() ([]byte, error) {

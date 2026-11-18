@@ -359,7 +359,7 @@ type Instance struct {
 
 func (m *Instance) UnmarshalJSON(data []byte) error {
 	type Alias Instance
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m Instance) MarshalJSON() ([]byte, error) {

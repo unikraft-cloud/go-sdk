@@ -30,7 +30,7 @@ type InstanceCloneSource struct {
 
 func (m *InstanceCloneSource) UnmarshalJSON(data []byte) error {
 	type Alias InstanceCloneSource
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m InstanceCloneSource) MarshalJSON() ([]byte, error) {

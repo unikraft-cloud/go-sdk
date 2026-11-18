@@ -30,7 +30,7 @@ type UnpinImageRequestItem struct {
 
 func (m *UnpinImageRequestItem) UnmarshalJSON(data []byte) error {
 	type Alias UnpinImageRequestItem
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m UnpinImageRequestItem) MarshalJSON() ([]byte, error) {

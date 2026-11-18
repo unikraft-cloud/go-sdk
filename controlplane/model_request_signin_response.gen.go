@@ -35,7 +35,7 @@ type RequestSigninResponse struct {
 
 func (m *RequestSigninResponse) UnmarshalJSON(data []byte) error {
 	type Alias RequestSigninResponse
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m RequestSigninResponse) MarshalJSON() ([]byte, error) {

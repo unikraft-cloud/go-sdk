@@ -89,7 +89,7 @@ type Certificate struct {
 
 func (m *Certificate) UnmarshalJSON(data []byte) error {
 	type Alias Certificate
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m Certificate) MarshalJSON() ([]byte, error) {

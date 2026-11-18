@@ -39,7 +39,7 @@ type CreateAutoscaleConfigurationsRequestConfiguration struct {
 
 func (m *CreateAutoscaleConfigurationsRequestConfiguration) UnmarshalJSON(data []byte) error {
 	type Alias CreateAutoscaleConfigurationsRequestConfiguration
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateAutoscaleConfigurationsRequestConfiguration) MarshalJSON() ([]byte, error) {

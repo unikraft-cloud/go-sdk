@@ -27,7 +27,7 @@ type CheckAuthorizationRequest struct {
 
 func (m *CheckAuthorizationRequest) UnmarshalJSON(data []byte) error {
 	type Alias CheckAuthorizationRequest
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CheckAuthorizationRequest) MarshalJSON() ([]byte, error) {

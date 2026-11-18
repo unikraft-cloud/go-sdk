@@ -40,7 +40,7 @@ type CreateInstanceRequestTemplate struct {
 
 func (m *CreateInstanceRequestTemplate) UnmarshalJSON(data []byte) error {
 	type Alias CreateInstanceRequestTemplate
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateInstanceRequestTemplate) MarshalJSON() ([]byte, error) {

@@ -29,7 +29,7 @@ type NodeDeactivateRequest struct {
 
 func (m *NodeDeactivateRequest) UnmarshalJSON(data []byte) error {
 	type Alias NodeDeactivateRequest
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m NodeDeactivateRequest) MarshalJSON() ([]byte, error) {

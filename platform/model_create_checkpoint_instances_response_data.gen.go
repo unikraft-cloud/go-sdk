@@ -26,7 +26,7 @@ type CreateCheckpointInstancesResponseData struct {
 
 func (m *CreateCheckpointInstancesResponseData) UnmarshalJSON(data []byte) error {
 	type Alias CreateCheckpointInstancesResponseData
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateCheckpointInstancesResponseData) MarshalJSON() ([]byte, error) {

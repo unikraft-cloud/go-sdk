@@ -35,7 +35,7 @@ type GetTemplateInstancesResponse struct {
 
 func (m *GetTemplateInstancesResponse) UnmarshalJSON(data []byte) error {
 	type Alias GetTemplateInstancesResponse
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m GetTemplateInstancesResponse) MarshalJSON() ([]byte, error) {

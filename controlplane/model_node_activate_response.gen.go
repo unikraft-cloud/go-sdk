@@ -34,7 +34,7 @@ type NodeActivateResponse struct {
 
 func (m *NodeActivateResponse) UnmarshalJSON(data []byte) error {
 	type Alias NodeActivateResponse
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m NodeActivateResponse) MarshalJSON() ([]byte, error) {

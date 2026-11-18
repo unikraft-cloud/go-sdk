@@ -35,7 +35,7 @@ type DeleteTemplateInstancesResponse struct {
 
 func (m *DeleteTemplateInstancesResponse) UnmarshalJSON(data []byte) error {
 	type Alias DeleteTemplateInstancesResponse
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m DeleteTemplateInstancesResponse) MarshalJSON() ([]byte, error) {

@@ -35,7 +35,7 @@ type DeleteVolumesResponse struct {
 
 func (m *DeleteVolumesResponse) UnmarshalJSON(data []byte) error {
 	type Alias DeleteVolumesResponse
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m DeleteVolumesResponse) MarshalJSON() ([]byte, error) {

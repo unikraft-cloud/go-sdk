@@ -25,7 +25,7 @@ type CreateServiceGroupResponseData struct {
 
 func (m *CreateServiceGroupResponseData) UnmarshalJSON(data []byte) error {
 	type Alias CreateServiceGroupResponseData
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateServiceGroupResponseData) MarshalJSON() ([]byte, error) {

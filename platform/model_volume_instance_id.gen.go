@@ -36,7 +36,7 @@ type VolumeInstanceID struct {
 
 func (m *VolumeInstanceID) UnmarshalJSON(data []byte) error {
 	type Alias VolumeInstanceID
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m VolumeInstanceID) MarshalJSON() ([]byte, error) {

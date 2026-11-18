@@ -34,7 +34,7 @@ type ListImagesResponse struct {
 
 func (m *ListImagesResponse) UnmarshalJSON(data []byte) error {
 	type Alias ListImagesResponse
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m ListImagesResponse) MarshalJSON() ([]byte, error) {

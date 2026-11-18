@@ -25,7 +25,7 @@ type ListMetroResponseData struct {
 
 func (m *ListMetroResponseData) UnmarshalJSON(data []byte) error {
 	type Alias ListMetroResponseData
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m ListMetroResponseData) MarshalJSON() ([]byte, error) {

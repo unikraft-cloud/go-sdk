@@ -36,7 +36,7 @@ type AuditEvent struct {
 
 func (m *AuditEvent) UnmarshalJSON(data []byte) error {
 	type Alias AuditEvent
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m AuditEvent) MarshalJSON() ([]byte, error) {

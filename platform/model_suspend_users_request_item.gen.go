@@ -34,7 +34,7 @@ type SuspendUsersRequestItem struct {
 
 func (m *SuspendUsersRequestItem) UnmarshalJSON(data []byte) error {
 	type Alias SuspendUsersRequestItem
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m SuspendUsersRequestItem) MarshalJSON() ([]byte, error) {

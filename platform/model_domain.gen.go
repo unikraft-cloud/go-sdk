@@ -36,7 +36,7 @@ type Domain struct {
 
 func (m *Domain) UnmarshalJSON(data []byte) error {
 	type Alias Domain
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m Domain) MarshalJSON() ([]byte, error) {

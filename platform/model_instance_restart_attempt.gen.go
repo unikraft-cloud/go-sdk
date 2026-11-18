@@ -29,7 +29,7 @@ type InstanceRestartAttempt struct {
 
 func (m *InstanceRestartAttempt) UnmarshalJSON(data []byte) error {
 	type Alias InstanceRestartAttempt
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m InstanceRestartAttempt) MarshalJSON() ([]byte, error) {

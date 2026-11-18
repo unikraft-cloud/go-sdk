@@ -54,7 +54,7 @@ type CreateServiceGroupRequest struct {
 
 func (m *CreateServiceGroupRequest) UnmarshalJSON(data []byte) error {
 	type Alias CreateServiceGroupRequest
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateServiceGroupRequest) MarshalJSON() ([]byte, error) {

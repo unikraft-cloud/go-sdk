@@ -82,7 +82,7 @@ type GetInstancesMetricsResponseInstanceMetrics struct {
 
 func (m *GetInstancesMetricsResponseInstanceMetrics) UnmarshalJSON(data []byte) error {
 	type Alias GetInstancesMetricsResponseInstanceMetrics
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m GetInstancesMetricsResponseInstanceMetrics) MarshalJSON() ([]byte, error) {

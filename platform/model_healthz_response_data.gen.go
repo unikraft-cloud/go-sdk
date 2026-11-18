@@ -33,7 +33,7 @@ type HealthzResponseData struct {
 
 func (m *HealthzResponseData) UnmarshalJSON(data []byte) error {
 	type Alias HealthzResponseData
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m HealthzResponseData) MarshalJSON() ([]byte, error) {

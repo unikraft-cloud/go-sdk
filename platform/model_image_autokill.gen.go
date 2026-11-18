@@ -27,7 +27,7 @@ type ImageAutokill struct {
 
 func (m *ImageAutokill) UnmarshalJSON(data []byte) error {
 	type Alias ImageAutokill
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m ImageAutokill) MarshalJSON() ([]byte, error) {

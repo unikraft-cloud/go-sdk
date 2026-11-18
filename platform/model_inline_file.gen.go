@@ -30,7 +30,7 @@ type InlineFile struct {
 
 func (m *InlineFile) UnmarshalJSON(data []byte) error {
 	type Alias InlineFile
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m InlineFile) MarshalJSON() ([]byte, error) {

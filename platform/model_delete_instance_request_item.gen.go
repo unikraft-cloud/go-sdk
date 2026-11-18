@@ -44,7 +44,7 @@ type DeleteInstanceRequestItem struct {
 
 func (m *DeleteInstanceRequestItem) UnmarshalJSON(data []byte) error {
 	type Alias DeleteInstanceRequestItem
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m DeleteInstanceRequestItem) MarshalJSON() ([]byte, error) {

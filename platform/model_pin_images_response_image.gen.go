@@ -47,7 +47,7 @@ type PinImagesResponseImage struct {
 
 func (m *PinImagesResponseImage) UnmarshalJSON(data []byte) error {
 	type Alias PinImagesResponseImage
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m PinImagesResponseImage) MarshalJSON() ([]byte, error) {

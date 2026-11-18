@@ -49,7 +49,7 @@ func (m *CreateInstanceRequestRom) UnmarshalJSON(data []byte) error {
 		Image jsontext.Value `json:"image,omitzero"`
 		*Alias
 	}{Alias: (*Alias)(m)}
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := json.Unmarshal(data, &aux, jsontext.AllowDuplicateNames(true)); err != nil {
 		return err
 	}
 	if len(aux.Image) > 0 {

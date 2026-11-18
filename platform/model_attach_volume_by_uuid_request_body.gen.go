@@ -33,7 +33,7 @@ type AttachVolumeByUUIDRequestBody struct {
 
 func (m *AttachVolumeByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias AttachVolumeByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m AttachVolumeByUUIDRequestBody) MarshalJSON() ([]byte, error) {

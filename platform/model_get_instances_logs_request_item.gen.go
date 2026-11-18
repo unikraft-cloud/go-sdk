@@ -33,7 +33,7 @@ type GetInstancesLogsRequestItem struct {
 
 func (m *GetInstancesLogsRequestItem) UnmarshalJSON(data []byte) error {
 	type Alias GetInstancesLogsRequestItem
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m GetInstancesLogsRequestItem) MarshalJSON() ([]byte, error) {

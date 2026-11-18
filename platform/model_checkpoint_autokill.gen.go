@@ -27,7 +27,7 @@ type CheckpointAutokill struct {
 
 func (m *CheckpointAutokill) UnmarshalJSON(data []byte) error {
 	type Alias CheckpointAutokill
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CheckpointAutokill) MarshalJSON() ([]byte, error) {

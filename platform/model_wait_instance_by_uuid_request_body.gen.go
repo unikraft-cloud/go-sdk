@@ -45,7 +45,7 @@ type WaitInstanceByUUIDRequestBody struct {
 
 func (m *WaitInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias WaitInstanceByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m WaitInstanceByUUIDRequestBody) MarshalJSON() ([]byte, error) {

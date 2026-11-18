@@ -28,7 +28,7 @@ type Region struct {
 
 func (m *Region) UnmarshalJSON(data []byte) error {
 	type Alias Region
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m Region) MarshalJSON() ([]byte, error) {

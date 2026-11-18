@@ -25,7 +25,7 @@ type UpdateCertificatesResponseData struct {
 
 func (m *UpdateCertificatesResponseData) UnmarshalJSON(data []byte) error {
 	type Alias UpdateCertificatesResponseData
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m UpdateCertificatesResponseData) MarshalJSON() ([]byte, error) {

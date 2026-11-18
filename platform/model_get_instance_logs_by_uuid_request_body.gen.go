@@ -28,7 +28,7 @@ type GetInstanceLogsByUUIDRequestBody struct {
 
 func (m *GetInstanceLogsByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias GetInstanceLogsByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m GetInstanceLogsByUUIDRequestBody) MarshalJSON() ([]byte, error) {

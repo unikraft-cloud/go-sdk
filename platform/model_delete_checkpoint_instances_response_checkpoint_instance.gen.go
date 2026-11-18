@@ -37,7 +37,7 @@ type DeleteCheckpointInstancesResponseCheckpointInstance struct {
 
 func (m *DeleteCheckpointInstancesResponseCheckpointInstance) UnmarshalJSON(data []byte) error {
 	type Alias DeleteCheckpointInstancesResponseCheckpointInstance
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m DeleteCheckpointInstancesResponseCheckpointInstance) MarshalJSON() ([]byte, error) {

@@ -38,7 +38,7 @@ func Unmarshal{{$union}}(v jsontext.Value) ({{$union}}, error) {
 {{- if $v.Kinds}}
 	case {{join ", " $v.Kinds}}:
 		var out {{$v.Type}}
-		if err = json.Unmarshal(v, &out); err == nil {
+		if err = json.Unmarshal(v, &out, jsontext.AllowDuplicateNames(true)); err == nil {
 			return out, nil
 		}
 {{- end}}
@@ -51,7 +51,7 @@ func Unmarshal{{$union}}(v jsontext.Value) ({{$union}}, error) {
 	// be attempted speculatively.
 	{
 		var out {{$v.Type}}
-		if err := json.Unmarshal(v, &out); err == nil {
+		if err := json.Unmarshal(v, &out, jsontext.AllowDuplicateNames(true)); err == nil {
 			return out, nil
 		}
 	}

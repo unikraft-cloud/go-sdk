@@ -42,7 +42,7 @@ type AWSEBSConfig struct {
 
 func (m *AWSEBSConfig) UnmarshalJSON(data []byte) error {
 	type Alias AWSEBSConfig
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m AWSEBSConfig) MarshalJSON() ([]byte, error) {

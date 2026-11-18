@@ -31,7 +31,7 @@ type ResourceID struct {
 
 func (m *ResourceID) UnmarshalJSON(data []byte) error {
 	type Alias ResourceID
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m ResourceID) MarshalJSON() ([]byte, error) {

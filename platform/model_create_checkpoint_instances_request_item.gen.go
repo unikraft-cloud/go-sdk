@@ -38,7 +38,7 @@ type CreateCheckpointInstancesRequestItem struct {
 
 func (m *CreateCheckpointInstancesRequestItem) UnmarshalJSON(data []byte) error {
 	type Alias CreateCheckpointInstancesRequestItem
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateCheckpointInstancesRequestItem) MarshalJSON() ([]byte, error) {

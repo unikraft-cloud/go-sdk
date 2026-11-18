@@ -49,7 +49,7 @@ type InstancePlugin struct {
 
 func (m *InstancePlugin) UnmarshalJSON(data []byte) error {
 	type Alias InstancePlugin
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m InstancePlugin) MarshalJSON() ([]byte, error) {

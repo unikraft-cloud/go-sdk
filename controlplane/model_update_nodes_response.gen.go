@@ -34,7 +34,7 @@ type UpdateNodesResponse struct {
 
 func (m *UpdateNodesResponse) UnmarshalJSON(data []byte) error {
 	type Alias UpdateNodesResponse
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m UpdateNodesResponse) MarshalJSON() ([]byte, error) {

@@ -27,7 +27,7 @@ type CreateServiceGroupRequestAutokill struct {
 
 func (m *CreateServiceGroupRequestAutokill) UnmarshalJSON(data []byte) error {
 	type Alias CreateServiceGroupRequestAutokill
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateServiceGroupRequestAutokill) MarshalJSON() ([]byte, error) {

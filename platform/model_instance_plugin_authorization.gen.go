@@ -27,7 +27,7 @@ type InstancePluginAuthorization struct {
 
 func (m *InstancePluginAuthorization) UnmarshalJSON(data []byte) error {
 	type Alias InstancePluginAuthorization
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m InstancePluginAuthorization) MarshalJSON() ([]byte, error) {

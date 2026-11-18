@@ -35,7 +35,7 @@ type AbortInstanceMigrationsResponse struct {
 
 func (m *AbortInstanceMigrationsResponse) UnmarshalJSON(data []byte) error {
 	type Alias AbortInstanceMigrationsResponse
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m AbortInstanceMigrationsResponse) MarshalJSON() ([]byte, error) {

@@ -30,7 +30,7 @@ type AuditStop struct {
 
 func (m *AuditStop) UnmarshalJSON(data []byte) error {
 	type Alias AuditStop
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m AuditStop) MarshalJSON() ([]byte, error) {

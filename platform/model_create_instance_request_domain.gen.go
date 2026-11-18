@@ -43,7 +43,7 @@ type CreateInstanceRequestDomain struct {
 
 func (m *CreateInstanceRequestDomain) UnmarshalJSON(data []byte) error {
 	type Alias CreateInstanceRequestDomain
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateInstanceRequestDomain) MarshalJSON() ([]byte, error) {

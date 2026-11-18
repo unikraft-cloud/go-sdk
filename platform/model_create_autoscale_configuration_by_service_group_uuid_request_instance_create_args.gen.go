@@ -27,7 +27,7 @@ type CreateAutoscaleConfigurationByServiceGroupUUIDRequestInstanceCreateArgs str
 
 func (m *CreateAutoscaleConfigurationByServiceGroupUUIDRequestInstanceCreateArgs) UnmarshalJSON(data []byte) error {
 	type Alias CreateAutoscaleConfigurationByServiceGroupUUIDRequestInstanceCreateArgs
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateAutoscaleConfigurationByServiceGroupUUIDRequestInstanceCreateArgs) MarshalJSON() ([]byte, error) {

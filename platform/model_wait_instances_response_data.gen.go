@@ -25,7 +25,7 @@ type WaitInstancesResponseData struct {
 
 func (m *WaitInstancesResponseData) UnmarshalJSON(data []byte) error {
 	type Alias WaitInstancesResponseData
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m WaitInstancesResponseData) MarshalJSON() ([]byte, error) {

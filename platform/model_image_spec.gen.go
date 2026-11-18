@@ -35,7 +35,7 @@ type ImageSpec struct {
 
 func (m *ImageSpec) UnmarshalJSON(data []byte) error {
 	type Alias ImageSpec
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m ImageSpec) MarshalJSON() ([]byte, error) {

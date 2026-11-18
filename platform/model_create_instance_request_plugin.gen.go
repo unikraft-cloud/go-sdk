@@ -63,7 +63,7 @@ func (m *CreateInstanceRequestPlugin) UnmarshalJSON(data []byte) error {
 		Rom   jsontext.Value `json:"rom,omitzero"`
 		*Alias
 	}{Alias: (*Alias)(m)}
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := json.Unmarshal(data, &aux, jsontext.AllowDuplicateNames(true)); err != nil {
 		return err
 	}
 	if len(aux.Image) > 0 {

@@ -40,7 +40,7 @@ type DeleteInstanceByUUIDRequestBody struct {
 
 func (m *DeleteInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias DeleteInstanceByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m DeleteInstanceByUUIDRequestBody) MarshalJSON() ([]byte, error) {

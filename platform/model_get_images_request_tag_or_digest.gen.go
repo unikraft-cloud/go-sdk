@@ -25,7 +25,7 @@ type GetImagesRequestTagOrDigest struct {
 
 func (m *GetImagesRequestTagOrDigest) UnmarshalJSON(data []byte) error {
 	type Alias GetImagesRequestTagOrDigest
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m GetImagesRequestTagOrDigest) MarshalJSON() ([]byte, error) {

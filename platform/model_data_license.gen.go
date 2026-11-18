@@ -30,7 +30,7 @@ type DataLicense struct {
 
 func (m *DataLicense) UnmarshalJSON(data []byte) error {
 	type Alias DataLicense
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m DataLicense) MarshalJSON() ([]byte, error) {

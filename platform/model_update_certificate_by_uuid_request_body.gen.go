@@ -32,7 +32,7 @@ type UpdateCertificateByUUIDRequestBody struct {
 
 func (m *UpdateCertificateByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias UpdateCertificateByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m UpdateCertificateByUUIDRequestBody) MarshalJSON() ([]byte, error) {

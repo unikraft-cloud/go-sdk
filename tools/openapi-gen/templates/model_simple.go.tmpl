@@ -69,7 +69,7 @@ func (m *{{$schemaName}}) UnmarshalJSON(data []byte) error {
 {{- end}}
 		*Alias
 	}{Alias: (*Alias)(m)}
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := json.Unmarshal(data, &aux, jsontext.AllowDuplicateNames(true)); err != nil {
 		return err
 	}
 {{- range $u := $unionFields}}
@@ -87,7 +87,7 @@ func (m *{{$schemaName}}) UnmarshalJSON(data []byte) error {
 {{- end}}
 	return nil
 {{- else}}
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 {{- end}}
 }
 

@@ -26,7 +26,7 @@ type DetachVolumeByUUIDRequestBody struct {
 
 func (m *DetachVolumeByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias DetachVolumeByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m DetachVolumeByUUIDRequestBody) MarshalJSON() ([]byte, error) {

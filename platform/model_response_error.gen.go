@@ -26,7 +26,7 @@ type ResponseError struct {
 
 func (m *ResponseError) UnmarshalJSON(data []byte) error {
 	type Alias ResponseError
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m ResponseError) MarshalJSON() ([]byte, error) {

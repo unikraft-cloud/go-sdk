@@ -44,7 +44,7 @@ type CreateCertificateRequest struct {
 
 func (m *CreateCertificateRequest) UnmarshalJSON(data []byte) error {
 	type Alias CreateCertificateRequest
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateCertificateRequest) MarshalJSON() ([]byte, error) {

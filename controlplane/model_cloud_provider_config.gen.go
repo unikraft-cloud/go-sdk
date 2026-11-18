@@ -27,7 +27,7 @@ type CloudProviderConfig struct {
 
 func (m *CloudProviderConfig) UnmarshalJSON(data []byte) error {
 	type Alias CloudProviderConfig
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CloudProviderConfig) MarshalJSON() ([]byte, error) {

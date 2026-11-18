@@ -26,7 +26,7 @@ type DeletePolicyRequest struct {
 
 func (m *DeletePolicyRequest) UnmarshalJSON(data []byte) error {
 	type Alias DeletePolicyRequest
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m DeletePolicyRequest) MarshalJSON() ([]byte, error) {

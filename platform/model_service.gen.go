@@ -44,7 +44,7 @@ type Service struct {
 
 func (m *Service) UnmarshalJSON(data []byte) error {
 	type Alias Service
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m Service) MarshalJSON() ([]byte, error) {

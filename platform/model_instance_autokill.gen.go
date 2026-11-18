@@ -31,7 +31,7 @@ type InstanceAutokill struct {
 
 func (m *InstanceAutokill) UnmarshalJSON(data []byte) error {
 	type Alias InstanceAutokill
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m InstanceAutokill) MarshalJSON() ([]byte, error) {

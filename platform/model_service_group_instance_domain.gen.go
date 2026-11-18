@@ -43,7 +43,7 @@ type ServiceGroupInstanceDomain struct {
 
 func (m *ServiceGroupInstanceDomain) UnmarshalJSON(data []byte) error {
 	type Alias ServiceGroupInstanceDomain
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m ServiceGroupInstanceDomain) MarshalJSON() ([]byte, error) {

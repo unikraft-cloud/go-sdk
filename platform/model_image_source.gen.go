@@ -36,12 +36,12 @@ func UnmarshalImageSource(v jsontext.Value) (ImageSource, error) {
 	switch v.Kind() {
 	case '"':
 		var out ImageReference
-		if err = json.Unmarshal(v, &out); err == nil {
+		if err = json.Unmarshal(v, &out, jsontext.AllowDuplicateNames(true)); err == nil {
 			return out, nil
 		}
 	case '{':
 		var out ImageSpec
-		if err = json.Unmarshal(v, &out); err == nil {
+		if err = json.Unmarshal(v, &out, jsontext.AllowDuplicateNames(true)); err == nil {
 			return out, nil
 		}
 	}

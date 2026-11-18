@@ -41,7 +41,7 @@ type CreateInstanceScaleToZero struct {
 
 func (m *CreateInstanceScaleToZero) UnmarshalJSON(data []byte) error {
 	type Alias CreateInstanceScaleToZero
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateInstanceScaleToZero) MarshalJSON() ([]byte, error) {

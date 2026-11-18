@@ -46,7 +46,7 @@ type UpdateServiceGroupByUUIDRequestBody struct {
 
 func (m *UpdateServiceGroupByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias UpdateServiceGroupByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m UpdateServiceGroupByUUIDRequestBody) MarshalJSON() ([]byte, error) {

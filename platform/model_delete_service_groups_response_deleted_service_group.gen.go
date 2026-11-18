@@ -37,7 +37,7 @@ type DeleteServiceGroupsResponseDeletedServiceGroup struct {
 
 func (m *DeleteServiceGroupsResponseDeletedServiceGroup) UnmarshalJSON(data []byte) error {
 	type Alias DeleteServiceGroupsResponseDeletedServiceGroup
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m DeleteServiceGroupsResponseDeletedServiceGroup) MarshalJSON() ([]byte, error) {

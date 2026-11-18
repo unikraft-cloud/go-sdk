@@ -51,7 +51,7 @@ type UpdateServiceGroupsRequestItem struct {
 
 func (m *UpdateServiceGroupsRequestItem) UnmarshalJSON(data []byte) error {
 	type Alias UpdateServiceGroupsRequestItem
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m UpdateServiceGroupsRequestItem) MarshalJSON() ([]byte, error) {

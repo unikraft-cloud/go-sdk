@@ -51,7 +51,7 @@ type UpdateTemplateVolumesRequestItem struct {
 
 func (m *UpdateTemplateVolumesRequestItem) UnmarshalJSON(data []byte) error {
 	type Alias UpdateTemplateVolumesRequestItem
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m UpdateTemplateVolumesRequestItem) MarshalJSON() ([]byte, error) {

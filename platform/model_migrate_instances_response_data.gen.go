@@ -25,7 +25,7 @@ type MigrateInstancesResponseData struct {
 
 func (m *MigrateInstancesResponseData) UnmarshalJSON(data []byte) error {
 	type Alias MigrateInstancesResponseData
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m MigrateInstancesResponseData) MarshalJSON() ([]byte, error) {

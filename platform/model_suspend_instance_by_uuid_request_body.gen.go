@@ -27,7 +27,7 @@ type SuspendInstanceByUUIDRequestBody struct {
 
 func (m *SuspendInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias SuspendInstanceByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m SuspendInstanceByUUIDRequestBody) MarshalJSON() ([]byte, error) {

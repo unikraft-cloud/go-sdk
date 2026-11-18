@@ -39,7 +39,7 @@ type CreateAutoscaleConfigurationByServiceGroupUUIDRequest struct {
 
 func (m *CreateAutoscaleConfigurationByServiceGroupUUIDRequest) UnmarshalJSON(data []byte) error {
 	type Alias CreateAutoscaleConfigurationByServiceGroupUUIDRequest
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateAutoscaleConfigurationByServiceGroupUUIDRequest) MarshalJSON() ([]byte, error) {

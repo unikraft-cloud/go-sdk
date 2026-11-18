@@ -53,7 +53,7 @@ type StopInstancesRequestItem struct {
 
 func (m *StopInstancesRequestItem) UnmarshalJSON(data []byte) error {
 	type Alias StopInstancesRequestItem
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m StopInstancesRequestItem) MarshalJSON() ([]byte, error) {

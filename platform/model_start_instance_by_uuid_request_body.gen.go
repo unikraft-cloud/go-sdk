@@ -34,7 +34,7 @@ type StartInstanceByUUIDRequestBody struct {
 
 func (m *StartInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias StartInstanceByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m StartInstanceByUUIDRequestBody) MarshalJSON() ([]byte, error) {

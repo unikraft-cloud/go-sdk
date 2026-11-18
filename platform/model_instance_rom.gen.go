@@ -39,7 +39,7 @@ type InstanceRom struct {
 
 func (m *InstanceRom) UnmarshalJSON(data []byte) error {
 	type Alias InstanceRom
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m InstanceRom) MarshalJSON() ([]byte, error) {

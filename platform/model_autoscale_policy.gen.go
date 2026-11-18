@@ -38,7 +38,7 @@ type AutoscalePolicy struct {
 
 func (m *AutoscalePolicy) UnmarshalJSON(data []byte) error {
 	type Alias AutoscalePolicy
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m AutoscalePolicy) MarshalJSON() ([]byte, error) {

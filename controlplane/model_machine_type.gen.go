@@ -39,7 +39,7 @@ type MachineType struct {
 
 func (m *MachineType) UnmarshalJSON(data []byte) error {
 	type Alias MachineType
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m MachineType) MarshalJSON() ([]byte, error) {

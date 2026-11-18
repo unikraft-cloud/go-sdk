@@ -46,7 +46,7 @@ type UpdateTemplateVolumeByUUIDRequestBody struct {
 
 func (m *UpdateTemplateVolumeByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias UpdateTemplateVolumeByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m UpdateTemplateVolumeByUUIDRequestBody) MarshalJSON() ([]byte, error) {

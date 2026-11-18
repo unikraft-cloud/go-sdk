@@ -34,7 +34,7 @@ type InstancePendingUpdate struct {
 
 func (m *InstancePendingUpdate) UnmarshalJSON(data []byte) error {
 	type Alias InstancePendingUpdate
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m InstancePendingUpdate) MarshalJSON() ([]byte, error) {

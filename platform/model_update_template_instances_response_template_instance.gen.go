@@ -39,7 +39,7 @@ type UpdateTemplateInstancesResponseTemplateInstance struct {
 
 func (m *UpdateTemplateInstancesResponseTemplateInstance) UnmarshalJSON(data []byte) error {
 	type Alias UpdateTemplateInstancesResponseTemplateInstance
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m UpdateTemplateInstancesResponseTemplateInstance) MarshalJSON() ([]byte, error) {

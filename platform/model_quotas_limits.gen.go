@@ -40,7 +40,7 @@ type QuotasLimits struct {
 
 func (m *QuotasLimits) UnmarshalJSON(data []byte) error {
 	type Alias QuotasLimits
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m QuotasLimits) MarshalJSON() ([]byte, error) {

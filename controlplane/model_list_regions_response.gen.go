@@ -34,7 +34,7 @@ type ListRegionsResponse struct {
 
 func (m *ListRegionsResponse) UnmarshalJSON(data []byte) error {
 	type Alias ListRegionsResponse
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m ListRegionsResponse) MarshalJSON() ([]byte, error) {

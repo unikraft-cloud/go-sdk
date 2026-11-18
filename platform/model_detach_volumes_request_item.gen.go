@@ -31,7 +31,7 @@ type DetachVolumesRequestItem struct {
 
 func (m *DetachVolumesRequestItem) UnmarshalJSON(data []byte) error {
 	type Alias DetachVolumesRequestItem
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m DetachVolumesRequestItem) MarshalJSON() ([]byte, error) {

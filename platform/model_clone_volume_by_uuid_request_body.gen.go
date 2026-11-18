@@ -33,7 +33,7 @@ type CloneVolumeByUUIDRequestBody struct {
 
 func (m *CloneVolumeByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias CloneVolumeByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CloneVolumeByUUIDRequestBody) MarshalJSON() ([]byte, error) {

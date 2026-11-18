@@ -29,7 +29,7 @@ type InstanceGpu struct {
 
 func (m *InstanceGpu) UnmarshalJSON(data []byte) error {
 	type Alias InstanceGpu
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m InstanceGpu) MarshalJSON() ([]byte, error) {

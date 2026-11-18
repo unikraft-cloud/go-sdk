@@ -27,7 +27,7 @@ type PinImageRequestItemAutokill struct {
 
 func (m *PinImageRequestItemAutokill) UnmarshalJSON(data []byte) error {
 	type Alias PinImageRequestItemAutokill
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m PinImageRequestItemAutokill) MarshalJSON() ([]byte, error) {

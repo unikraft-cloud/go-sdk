@@ -31,7 +31,7 @@ type ServiceGroupInstance struct {
 
 func (m *ServiceGroupInstance) UnmarshalJSON(data []byte) error {
 	type Alias ServiceGroupInstance
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m ServiceGroupInstance) MarshalJSON() ([]byte, error) {

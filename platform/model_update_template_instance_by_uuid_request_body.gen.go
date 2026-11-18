@@ -38,7 +38,7 @@ type UpdateTemplateInstanceByUUIDRequestBody struct {
 
 func (m *UpdateTemplateInstanceByUUIDRequestBody) UnmarshalJSON(data []byte) error {
 	type Alias UpdateTemplateInstanceByUUIDRequestBody
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m UpdateTemplateInstanceByUUIDRequestBody) MarshalJSON() ([]byte, error) {

@@ -28,7 +28,7 @@ type MigrateInstanceDestination struct {
 
 func (m *MigrateInstanceDestination) UnmarshalJSON(data []byte) error {
 	type Alias MigrateInstanceDestination
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m MigrateInstanceDestination) MarshalJSON() ([]byte, error) {

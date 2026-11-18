@@ -39,7 +39,7 @@ type CreateInstanceRequestVolume struct {
 
 func (m *CreateInstanceRequestVolume) UnmarshalJSON(data []byte) error {
 	type Alias CreateInstanceRequestVolume
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateInstanceRequestVolume) MarshalJSON() ([]byte, error) {

@@ -37,7 +37,7 @@ type CreateAutoscaleConfigurationPolicyResponsePolicy struct {
 
 func (m *CreateAutoscaleConfigurationPolicyResponsePolicy) UnmarshalJSON(data []byte) error {
 	type Alias CreateAutoscaleConfigurationPolicyResponsePolicy
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateAutoscaleConfigurationPolicyResponsePolicy) MarshalJSON() ([]byte, error) {

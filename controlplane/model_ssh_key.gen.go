@@ -29,7 +29,7 @@ type SSHKey struct {
 
 func (m *SSHKey) UnmarshalJSON(data []byte) error {
 	type Alias SSHKey
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m SSHKey) MarshalJSON() ([]byte, error) {

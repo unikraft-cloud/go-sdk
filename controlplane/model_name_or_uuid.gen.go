@@ -28,7 +28,7 @@ type NameOrUUID struct {
 
 func (m *NameOrUUID) UnmarshalJSON(data []byte) error {
 	type Alias NameOrUUID
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m NameOrUUID) MarshalJSON() ([]byte, error) {

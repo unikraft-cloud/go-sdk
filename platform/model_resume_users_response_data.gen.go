@@ -25,7 +25,7 @@ type ResumeUsersResponseData struct {
 
 func (m *ResumeUsersResponseData) UnmarshalJSON(data []byte) error {
 	type Alias ResumeUsersResponseData
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m ResumeUsersResponseData) MarshalJSON() ([]byte, error) {

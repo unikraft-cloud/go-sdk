@@ -40,7 +40,7 @@ type CreateVolumeRequest struct {
 
 func (m *CreateVolumeRequest) UnmarshalJSON(data []byte) error {
 	type Alias CreateVolumeRequest
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m CreateVolumeRequest) MarshalJSON() ([]byte, error) {

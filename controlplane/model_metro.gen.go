@@ -33,7 +33,7 @@ type Metro struct {
 
 func (m *Metro) UnmarshalJSON(data []byte) error {
 	type Alias Metro
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m Metro) MarshalJSON() ([]byte, error) {

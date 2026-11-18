@@ -34,7 +34,7 @@ type QuotasResponse struct {
 
 func (m *QuotasResponse) UnmarshalJSON(data []byte) error {
 	type Alias QuotasResponse
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m QuotasResponse) MarshalJSON() ([]byte, error) {

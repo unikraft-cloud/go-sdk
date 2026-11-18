@@ -49,7 +49,7 @@ type WaitInstancesRequestItem struct {
 
 func (m *WaitInstancesRequestItem) UnmarshalJSON(data []byte) error {
 	type Alias WaitInstancesRequestItem
-	return json.Unmarshal(data, (*Alias)(m))
+	return json.Unmarshal(data, (*Alias)(m), jsontext.AllowDuplicateNames(true))
 }
 
 func (m WaitInstancesRequestItem) MarshalJSON() ([]byte, error) {
