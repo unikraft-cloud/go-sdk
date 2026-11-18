@@ -367,4 +367,14 @@ func TestAnswers(t *testing.T) {
 		_, err := c.GetBuild(testContext(t), "b1")
 		require.ErrorContains(t, err, "larger than the limit")
 	})
+
+	t.Run("an answer with a duplicate member name is an error", func(t *testing.T) {
+		t.Parallel()
+
+		requests := make(chan request, 1)
+		c := serve(t, requests, answer{status: http.StatusOK, body: `{"id": "b1", "id": "b2"}`})
+
+		_, err := c.GetBuild(testContext(t), "b1")
+		require.ErrorContains(t, err, `duplicate object member name "id"`)
+	})
 }

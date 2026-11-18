@@ -421,6 +421,20 @@ func TestLogs(t *testing.T) {
 		assert.Equal(t, int32(1), requests.Load())
 	})
 
+	t.Run("a line with a duplicate member name ends the stream", func(t *testing.T) {
+		t.Parallel()
+
+		c, requests := streamServer(t, func(int32) reply {
+			return reply{lines: []string{lineKernel, `{"vertexes":[],"vertexes":[]}`, lineResult}}
+		})
+
+		events, err := follow(testContext(t), c)
+		require.ErrorContains(t, err, `duplicate object member name "vertexes"`)
+		require.ErrorContains(t, err, "line 2")
+		assert.Len(t, events, 1)
+		assert.Equal(t, int32(1), requests.Load())
+	})
+
 	t.Run("a line with a bad timestamp ends the stream", func(t *testing.T) {
 		t.Parallel()
 

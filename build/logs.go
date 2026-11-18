@@ -11,7 +11,6 @@ import (
 	"bufio"
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -212,7 +211,7 @@ func (c *Client) followLogs(ctx context.Context, id string, seen int, yield func
 		line++
 
 		var ev Event
-		if err := json.Unmarshal(raw, &ev); err != nil {
+		if err := unmarshal(raw, &ev); err != nil {
 			return yielded, false, fmt.Errorf("decoding line %d of the progress stream: %w", line, err)
 		}
 		dropNil(ev.SolveStatus)

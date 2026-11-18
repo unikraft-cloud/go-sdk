@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"encoding/json/jsontext"
 	"errors"
 	"fmt"
 	"io"
@@ -204,11 +205,22 @@ func (c *Client) do(ctx context.Context, method, path string, query url.Values, 
 	if err != nil {
 		return fmt.Errorf("reading response: %w", err)
 	}
-	if err := json.Unmarshal(b, out); err != nil {
+	if err := unmarshal(b, out); err != nil {
 		return fmt.Errorf("decoding response: %w", err)
 	}
 
 	return nil
+}
+
+// unmarshal is json.Unmarshal, except that an object with a duplicate member
+// name is an error.
+func unmarshal(b []byte, v any) error {
+	if err := json.Unmarshal(b, v); err != nil {
+		return err
+	}
+
+	_, err := jsontext.NewDecoder(bytes.NewReader(b), jsontext.AllowInvalidUTF8(true)).ReadValue()
+	return err
 }
 
 // redirected is the error for an answer that redirects, which the client
