@@ -400,7 +400,7 @@ type ErrorBody struct {
 
 // ErrorCode is the reason a request, or a build, failed.
 //
-// The first nine codes, `builder_quota` and `no_metro` are answered by the API together
+// The first nine codes, `builder_quota`, `no_metro` and `forbidden` are answered by the API together
 // with the HTTP status code given. `failed`, `cancelled`, `interrupted` and
 // `builder_quota` are the `code` of the `error` of a build whose `status` is `failed` or `cancelled`, both in the build
 // itself and in the last event of its progress stream.
@@ -415,12 +415,13 @@ type ErrorBody struct {
 // | `conflict`         | `409`: the build is still waiting or running, so its record cannot be deleted yet; cancel it first. Or the build does not wait for a session, already has one, or another user started it. Or the `builder` of the request, or the builder to create, conflicts with the existing builder of that name. Or the instance of the builder to delete has a delete lock. |
 // | `too_many_builds`  | `429`: the caller's tenant already has as many builds running or waiting as it may, or the platform limits the rate of its requests. Submit the build again once one of them has finished, or later. |
 // | `rate_limited`     | `429`, with `Retry-After`: the platform refused too many tokens from the caller's address. Wait as long as `Retry-After` says. |
-// | `internal`         | `500`: the service could not handle the request, through no fault of the request; the details are in the service's log. `502` when the request did not reach the replica that handles it. `503` while the service is shutting down or out of storage. Retrying later is the right response, but a create that got `502` may have started. |
+// | `internal`         | `500`: the service could not handle the request, through no fault of the request; the details are in the service's log. `502` when the request did not reach the replica that handles it, or when the caller's builder failed, with the builder's error as the message. `503` while the service is shutting down or out of storage. Retrying later is the right response, except for the error of a builder, whose message says what failed. A create that got `502` may have started. |
 // | `failed`           | The build itself failed: no session attached in time, a source could not be fetched, a Kraftfile read from a source did not parse, a build step exited non-zero, the push was refused, the volume of an output does not exist or refused the import. The message is the error buildkit or the pipeline reported. |
 // | `cancelled`        | The build was cancelled by a request to the cancel endpoint. |
 // | `interrupted`      | The service restarted, or lost the replica that ran the build, while the build was running, so the build was lost. It can be submitted again. |
 // | `builder_quota`    | `403`: the builder to create could not be created because the tenant is over its quota. Or, as the error of a build: the builder of the build, or the instance that imports it into a volume, could not be created or started because the tenant is over its quota. Free resources or raise the quota, then submit the build again. |
 // | `no_metro`         | `403`: the caller's organization has none of the metros that the service builds in. |
+// | `forbidden`        | `403`: the caller's organization does not have the `org:builds` permission. |
 type ErrorCode string
 
 const (
@@ -438,6 +439,7 @@ const (
 	ErrorCodeInterrupted     ErrorCode = "interrupted"
 	ErrorCodeBuilderQuota    ErrorCode = "builder_quota"
 	ErrorCodeNoMetro         ErrorCode = "no_metro"
+	ErrorCodeForbidden       ErrorCode = "forbidden"
 )
 
 // Kraftfile is the Kraftfile of a build, in one of three forms: the whole file
