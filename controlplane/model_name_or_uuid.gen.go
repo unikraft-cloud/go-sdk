@@ -14,12 +14,15 @@ import (
 
 var _ time.Time
 
-// An identifier for a resource.  Either a name or a UUID.
+// An identifier for a node.  Either a name or a UUID.
 type NameOrUUID struct {
-	// The UUID of the resource.
+	// Mutually exclusive with name.
 	Uuid *string `json:"uuid,omitzero"`
-	// The name of the resource.
+	// Mutually exclusive with UUID.
 	Name *string `json:"name,omitzero"`
+	// (Only applies when using global control plane).
+	// The metro of the resource.
+	Metro *string `json:"metro,omitzero"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.
