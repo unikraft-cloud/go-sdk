@@ -23,6 +23,8 @@ type GetAuthorizationResponseData struct {
 	Registry string `json:"registry"`
 	// The UUID of the organization the token is associated with.
 	OrganizationUuid string `json:"organization_uuid"`
+	// The permissions of the organization that are not revoked.
+	Permissions []string `json:"permissions"`
 
 	// AdditionalProperties captures any JSON object members that do not map to
 	// an explicit field above.

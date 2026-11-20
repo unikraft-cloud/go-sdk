@@ -84,7 +84,7 @@ tasks:
     silent: true
     cmds:
     - |
-      {{.svu_bin}} current
+      {{.svu_bin}} current --tag.pattern "v[0-9]*.[0-9]*.[0-9]*"
 
   next-stable:
     desc: Show the next stable version of the SDK.
@@ -99,7 +99,7 @@ tasks:
     silent: true
     cmds:
     - |
-      NEXT=$({{.svu_bin}} current)
+      NEXT=$({{.task_bin}} last-version)
       if [[ "$NEXT" == *"staging"* ]]; then
         NEXT=$(echo "$NEXT" | awk -F. '{print $1 "." $2 "." $3 "." $4 + 1}')
       else

@@ -152,7 +152,10 @@ type BuildOutput struct {
 	// picks the tag, and checks whether it already exists. The push is done
 	// with the caller's token, unless `registries` has credentials for its
 	// registry. A registry at a private address is `invalid` on a service that
-	// only reaches public addresses.
+	// only reaches public addresses. At a registry that the caller's token
+	// signs in to and that `registries` has no login for, the service checks
+	// when it creates the build that the token can push to the repository, and
+	// a refused push is `invalid`.
 	Image *string `json:"image,omitempty"`
 
 	// The name or UUID of an existing volume to import the built filesystem
@@ -286,8 +289,10 @@ type BuilderStatus struct {
 	// The builds of the tenant running on the builder now.
 	Builds []Build `json:"builds"`
 
-	// The number of builds of the tenant waiting for the builder, or for any
-	// builder of the pool for `default`.
+	// The number of builds of the tenant that have not started on the builder,
+	// or on any builder of the pool for `default`: those that wait for a build
+	// slot, with status `running`, and those that wait for their client's
+	// session, with status `waiting`.
 	WaitingBuilds int32 `json:"waiting_builds"`
 
 	// The number of builds that each replica of the service runs on the
@@ -400,27 +405,28 @@ type ErrorBody struct {
 
 // ErrorCode is the reason a request, or a build, failed.
 //
-// The first nine codes, `builder_quota` and `no_metro` are answered by the API together
+// The first nine codes, `builder_quota`, `no_metro` and `forbidden` are answered by the API together
 // with the HTTP status code given. `failed`, `cancelled`, `interrupted` and
 // `builder_quota` are the `code` of the `error` of a build whose `status` is `failed` or `cancelled`, both in the build
 // itself and in the last event of its progress stream.
 //
 // | Code               | Description |
 // |--------------------|-------------|
-// | `invalid`          | `400`: the request is malformed, or a value in it is not valid: the body is not JSON, a required field is missing, a source has more than one of `session`, `git` and `url`, an image reference does not parse, a volume output has a `kraftfile` or more than one platform, an inline Kraftfile does not parse or cannot be built, a session does not advertise a method the build needs, the request without its secret values is larger than 64 KiB, ... |
+// | `invalid`          | `400`: the request is malformed, or a value in it is not valid: the body is not JSON, a required field is missing, a source has more than one of `session`, `git` and `url`, an image reference does not parse, a volume output has a `kraftfile` or more than one platform, an inline Kraftfile does not parse or cannot be built, a session does not advertise a method the build needs, the caller's token cannot push an image output to its repository, the request without its secret values is larger than 64 KiB, ... |
 // | `unsupported`      | `400`: the request uses a part of the full build API, or of the Kraftfile, that this service does not support yet. Nothing is ignored silently. |
 // | `unauthenticated`  | `401`: the request carries no bearer token, or one that the platform does not accept. |
 // | `auth_unavailable` | `502`: the token could not be validated because the platform did not give a usable answer. `503`, with `Retry-After`, while the service checks too many tokens at once. Retrying later is the right response. |
 // | `not_found`        | `404`: no build with this ID belongs to the caller's tenant. The build of another tenant is indistinguishable from a build that does not exist. Or the caller has no builder of this name. |
-// | `conflict`         | `409`: the build is still waiting or running, so its record cannot be deleted yet; cancel it first. Or the build does not wait for a session, already has one, or another user started it. Or the `builder` of the request, or the builder to create, conflicts with the existing builder of that name. Or the instance of the builder to delete has a delete lock. |
+// | `conflict`         | `409`: the build is still waiting or running, so its record cannot be deleted yet; cancel it first. Or the build does not wait for a session, already has one connected, had a session with another ID, or another user started it. Or the `builder` of the request, or the builder to create, conflicts with the existing builder of that name. Or the instance of the builder to delete has a delete lock. |
 // | `too_many_builds`  | `429`: the caller's tenant already has as many builds running or waiting as it may, or the platform limits the rate of its requests. Submit the build again once one of them has finished, or later. |
 // | `rate_limited`     | `429`, with `Retry-After`: the platform refused too many tokens from the caller's address. Wait as long as `Retry-After` says. |
-// | `internal`         | `500`: the service could not handle the request, through no fault of the request; the details are in the service's log. `502` when the request did not reach the replica that handles it. `503` while the service is shutting down or out of storage. Retrying later is the right response, but a create that got `502` may have started. |
-// | `failed`           | The build itself failed: no session attached in time, a source could not be fetched, a Kraftfile read from a source did not parse, a build step exited non-zero, the push was refused, the volume of an output does not exist or refused the import. The message is the error buildkit or the pipeline reported. |
+// | `internal`         | `500`: the service could not handle the request, through no fault of the request; the details are in the service's log. `502` when the request did not reach the replica that handles it, or when the caller's builder failed, with the builder's error as the message. `503` while the service is shutting down or out of storage. Retrying later is the right response, except for the error of a builder, whose message says what failed. A create that got `502` may have started. |
+// | `failed`           | The build itself failed: no session attached in time, the client's session ended during the build, a source could not be fetched, a Kraftfile read from a source did not parse, a build step exited non-zero, the push was refused, the volume of an output does not exist or refused the import. The message is the error buildkit or the pipeline reported. |
 // | `cancelled`        | The build was cancelled by a request to the cancel endpoint. |
 // | `interrupted`      | The service restarted, or lost the replica that ran the build, while the build was running, so the build was lost. It can be submitted again. |
 // | `builder_quota`    | `403`: the builder to create could not be created because the tenant is over its quota. Or, as the error of a build: the builder of the build, or the instance that imports it into a volume, could not be created or started because the tenant is over its quota. Free resources or raise the quota, then submit the build again. |
 // | `no_metro`         | `403`: the caller's organization has none of the metros that the service builds in. |
+// | `forbidden`        | `403`: the caller's organization does not have the `org:builds` permission. |
 type ErrorCode string
 
 const (
@@ -438,13 +444,17 @@ const (
 	ErrorCodeInterrupted     ErrorCode = "interrupted"
 	ErrorCodeBuilderQuota    ErrorCode = "builder_quota"
 	ErrorCodeNoMetro         ErrorCode = "no_metro"
+	ErrorCodeForbidden       ErrorCode = "forbidden"
 )
 
 // Kraftfile is the Kraftfile of a build, in one of three forms: the whole file
 // as a string, a source to read it from, or the parsed file as an object. A
 // source has `session`, `git` or `url`, and none is a Kraftfile key, so the
 // two object forms never collide. Relative paths in the Kraftfile resolve
-// inside the build context.
+// inside the build context. A source without a `filename` reads the first of
+// `kraft.yaml`, `kraft.yml`, `Kraftfile.yml`, `Kraftfile.yaml` and `Kraftfile`
+// that it has, and if it has none, the build is the one of a request without a
+// `kraftfile`.
 //
 // It is one of KraftfileInline, Source, KraftfileObject.
 type Kraftfile interface {
@@ -597,9 +607,10 @@ type Source struct {
 
 	// The file to read out of the source, relative to `subdir`. Only valid
 	// where the source names a single file: `kraftfile`, where it defaults to
-	// `Kraftfile`, and `contexts.dockerfile`, where it defaults to the name of
-	// the Dockerfile the Kraftfile builds with. A `filename` on any other
-	// context is a `400`.
+	// the first of `kraft.yaml`, `kraft.yml`, `Kraftfile.yml`,
+	// `Kraftfile.yaml` and `Kraftfile` that the source has, and
+	// `contexts.dockerfile`, where it defaults to the name of the Dockerfile
+	// the Kraftfile builds with. A `filename` on any other context is a `400`.
 	Filename *string `json:"filename,omitempty"`
 }
 

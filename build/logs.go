@@ -188,12 +188,12 @@ func (c *Client) followLogs(ctx context.Context, id string, seen int, yield func
 
 	switch {
 	case resp.StatusCode >= http.StatusBadRequest:
-		return 0, false, readError(resp)
+		return 0, false, c.readError(resp)
 	case resp.StatusCode >= http.StatusMultipleChoices:
 		return 0, false, redirected(resp)
 	}
 	if err := checkMediaType(resp, "application/x-ndjson"); err != nil {
-		return 0, false, fmt.Errorf("not a progress stream: %w", err)
+		return 0, false, c.unexpected(err)
 	}
 
 	// Lines are read rather than decoded straight off the body, so that a

@@ -401,7 +401,7 @@ func TestLogs(t *testing.T) {
 		})
 
 		events, err := follow(testContext(t), c)
-		require.ErrorContains(t, err, "not a progress stream")
+		require.ErrorContains(t, err, ": 200 OK (text/html), not application/x-ndjson")
 		assert.Empty(t, events)
 		assert.Equal(t, int32(1), requests.Load())
 	})
