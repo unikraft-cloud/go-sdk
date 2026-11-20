@@ -18,7 +18,7 @@ var _ time.Time
 type ListNodesResponse struct {
 	// The status of the response.
 	Status ResponseStatus `json:"status"`
-	// An optional message providing additional information about the response.
+	// An optional message providing additional information about the status.
 	Message *string `json:"message,omitzero"`
 	// The response data for this request.
 	Data *ListNodesResponseData `json:"data,omitzero"`
