@@ -34,7 +34,8 @@ const (
 
 // attach opens the socket that follows the command from its first byte.
 func (c *Cmd) attach() (*websocket.Conn, error) {
-	conn, err := c.target.Client.FollowCommand(c.ctx, c.target.Instance, c.UUID, nil, c.target.Opts...)
+	follow := &plugin.FollowCommandOpts{Release: new(true)}
+	conn, err := c.target.Client.FollowCommand(c.ctx, c.target.Instance, c.UUID, follow, c.target.Opts...)
 	if err == nil {
 		return conn, nil
 	}
