@@ -14,6 +14,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"sync"
 	"testing"
@@ -40,6 +41,7 @@ type mockPlugin struct {
 	dead     bool
 
 	run      plugin.RunCommandRequest
+	query    url.Values
 	stdin    []byte
 	stdinEOF bool
 	resizes  [][2]uint16
@@ -139,6 +141,10 @@ func (f *mockPlugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "<html>\n<head><title>Bad Gateway</title></head>\n<body>openresty</body>\n</html>")
 
 	case path == "/commands/cmd-1/ws":
+		f.mu.Lock()
+		f.query = r.URL.Query()
+		f.mu.Unlock()
+
 		conn, err := websocket.Accept(w, r, nil)
 		if err != nil {
 			return
@@ -715,6 +721,20 @@ func TestCmdTakesAWholeFrame(t *testing.T) {
 
 	require.NoError(t, cmd.Run())
 	assert.Equal(t, want, stdout.String())
+}
+
+// TestCmdReleasesItsOutput pins that the output is released as it is sent: the
+// plugin holds a command at about 16 MiB of output nobody released.
+func TestCmdReleasesItsOutput(t *testing.T) {
+	fake := newFakePlugin()
+	target := newTarget(t, fake)
+	fake.exit(0)
+
+	require.NoError(t, target.Command(t.Context(), "true").Run())
+
+	fake.mu.Lock()
+	defer fake.mu.Unlock()
+	assert.Equal(t, "true", fake.query.Get("release"))
 }
 
 func TestAStoppedInstanceIsSaidInOneLine(t *testing.T) {
