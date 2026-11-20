@@ -48,7 +48,7 @@ type Client struct {
 	hc     *http.Client
 
 	// retryMin and retryMax bound the wait between two attempts at the
-	// progress stream of a build; see Logs.
+	// progress stream of a build, or at its session; see Logs and Attach.
 	retryMin, retryMax time.Duration
 }
 
@@ -70,8 +70,8 @@ func WithHTTPClient(hc *http.Client) Option {
 	return func(c *Client) { c.hc = hc }
 }
 
-// withRetry sets the wait between two attempts at the progress stream, which
-// starts at base, doubles on every attempt in a row, and never exceeds limit.
+// withRetry sets the wait between two attempts at the progress stream or the session,
+// which starts at base, doubles on every attempt in a row, and never exceeds limit.
 // The tests shorten it.
 func withRetry(base, limit time.Duration) Option {
 	return func(c *Client) { c.retryMin, c.retryMax = base, limit }
