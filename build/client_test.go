@@ -295,23 +295,26 @@ func TestAPIError(t *testing.T) {
 		require.EqualError(t, err, "build b1 is still running (conflict)")
 	})
 
-	t.Run("any other body becomes the message", func(t *testing.T) {
+	t.Run("any other answer gives the status and the media type, not the body", func(t *testing.T) {
 		t.Parallel()
 
 		requests := make(chan request, 1)
-		c := serve(t, requests, answer{status: http.StatusBadGateway, body: "upstream unavailable\n", contentType: "text/plain"})
+		c := serve(t, requests, answer{status: http.StatusNotFound, body: "<html><body>Not Found</body></html>", contentType: "text/html; charset=utf-8"})
 
 		_, err := c.GetBuild(testContext(t), "b1")
 
 		var apiErr *build.APIError
 		require.ErrorAs(t, err, &apiErr)
-		assert.Equal(t, http.StatusBadGateway, apiErr.StatusCode)
+		assert.Equal(t, http.StatusNotFound, apiErr.StatusCode)
 		assert.Empty(t, apiErr.Code)
-		assert.Equal(t, "upstream unavailable", apiErr.Message)
-		require.EqualError(t, err, "Bad Gateway: upstream unavailable")
+		assert.Empty(t, apiErr.Message)
+		assert.Equal(t, "text/html", apiErr.ContentType)
+		require.ErrorContains(t, err, "unexpected build service response from http://")
+		require.ErrorContains(t, err, ": 404 Not Found (text/html)")
+		assert.NotContains(t, err.Error(), "<html")
 	})
 
-	t.Run("no body is the status text", func(t *testing.T) {
+	t.Run("an answer with no body gives only the status", func(t *testing.T) {
 		t.Parallel()
 
 		requests := make(chan request, 1)
@@ -321,7 +324,25 @@ func TestAPIError(t *testing.T) {
 
 		var apiErr *build.APIError
 		require.ErrorAs(t, err, &apiErr)
-		require.EqualError(t, err, "Not Found")
+		require.ErrorContains(t, err, ": 404 Not Found")
+		assert.NotContains(t, err.Error(), "(")
+	})
+
+	t.Run("a password in the server URL is not printed", func(t *testing.T) {
+		t.Parallel()
+
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.Header().Set("Content-Type", "text/html")
+			w.WriteHeader(http.StatusNotFound)
+		}))
+		t.Cleanup(srv.Close)
+
+		c, err := build.New("http://user:secret@" + strings.TrimPrefix(srv.URL, "http://"))
+		require.NoError(t, err)
+
+		_, err = c.GetBuild(testContext(t), "b1")
+		require.ErrorContains(t, err, "user:xxxxx@")
+		assert.NotContains(t, err.Error(), "secret")
 	})
 }
 
@@ -355,7 +376,18 @@ func TestAnswers(t *testing.T) {
 		c := serve(t, requests, answer{status: http.StatusOK, body: "<html>maintenance</html>", contentType: "text/html"})
 
 		_, err := c.GetBuild(testContext(t), "b1")
-		require.ErrorContains(t, err, "not application/json")
+		require.ErrorContains(t, err, "unexpected build service response from http://")
+		require.ErrorContains(t, err, ": 200 OK (text/html), not application/json")
+	})
+
+	t.Run("a delete answered with a page is an error", func(t *testing.T) {
+		t.Parallel()
+
+		requests := make(chan request, 1)
+		c := serve(t, requests, answer{status: http.StatusOK, body: "<html>maintenance</html>", contentType: "text/html"})
+
+		err := c.DeleteBuild(testContext(t), "b1")
+		require.ErrorContains(t, err, ": 200 OK (text/html), not application/json")
 	})
 
 	t.Run("a body over the limit is an error", func(t *testing.T) {

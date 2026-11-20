@@ -190,15 +190,20 @@ func (c *Client) do(ctx context.Context, method, path string, query url.Values, 
 
 	switch {
 	case resp.StatusCode >= http.StatusBadRequest:
-		return readError(resp)
+		return c.readError(resp)
 	case resp.StatusCode >= http.StatusMultipleChoices:
 		return redirected(resp)
-	case out == nil || resp.StatusCode == http.StatusNoContent:
+	case resp.StatusCode == http.StatusNoContent:
+		return nil
+	case out == nil && resp.Header.Get("Content-Type") == "":
 		return nil
 	}
 
 	if err := checkMediaType(resp, "application/json"); err != nil {
-		return err
+		return c.unexpected(err)
+	}
+	if out == nil {
+		return nil
 	}
 	b, err := readBody(resp.Body, maxBodySize)
 	if err != nil {
@@ -225,10 +230,29 @@ func checkMediaType(resp *http.Response, want string) error {
 	ct := resp.Header.Get("Content-Type")
 	mt, _, err := mime.ParseMediaType(ct)
 	if err != nil || mt != want {
-		return fmt.Errorf("response is %q, not %s", ct, want)
+		return fmt.Errorf("%s, not %s", statusLine(resp.StatusCode, mediaType(resp)), want)
 	}
 
 	return nil
+}
+
+// mediaType returns the media type of the response without its parameters.
+// It returns an empty string when the type is missing or not valid.
+func mediaType(resp *http.Response) string {
+	mt, _, _ := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+
+	return mt
+}
+
+// statusLine returns the status code and its text, followed by the media type
+// in parentheses when it is not empty.
+func statusLine(code int, mediaType string) string {
+	line := strings.TrimSpace(fmt.Sprintf("%d %s", code, http.StatusText(code)))
+	if mediaType != "" {
+		line += " (" + mediaType + ")"
+	}
+
+	return line
 }
 
 // errBodyTooLarge means a response body went past the limit put on it.
@@ -250,40 +274,40 @@ func readBody(r io.Reader, limit int64) ([]byte, error) {
 
 // APIError is a request the service refused. StatusCode is the HTTP status
 // it answered with. Code and Message are the error it answered with, when the
-// body was an ErrorBody; otherwise Code is empty and Message carries the body
-// as it was, which happens when something in front of the service answered.
+// body was an ErrorBody; otherwise they are empty, and ContentType is the media
+// type of the answer.
 type APIError struct {
-	StatusCode int
-	Code       ErrorCode
-	Message    string
+	StatusCode  int
+	Code        ErrorCode
+	Message     string
+	ContentType string
 }
 
 func (e *APIError) Error() string {
-	switch {
-	case e.Code != "":
+	if e.Code != "" {
 		return fmt.Sprintf("%s (%s)", e.Message, e.Code)
-	case e.Message != "":
-		return fmt.Sprintf("%s: %s", http.StatusText(e.StatusCode), e.Message)
-	default:
-		return http.StatusText(e.StatusCode)
 	}
+
+	return statusLine(e.StatusCode, e.ContentType)
 }
 
-// readError turns a failed response into an *APIError.
-func readError(resp *http.Response) error {
+// readError returns the *APIError of a failed response. When the body is not
+// an ErrorBody, the error does not keep the body and unexpected wraps it.
+func (c *Client) readError(resp *http.Response) error {
 	body, _ := io.ReadAll(io.LimitReader(resp.Body, maxErrorBody))
-
-	apiErr := &APIError{StatusCode: resp.StatusCode}
 
 	var eb ErrorBody
 	if err := json.Unmarshal(body, &eb); err == nil && eb.Error.Code != "" {
-		apiErr.Code = eb.Error.Code
-		apiErr.Message = eb.Error.Message
-	} else {
-		apiErr.Message = strings.TrimSpace(string(body))
+		return &APIError{StatusCode: resp.StatusCode, Code: eb.Error.Code, Message: eb.Error.Message}
 	}
 
-	return apiErr
+	return c.unexpected(&APIError{StatusCode: resp.StatusCode, ContentType: mediaType(resp)})
+}
+
+// unexpected adds the server URL to err. Use it for an answer that does not
+// come from the API of a build service.
+func (c *Client) unexpected(err error) error {
+	return fmt.Errorf("unexpected build service response from %s: %w", c.server.Redacted(), err)
 }
 
 // Error reports the error as "<message> (<code>)", so that an *Error reads

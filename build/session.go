@@ -65,7 +65,7 @@ func (c *Client) dial(ctx context.Context, path string, header map[string][]stri
 	case resp == nil:
 		return nil, err
 	case resp.StatusCode >= http.StatusBadRequest:
-		return nil, readError(resp)
+		return nil, c.readError(resp)
 	case resp.StatusCode >= http.StatusMultipleChoices:
 		return nil, redirected(resp)
 	default:
