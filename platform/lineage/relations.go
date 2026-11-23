@@ -43,3 +43,70 @@ func (t Tree) ForksOf(uuid string) Tree {
 	}
 	return out
 }
+
+// Mark is the shape a node is drawn with.
+type Mark string
+
+const (
+	MarkInstance   Mark = "instance"
+	MarkFork       Mark = "fork"
+	MarkCheckpoint Mark = "checkpoint"
+)
+
+// Mark returns the shape n is drawn with: a checkpoint, an instance cloned
+// from something, or any other instance.
+func (n Node) Mark() Mark {
+	switch {
+	case n.Kind == KindCheckpoint:
+		return MarkCheckpoint
+	case n.Source != "":
+		return MarkFork
+	default:
+		return MarkInstance
+	}
+}
+
+// Relation is how a node relates to its parent.
+type Relation string
+
+const (
+	// RelationRoot is an instance whose parent is not in the tree.
+	RelationRoot Relation = "root"
+	// RelationForkedFrom is an instance cloned from a checkpoint.
+	RelationForkedFrom Relation = "forked-from"
+	// RelationForkedLiveFrom is an instance cloned from a running instance.
+	RelationForkedLiveFrom Relation = "forked-live-from"
+	// RelationCheckpointOf is a checkpoint of an instance with a name.
+	RelationCheckpointOf Relation = "checkpoint-of"
+	// RelationCheckpointOfDeleted is a checkpoint of a deleted instance, or of
+	// one that is not in the tree or has no name.
+	RelationCheckpointOfDeleted Relation = "checkpoint-of-deleted"
+	// RelationDeleted is a placeholder for a deleted instance.
+	RelationDeleted Relation = "deleted"
+)
+
+// RelationOf returns how n relates to its parent, and the parent if it is in
+// t. Pass the whole tree rather than a scope of it, so that the parent of the
+// oldest node in the scope is still found.
+func (t Tree) RelationOf(n Node) (Relation, Node) {
+	var src Node
+	ok := false
+	if n.Source != "" {
+		src, ok = t.Find(n.Source)
+	}
+	switch {
+	case n.Kind == KindCheckpoint:
+		if !ok || src.Deleted || src.Name == "" {
+			return RelationCheckpointOfDeleted, src
+		}
+		return RelationCheckpointOf, src
+	case n.Deleted:
+		return RelationDeleted, src
+	case !ok:
+		return RelationRoot, src
+	case n.Live:
+		return RelationForkedLiveFrom, src
+	default:
+		return RelationForkedFrom, src
+	}
+}

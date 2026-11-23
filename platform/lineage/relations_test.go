@@ -56,3 +56,52 @@ func TestForksOf(t *testing.T) {
 	assert.Empty(t, nodes.ForksOf("ck2"))
 	assert.Equal(t, []string{"fork-c"}, uuidsOf(nodes.ForksOf("fork-a")))
 }
+
+func TestMark(t *testing.T) {
+	assert.Equal(t, MarkInstance, Node{Kind: KindInstance}.Mark())
+	assert.Equal(t, MarkFork, Node{Kind: KindInstance, Source: "ck"}.Mark())
+	assert.Equal(t, MarkFork, Node{Kind: KindInstance, Source: "root", Live: true}.Mark())
+	assert.Equal(t, MarkCheckpoint, Node{Kind: KindCheckpoint, Source: "root"}.Mark())
+}
+
+func TestRelationOf(t *testing.T) {
+	nodes := Tree{
+		{Kind: KindInstance, UUID: "fork", Name: "fork", Source: "ck"},
+		{Kind: KindInstance, UUID: "live", Name: "live", Source: "root", Live: true},
+		{Kind: KindCheckpoint, UUID: "ck", Name: "ck", Source: "root"},
+		{Kind: KindInstance, UUID: "root", Name: "root"},
+		{Kind: KindInstance, UUID: DeletedPrefix + "x", Deleted: true, Source: "ck"},
+		{Kind: KindCheckpoint, UUID: "ck-x", Source: DeletedPrefix + "x"},
+		{Kind: KindInstance, UUID: "nameless"},
+		{Kind: KindCheckpoint, UUID: "ck-nameless", Source: "nameless"},
+	}
+	root, _ := nodes.Find("root")
+	ck, _ := nodes.Find("ck")
+	deleted, _ := nodes.Find(DeletedPrefix + "x")
+	nameless, _ := nodes.Find("nameless")
+
+	for _, tt := range []struct {
+		uuid   string
+		rel    Relation
+		parent Node
+	}{
+		{"root", RelationRoot, Node{}},
+		{"fork", RelationForkedFrom, ck},
+		{"live", RelationForkedLiveFrom, root},
+		{"ck", RelationCheckpointOf, root},
+		{DeletedPrefix + "x", RelationDeleted, ck},
+		{"ck-x", RelationCheckpointOfDeleted, deleted},
+		{"ck-nameless", RelationCheckpointOfDeleted, nameless},
+	} {
+		n, _ := nodes.Find(tt.uuid)
+		rel, parent := nodes.RelationOf(n)
+		assert.Equal(t, tt.rel, rel, tt.uuid)
+		assert.Equal(t, tt.parent, parent, tt.uuid)
+	}
+
+	rel, parent := nodes.RelationOf(Node{Kind: KindInstance, Source: "missing"})
+	assert.Equal(t, RelationRoot, rel, "a fork of a node outside the tree")
+	assert.Zero(t, parent)
+	rel, _ = nodes.RelationOf(Node{Kind: KindCheckpoint, Source: "missing"})
+	assert.Equal(t, RelationCheckpointOfDeleted, rel, "a checkpoint of an instance outside the tree")
+}
