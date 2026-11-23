@@ -6,7 +6,8 @@
 // Package lineage builds the family trees of instances: an instance is the
 // child of the instance or checkpoint it was cloned from, and a checkpoint is
 // the child of the instance that took it. FetchHistories reads the checkpoint
-// histories that Build needs from the platform.
+// histories that Build needs from the platform. Tree.Layout places a tree in
+// rows and lanes for drawing, and Layout.Text draws it as text.
 package lineage
 
 import (

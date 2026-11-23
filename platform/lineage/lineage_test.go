@@ -6,6 +6,7 @@
 package lineage
 
 import (
+	"math/rand/v2"
 	"testing"
 	"time"
 
@@ -260,6 +261,30 @@ func TestScopeTruncation(t *testing.T) {
 	tree, truncated = nodes.Scope("http-gcc", 7)
 	assert.False(t, truncated)
 	assert.Len(t, tree, 7)
+}
+
+func TestScopeTruncationKeepsOneTree(t *testing.T) {
+	r := rand.New(rand.NewPCG(3, 4))
+	for i := range 500 {
+		nodes := randomTree(r, 2+r.IntN(40))
+		current := nodes[r.IntN(len(nodes))].UUID
+		limit := 1 + r.IntN(len(nodes))
+
+		tree, _ := nodes.Scope(current, limit)
+		assert.LessOrEqual(t, len(tree), limit, "tree %d", i)
+		in := map[string]bool{}
+		for _, n := range tree {
+			in[n.UUID] = true
+		}
+		assert.True(t, in[current], "tree %d keeps current", i)
+		tops := 0
+		for _, n := range tree {
+			if !in[n.Source] {
+				tops++
+			}
+		}
+		assert.Equal(t, 1, tops, "tree %d, current %s, limit %d: %v", i, current, limit, edges(tree))
+	}
 }
 
 func TestScopeMissingCurrent(t *testing.T) {

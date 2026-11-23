@@ -1,0 +1,8 @@
+●       http-gcc-fork-1-debug
+╰──○    fork-1-ckpt-1
+○  │    ckpt-3
+│  ●    http-gcc-fork-1
+○──╯    ckpt-2
+├──●    http-gcc-staging
+○       ckpt-1
+●       http-gcc

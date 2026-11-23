@@ -6,19 +6,122 @@
 package lineage
 
 import (
+	"fmt"
+	"math/rand/v2"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"gotest.tools/v3/golden"
+
 	"unikraft.com/cloud/sdk/platform"
 )
 
-func lanes(l Layout) []int {
-	out := make([]int, len(l.Rows))
-	for i, n := range l.Rows {
-		out[i] = l.Lane[n.UUID]
+// assertLayout checks l against the testdata golden file name, and that it
+// keeps the promises of Line and Branch with no crossings.
+func assertLayout(t *testing.T, l Layout, name string) {
+	t.Helper()
+	golden.Assert(t, l.Text(func(n Node) string { return n.UUID }), name)
+	assert.Empty(t, layoutFaults(l))
+	assert.Zero(t, layoutCrossings(l))
+}
+
+// layoutFaults lists where l breaks the promises of Line and Branch, other
+// than crossings.
+func layoutFaults(l Layout) []string {
+	var faults []string
+	fault := func(format string, args ...any) {
+		faults = append(faults, fmt.Sprintf(format, args...))
 	}
-	return out
+
+	// held reports which color holds a lane in a row with a dot, a line or
+	// the vertical part of a branch.
+	held := map[[2]int]map[int]bool{}
+	hold := func(row, lane, color int) {
+		k := [2]int{row, lane}
+		if held[k] == nil {
+			held[k] = map[int]bool{}
+		}
+		held[k][color] = true
+	}
+	for i, n := range l.Rows {
+		if l.RowOf[n.UUID] != i {
+			fault("%s: RowOf %d, row %d", n.UUID, l.RowOf[n.UUID], i)
+		}
+		if lane := l.Lane[n.UUID]; lane < 0 || lane >= l.Columns {
+			fault("%s: lane %d out of %d columns", n.UUID, lane, l.Columns)
+		}
+		hold(i, l.Lane[n.UUID], l.Color[n.UUID])
+	}
+	for _, line := range l.Lines {
+		for r := line.Top; r <= line.Bottom; r++ {
+			hold(r, line.Lane, line.Color)
+		}
+	}
+	for _, b := range l.Branches {
+		if b.Live {
+			continue
+		}
+		top := b.ChildRow
+		if b.ChildLane == b.ParentLane {
+			top++
+		}
+		for r := top; r < b.ParentRow; r++ {
+			hold(r, b.ChildLane, b.Color)
+		}
+		if b.ChildLane != b.ParentLane {
+			hold(b.ParentRow, b.ChildLane, b.Color)
+		}
+	}
+	for k, colors := range held {
+		if len(colors) > 1 {
+			fault("row %d, lane %d held by colors %v", k[0], k[1], colors)
+		}
+	}
+
+	for _, b := range l.Branches {
+		parent := l.Rows[b.ParentRow]
+		if !b.Live {
+			continue
+		}
+		on := false
+		for _, line := range l.Lines {
+			if line.Lane == b.ParentLane && line.Color == l.Color[parent.UUID] &&
+				line.Top <= b.ChildRow && b.ChildRow <= line.Bottom {
+				on = true
+			}
+		}
+		if !on {
+			fault("live branch to row %d leaves no line of %s", b.ChildRow, parent.UUID)
+		}
+	}
+	return faults
+}
+
+// layoutCrossings counts the lanes that branches cross along a row while a
+// line or the vertical part of another branch runs through them.
+func layoutCrossings(l Layout) int {
+	crossings := 0
+	for _, b := range l.Branches {
+		row := b.ParentRow
+		if b.Live {
+			row = b.ChildRow
+		}
+		a, z := min(b.ParentLane, b.ChildLane), max(b.ParentLane, b.ChildLane)
+		for c := a + 1; c < z; c++ {
+			for _, line := range l.Lines {
+				if line.Lane == c && line.Top <= row && row <= line.Bottom {
+					crossings++
+				}
+			}
+			for _, o := range l.Branches {
+				if !o.Live && o.ChildLane == c && o.ChildRow <= row && row < o.ParentRow {
+					crossings++
+				}
+			}
+		}
+	}
+	return crossings
 }
 
 func specTree(t *testing.T) Tree {
@@ -30,44 +133,38 @@ func specTree(t *testing.T) Tree {
 
 func TestLayoutSpec(t *testing.T) {
 	l := specTree(t).Layout()
+	assertLayout(t, l, "spec.golden")
 
-	assert.Equal(t, []string{
-		"http-gcc-fork-1-debug", // 0: lane 0, own span
-		"fork-1-ckpt-1",         // 1: lane 1, fork-1's span
-		"ckpt-3",                // 2: lane 0, http-gcc's span
-		"http-gcc-fork-1",       // 3: lane 1
-		"ckpt-2",                // 4: lane 0
-		"ckpt-1",                // 5: lane 0
-		"http-gcc",              // 6: lane 0
-	}, uuids(l.Rows))
-	assert.Equal(t, []int{0, 1, 0, 1, 0, 0, 0}, lanes(l))
-	assert.Equal(t, []Span{
-		{Owner: "http-gcc", Lane: 0, Color: 0, Top: 2, Bottom: 6, End: 2},
-		{Owner: "http-gcc-fork-1", Lane: 1, Color: 1, Top: 1, Bottom: 3, End: 1},
-		{Owner: "http-gcc-fork-1-debug", Lane: 0, Color: 2, Top: 0, Bottom: 0, End: 0},
-	}, l.Spans)
+	// Color follows the line, not the lane.
+	assert.Equal(t, l.Lane["http-gcc-fork-1-debug"], l.Lane["ckpt-3"])
+	assert.NotEqual(t, l.Color["http-gcc-fork-1-debug"], l.Color["ckpt-3"])
+	assert.Equal(t, l.Color["http-gcc-fork-1"], l.Color["fork-1-ckpt-1"])
 	assert.Equal(t, 2, l.LaneCount)
-	assertBranchesClear(t, l)
+	assert.Equal(t, 2, l.Columns)
+	assert.False(t, l.Overflows())
+}
 
-	// Color follows the span, not the lane.
-	assert.Equal(t, 2, l.Color["http-gcc-fork-1-debug"])
-	assert.Equal(t, 0, l.Color["ckpt-3"])
-	assert.Equal(t, 1, l.Color["fork-1-ckpt-1"])
-	for i, n := range l.Rows {
-		assert.Equal(t, i, l.RowOf[n.UUID])
-	}
+func TestLayoutSpecLiveFork(t *testing.T) {
+	tree, _ := Build(liveFixture()).Scope("http-gcc", 0)
+	assertLayout(t, tree.Layout(), "spec-live.golden")
 }
 
 func TestLayoutSingleRoot(t *testing.T) {
 	l := Build([]platform.Instance{inst("solo", 0)}, nil).Layout()
+	assertLayout(t, l, "single-root.golden")
+	assert.Empty(t, l.Lines)
+	assert.Empty(t, l.Branches)
+	assert.Equal(t, 1, l.Columns)
+}
 
-	assert.Equal(t, []string{"solo"}, uuids(l.Rows))
-	assert.Equal(t, []int{0}, lanes(l))
-	assert.Equal(t, []Span{{Owner: "solo"}}, l.Spans)
-	assert.Equal(t, 1, l.LaneCount)
+func TestLayoutEmpty(t *testing.T) {
+	l := Tree{}.Layout()
+	assert.Empty(t, l.Grid())
+	assert.Zero(t, l.Columns)
 }
 
 func TestLayoutLaneReuseNeedsGap(t *testing.T) {
+	// c sits between a1 and b, so it cannot share a lane with either.
 	l := Build(
 		[]platform.Instance{inst("a", 0), inst("c", 15), inst("b", 20)},
 		[]platform.GetCheckpointHistoryResponseInstanceHistory{
@@ -75,13 +172,7 @@ func TestLayoutLaneReuseNeedsGap(t *testing.T) {
 			history("b", ckpt("b1", 30)),
 		},
 	).Layout()
-
-	assert.Equal(t, []string{"b1", "b", "c", "a1", "a"}, uuids(l.Rows))
-	assert.Equal(t, []int{0, 0, 1, 0, 0}, lanes(l))
-	assert.Equal(t, 2, l.LaneCount)
-	assert.Equal(t, []string{"a", "c", "b"}, []string{
-		l.Spans[0].Owner, l.Spans[1].Owner, l.Spans[2].Owner,
-	})
+	assertLayout(t, l, "lane-reuse.golden")
 }
 
 func TestLayoutLiftsChildAboveParent(t *testing.T) {
@@ -102,26 +193,10 @@ func TestLayoutCycleTerminates(t *testing.T) {
 	}.Layout()
 
 	assert.Len(t, l.Rows, 2)
+	assert.Len(t, l.Grid(), 2)
 }
 
-// assertBranchesClear fails if a branch passes another span's dot in its lane.
-func assertBranchesClear(t *testing.T, l Layout) {
-	t.Helper()
-	for _, s := range l.Spans {
-		p, ok := l.RowOf[l.Rows[l.RowOf[s.Owner]].Source]
-		if !ok {
-			continue
-		}
-		for r := s.Top + 1; r < p; r++ {
-			n := l.Rows[r]
-			if l.Color[n.UUID] != s.Color && l.Lane[n.UUID] == s.Lane {
-				assert.Failf(t, "branch crosses a dot", "branch to %s in lane %d passes %s (row %d)", s.Owner, s.Lane, n.UUID, r)
-			}
-		}
-	}
-}
-
-func TestLayoutSiblingForksGetOwnLanes(t *testing.T) {
+func TestLayoutSiblingForks(t *testing.T) {
 	// Lane 0 continues root's line; any other shared lane would cross a sibling's dot.
 	l := Tree{
 		{Kind: KindInstance, UUID: "root", CreatedAt: at(0)},
@@ -131,11 +206,7 @@ func TestLayoutSiblingForksGetOwnLanes(t *testing.T) {
 		{Kind: KindInstance, UUID: "f3", Source: "ckpt", CreatedAt: at(40)},
 		{Kind: KindInstance, UUID: "f4", Source: "ckpt", CreatedAt: at(50)},
 	}.Layout()
-
-	assert.Equal(t, []string{"f4", "f3", "f2", "f1", "ckpt", "root"}, uuids(l.Rows))
-	assert.Equal(t, []int{3, 2, 0, 1, 0, 0}, lanes(l))
-	assert.Equal(t, 4, l.LaneCount)
-	assertBranchesClear(t, l)
+	assertLayout(t, l, "sibling-forks.golden")
 }
 
 func TestLayoutBranchSkipsNewerCheckpoint(t *testing.T) {
@@ -147,35 +218,7 @@ func TestLayoutBranchSkipsNewerCheckpoint(t *testing.T) {
 		{Kind: KindInstance, UUID: "f", Source: "c2", CreatedAt: at(25)},
 		{Kind: KindInstance, UUID: "g", Source: "c1", CreatedAt: at(30)},
 	}.Layout()
-
-	assert.Equal(t, []string{"g", "f", "c2", "c1", "root"}, uuids(l.Rows))
-	assert.Equal(t, []int{2, 1, 0, 0, 0}, lanes(l))
-	assertBranchesClear(t, l)
-}
-
-func TestLayoutSpecLiveFork(t *testing.T) {
-	tree, _ := Build(liveFixture()).Scope("http-gcc", 0)
-	l := tree.Layout()
-
-	// http-gcc's line already runs past the fork, so its End stays at its Top.
-	assert.Equal(t, []string{
-		"http-gcc-fork-1-debug", // 0: lane 0
-		"fork-1-ckpt-1",         // 1: lane 1
-		"ckpt-3",                // 2: lane 0
-		"http-gcc-fork-1",       // 3: lane 1
-		"ckpt-2",                // 4: lane 0
-		"http-gcc-staging",      // 5: lane 1, forked live
-		"ckpt-1",                // 6: lane 0
-		"http-gcc",              // 7: lane 0
-	}, uuids(l.Rows))
-	assert.Equal(t, []int{0, 1, 0, 1, 0, 1, 0, 0}, lanes(l))
-	assert.Equal(t, []Span{
-		{Owner: "http-gcc", Lane: 0, Color: 0, Top: 2, Bottom: 7, End: 2},
-		{Owner: "http-gcc-staging", Lane: 1, Color: 1, Top: 5, Bottom: 5, End: 5},
-		{Owner: "http-gcc-fork-1", Lane: 1, Color: 2, Top: 1, Bottom: 3, End: 1},
-		{Owner: "http-gcc-fork-1-debug", Lane: 0, Color: 3, Top: 0, Bottom: 0, End: 0},
-	}, l.Spans)
-	assertBranchesClear(t, l)
+	assertLayout(t, l, "skips-newer-checkpoint.golden")
 }
 
 func TestLayoutLiveForkExtendsParentLine(t *testing.T) {
@@ -183,11 +226,134 @@ func TestLayoutLiveForkExtendsParentLine(t *testing.T) {
 		{Kind: KindInstance, UUID: "root", CreatedAt: at(0)},
 		{Kind: KindInstance, UUID: "f", Source: "root", Live: true, CreatedAt: at(10)},
 	}.Layout()
+	assertLayout(t, l, "live-fork.golden")
+	assert.Equal(t, []Line{{Lane: 0, Color: 0, Top: 0, Bottom: 1}}, l.Lines)
+	assert.Equal(t, []Branch{{ParentRow: 1, ParentLane: 0, ChildRow: 0, ChildLane: 1, Color: 1, Live: true}}, l.Branches)
+}
 
-	assert.Equal(t, []string{"f", "root"}, uuids(l.Rows))
-	assert.Equal(t, []Span{
-		{Owner: "root", Lane: 0, Color: 0, Top: 1, Bottom: 1, End: 0},
-		{Owner: "f", Lane: 1, Color: 1, Top: 0, Bottom: 0, End: 0},
-	}, l.Spans)
-	assert.Equal(t, 2, l.LaneCount)
+func TestLayoutAvoidsCrossing(t *testing.T) {
+	// B needs a new lane; to the right of A's, its branch from r2 would
+	// cross A's line.
+	l := Tree{
+		{Kind: KindInstance, UUID: "R", CreatedAt: at(0)},
+		{Kind: KindCheckpoint, UUID: "r1", Source: "R", CreatedAt: at(10)},
+		{Kind: KindInstance, UUID: "A", Source: "r1", CreatedAt: at(20)},
+		{Kind: KindCheckpoint, UUID: "r2", Source: "R", CreatedAt: at(30)},
+		{Kind: KindCheckpoint, UUID: "r3", Source: "R", CreatedAt: at(35)},
+		{Kind: KindCheckpoint, UUID: "a1", Source: "A", CreatedAt: at(40)},
+		{Kind: KindInstance, UUID: "B", Source: "r2", CreatedAt: at(50)},
+	}.Layout()
+	assertLayout(t, l, "avoids-crossing.golden")
+}
+
+func TestLayoutDeletedInstance(t *testing.T) {
+	l := Build(
+		[]platform.Instance{inst("root", 0), cloneOf(inst("fork", 30), "d2")},
+		[]platform.GetCheckpointHistoryResponseInstanceHistory{
+			history("root", ckpt("r1", 5)),
+			history("fork", ckpt("d2", 20), ckpt("d1", 10), ckpt("r1", 5)),
+		},
+	).Layout()
+	assertLayout(t, l, "deleted-instance.golden")
+}
+
+// wideTree has roots that all overlap, so that each needs a lane.
+func wideTree(roots int) Tree {
+	var t Tree
+	for i := range roots {
+		root := fmt.Sprintf("root-%d", i)
+		t = append(t,
+			Node{Kind: KindInstance, UUID: root, CreatedAt: at(i)},
+			Node{Kind: KindCheckpoint, UUID: "ck-" + root, Source: root, CreatedAt: at(roots + i)},
+		)
+	}
+	return t
+}
+
+func TestLayoutMaxLanes(t *testing.T) {
+	l := wideTree(3).Layout(WithMaxLanes(3))
+	assert.False(t, l.Overflows())
+	assert.Equal(t, 3, l.Columns)
+	assert.Len(t, l.Lines, 3)
+
+	l = wideTree(5).Layout(WithMaxLanes(3))
+	assertLayout(t, l, "max-lanes.golden")
+	assert.True(t, l.Overflows())
+	assert.Equal(t, 5, l.LaneCount)
+	assert.Equal(t, 4, l.Columns, "one column holds the overflow")
+	assert.Len(t, l.Lines, 3, "the lines past the cap are not drawn")
+	assert.Equal(t, 3, l.Lane["root-4"])
+
+	l = wideTree(5).Layout(WithMaxLanes(0))
+	assert.False(t, l.Overflows())
+	assert.Equal(t, 5, l.Columns)
+}
+
+func TestLayoutMaxLanesKeepsRoot(t *testing.T) {
+	// The forks of ckpt-2 cross no line when their lanes go left of web's,
+	// so they push web right, but never past the cap.
+	tree := Tree{
+		{Kind: KindInstance, UUID: "web", CreatedAt: at(0)},
+		{Kind: KindCheckpoint, UUID: "ckpt-1", Source: "web", CreatedAt: at(10)},
+		{Kind: KindCheckpoint, UUID: "ckpt-2", Source: "web", CreatedAt: at(20)},
+		{Kind: KindCheckpoint, UUID: "ckpt-3", Source: "web", CreatedAt: at(30)},
+		{Kind: KindInstance, UUID: "from-3", Source: "ckpt-3", CreatedAt: at(40)},
+		{Kind: KindInstance, UUID: "from-1", Source: "ckpt-1", CreatedAt: at(50)},
+	}
+	for i := range 6 {
+		tree = append(tree, Node{Kind: KindInstance, UUID: fmt.Sprintf("from-2-%d", i+1), Source: "ckpt-2", CreatedAt: at(60 + i)})
+	}
+
+	l := tree.Layout(WithMaxLanes(6))
+	assertLayout(t, l, "max-lanes-branches.golden")
+	assert.True(t, l.Overflows())
+	assert.Less(t, l.Lane["web"], 6, "web is drawn")
+	assert.Len(t, l.Lines, 1, "web's line is drawn")
+	assert.Len(t, l.Branches, 5, "the branches into drawn lanes are drawn")
+}
+
+// randomTree grows a tree as the platform would: checkpoints of instances,
+// and instances cloned from checkpoints or live from instances.
+func randomTree(r *rand.Rand, size int) Tree {
+	var t Tree
+	var instances, checkpoints []string
+	for i := range size {
+		id := fmt.Sprintf("n%d", i)
+		switch x := r.IntN(10); {
+		case len(instances) == 0 || x == 0:
+			t = append(t, Node{Kind: KindInstance, UUID: id, CreatedAt: at(i)})
+			instances = append(instances, id)
+		case x < 5:
+			src := instances[r.IntN(len(instances))]
+			t = append(t, Node{Kind: KindCheckpoint, UUID: id, Source: src, CreatedAt: at(i)})
+			checkpoints = append(checkpoints, id)
+		case x < 8 && len(checkpoints) > 0:
+			src := checkpoints[r.IntN(len(checkpoints))]
+			t = append(t, Node{Kind: KindInstance, UUID: id, Source: src, CreatedAt: at(i)})
+			instances = append(instances, id)
+		default:
+			src := instances[r.IntN(len(instances))]
+			t = append(t, Node{Kind: KindInstance, UUID: id, Source: src, Live: true, CreatedAt: at(i)})
+			instances = append(instances, id)
+		}
+	}
+	return t
+}
+
+func TestLayoutRandomTrees(t *testing.T) {
+	// Some trees have no layout free of crossings that the greedy placement
+	// finds; they stay rare.
+	const trees = 2000
+	r := rand.New(rand.NewPCG(1, 2))
+	crossed := 0
+	for i := range trees {
+		l := randomTree(r, 2+r.IntN(40)).Layout()
+		if !assert.Empty(t, layoutFaults(l), "tree %d:\n%s", i, l.Text(func(n Node) string { return n.UUID })) {
+			return
+		}
+		if layoutCrossings(l) > 0 {
+			crossed++
+		}
+	}
+	assert.Less(t, crossed, trees/30)
 }

@@ -8,6 +8,7 @@ require (
 	github.com/docker/go-units v0.5.0
 	github.com/stretchr/testify v1.12.1
 	github.com/unikraft/go-archivefs v0.0.0-20261106123111-364b178a11ba
+	gotest.tools/v3 v3.5.2
 	unikraft.com/x/joinerrgroup v0.0.0-20260220150535-dbc51abe4158
 	unikraft.com/x/log v0.0.0-20261116145447-f4dbf6ae0056
 	unikraft.com/x/ptr v0.0.0-20260126094137-ab6e717e5679
@@ -43,6 +44,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/jsonpointer v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
+	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
