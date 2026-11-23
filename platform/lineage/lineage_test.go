@@ -321,3 +321,41 @@ func TestBuildRootsWithoutAKnownCloneSource(t *testing.T) {
 		assert.False(t, n.Live, n.UUID)
 	}
 }
+
+func TestScopeOf(t *testing.T) {
+	instances, histories := specFixture()
+	nodes := Build(instances, histories)
+	current := instances[0]
+
+	scope, truncated, found := nodes.ScopeOf(current, 3)
+	wantScope, wantTruncated := nodes.Scope(current.Uuid, 3)
+	assert.True(t, found)
+	assert.Equal(t, wantScope, scope)
+	assert.Equal(t, wantTruncated, truncated)
+}
+
+func TestScopeOfMissingFromListing(t *testing.T) {
+	nodes := Build(specFixture())
+
+	for _, tc := range []struct {
+		state platform.InstanceState
+		kind  Kind
+	}{
+		{platform.InstanceStateStopped, KindInstance},
+		{platform.InstanceStateCheckpoint, KindCheckpoint},
+	} {
+		current := cloneOf(inst("unlisted", 70), "ckpt-3")
+		current.State = tc.state
+
+		scope, truncated, found := nodes.ScopeOf(current, 3)
+		assert.False(t, found)
+		assert.False(t, truncated)
+		assert.Equal(t, Tree{{
+			Kind:      tc.kind,
+			UUID:      "unlisted",
+			Name:      "unlisted",
+			CreatedAt: at(70),
+			State:     tc.state,
+		}}, scope)
+	}
+}

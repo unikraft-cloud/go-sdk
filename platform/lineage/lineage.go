@@ -306,6 +306,26 @@ func (t Tree) Scope(current string, limit int) (tree Tree, truncated bool) {
 	return slices.DeleteFunc(tree, func(n Node) bool { return !keep[n.UUID] }), true
 }
 
+// ScopeOf returns the tree that holds inst, cut down to limit as Scope does.
+// When no tree holds inst, as when the listing missed it, found is false and
+// the tree is inst alone, with the kind of its state.
+func (t Tree) ScopeOf(inst platform.Instance, limit int) (tree Tree, truncated, found bool) {
+	if tree, truncated = t.Scope(inst.Uuid, limit); tree != nil {
+		return tree, truncated, true
+	}
+	kind := KindInstance
+	if inst.State == platform.InstanceStateCheckpoint {
+		kind = KindCheckpoint
+	}
+	return Tree{{
+		Kind:      kind,
+		UUID:      inst.Uuid,
+		Name:      inst.Name,
+		CreatedAt: inst.CreatedAt,
+		State:     inst.State,
+	}}, false, false
+}
+
 func (t Tree) sortNewestFirst() {
 	slices.SortFunc(t, func(a, b Node) int {
 		return cmp.Or(b.CreatedAt.Compare(a.CreatedAt), cmp.Compare(a.UUID, b.UUID))
