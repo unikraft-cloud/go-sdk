@@ -326,6 +326,23 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 {{- if and .Schema .Schema.Value (eq (getType .Schema.Value) "array")}}
 {{- $itemType := ""}}
 {{- if and .Schema.Value.Items .Schema.Value.Items.Value}}{{$itemType = getType .Schema.Value.Items.Value}}{{end}}
+{{- if eq (toJson .Explode) "false"}}
+	if len(opts.{{pascalcase .Name}}) > 0 {
+		values := make([]string, 0, len(opts.{{pascalcase .Name}}))
+		for _, v := range opts.{{pascalcase .Name}} {
+{{- if eq $itemType "integer"}}
+			values = append(values, fmt.Sprintf("%d", v))
+{{- else if eq $itemType "boolean"}}
+			values = append(values, fmt.Sprintf("%t", v))
+{{- else if eq $itemType "number"}}
+			values = append(values, fmt.Sprintf("%g", v))
+{{- else}}
+			values = append(values, string(v))
+{{- end}}
+		}
+		query.Set("{{.Name}}", strings.Join(values, ","))
+	}
+{{- else}}
 	for _, v := range opts.{{pascalcase .Name}} {
 {{- if eq $itemType "integer"}}
 		query.Add("{{.Name}}", fmt.Sprintf("%d", v))
@@ -337,6 +354,7 @@ func (c *client) {{$op.OperationID}}(ctx context.Context
 		query.Add("{{.Name}}", string(v))
 {{- end}}
 	}
+{{- end}}
 {{- else if and .Schema .Schema.Value (eq (getType .Schema.Value) "boolean")}}
 {{- if not .Required}}
 	if opts.{{pascalcase .Name}} != nil {
