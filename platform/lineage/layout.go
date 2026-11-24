@@ -47,16 +47,17 @@ type Line struct {
 // Branch joins an instance in ChildRow to its parent in ParentRow, which is
 // on another line further down.
 //
-// A branch from a checkpoint turns in ParentRow: it runs from the parent
-// along the row to ChildLane, then up ChildLane to the child, which holds no
-// other line or branch on the way. When ChildLane is ParentLane, the branch
-// continues the parent's line straight up.
+// A branch from a checkpoint or a template turns in ParentRow: it runs from
+// the parent along the row to ChildLane, then up ChildLane to the child, which
+// holds no other line or branch on the way. When ChildLane is ParentLane, the
+// branch continues the parent's line straight up.
 //
 // A live branch turns in ChildRow instead, where the parent's line runs
 // through ParentLane: it leaves the line along the row to the child.
 //
-// Where a branch runs along a row, it crosses no other line in between,
-// unless the layout had no lane free of crossings to give it.
+// Where a branch runs along a row, it shares no cells with the branch of
+// another parent. It crosses no other line in between, unless the layout had
+// no lane free of crossings to give it.
 type Branch struct {
 	ParentRow, ParentLane int
 	ChildRow, ChildLane   int
@@ -309,9 +310,20 @@ func (p *placer) place(k int) {
 	placed := p.spans[:k]
 	n := len(p.order)
 
-	turn, parentCol := -1, -1
+	// fromCol is the column that the live branch of the parent runs from
+	// along the row where the branch of s turns, or -1.
+	turn, parentCol, fromCol := -1, -1, -1
 	if s.parent >= 0 {
-		turn, parentCol = s.turn(), p.col[placed[s.from].track]
+		q := placed[s.from]
+		turn, parentCol = s.turn(), p.col[q.track]
+		if q.parent >= 0 && q.turn() == turn {
+			fromCol = p.col[placed[q.from].track]
+		}
+	}
+	// shares reports whether a branch to a drawn column, right of the
+	// parent's or left of it, runs in the cells of the parent's live branch.
+	shares := func(right bool, col int) bool {
+		return fromCol >= 0 && right == (fromCol > parentCol) && (p.maxLanes == 0 || col < p.maxLanes)
 	}
 
 	// passing counts the columns before each whose lines run through the row
@@ -373,10 +385,10 @@ func (p *placer) place(k int) {
 	}
 	bestTrack, bestPos, bestCost, bestDist := -1, -1, -1, 0
 	for t := range n {
-		if !p.free(t, s) {
+		c := p.col[t]
+		if !p.free(t, s) || (c != parentCol && shares(c > parentCol, c)) {
 			continue
 		}
-		c := p.col[t]
 		cost, dist := alongBetween(parentCol, c)+acrossCol[c], 0
 		if turn >= 0 {
 			dist = max(c-parentCol, parentCol-c)
@@ -386,6 +398,9 @@ func (p *placer) place(k int) {
 		}
 	}
 	insert := func(pos int) {
+		if shares(pos > parentCol, pos) {
+			return
+		}
 		cost := acrossPos[pos]
 		if turn >= 0 {
 			// The new column sits just left of the column now at pos.
@@ -401,7 +416,7 @@ func (p *placer) place(k int) {
 	}
 	insert(n)
 	if turn >= 0 {
-		for d := 1; bestCost > 0 && d <= n+1; d++ {
+		for d := 1; bestCost != 0 && d <= n+1; d++ {
 			for _, pos := range []int{parentCol + d, parentCol + 1 - d} {
 				if pos >= minPos && pos < n {
 					insert(pos)

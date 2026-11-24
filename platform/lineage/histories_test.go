@@ -162,6 +162,16 @@ func TestFetchHistories(t *testing.T) {
 	require.Len(t, read.Instances, 2)
 	assert.Equal(t, "a", read.Instances[0].Uuid)
 	assert.Equal(t, "b", read.Instances[1].Uuid)
+
+	client.calls = nil
+	_, err = FetchHistories(t.Context(), client, []platform.Instance{
+		{Uuid: "a"},
+		{Uuid: "t", State: platform.InstanceStateTemplate},
+	})
+	require.NoError(t, err)
+	require.Len(t, client.calls, 1)
+	require.Len(t, client.calls[0], 1, "the platform gives no history for a template")
+	assert.Equal(t, "a", *client.calls[0][0].Uuid)
 }
 
 func TestMissesHistory(t *testing.T) {

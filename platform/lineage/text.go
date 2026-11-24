@@ -156,6 +156,8 @@ func markRune(n Node) rune {
 		return '◌'
 	case n.Mark() == MarkCheckpoint:
 		return '○'
+	case n.Mark() == MarkTemplate:
+		return '◎'
 	default:
 		return '●'
 	}
