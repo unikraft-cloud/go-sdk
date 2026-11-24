@@ -186,6 +186,26 @@ func TestBuildTombstone(t *testing.T) {
 	assert.Equal(t, at(10).Add(-time.Nanosecond), tomb.CreatedAt)
 }
 
+func TestBuildRetained(t *testing.T) {
+	gone := inst("gone", 0)
+	gone.RetainedUntil = new(at(100))
+	nodes := Build(
+		[]platform.Instance{gone, cloneOf(inst("fork", 20), "ck"), cloneOf(inst("live", 30), "gone")},
+		[]platform.GetCheckpointHistoryResponseInstanceHistory{
+			history("gone", ckpt("ck", 10)),
+			history("fork", ckpt("ck", 10)),
+			history("live"),
+		},
+	)
+
+	assert.Equal(t, []edge{
+		{"live", ""},
+		{"fork", "ck"},
+		{"ck", "deleted:ck"},
+		{"deleted:ck", ""},
+	}, edges(nodes), "a retained instance is deleted")
+}
+
 func TestBuildTombstoneRoot(t *testing.T) {
 	nodes := Build(
 		[]platform.Instance{cloneOf(inst("fork", 30), "c2")},

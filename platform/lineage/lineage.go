@@ -55,14 +55,16 @@ type Node struct {
 // its parent through Node.Source.
 type Tree []Node
 
-// Build returns the lineage trees of instances, newest node first.
-// histories are the checkpoint histories of instances, newest first as the
-// platform lists them; a checkpoint that no listed instance took is
-// attributed to a placeholder for a deleted instance.
+// Build returns the lineage trees of instances, newest node first, and treats
+// a retained instance as deleted. histories are the checkpoint histories of
+// instances, newest first as the platform lists them; a checkpoint that no
+// listed instance took is attributed to a placeholder for a deleted instance.
 func Build(instances []platform.Instance, histories []platform.GetCheckpointHistoryResponseInstanceHistory) Tree {
 	insts := make(map[string]platform.Instance, len(instances))
 	for _, inst := range instances {
-		insts[inst.Uuid] = inst
+		if inst.RetainedUntil == nil {
+			insts[inst.Uuid] = inst
+		}
 	}
 
 	// Oldest instance first, so every "first wins" below favours it deterministically.
@@ -193,8 +195,8 @@ func Build(instances []platform.Instance, histories []platform.GetCheckpointHist
 	}
 
 	// The platform reports the clone source only while it exists, so an
-	// instance cloned from something gone, or from an unlisted template,
-	// is a root.
+	// instance cloned from something gone or retained, or from an unlisted
+	// template, is a root.
 	for _, inst := range insts {
 		n := instanceNode(inst)
 		if src := inst.CloneSource; src != nil && src.Uuid != inst.Uuid {

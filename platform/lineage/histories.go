@@ -25,14 +25,14 @@ type FetchResult struct {
 }
 
 // FetchHistories reads the checkpoint histories of instances, at most
-// platform.MaxOperations per request. It skips templates, as the platform
-// gives no history for them. A failed request only adds its instances to
-// Missing and its error to Errs. FetchHistories returns an error only when
-// every request fails, in which case only Errs is set.
+// platform.MaxOperations per request. It skips templates and retained
+// instances, as the platform gives no history for them. A failed request only
+// adds its instances to Missing and its error to Errs. FetchHistories returns
+// an error only when every request fails, in which case only Errs is set.
 func FetchHistories(ctx context.Context, client platform.Client, instances []platform.Instance) (FetchResult, error) {
 	uuids := make([]string, 0, len(instances))
 	for _, instance := range instances {
-		if instance.State != platform.InstanceStateTemplate {
+		if instance.State != platform.InstanceStateTemplate && instance.RetainedUntil == nil {
 			uuids = append(uuids, instance.Uuid)
 		}
 	}
