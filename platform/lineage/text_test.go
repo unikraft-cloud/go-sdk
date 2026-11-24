@@ -34,13 +34,13 @@ func TestGridBridgesCrossing(t *testing.T) {
 	}
 
 	assert.Equal(t, ""+
-		"      ●    c\n"+
-		"   ○  │    x1\n"+
-		"○──│──╯    k\n"+
-		"│  ●       x\n"+
-		"●          r\n",
+		"    ●    c\n"+
+		"  ○ │    x1\n"+
+		"○─│─╯    k\n"+
+		"│ ●      x\n"+
+		"●        r\n",
 		l.Text(func(n Node) string { return n.UUID }))
 	assert.Equal(t, []Cell{
-		{'○', 0}, {'─', 2}, {'─', 2}, {'│', 1}, {'─', 2}, {'─', 2}, {'╯', 2},
+		{'○', 0}, {'─', 2}, {'│', 1}, {'─', 2}, {'╯', 2},
 	}, l.Grid()[2], "the line keeps its color where the branch runs under it")
 }

@@ -1,6 +1,6 @@
-●       fork
-╰──○    d2
-   ○    d1
-   ◌    deleted:d2
-○──╯    r1
-●       root
+●      fork
+╰─○    d2
+  ○    d1
+  ◌    deleted:d2
+○─╯    r1
+●      root

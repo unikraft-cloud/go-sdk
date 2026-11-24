@@ -15,9 +15,9 @@ type Cell struct {
 	Color int
 }
 
-// laneWidth is the characters a lane takes in Grid: its own, and two for
+// LaneWidth is the characters a lane takes in Grid: its own, and one for
 // the branches that run along the row to the next lane.
-const laneWidth = 3
+const LaneWidth = 2
 
 // joint is a character of Grid in a lane, by the directions it runs to.
 type joint struct {
@@ -88,7 +88,7 @@ func (l Layout) Grid() [][]Cell {
 
 	width := 0
 	if l.Columns > 0 {
-		width = (l.Columns-1)*laneWidth + 1
+		width = (l.Columns-1)*LaneWidth + 1
 	}
 	grid := make([][]Cell, len(l.Rows))
 	for i, n := range l.Rows {
@@ -98,16 +98,17 @@ func (l Layout) Grid() [][]Cell {
 		}
 		for c, j := range joints[i] {
 			if r := j.rune(); r != ' ' {
-				row[c*laneWidth] = Cell{Rune: r, Color: j.color}
+				row[c*LaneWidth] = Cell{Rune: r, Color: j.color}
 			}
 		}
 		for g, color := range along[i] {
 			if color >= 0 {
-				row[g*laneWidth+1] = Cell{Rune: '─', Color: color}
-				row[g*laneWidth+2] = Cell{Rune: '─', Color: color}
+				for x := 1; x < LaneWidth; x++ {
+					row[g*LaneWidth+x] = Cell{Rune: '─', Color: color}
+				}
 			}
 		}
-		row[l.Lane[n.UUID]*laneWidth] = Cell{Rune: markRune(n), Color: l.Color[n.UUID]}
+		row[l.Lane[n.UUID]*LaneWidth] = Cell{Rune: markRune(n), Color: l.Color[n.UUID]}
 		grid[i] = row
 	}
 	return grid

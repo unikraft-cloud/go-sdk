@@ -1,10 +1,10 @@
-         ○    ck-root-4
-         ○    ck-root-3
-      ○       ck-root-2
-   ○  │       ck-root-1
-○  │  │       ck-root-0
-│  │  │  ●    root-4
-│  │  │  ●    root-3
-│  │  ●       root-2
-│  ●          root-1
-●             root-0
+      ○    ck-root-4
+      ○    ck-root-3
+    ○      ck-root-2
+  ○ │      ck-root-1
+○ │ │      ck-root-0
+│ │ │ ●    root-4
+│ │ │ ●    root-3
+│ │ ●      root-2
+│ ●        root-1
+●          root-0

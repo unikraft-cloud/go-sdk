@@ -1,12 +1,12 @@
-                  ●    from-2-6
-                  ●    from-2-5
-                  ●    from-2-4
-      ●                from-2-3
-   ●  │                from-2-2
-●  │  │                from-2-1
-│  │  │        ●       from-1
-│  │  │     ●  │       from-3
-│  │  │  ○──╯  │       ckpt-3
-╰──┴──┴──○     │       ckpt-2
-         ○─────╯       ckpt-1
-         ●             web
+            ●    from-2-6
+            ●    from-2-5
+            ●    from-2-4
+    ●            from-2-3
+  ● │            from-2-2
+● │ │            from-2-1
+│ │ │     ●      from-1
+│ │ │   ● │      from-3
+│ │ │ ○─╯ │      ckpt-3
+╰─┴─┴─○   │      ckpt-2
+      ○───╯      ckpt-1
+      ●          web
