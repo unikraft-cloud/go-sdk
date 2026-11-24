@@ -19,10 +19,29 @@ jobs:
   tag:
     runs-on: ubuntu-latest
     steps:
+    - name: Mint a token of the GitHub App
+      id: app-token
+      uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+      with:
+        client-id: ${{ vars.TOOLING_APP_CLIENT_ID }}
+        private-key: ${{ secrets.TOOLING_APP_PRIVATE_KEY }}
+        repositories: ${{ github.event.repository.name }}
+        permission-contents: write
+
+    # Private modules live in other repositories, so this isn't scoped to this one.
+    - name: Mint a token of the GitHub App for private modules
+      id: modules-token
+      uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+      with:
+        client-id: ${{ vars.TOOLING_APP_CLIENT_ID }}
+        private-key: ${{ secrets.TOOLING_APP_PRIVATE_KEY }}
+        owner: ${{ github.repository_owner }}
+        permission-contents: read
+
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         fetch-depth: 0
-        token: ${{ secrets.GH_PAT }}
+        token: ${{ steps.app-token.outputs.token }}
 
     - name: Fetch all tags
       shell: bash
@@ -30,8 +49,10 @@ jobs:
 
     - name: Login to GitHub
       shell: bash
+      env:
+        TOKEN: ${{ steps.modules-token.outputs.token }}
       run: |
-        git config --global url."https://${{ secrets.GH_PAT }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+        git config --global url."https://x-access-token:${TOKEN}@github.com/".insteadOf "https://github.com/"
         git config user.name "Unikraft Bot"
         git config user.email "monkey@unikraft.com"
 
