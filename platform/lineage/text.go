@@ -19,48 +19,55 @@ type Cell struct {
 // the branches that run along the row to the next lane.
 const LaneWidth = 2
 
+// ink is the color of a cell and the row of the node that owns the color.
+// Where lines and branches share a cell, the newest node, in the top row, wins.
+type ink struct {
+	color, row int
+}
+
+func (k *ink) paint(color, row int) {
+	if k.color < 0 || row < k.row {
+		k.color, k.row = color, row
+	}
+}
+
 // joint is a character of Grid in a lane, by the directions it runs to.
 type joint struct {
 	up, down, left, right bool
-	color                 int
+	ink
 }
 
 // Grid draws l as text, a row of cells for each row of l. A branch that has
-// to cross a line runs under it.
+// to cross a line runs under it. A shared cell takes the newest node's color.
 func (l Layout) Grid() [][]Cell {
 	joints := make([][]joint, len(l.Rows))
-	along := make([][]int, len(l.Rows))
+	along := make([][]ink, len(l.Rows))
 	for i := range joints {
 		joints[i] = make([]joint, l.Columns)
 		for c := range joints[i] {
 			joints[i][c].color = -1
 		}
-		along[i] = make([]int, max(l.Columns-1, 0))
+		along[i] = make([]ink, max(l.Columns-1, 0))
 		for g := range along[i] {
-			along[i][g] = -1
+			along[i][g].color = -1
 		}
 	}
 
-	paint := func(j *joint, color int) {
-		if j.color < 0 {
-			j.color = color
-		}
-	}
-	vertical := func(lane, top, bottom, color int) {
+	vertical := func(lane, top, bottom, color, owner int) {
 		for r := top; r <= bottom; r++ {
 			j := &joints[r][lane]
 			j.up = j.up || r > top
 			j.down = j.down || r < bottom
-			paint(j, color)
+			j.paint(color, owner)
 		}
 	}
 
 	for _, line := range l.Lines {
-		vertical(line.Lane, line.Top, line.Bottom, line.Color)
+		vertical(line.Lane, line.Top, line.Bottom, line.Color, line.Bottom)
 	}
 	for _, b := range l.Branches {
 		if !b.Live {
-			vertical(b.ChildLane, b.ChildRow, b.ParentRow, b.Color)
+			vertical(b.ChildLane, b.ChildRow, b.ParentRow, b.Color, b.ChildRow)
 		}
 	}
 	for _, b := range l.Branches {
@@ -74,7 +81,7 @@ func (l Layout) Grid() [][]Cell {
 		a, z := min(b.ParentLane, b.ChildLane), max(b.ParentLane, b.ChildLane)
 		for c := a; c <= z; c++ {
 			if c < z {
-				along[row][c] = b.Color
+				along[row][c].paint(b.Color, b.ChildRow)
 			}
 			j := &joints[row][c]
 			if c > a && c < z && j.up && j.down {
@@ -82,7 +89,7 @@ func (l Layout) Grid() [][]Cell {
 			}
 			j.left = j.left || c > a
 			j.right = j.right || c < z
-			paint(j, b.Color)
+			j.paint(b.Color, b.ChildRow)
 		}
 	}
 
@@ -101,10 +108,10 @@ func (l Layout) Grid() [][]Cell {
 				row[c*LaneWidth] = Cell{Rune: r, Color: j.color}
 			}
 		}
-		for g, color := range along[i] {
-			if color >= 0 {
+		for g, k := range along[i] {
+			if k.color >= 0 {
 				for x := 1; x < LaneWidth; x++ {
-					row[g*LaneWidth+x] = Cell{Rune: '─', Color: color}
+					row[g*LaneWidth+x] = Cell{Rune: '─', Color: k.color}
 				}
 			}
 		}
