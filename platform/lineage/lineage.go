@@ -59,10 +59,15 @@ type Tree []Node
 // a retained instance as deleted. histories are the checkpoint histories of
 // instances, newest first as the platform lists them; a checkpoint that no
 // listed instance took is attributed to a placeholder for a deleted instance.
+// A checkpoint in instances joins a tree through its own history.
 func Build(instances []platform.Instance, histories []platform.GetCheckpointHistoryResponseInstanceHistory) Tree {
 	insts := make(map[string]platform.Instance, len(instances))
+	listed := map[string]platform.Instance{}
 	for _, inst := range instances {
-		if inst.RetainedUntil == nil {
+		switch {
+		case inst.State == platform.InstanceStateCheckpoint:
+			listed[inst.Uuid] = inst
+		case inst.RetainedUntil == nil:
 			insts[inst.Uuid] = inst
 		}
 	}
@@ -76,13 +81,14 @@ func Build(instances []platform.Instance, histories []platform.GetCheckpointHist
 	}
 	var hs []hist
 	for _, h := range histories {
-		inst, ok := insts[h.Uuid]
-		if !ok {
-			continue
-		}
 		entries := slices.Clone(h.History)
 		slices.Reverse(entries)
-		hs = append(hs, hist{inst: inst, entries: entries, own: inherited(inst, entries)})
+		if inst, ok := insts[h.Uuid]; ok {
+			hs = append(hs, hist{inst: inst, entries: entries, own: inherited(inst, entries)})
+		} else if c, ok := listed[h.Uuid]; ok {
+			entries = append(entries, platform.CheckpointHistoryEntry{Uuid: c.Uuid, Name: c.Name, CreatedAt: c.CreatedAt})
+			hs = append(hs, hist{inst: c, entries: entries, own: len(entries)})
+		}
 	}
 	slices.SortStableFunc(hs, func(a, b hist) int {
 		return cmp.Or(

@@ -18,7 +18,8 @@ import (
 type FetchResult struct {
 	// Instances are the histories that were read.
 	Instances []platform.GetCheckpointHistoryResponseInstanceHistory
-	// Missing are the UUIDs of the instances whose history could not be read.
+	// Missing are the UUIDs of the instances and checkpoints whose history
+	// could not be read.
 	Missing []string
 	// Errs are the errors of the batches that failed.
 	Errs []error
@@ -29,16 +30,46 @@ type FetchResult struct {
 // instances, as the platform gives no history for them. A failed request only
 // adds its instances to Missing and its error to Errs. FetchHistories returns
 // an error only when every request fails, in which case only Errs is set.
+// It also reads the history of each checkpoint in instances that no instance
+// history lists.
 func FetchHistories(ctx context.Context, client platform.Client, instances []platform.Instance) (FetchResult, error) {
-	uuids := make([]string, 0, len(instances))
+	var uuids, ckpts []string
 	for _, instance := range instances {
-		if instance.State != platform.InstanceStateTemplate && instance.RetainedUntil == nil {
+		switch {
+		case instance.State == platform.InstanceStateCheckpoint:
+			ckpts = append(ckpts, instance.Uuid)
+		case instance.State != platform.InstanceStateTemplate && instance.RetainedUntil == nil:
 			uuids = append(uuids, instance.Uuid)
 		}
 	}
-	return batchHistories(uuids, func(refs []platform.NameOrUUID) (*platform.Response[platform.GetCheckpointHistoryResponseData], error) {
+	read, err := batchHistories(uuids, func(refs []platform.NameOrUUID) (*platform.Response[platform.GetCheckpointHistoryResponseData], error) {
 		return client.GetInstanceHistory(ctx, refs, platform.GetInstanceHistoryOpts{})
 	})
+	if err != nil {
+		return read, err
+	}
+
+	listed := map[string]bool{}
+	for _, h := range read.Instances {
+		for _, e := range h.History {
+			listed[e.Uuid] = true
+		}
+	}
+	slices.Sort(ckpts)
+	ckpts = slices.DeleteFunc(slices.Compact(ckpts), func(id string) bool { return listed[id] })
+	more, err := batchHistories(ckpts, func(refs []platform.NameOrUUID) (*platform.Response[platform.GetCheckpointHistoryResponseData], error) {
+		return client.GetCheckpointHistory(ctx, refs, platform.GetCheckpointHistoryOpts{})
+	})
+	if err != nil {
+		if len(uuids) == 0 {
+			return more, err
+		}
+		more.Missing = ckpts
+	}
+	read.Instances = append(read.Instances, more.Instances...)
+	read.Missing = append(read.Missing, more.Missing...)
+	read.Errs = append(read.Errs, more.Errs...)
+	return read, nil
 }
 
 // batchHistories calls get for uuids, at most platform.MaxOperations at a time.
@@ -93,10 +124,15 @@ func splitHistories(resp *platform.Response[platform.GetCheckpointHistoryRespons
 // limit. t is every node, as Build returns them. An instance in the tree whose
 // history is missing may have checkpoints that a limit would keep, and a
 // placeholder for a deleted instance may stand in for an instance whose
-// history is missing.
+// history is missing. A checkpoint that is in no tree because its history is
+// missing can be in any tree.
 func (t Tree) MissesHistory(current string, missing []string) bool {
 	if len(missing) == 0 {
 		return false
+	}
+	all := make(map[string]bool, len(t))
+	for _, n := range t {
+		all[n.UUID] = true
 	}
 	tree, _ := t.Scope(current, 0)
 	nodes := make(map[string]bool, len(tree))
@@ -106,5 +142,5 @@ func (t Tree) MissesHistory(current string, missing []string) bool {
 		}
 		nodes[n.UUID] = true
 	}
-	return slices.ContainsFunc(missing, func(id string) bool { return nodes[id] })
+	return slices.ContainsFunc(missing, func(id string) bool { return nodes[id] || !all[id] })
 }
