@@ -18,6 +18,11 @@ const (
 
 	// DefaultUserAgent is the default user agent used for API requests.
 	DefaultUserAgent = "unikraft-cloud-go-sdk/"
+
+	// MaxOperations is the most items a platform node accepts in one request,
+	// by default: its api.max_ops_per_request option sets the limit. It
+	// rejects longer requests with HTTP 400.
+	MaxOperations = 253
 )
 
 func EndpointForMetro(metro string) string {
