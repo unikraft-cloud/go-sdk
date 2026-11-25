@@ -7,7 +7,7 @@ require (
 	github.com/docker/go-units v0.5.0
 	github.com/stretchr/testify v1.12.1
 	golang.org/x/sys v0.50.0
-	unikraft.com/cloud/plugins/sandbox v0.0.0-20261110115830-def4e9d2e457
+	unikraft.com/cloud/plugins/sandbox v0.0.0-20261125131623-d66f7dd900a2
 	unikraft.com/cloud/sdk v0.3.1-0.20260918130854-9a85fea47006
 	unikraft.com/x/log v0.0.0-20261116145447-f4dbf6ae0056
 	unikraft.com/x/shell v0.0.0-20261117090838-250b71577700
