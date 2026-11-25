@@ -10,6 +10,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"path"
 	"path/filepath"
@@ -92,7 +93,7 @@ type DownloadOpts struct {
 }
 
 func (t Target) Download(ctx context.Context, opts DownloadOpts) (string, int, error) {
-	data, err := t.ReadFile(ctx, opts.Remote)
+	data, err := t.ReadFile(ctx, opts.Remote, maxFileSize)
 	if err != nil {
 		return "", 0, err
 	}
@@ -161,13 +162,20 @@ func (t Target) WriteFile(ctx context.Context, remotePath string, data []byte, a
 	return nil
 }
 
-func (t Target) ReadFile(ctx context.Context, remotePath string) ([]byte, error) {
+// ReadFile reads the file at remotePath. The plugin does not read a file
+// over maxSize bytes, thus the file does not fill the memory.
+func (t Target) ReadFile(ctx context.Context, remotePath string, maxSize int64) ([]byte, error) {
 	log.G(ctx).Trace().Msg("reading file")
 
 	req := plugin.ReadFileRequest{
-		Path: remotePath,
+		Path:    remotePath,
+		MaxSize: new(uint64(maxSize)),
 	}
 	resp, err := t.Client.ReadFile(ctx, t.Instance, &req, t.Opts...)
+	if apiErr, ok := plugin.GetAPIError(err); ok && apiErr.StatusCode == http.StatusRequestEntityTooLarge {
+		return nil, fmt.Errorf("%q is over the %s (%d bytes) limit for a single read",
+			remotePath, units.BytesSize(float64(maxSize)), maxSize)
+	}
 	if err != nil {
 		return nil, t.apiError("failed to read file", err)
 	}
