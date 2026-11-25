@@ -6,12 +6,18 @@
 package sandbox
 
 import (
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	plugin "unikraft.com/cloud/plugins/sandbox"
 )
 
 // TestStatLocalFile pins what a local source is accepted as: a symlink is
@@ -67,4 +73,29 @@ func TestStatLocalFile(t *testing.T) {
 			}
 		})
 	}
+}
+
+// TestReadFile pins that a read gives the plugin its limit, and that the
+// plugin's refusal of a file over it is an error that names the file.
+func TestReadFile(t *testing.T) {
+	const contents = "contents\n"
+	target := newTargetServing(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var req plugin.ReadFileRequest
+		_ = json.NewDecoder(r.Body).Decode(&req)
+		w.Header().Set("Content-Type", "application/json")
+		if uint64(len(contents)) > *req.MaxSize {
+			w.WriteHeader(http.StatusRequestEntityTooLarge)
+			fmt.Fprint(w, `{"status":"error","message":"file is over max_size","errors":[{"status":413}]}`)
+			return
+		}
+		data := plugin.ReadFileData{Contents: base64.StdEncoding.EncodeToString([]byte(contents))}
+		_ = json.NewEncoder(w).Encode(map[string]any{"status": "success", "data": data})
+	}))
+
+	data, err := target.ReadFile(t.Context(), "/file", int64(len(contents)))
+	require.NoError(t, err)
+	assert.Equal(t, contents, string(data))
+
+	_, err = target.ReadFile(t.Context(), "/file", int64(len(contents))-1)
+	assert.ErrorContains(t, err, `"/file" is over the`)
 }
