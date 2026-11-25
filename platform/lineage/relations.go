@@ -27,8 +27,8 @@ func (t Tree) CheckpointsOf(uuid string) Tree {
 	return out
 }
 
-// ForksOf returns the instances cloned from the instance or checkpoint with
-// the given UUID. For an instance, this includes the clones of its own
+// ForksOf returns the instances and templates cloned from the node with the
+// given UUID. For an instance, this includes the clones of its own
 // checkpoints.
 func (t Tree) ForksOf(uuid string) Tree {
 	from := map[string]bool{uuid: true}
@@ -37,7 +37,7 @@ func (t Tree) ForksOf(uuid string) Tree {
 	}
 	var out Tree
 	for _, n := range t {
-		if n.Kind == KindInstance && n.Source != "" && from[n.Source] {
+		if n.Kind != KindCheckpoint && n.Source != "" && from[n.Source] {
 			out = append(out, n)
 		}
 	}
@@ -50,15 +50,18 @@ type Mark string
 const (
 	MarkInstance   Mark = "instance"
 	MarkFork       Mark = "fork"
+	MarkTemplate   Mark = "template"
 	MarkCheckpoint Mark = "checkpoint"
 )
 
-// Mark returns the shape n is drawn with: a checkpoint, an instance cloned
-// from something, or any other instance.
+// Mark returns the shape n is drawn with: a checkpoint, a template, an
+// instance cloned from something, or any other instance.
 func (n Node) Mark() Mark {
 	switch {
 	case n.Kind == KindCheckpoint:
 		return MarkCheckpoint
+	case n.Kind == KindTemplate:
+		return MarkTemplate
 	case n.Source != "":
 		return MarkFork
 	default:
@@ -76,6 +79,8 @@ const (
 	RelationForkedFrom Relation = "forked-from"
 	// RelationForkedLiveFrom is an instance cloned from a running instance.
 	RelationForkedLiveFrom Relation = "forked-live-from"
+	// RelationCreatedFrom is an instance or template created from a template.
+	RelationCreatedFrom Relation = "created-from"
 	// RelationCheckpointOf is a checkpoint of an instance with a name.
 	RelationCheckpointOf Relation = "checkpoint-of"
 	// RelationCheckpointOfDeleted is a checkpoint of a deleted instance, or of
@@ -104,6 +109,8 @@ func (t Tree) RelationOf(n Node) (Relation, Node) {
 		return RelationDeleted, src
 	case !ok:
 		return RelationRoot, src
+	case src.Kind == KindTemplate:
+		return RelationCreatedFrom, src
 	case n.Live:
 		return RelationForkedLiveFrom, src
 	default:

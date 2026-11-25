@@ -13,6 +13,7 @@ import (
 
 func relationsFixture() Tree {
 	return Tree{
+		{Kind: KindTemplate, UUID: "tmpl", Source: "fork-b"},
 		{Kind: KindInstance, UUID: "fork-c", Source: "ck3"},
 		{Kind: KindCheckpoint, UUID: "ck3", Source: "fork-a"},
 		{Kind: KindInstance, UUID: "fork-b", Source: "web"},
@@ -55,6 +56,7 @@ func TestForksOf(t *testing.T) {
 	assert.Equal(t, []string{"fork-a"}, uuidsOf(nodes.ForksOf("ck1")))
 	assert.Empty(t, nodes.ForksOf("ck2"))
 	assert.Equal(t, []string{"fork-c"}, uuidsOf(nodes.ForksOf("fork-a")))
+	assert.Equal(t, []string{"tmpl"}, uuidsOf(nodes.ForksOf("fork-b")), "a template cloned from an instance")
 }
 
 func TestMark(t *testing.T) {
@@ -62,6 +64,7 @@ func TestMark(t *testing.T) {
 	assert.Equal(t, MarkFork, Node{Kind: KindInstance, Source: "ck"}.Mark())
 	assert.Equal(t, MarkFork, Node{Kind: KindInstance, Source: "root", Live: true}.Mark())
 	assert.Equal(t, MarkCheckpoint, Node{Kind: KindCheckpoint, Source: "root"}.Mark())
+	assert.Equal(t, MarkTemplate, Node{Kind: KindTemplate, Source: "ck"}.Mark())
 }
 
 func TestRelationOf(t *testing.T) {
@@ -74,9 +77,12 @@ func TestRelationOf(t *testing.T) {
 		{Kind: KindCheckpoint, UUID: "ck-x", Source: DeletedPrefix + "x"},
 		{Kind: KindInstance, UUID: "nameless"},
 		{Kind: KindCheckpoint, UUID: "ck-nameless", Source: "nameless"},
+		{Kind: KindTemplate, UUID: "tmpl", Name: "tmpl", Source: "ck"},
+		{Kind: KindInstance, UUID: "from-tmpl", Name: "from-tmpl", Source: "tmpl"},
 	}
 	root, _ := nodes.Find("root")
 	ck, _ := nodes.Find("ck")
+	tmpl, _ := nodes.Find("tmpl")
 	deleted, _ := nodes.Find(DeletedPrefix + "x")
 	nameless, _ := nodes.Find("nameless")
 
@@ -92,6 +98,7 @@ func TestRelationOf(t *testing.T) {
 		{DeletedPrefix + "x", RelationDeleted, ck},
 		{"ck-x", RelationCheckpointOfDeleted, deleted},
 		{"ck-nameless", RelationCheckpointOfDeleted, nameless},
+		{"from-tmpl", RelationCreatedFrom, tmpl},
 	} {
 		n, _ := nodes.Find(tt.uuid)
 		rel, parent := nodes.RelationOf(n)

@@ -68,6 +68,23 @@ func liveFixture() ([]platform.Instance, []platform.GetCheckpointHistoryResponse
 	return append(instances, staging), append(histories, history("http-gcc-staging"))
 }
 
+// templateFixture has a template made from an instance cloned from ck, and
+// two instances created from the template.
+func templateFixture() ([]platform.Instance, []platform.GetCheckpointHistoryResponseInstanceHistory) {
+	tmpl := cloneOf(inst("tmpl", 20), "ck")
+	tmpl.State = platform.InstanceStateTemplate
+	return []platform.Instance{
+		inst("web", 0),
+		tmpl,
+		cloneOf(inst("app-1", 30), "tmpl"),
+		cloneOf(inst("app-2", 40), "tmpl"),
+	}, []platform.GetCheckpointHistoryResponseInstanceHistory{
+		history("web", ckpt("ck", 10)),
+		history("app-1"),
+		history("app-2", ckpt("app-2-ck", 50)),
+	}
+}
+
 type edge struct{ uuid, source string }
 
 func edges(nodes []Node) []edge {
@@ -167,6 +184,26 @@ func TestBuildTombstone(t *testing.T) {
 	assert.Empty(t, tomb.Name)
 	assert.Empty(t, tomb.State)
 	assert.Equal(t, at(10).Add(-time.Nanosecond), tomb.CreatedAt)
+}
+
+func TestBuildRetained(t *testing.T) {
+	gone := inst("gone", 0)
+	gone.RetainedUntil = new(at(100))
+	nodes := Build(
+		[]platform.Instance{gone, cloneOf(inst("fork", 20), "ck"), cloneOf(inst("live", 30), "gone")},
+		[]platform.GetCheckpointHistoryResponseInstanceHistory{
+			history("gone", ckpt("ck", 10)),
+			history("fork", ckpt("ck", 10)),
+			history("live"),
+		},
+	)
+
+	assert.Equal(t, []edge{
+		{"live", ""},
+		{"fork", "ck"},
+		{"ck", "deleted:ck"},
+		{"deleted:ck", ""},
+	}, edges(nodes), "a retained instance is deleted")
 }
 
 func TestBuildTombstoneRoot(t *testing.T) {
@@ -318,6 +355,16 @@ func TestBuildLiveFork(t *testing.T) {
 		}
 	}
 	assert.Equal(t, []string{"http-gcc-fork-1", "http-gcc-staging"}, uuids(nodes.ForksOf("http-gcc")))
+}
+
+func TestBuildTemplate(t *testing.T) {
+	nodes := Build(templateFixture())
+
+	for _, n := range nodes {
+		assert.False(t, n.Live, n.UUID)
+	}
+	tmpl, _ := nodes.Find("tmpl")
+	assert.Equal(t, KindTemplate, tmpl.Kind)
 }
 
 func TestBuildRootsWithoutAKnownCloneSource(t *testing.T) {

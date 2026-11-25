@@ -79,6 +79,23 @@ func layoutFaults(l Layout) []string {
 		}
 	}
 
+	// from is the parent row of the branch that runs along a row from a lane
+	// to the next. Only branches from one parent share those cells.
+	from := map[[2]int]int{}
+	for _, b := range l.Branches {
+		row := b.ParentRow
+		if b.Live {
+			row = b.ChildRow
+		}
+		for c := min(b.ParentLane, b.ChildLane); c < max(b.ParentLane, b.ChildLane); c++ {
+			k := [2]int{row, c}
+			if p, ok := from[k]; ok && p != b.ParentRow {
+				fault("row %d, lanes %d-%d: branches from rows %d and %d overlap", row, c, c+1, p, b.ParentRow)
+			}
+			from[k] = b.ParentRow
+		}
+	}
+
 	for _, b := range l.Branches {
 		parent := l.Rows[b.ParentRow]
 		if !b.Live {
@@ -147,6 +164,24 @@ func TestLayoutSpec(t *testing.T) {
 func TestLayoutSpecLiveFork(t *testing.T) {
 	tree, _ := Build(liveFixture()).Scope("http-gcc", 0)
 	assertLayout(t, tree.Layout(), "spec-live.golden")
+}
+
+func TestLayoutTemplate(t *testing.T) {
+	assertLayout(t, Build(templateFixture()).Layout(), "template.golden")
+}
+
+func TestLayoutLiveTemplate(t *testing.T) {
+	tmpl := cloneOf(inst("T", 20), "I")
+	tmpl.State = platform.InstanceStateTemplate
+	l := Build([]platform.Instance{
+		inst("I", 0),
+		cloneOf(inst("X", 10), "I"),
+		tmpl,
+		cloneOf(inst("C1", 30), "T"),
+		cloneOf(inst("C2", 40), "T"),
+		cloneOf(inst("Y", 50), "I"),
+	}, nil).Layout()
+	assertLayout(t, l, "live-template.golden")
 }
 
 func TestLayoutSingleRoot(t *testing.T) {
@@ -313,29 +348,34 @@ func TestLayoutMaxLanesKeepsRoot(t *testing.T) {
 }
 
 // randomTree grows a tree as the platform would: checkpoints of instances,
-// and instances cloned from checkpoints or live from instances.
+// and instances or templates cloned from checkpoints, from templates or live
+// from instances.
 func randomTree(r *rand.Rand, size int) Tree {
 	var t Tree
-	var instances, checkpoints []string
+	var instances, checkpoints, templates []string
 	for i := range size {
-		id := fmt.Sprintf("n%d", i)
-		switch x := r.IntN(10); {
+		n := Node{Kind: KindInstance, UUID: fmt.Sprintf("n%d", i), CreatedAt: at(i)}
+		switch x := r.IntN(11); {
 		case len(instances) == 0 || x == 0:
-			t = append(t, Node{Kind: KindInstance, UUID: id, CreatedAt: at(i)})
-			instances = append(instances, id)
 		case x < 5:
-			src := instances[r.IntN(len(instances))]
-			t = append(t, Node{Kind: KindCheckpoint, UUID: id, Source: src, CreatedAt: at(i)})
-			checkpoints = append(checkpoints, id)
+			n.Kind, n.Source = KindCheckpoint, instances[r.IntN(len(instances))]
 		case x < 8 && len(checkpoints) > 0:
-			src := checkpoints[r.IntN(len(checkpoints))]
-			t = append(t, Node{Kind: KindInstance, UUID: id, Source: src, CreatedAt: at(i)})
-			instances = append(instances, id)
+			n.Source = checkpoints[r.IntN(len(checkpoints))]
+		case x < 9 && len(templates) > 0:
+			n.Source = templates[r.IntN(len(templates))]
 		default:
-			src := instances[r.IntN(len(instances))]
-			t = append(t, Node{Kind: KindInstance, UUID: id, Source: src, Live: true, CreatedAt: at(i)})
-			instances = append(instances, id)
+			n.Source, n.Live = instances[r.IntN(len(instances))], true
 		}
+		switch {
+		case n.Kind == KindCheckpoint:
+			checkpoints = append(checkpoints, n.UUID)
+		case r.IntN(10) == 0:
+			n.Kind = KindTemplate
+			templates = append(templates, n.UUID)
+		default:
+			instances = append(instances, n.UUID)
+		}
+		t = append(t, n)
 	}
 	return t
 }
@@ -347,13 +387,18 @@ func TestLayoutRandomTrees(t *testing.T) {
 	r := rand.New(rand.NewPCG(1, 2))
 	crossed := 0
 	for i := range trees {
-		l := randomTree(r, 2+r.IntN(40)).Layout()
+		tree := randomTree(r, 2+r.IntN(40))
+		l := tree.Layout()
 		if !assert.Empty(t, layoutFaults(l), "tree %d:\n%s", i, l.Text(func(n Node) string { return n.UUID })) {
+			return
+		}
+		capped := tree.Layout(WithMaxLanes(3))
+		if !assert.Empty(t, layoutFaults(capped), "tree %d:\n%s", i, capped.Text(func(n Node) string { return n.UUID })) {
 			return
 		}
 		if layoutCrossings(l) > 0 {
 			crossed++
 		}
 	}
-	assert.Less(t, crossed, trees/30)
+	assert.Less(t, crossed, trees/15)
 }

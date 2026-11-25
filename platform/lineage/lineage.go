@@ -4,8 +4,10 @@
 // You may not use this file except in compliance with the License.
 
 // Package lineage builds the family trees of instances: an instance is the
-// child of the instance or checkpoint it was cloned from, and a checkpoint is
-// the child of the instance that took it. FetchHistories reads the checkpoint
+// child of the instance, template or checkpoint it was cloned from, and a
+// checkpoint is the child of the instance that took it. A template is an
+// instance in the template state, which GetTemplateInstances lists: give the
+// templates to Build with the instances. FetchHistories reads the checkpoint
 // histories that Build needs from the platform. Tree.Layout places a tree in
 // rows and lanes for drawing, and Layout.Text draws it as text.
 package lineage
@@ -18,11 +20,12 @@ import (
 	"unikraft.com/cloud/sdk/platform"
 )
 
-// Kind tells instance nodes from checkpoint nodes.
+// Kind tells instance, template and checkpoint nodes apart.
 type Kind string
 
 const (
 	KindInstance   Kind = "instance"
+	KindTemplate   Kind = "template"
 	KindCheckpoint Kind = "checkpoint"
 )
 
@@ -30,7 +33,7 @@ const (
 // UUID of the newest checkpoint the deleted instance left follows it.
 const DeletedPrefix = "deleted:"
 
-// Node is an instance or a checkpoint in a lineage tree.
+// Node is an instance, a template or a checkpoint in a lineage tree.
 type Node struct {
 	Kind      Kind
 	UUID      string
@@ -38,7 +41,7 @@ type Node struct {
 	CreatedAt time.Time
 	State     platform.InstanceState
 	// Source is the UUID of the parent: the instance that took a checkpoint,
-	// or the instance or checkpoint an instance was cloned from.
+	// or the instance, template or checkpoint an instance was cloned from.
 	Source string
 	// Live is set when an instance was cloned from the running instance in
 	// Source rather than from one of its checkpoints.
@@ -52,14 +55,21 @@ type Node struct {
 // its parent through Node.Source.
 type Tree []Node
 
-// Build returns the lineage trees of instances, newest node first.
-// histories are the checkpoint histories of instances, newest first as the
-// platform lists them; a checkpoint that no listed instance took is
-// attributed to a placeholder for a deleted instance.
+// Build returns the lineage trees of instances, newest node first, and treats
+// a retained instance as deleted. histories are the checkpoint histories of
+// instances, newest first as the platform lists them; a checkpoint that no
+// listed instance took is attributed to a placeholder for a deleted instance.
+// A checkpoint in instances joins a tree through its own history.
 func Build(instances []platform.Instance, histories []platform.GetCheckpointHistoryResponseInstanceHistory) Tree {
 	insts := make(map[string]platform.Instance, len(instances))
+	listed := map[string]platform.Instance{}
 	for _, inst := range instances {
-		insts[inst.Uuid] = inst
+		switch {
+		case inst.State == platform.InstanceStateCheckpoint:
+			listed[inst.Uuid] = inst
+		case inst.RetainedUntil == nil:
+			insts[inst.Uuid] = inst
+		}
 	}
 
 	// Oldest instance first, so every "first wins" below favours it deterministically.
@@ -71,13 +81,14 @@ func Build(instances []platform.Instance, histories []platform.GetCheckpointHist
 	}
 	var hs []hist
 	for _, h := range histories {
-		inst, ok := insts[h.Uuid]
-		if !ok {
-			continue
-		}
 		entries := slices.Clone(h.History)
 		slices.Reverse(entries)
-		hs = append(hs, hist{inst: inst, entries: entries, own: inherited(inst, entries)})
+		if inst, ok := insts[h.Uuid]; ok {
+			hs = append(hs, hist{inst: inst, entries: entries, own: inherited(inst, entries)})
+		} else if c, ok := listed[h.Uuid]; ok {
+			entries = append(entries, platform.CheckpointHistoryEntry{Uuid: c.Uuid, Name: c.Name, CreatedAt: c.CreatedAt})
+			hs = append(hs, hist{inst: c, entries: entries, own: len(entries)})
+		}
 	}
 	slices.SortStableFunc(hs, func(a, b hist) int {
 		return cmp.Or(
@@ -190,20 +201,15 @@ func Build(instances []platform.Instance, histories []platform.GetCheckpointHist
 	}
 
 	// The platform reports the clone source only while it exists, so an
-	// instance cloned from something gone, or from a template, is a root.
+	// instance cloned from something gone or retained, or from an unlisted
+	// template, is a root.
 	for _, inst := range insts {
-		n := Node{
-			Kind:      KindInstance,
-			UUID:      inst.Uuid,
-			Name:      inst.Name,
-			CreatedAt: inst.CreatedAt,
-			State:     inst.State,
-		}
+		n := instanceNode(inst)
 		if src := inst.CloneSource; src != nil && src.Uuid != inst.Uuid {
 			if _, ok := ckpts[src.Uuid]; ok {
 				n.Source = src.Uuid
-			} else if _, ok := insts[src.Uuid]; ok {
-				n.Source, n.Live = src.Uuid, true
+			} else if s, ok := insts[src.Uuid]; ok {
+				n.Source, n.Live = src.Uuid, s.State != platform.InstanceStateTemplate
 			}
 		}
 		nodes = append(nodes, n)
@@ -314,17 +320,25 @@ func (t Tree) ScopeOf(inst platform.Instance, limit int) (tree Tree, truncated, 
 	if tree, truncated = t.Scope(inst.Uuid, limit); tree != nil {
 		return tree, truncated, true
 	}
+	return Tree{instanceNode(inst)}, false, false
+}
+
+// instanceNode returns the node of inst, with the kind of its state and no parent.
+func instanceNode(inst platform.Instance) Node {
 	kind := KindInstance
-	if inst.State == platform.InstanceStateCheckpoint {
+	switch inst.State {
+	case platform.InstanceStateTemplate:
+		kind = KindTemplate
+	case platform.InstanceStateCheckpoint:
 		kind = KindCheckpoint
 	}
-	return Tree{{
+	return Node{
 		Kind:      kind,
 		UUID:      inst.Uuid,
 		Name:      inst.Name,
 		CreatedAt: inst.CreatedAt,
 		State:     inst.State,
-	}}, false, false
+	}
 }
 
 func (t Tree) sortNewestFirst() {
