@@ -11,11 +11,15 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+	"io/fs"
+	"math"
 	"net"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/docker/go-units"
+	"github.com/unikraft/go-archivefs"
 	"github.com/unikraft/go-archivefs/cpio"
 	"unikraft.com/x/log"
 )
@@ -316,4 +320,113 @@ cpioLoop:
 		return 0, 0, fmt.Errorf("no stop response received from import service")
 	}
 	return final.Free, final.Total, nil
+}
+
+// CopyFS sends the directories, regular files and symbolic links of fsys to
+// the volimport service over conn, like Copy. Files that share an inode are
+// sent as separate copies. It reads all of fsys before it sends the auth
+// token, thus the timeout of the service must cover that.
+func CopyFS(ctx context.Context, conn net.Conn, auth string, fsys fs.FS, force bool) (free, total uint64, err error) {
+	var (
+		hdrs []*cpio.Header
+		size uint64
+	)
+	if err := fs.WalkDir(fsys, ".", func(name string, d fs.DirEntry, err error) error {
+		if err != nil || name == "." {
+			return err
+		}
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+		fi, err := d.Info()
+		if err != nil {
+			return err
+		}
+		hdr := &cpio.Header{
+			// The "./" prefix makes sure that no entry has the name of the trailer.
+			Name:    "./" + name,
+			Mode:    cpio.FileMode(fi.Mode().Perm()),
+			Uid:     archivefs.GetUID(fi.Sys()),
+			Guid:    archivefs.GetGID(fi.Sys()),
+			Links:   1,
+			ModTime: time.Unix(min(max(fi.ModTime().Unix(), 0), math.MaxUint32), 0),
+		}
+		if fi.Mode()&fs.ModeSetuid != 0 {
+			hdr.Mode |= cpio.ModeSetuid
+		}
+		if fi.Mode()&fs.ModeSetgid != 0 {
+			hdr.Mode |= cpio.ModeSetgid
+		}
+		if fi.Mode()&fs.ModeSticky != 0 {
+			hdr.Mode |= cpio.ModeSticky
+		}
+		switch {
+		case fi.Mode().IsDir():
+			hdr.Mode |= cpio.TypeDir
+		case fi.Mode().IsRegular():
+			hdr.Mode |= cpio.TypeRegular
+			if hdr.Size = fi.Size(); hdr.Size > math.MaxUint32 {
+				return fmt.Errorf("%s: file is larger than 4 GiB", name)
+			}
+		case fi.Mode()&fs.ModeSymlink != 0:
+			hdr.Mode |= cpio.TypeSymlink
+			if hdr.Linkname, err = fs.ReadLink(fsys, name); err != nil {
+				return err
+			}
+			hdr.Size = int64(len(hdr.Linkname))
+		default:
+			// The service refuses every other file type.
+			return fmt.Errorf("%s: unsupported file type %s", name, fi.Mode().Type())
+		}
+		// The writer changes the header, thus check a copy.
+		check := *hdr
+		if err := cpio.NewWriter(io.Discard).WriteHeader(&check); err != nil {
+			return fmt.Errorf("%s: %w", name, err)
+		}
+		size += uint64(hdr.Size)
+		hdrs = append(hdrs, hdr)
+		return nil
+	}); err != nil {
+		return 0, 0, fmt.Errorf("reading file system: %w", err)
+	}
+
+	pr, pw := io.Pipe()
+	var wg sync.WaitGroup
+	wg.Go(func() {
+		pw.CloseWithError(func() error {
+			w := cpio.NewWriter(pw)
+			for _, hdr := range hdrs {
+				if err := w.WriteHeader(hdr); err != nil {
+					return fmt.Errorf("%s: %w", hdr.Name, err)
+				}
+				switch {
+				case hdr.Linkname != "":
+					if _, err := io.WriteString(w, hdr.Linkname); err != nil {
+						return err
+					}
+				case hdr.Size > 0:
+					f, err := fsys.Open(strings.TrimPrefix(hdr.Name, "./"))
+					if err != nil {
+						return err
+					}
+					n, err := io.Copy(w, f)
+					f.Close()
+					if err != nil {
+						return fmt.Errorf("%s: %w", hdr.Name, err)
+					}
+					if n != hdr.Size {
+						return fmt.Errorf("%s: file changed while it was sent: read %d of %d bytes", hdr.Name, n, hdr.Size)
+					}
+				}
+			}
+			return w.Close()
+		}())
+	})
+	// fsys can close after CopyFS returns, thus wait for the writer.
+	defer func() {
+		pr.Close()
+		wg.Wait()
+	}()
+
+	return Copy(ctx, conn, auth, pr, force, size)
 }

@@ -9,12 +9,17 @@ import (
 	"bytes"
 	"encoding/binary"
 	"io"
+	"io/fs"
 	"net"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"testing"
+	"testing/fstest"
 
 	"github.com/stretchr/testify/require"
+	"github.com/unikraft/go-archivefs"
 	"github.com/unikraft/go-archivefs/cpio"
 )
 
@@ -22,6 +27,9 @@ const testAuth = "0123456789abcdefghijklmnopqrstuv"
 
 type entry struct {
 	name string
+	mode cpio.FileMode
+	uid  uint64
+	gid  uint64
 	data string
 }
 
@@ -78,6 +86,9 @@ func serve(conn net.Conn, free uint64, failAfter int) <-chan []entry {
 			if _, err := io.ReadFull(conn, hdr); err != nil {
 				return
 			}
+			mode, _ := strconv.ParseUint(string(hdr[14:22]), 16, 32)
+			uid, _ := strconv.ParseUint(string(hdr[22:30]), 16, 32)
+			gid, _ := strconv.ParseUint(string(hdr[30:38]), 16, 32)
 			size, _ := strconv.ParseUint(string(hdr[54:62]), 16, 64)
 			nameSize, _ := strconv.ParseUint(string(hdr[94:102]), 16, 64)
 			name := make([]byte, nameSize)
@@ -98,7 +109,7 @@ func serve(conn net.Conn, free uint64, failAfter int) <-chan []entry {
 			if _, err := io.ReadFull(conn, data); err != nil {
 				return
 			}
-			entries = append(entries, entry{name: string(name[:nameSize-1]), data: string(data)})
+			entries = append(entries, entry{name: string(name[:nameSize-1]), mode: cpio.FileMode(mode), uid: uid, gid: gid, data: string(data)})
 			if len(entries) == failAfter {
 				_ = writeFrame(conn, -1, []byte("disk full\n\x00"))
 				_ = writeFrame(conn, 0, nil)
@@ -132,9 +143,9 @@ func TestCopySendsEveryEntry(t *testing.T) {
 	require.Equal(t, uint64(7), free)
 	require.Equal(t, uint64(1<<30), total)
 	require.Equal(t, []entry{
-		{name: "dir"},
-		{name: "dir/file", data: strings.Repeat("a", msgMaxSize+1)},
-		{name: "link", data: "dir/file"},
+		{name: "dir", mode: cpio.TypeDir | 0o755},
+		{name: "dir/file", mode: cpio.TypeRegular | 0o644, data: strings.Repeat("a", msgMaxSize+1)},
+		{name: "link", mode: cpio.TypeSymlink | 0o777, data: "dir/file"},
 	}, <-got)
 }
 
@@ -175,4 +186,81 @@ func TestCopyServiceError(t *testing.T) {
 
 	_, _, err := Copy(t.Context(), client, testAuth, bytes.NewReader(archive), false, uint64(len(archive)))
 	require.EqualError(t, err, "transmission failed: disk full")
+}
+
+func TestCopyFSSendsEveryEntry(t *testing.T) {
+	dir := t.TempDir()
+	data := strings.Repeat("a", msgMaxSize+1)
+	require.NoError(t, os.Mkdir(filepath.Join(dir, "dir"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "dir", "file"), []byte(data), 0o644))
+	require.NoError(t, os.Link(filepath.Join(dir, "dir", "file"), filepath.Join(dir, "hard")))
+	require.NoError(t, os.Symlink("dir/file", filepath.Join(dir, "link")))
+	// The modes must not depend on the umask.
+	require.NoError(t, os.Chmod(filepath.Join(dir, "dir"), 0o755))
+	require.NoError(t, os.Chmod(filepath.Join(dir, "dir", "file"), 0o640))
+	client, server := pipe(t)
+	got := serve(server, 1<<20, 0)
+
+	// New files can take the group of the directory.
+	fi, err := os.Stat(dir)
+	require.NoError(t, err)
+	uid, gid := uint64(archivefs.GetUID(fi.Sys())), uint64(archivefs.GetGID(fi.Sys()))
+
+	free, total, err := CopyFS(t.Context(), client, testAuth, os.DirFS(dir), false)
+	require.NoError(t, err)
+	require.Equal(t, uint64(7), free)
+	require.Equal(t, uint64(1<<30), total)
+	require.Equal(t, []entry{
+		{name: "./dir", mode: cpio.TypeDir | 0o755, uid: uid, gid: gid},
+		{name: "./dir/file", mode: cpio.TypeRegular | 0o640, uid: uid, gid: gid, data: data},
+		{name: "./hard", mode: cpio.TypeRegular | 0o640, uid: uid, gid: gid, data: data},
+		{name: "./link", mode: cpio.TypeSymlink | 0o777, uid: uid, gid: gid, data: "dir/file"},
+	}, <-got)
+}
+
+func TestCopyFSSendsOwnerAndSpecialBits(t *testing.T) {
+	fsys := fstest.MapFS{
+		"su":  {Data: []byte("a"), Mode: fs.ModeSetuid | fs.ModeSetgid | 0o755, Sys: &cpio.Header{Uid: 1, Guid: 2}},
+		"tmp": {Mode: fs.ModeDir | fs.ModeSticky | 0o777},
+	}
+	client, server := pipe(t)
+	got := serve(server, 1<<20, 0)
+
+	_, _, err := CopyFS(t.Context(), client, testAuth, fsys, false)
+	require.NoError(t, err)
+	require.Equal(t, []entry{
+		{name: "./su", mode: cpio.TypeRegular | cpio.ModeSetuid | cpio.ModeSetgid | 0o755, uid: 1, gid: 2, data: "a"},
+		{name: "./tmp", mode: cpio.TypeDir | cpio.ModeSticky | 0o777},
+	}, <-got)
+}
+
+func TestCopyFSUnsupportedType(t *testing.T) {
+	fsys := fstest.MapFS{
+		"file": {Data: []byte("a")},
+		"null": {Mode: fs.ModeDevice | fs.ModeCharDevice | 0o666},
+	}
+
+	// A nil conn panics on use, thus CopyFS sends nothing.
+	_, _, err := CopyFS(t.Context(), nil, testAuth, fsys, false)
+	require.ErrorContains(t, err, "null: unsupported file type")
+}
+
+func TestCopyFSInvalidHeader(t *testing.T) {
+	fsys := fstest.MapFS{
+		"file": {Data: []byte("a")},
+		"link": {Mode: fs.ModeSymlink | 0o777},
+	}
+
+	_, _, err := CopyFS(t.Context(), nil, testAuth, fsys, false)
+	require.ErrorIs(t, err, cpio.ErrHeader)
+	require.ErrorContains(t, err, "link: ")
+}
+
+func TestCopyFSNoSpace(t *testing.T) {
+	fsys := fstest.MapFS{"file": {Data: []byte("ab")}}
+	client, server := pipe(t)
+	serve(server, 1, 0)
+
+	_, _, err := CopyFS(t.Context(), client, testAuth, fsys, false)
+	require.ErrorContains(t, err, "not enough free space on volume: need 2B")
 }
